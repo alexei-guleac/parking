@@ -1,4 +1,4 @@
-package com.isd.parking.controller;
+package com.isd.parking.controller.arduino;
 
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;

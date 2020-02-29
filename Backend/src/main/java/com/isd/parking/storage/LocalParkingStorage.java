@@ -1,4 +1,4 @@
-package com.isd.parking.repository;
+package com.isd.parking.storage;
 
 import com.isd.parking.model.ParkingLot;
 import org.springframework.beans.factory.annotation.Autowired;

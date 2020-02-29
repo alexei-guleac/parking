@@ -1,4 +1,4 @@
-package com.isd.parking.controller;
+package com.isd.parking.controller.frontapp;
 
 import com.isd.parking.exception.ResourceNotFoundException;
 import com.isd.parking.model.ParkingLot;

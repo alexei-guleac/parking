@@ -1,7 +1,7 @@
-package com.isd.parking.config;
+package com.isd.parking.config.websocket;
 
 
-import com.isd.parking.controller.ArduinoWebSocketHandler;
+import com.isd.parking.controller.arduino.ArduinoWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

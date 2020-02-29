@@ -61,6 +61,17 @@ public class StatisticsService {
     /**
      * Save statistics record in database method
      *
+     * @return - StatisticsRecord which was saved in database
+     */
+    @Transactional
+    public StatisticsRecord save(StatisticsRecord statisticsRecord) {
+        log.info("Service save statistics event executed...");
+        return statisticsRepository.save(statisticsRecord);
+    }
+
+    /**
+     * Save statistics record in database method
+     *
      * @param parkingLot - parking lot need to be saved in statistics record
      * @return - StatisticsRecord which was saved in database
      */
