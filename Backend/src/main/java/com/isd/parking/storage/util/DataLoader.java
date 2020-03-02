@@ -1,4 +1,4 @@
-package com.isd.parking.util;
+package com.isd.parking.storage.util;
 
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;

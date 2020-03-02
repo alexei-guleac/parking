@@ -59,6 +59,23 @@ public class StatisticsService {
     }
 
     /**
+     * Method creates new statistics record
+     *
+     * @param parkingLot - input parking lot object
+     */
+    public void addStatisticsRecord(ParkingLot parkingLot) {
+        StatisticsRecord statisticsRecord = StatisticsRecord.builder()
+                .lotNumber(parkingLot.getNumber())
+                .status(parkingLot.getStatus())
+                .updatedAt(new Date(System.currentTimeMillis())).build();
+
+        log.info("Statistics record: " + statisticsRecord);
+        log.info("Service update statistics executed...");
+
+        save(statisticsRecord);
+    }
+
+    /**
      * Save statistics record in database method
      *
      * @return - StatisticsRecord which was saved in database

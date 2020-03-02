@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 
 
@@ -15,11 +17,11 @@ import java.util.Date;
  * Parking Lot model class
  */
 @Entity(name = "parking_lots")
-@DynamicUpdate
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class ParkingLot {
 
     @Id

@@ -13,10 +13,11 @@ import java.util.Base64;
 @Slf4j
 public class CustomPasswordEncoder implements PasswordEncoder {
 
+    private final String salt = "$2a$12$lIGeCCVi1fkIYIZA9ly6ge";
+
     @Override
     public String encode(CharSequence rawPassword) {
         //log.info("in custom bc enc {encode}");
-        final String salt = "$2a$12$lIGeCCVi1fkIYIZA9ly6ge";
         return "{customBC}" + BCrypt.hashpw(rawPassword.toString(), salt);
     }
 

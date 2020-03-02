@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+import static com.isd.parking.controller.frontapp.RestApiEndpoints.arduinoApi;
+
 
 /**
  * Arduino controller
@@ -43,7 +45,7 @@ public class ArduinoController {
      * @param parkingLot - parking lot object, contains all necessary data
      * @return HttpStatus.OK
      */
-    @PutMapping("/arduino")
+    @PutMapping(arduinoApi)
     @ResponseStatus(HttpStatus.OK)
     public void updateParkingLot(@Valid @RequestBody ParkingLot parkingLot) {
 
@@ -72,7 +74,7 @@ public class ArduinoController {
      * @param id               - parking lot id
      * @param parkingLotStatus - parking lot status
      */
-    @PutMapping("/arduino/update")
+    @PutMapping(arduinoApi + "/update")
     @ResponseStatus(HttpStatus.OK)
     public void updateParkingLotById(@RequestParam(value = "id") Long id,
                                      @RequestParam(value = "status") ParkingLotStatus parkingLotStatus) {

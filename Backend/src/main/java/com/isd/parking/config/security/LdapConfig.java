@@ -1,18 +1,19 @@
 package com.isd.parking.config.security;
 
-import com.isd.parking.service.ldap.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.ldap.repository.config.EnableLdapRepositories;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
+import java.util.Arrays;
+
 @Configuration
-@PropertySource("classpath:application.properties")
-@ComponentScan(basePackages = {"com.isd.parking.*"})
-@Profile("default")
 @EnableLdapRepositories(basePackages = "com.isd.parking.** ** ")
+@Slf4j
 public class LdapConfig {
 
     private final Environment env;
@@ -27,7 +28,16 @@ public class LdapConfig {
         LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl(env.getRequiredProperty("ldap.url"));
         contextSource.setBase(env.getRequiredProperty("ldap.partitionSuffix"));
+        /*contextSource.setUserDn(env.getRequiredProperty("ldap.username"));
+        contextSource.setPassword(env.getRequiredProperty("ldap.password"));*/
 
+        log.info("{LDAP config} ldap configuration");
+        log.info(contextSource.getBaseLdapPathAsString());
+        log.info(String.valueOf(contextSource.getBaseLdapName()));
+        log.info(String.valueOf(contextSource.getAuthenticationSource()));
+        log.info(Arrays.toString(contextSource.getUrls()));
+
+        contextSource.afterPropertiesSet();
         return contextSource;
     }
 
@@ -36,8 +46,8 @@ public class LdapConfig {
         return new LdapTemplate(contextSource());
     }
 
-    @Bean
+    /*@Bean
     public UserService ldapClient() {
         return new UserService();
-    }
+    }*/
 }

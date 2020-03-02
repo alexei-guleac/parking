@@ -26,14 +26,14 @@ import java.util.Optional;
 @Component
 public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
-    /* security token to verify Arduino board connection */
-    private final String securityToken = "4a0a8679643673d083b23f52c21f27cac2b03fa2";           //{SHA1}arduino
-
     private final ParkingLotService parkingLotService;
 
     private final ParkingLotLocalService parkingLotLocalService;
 
     private final StatisticsService statisticsService;
+
+    /* security token to verify Arduino board connection */
+    private final String securityToken = "4a0a8679643673d083b23f52c21f27cac2b03fa2";           //{SHA1}arduino
 
     @Autowired
     public ArduinoWebSocketHandler(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {

@@ -1,6 +1,7 @@
 package com.isd.parking.config.security;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -27,6 +28,38 @@ import java.util.Map;
 @Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Value("${ldap.url}")
+    private String ldapUrl;
+
+    @Value("${spring.ldap.embedded.ldif}")
+    private String ldapFile;
+
+    @Value("${spring.ldap.embedded.port}")
+    private String ldapPort;
+
+    @Value("${ldap.partitionSuffix}")
+    private String ldapPartitionSuffix;
+
+    @Value("${ldap.user.dn.pattern}")
+    private String ldapUserDnPattern;
+
+    @Value("${spring.ldap.base}")
+    private String ldapSearchBase;
+
+    @Value("${ldap.userSearchFilter}")
+    private String ldapUserSearchFilter;
+
+    @Value("${ldap.groupSearchBase}")
+    private String ldapGroupSearchBase;
+
+    @Value("${ldap.groupSearchFilter}")
+    private String ldapGroupSearchFilter;
+
+    @Value("${ldap.passwordAttribute}")
+    private String ldapPasswordAttribute;
+
+    private final String[] pathArray = new String[]{"/login", "/registration", "/parking", "/arduino", "/demo"};
+
     // ----------  LDAP auth --------------
 
     @Override
@@ -39,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .frameOptions().sameOrigin().and()
                 .authorizeRequests()
                 // dont authenticate this particular request
-                .antMatchers("/login", "/registration", "/parking", "/arduino", "/test").permitAll()
+                .antMatchers(pathArray).permitAll()
                 // all other requests need to be authenticated
                 .anyRequest().fullyAuthenticated()
                 .and().exceptionHandling()
@@ -50,17 +83,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .ldapAuthentication()
-                .userDnPatterns("uid={0},ou=people")
-                .userSearchBase("ou=people")
-                .userSearchFilter("uid={0}")
-                .groupSearchBase("ou=groups")
-                .groupSearchFilter("uniqueMember={0}")
+                .userDnPatterns(ldapUserDnPattern)
+                .userSearchBase(ldapSearchBase)
+                .userSearchFilter(ldapUserSearchFilter)
+                .groupSearchBase(ldapGroupSearchBase)
+                .groupSearchFilter(ldapGroupSearchFilter)
                 .contextSource()
-                .url("ldap://localhost:8389/dc=springframework,dc=org")
+                .ldif(ldapFile)
+                .url(ldapUrl + "/" + ldapPartitionSuffix)
+                .port(Integer.parseInt(ldapPort))
+                .root(ldapPartitionSuffix)
                 .and()
                 .passwordCompare()
                 .passwordEncoder(new CustomPasswordEncoder())
-                .passwordAttribute("userPassword");
+                .passwordAttribute(ldapPasswordAttribute);
     }
 
     @Bean
@@ -118,6 +154,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public static class CORSFilter implements Filter {
 
+        @Value("${front.url}")
+        private String frontUrl;
+
         /**
          * CORS filter for http-request and response
          */
@@ -131,7 +170,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
             final HttpServletResponse response = (HttpServletResponse) res;
-            response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
+            response.setHeader("Access-Control-Allow-Origin", frontUrl);
 
             // without this header jquery.ajax calls returns 401 even after successful login and SSESSIONID being succesfully stored.
             response.setHeader("Access-Control-Allow-Credentials", "true");
