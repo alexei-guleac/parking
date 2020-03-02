@@ -1,5 +1,6 @@
 package com.isd.parking.config.security;
 
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.ldap.core.support.LdapContextSource;
 
 import java.util.Arrays;
 
+import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
+
 @Configuration
 @EnableLdapRepositories(basePackages = "com.isd.parking.** ** ")
 @Slf4j
@@ -18,9 +21,12 @@ public class LdapConfig {
 
     private final Environment env;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public LdapConfig(Environment env) {
+    public LdapConfig(Environment env, ColorConsoleOutput console) {
         this.env = env;
+        this.console = console;
     }
 
     @Bean
@@ -31,11 +37,11 @@ public class LdapConfig {
         /*contextSource.setUserDn(env.getRequiredProperty("ldap.username"));
         contextSource.setPassword(env.getRequiredProperty("ldap.password"));*/
 
-        log.info("{LDAP config} ldap configuration");
-        log.info(contextSource.getBaseLdapPathAsString());
-        log.info(String.valueOf(contextSource.getBaseLdapName()));
-        log.info(String.valueOf(contextSource.getAuthenticationSource()));
-        log.info(Arrays.toString(contextSource.getUrls()));
+        log.info(console.classMsg("ldap configuration"));
+        log.info(blTxt(contextSource.getBaseLdapPathAsString()));
+        log.info(blTxt(String.valueOf(contextSource.getBaseLdapName())));
+        log.info(blTxt(String.valueOf(contextSource.getAuthenticationSource())));
+        log.info(blTxt(Arrays.toString(contextSource.getUrls())));
 
         contextSource.afterPropertiesSet();
         return contextSource;

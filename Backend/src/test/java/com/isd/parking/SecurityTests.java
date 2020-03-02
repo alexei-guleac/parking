@@ -15,6 +15,7 @@
  */
 package com.isd.parking;
 
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,8 +36,16 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 @Slf4j
 public class SecurityTests {
 
+
+    private final MockMvc mockMvc;
+
+    private final ColorConsoleOutput console;
+
     @Autowired
-    private MockMvc mockMvc;
+    public SecurityTests(MockMvc mockMvc, ColorConsoleOutput console) {
+        this.mockMvc = mockMvc;
+        this.console = console;
+    }
 
     @Test
     public void loginWithValidUserThenAuthenticated() throws Exception {

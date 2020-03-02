@@ -3,6 +3,7 @@ package com.isd.parking.service.ldap;
 import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.model.User;
 import com.isd.parking.repository.UserRepository;
+import com.isd.parking.utils.ColorConsoleOutput;
 import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -55,11 +56,13 @@ public class UserService {
 
     private final LdapTemplate ldapTemplate;
     private final LdapName baseLdapPath = LdapUtils.newLdapName("dc=isd,dc=com");
-    ;
 
     private final CustomPasswordEncoder passwordEncoder;
 
     private final UserRepository userRepository;
+
+
+    private final ColorConsoleOutput console;
 
     @Value("${spring.ldap.base}")
     private String ldapSearchBase;
@@ -68,10 +71,11 @@ public class UserService {
     private String ldapPasswordAttribute;
 
     @Autowired
-    public UserService(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate, UserRepository userRepository, CustomPasswordEncoder passwordEncoder) {
+    public UserService(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate, UserRepository userRepository, CustomPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
         this.ldapTemplate = ldapTemplate;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.console = console;
     }
 
     // --------- LDAp template in memory methods ---------
@@ -84,6 +88,7 @@ public class UserService {
      * @return - success or denied boolean status of user authentication
      */
     public Boolean authenticate(String username, String password) {
+        log.info(console.methodMsg(""));
         AndFilter filter = new AndFilter();
         filter.and(new EqualsFilter("uid", username));
         //log.info("executing {authenticate} " + username + " filter " + filter.encode() + " pass " + password);
@@ -111,6 +116,7 @@ public class UserService {
     }
 
     public void update(User p) {
+        log.info(console.methodMsg(""));
         ldapTemplate.rebind(buildDn(p), null, buildAttributes(p));
     }
 
@@ -136,12 +142,14 @@ public class UserService {
     }
 
     public void updateLastName(User p) {
+        log.info(console.methodMsg(""));
         Attribute attr = new BasicAttribute("sn", p.getLastName());
         ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
         ldapTemplate.modifyAttributes(buildDn(p), new ModificationItem[]{item});
     }
 
     public void delete(User p) {
+        log.info(console.methodMsg(""));
         ldapTemplate.unbind(buildDn(p));
     }
 
@@ -153,7 +161,7 @@ public class UserService {
      */
 
     public List<String> searchUser(final String username) {
-        log.info("executing {searchUser}");
+        log.info(console.methodMsg(""));
         return ldapTemplate.search(
                 ldapSearchBase,
                 "uid=" + username,
@@ -169,7 +177,7 @@ public class UserService {
      * @param password - user pass
      */
     public void create(final String username, final String password) {
-        log.info("executing {create}");
+        log.info(console.methodMsg(""));
         User newUser = new User(username, CustomPasswordEncoder.digestSHA(password));
         newUser.setId(LdapUtils.emptyLdapName());
         //newUser.setId(LdapUtils.newLdapName(new DistinguishedName("uid=" + username + ",ou=people")));
@@ -179,6 +187,7 @@ public class UserService {
 
 
     public void modify(final String username, final String password) {
+        log.info(console.methodMsg(""));
         Name dn = LdapNameBuilder
                 .newInstance()
                 .add("ou", "people")
@@ -207,7 +216,7 @@ public class UserService {
      */
     @SuppressWarnings("deprecation")
     public List<User> findAll() {
-        log.info("executing {getAllUsers}");
+        log.info(console.methodMsg(""));
         SearchControls controls = new SearchControls();
         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         return ldapTemplate.search(DistinguishedName.EMPTY_PATH, "(objectclass=person)", controls, new UserAttributesMapper());
@@ -221,7 +230,7 @@ public class UserService {
      * @see ldap.advance.example.UserRepositoryIntf#getUserDetails(java.lang.String)
      */
     public User getUserDetails(String userName) {
-        log.info("executing {getUserDetails}");
+        log.info(console.methodMsg(""));
         List<User> list = ldapTemplate.search(query().base(ldapSearchBase).where("uid").is(userName), new UserAttributesMapper());
         if (list != null && !list.isEmpty()) {
             return list.get(0);
@@ -235,7 +244,7 @@ public class UserService {
      * @see ldap.advance.example.UserRepositoryIntf#getUserDetail(java.lang.String)
      */
     public String getUserDetail(String userName) {
-        log.info("executing {getUserDetails}");
+        log.info(console.methodMsg(""));
         List<String> results = ldapTemplate.search(query().base(ldapSearchBase).where("uid").is(userName), new MultipleAttributesMapper());
         if (results != null && !results.isEmpty()) {
             return results.get(0);
@@ -249,7 +258,7 @@ public class UserService {
      * @see ldap.advance.example.UserRepositoryIntf#getAllUserNames()
      */
     public List<String> getAllUserNames() {
-        log.info("executing {getAllUserNames}");
+        log.info(console.methodMsg(""));
         LdapQuery query = query().base(ldapSearchBase);
         List<String> list = ldapTemplate.list(query.base());
         log.info("Users -> " + list);
@@ -257,12 +266,13 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
+        log.info(console.methodMsg(""));
         return ldapTemplate.search(query()
                 .where("objectclass").is("person"), new UserAttributesMapper());
     }
 
     public User findUser(String dn) {
-        log.info("executing {findUser}");
+        log.info(console.methodMsg(""));
         return ldapTemplate.lookup(dn, new UserAttributesMapper());
     }
 
@@ -273,7 +283,7 @@ public class UserService {
      * ldap.advance.example.UserRepositoryIntf#createUser(ldap.advance.example.User)
      */
     public boolean createUser(User user) {
-        log.info("executing {createUser}");
+        log.info(console.methodMsg(""));
         Attribute objectClass = new BasicAttribute("objectClass");
         {
             objectClass.add("top");
@@ -329,6 +339,7 @@ public class UserService {
      * @see ldap.advance.example.UserRepositoryIntf#remove(java.lang.String)
      */
     public boolean remove(String uid) {
+        log.info(console.methodMsg(""));
         ldapTemplate.unbind(bindDN(uid));
         return true;
     }
@@ -336,7 +347,7 @@ public class UserService {
     // --------- LDAp repository methods ---------
 
     public List<String> search(final String username) {
-        log.info("executing {search}");
+        log.info(console.methodMsg(""));
         List<User> userList = userRepository.findByUsernameLikeIgnoreCase(username);
         if (userList == null) {
             return Collections.emptyList();

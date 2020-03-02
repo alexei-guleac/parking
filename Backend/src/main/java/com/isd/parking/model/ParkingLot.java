@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
 
+import static com.isd.parking.utils.ColorConsoleOutput.*;
+
 
 /**
  * Parking Lot model class
@@ -39,5 +41,22 @@ public class ParkingLot {
 
     public void setUpdatedNow() {
         this.setUpdatedAt(new Date(System.currentTimeMillis()));
+    }
+
+    @Override
+    public String toString() {
+        return cyBrTxt(getClass().getSimpleName()) + " {" +
+                "id = " + redTxt(String.valueOf(id)) +
+                ", number = " + ywTxt(String.valueOf(number)) +
+                ", updatedAt = " + blTxt(String.valueOf(updatedAt)) +
+                ", status = " + switchStatusColor() +
+                " }";
+    }
+
+    private String switchStatusColor() {
+        return status == ParkingLotStatus.UNKNOWN ? whTxt(String.valueOf(status)) :
+                status == ParkingLotStatus.FREE ? grBrTxt(String.valueOf(status)) :
+                status == ParkingLotStatus.OCCUPIED ? redBrTxt(String.valueOf(status)) :
+                status == ParkingLotStatus.RESERVED ? ywBrTxt(String.valueOf(status)) : String.valueOf(status);
     }
 }

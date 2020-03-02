@@ -24,6 +24,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.isd.parking.utils.ColorConsoleOutput.grTxt;
+import static com.isd.parking.utils.ColorConsoleOutput.puBrTxt;
+
 @Configuration
 @Slf4j
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -138,13 +141,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder() {
             @Override
             public String encode(CharSequence rawPassword) {
-                log.info("in ws config bc {encode}");
+                log.info(grTxt("in ws config bc ") + puBrTxt("{encode}"));
                 return "{bcrypt}" + bcrypt.encode(rawPassword.toString());
             }
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                log.info("in ws config bc {matches}");
+                log.info(grTxt("in ws config bc ") + puBrTxt("{matches}"));
                 return bcrypt.matches(rawPassword, encodedPassword.substring(8));
             }
         };

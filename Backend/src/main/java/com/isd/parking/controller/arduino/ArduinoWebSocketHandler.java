@@ -16,6 +16,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.Optional;
 
+import static com.isd.parking.utils.ColorConsoleOutput.*;
+
 
 /**
  * Arduino Web Socket message handler
@@ -49,7 +51,7 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        log.info("A user with session Id:" + session.getId() + " created a session");
+        log.info(grTxt("A user with session Id:" + redTxt(session.getId()) + grTxt(" created a session")));
     }
 
     /**
@@ -67,7 +69,7 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 
-        log.info("Session Id: " + session.getId() + ", message body" + message.toString());
+        log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt(", message body ") + blTxt(message.toString()));
         System.out.println(message.getPayload());
 
         JSONObject msgObject = new JSONObject(message.getPayload());
@@ -102,6 +104,6 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        log.info("Session Id:" + session.getId() + " changed status to " + status);
+        log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt( " changed status to " + status));
     }
 }

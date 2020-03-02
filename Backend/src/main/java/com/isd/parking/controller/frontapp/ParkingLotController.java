@@ -5,6 +5,7 @@ import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.StatisticsService;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.isd.parking.controller.frontapp.RestApiEndpoints.parking;
+import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 
 
 /**
@@ -29,19 +31,22 @@ import static com.isd.parking.controller.frontapp.RestApiEndpoints.parking;
 @Slf4j
 public class ParkingLotController {
 
-
     /*private final ParkingLotService parkingLotService;*/
 
     private final ParkingLotLocalService parkingLotService;
+
     private final StatisticsService statisticsService;
 
     private final LdapContextSource contextSource;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public ParkingLotController(ParkingLotLocalService parkingLotService, StatisticsService statisticsService, LdapContextSource contextSource) {
+    public ParkingLotController(ParkingLotLocalService parkingLotService, StatisticsService statisticsService, LdapContextSource contextSource, ColorConsoleOutput console) {
         this.parkingLotService = parkingLotService;
         this.statisticsService = statisticsService;
         this.contextSource = contextSource;
+        this.console = console;
     }
 
     /**
@@ -52,7 +57,8 @@ public class ParkingLotController {
      */
     @GetMapping(parking)
     public List<ParkingLot> getAllParkingLots() {
-        log.info("{Parking controller} get all parking lots");
+        log.info(console.classMsg(("get all parking lots")));
+
         return parkingLotService.listAll();
     }
 
@@ -66,7 +72,8 @@ public class ParkingLotController {
     @GetMapping(parking + "/{id}")
     public ResponseEntity<ParkingLot> getParkingLotById(@PathVariable("id") Long parkingLotId)
             throws ResourceNotFoundException {
-        log.info("{Parking controller} get parking lot by id");
+        log.info(console.classMsg(("get parking lot by id")));
+
         ParkingLot parkingLot = parkingLotService.findById(parkingLotId)
                 .orElseThrow(() -> new ResourceNotFoundException("Parking Lot not found for this id :: " + parkingLotId));
 
@@ -82,14 +89,14 @@ public class ParkingLotController {
      */
     @RequestMapping("/reserve/{id}")
     public boolean reservation(@PathVariable("id") Long parkingLotId) {
+        log.info(console.classMsg("Parking lot number in reservation request: ") + blTxt(String.valueOf(parkingLotId)));
 
-        log.info("{Parking controller} Parking lot number in reservation request: " + parkingLotId);
         Optional<ParkingLot> parkingLotOptional = parkingLotService.findById(parkingLotId);
         AtomicBoolean hasErrors = new AtomicBoolean(false);
 
         //if lot with this number exists in database
         parkingLotOptional.ifPresent(parkingLot -> {
-            log.info("Parking lot found in database: " + parkingLot);
+            log.info(console.classMsg("Parking lot found in database: ") + blTxt(String.valueOf(parkingLot)));
 
             // if parking lot is already reserved
             if (parkingLot.getStatus() == ParkingLotStatus.RESERVED) {
@@ -97,7 +104,7 @@ public class ParkingLotController {
             } else {
                 parkingLot.setStatus(ParkingLotStatus.RESERVED);       //get enum value from string
                 parkingLot.setUpdatedNow();
-                log.info("Updated parking lot: " + parkingLot);
+                log.info(console.classMsg("updated parking lot: ") + blTxt(String.valueOf(parkingLot)));
 
                 //saving in local Java memory
                 parkingLotService.save(parkingLot);
@@ -121,13 +128,13 @@ public class ParkingLotController {
     @RequestMapping("/unreserve/{id}")
     public boolean cancelReservation(@PathVariable("id") Long parkingLotId) {
 
-        log.info("{Parking controller} Parking lot number in cancel reservation request: " + parkingLotId);
+        log.info(console.classMsg("Parking lot number in cancel reservation request: ") + blTxt(String.valueOf(parkingLotId)));
         Optional<ParkingLot> parkingLotOptional = parkingLotService.findById(parkingLotId);
         AtomicBoolean hasErrors = new AtomicBoolean(false);
 
         //if lot with this number exists in database
         parkingLotOptional.ifPresent(parkingLot -> {
-            log.info("Parking lot found in database: " + parkingLot);
+            log.info(console.classMsg("Parking lot found in database: ") + blTxt(String.valueOf(parkingLot)));
 
             // if parking lot is not reserved
             if (parkingLot.getStatus() != ParkingLotStatus.RESERVED) {
@@ -135,7 +142,7 @@ public class ParkingLotController {
             } else {
                 parkingLot.setStatus(ParkingLotStatus.FREE);       //get enum value from string
                 parkingLot.setUpdatedNow();
-                log.info("Updated parking lot: " + parkingLot);
+                log.info(console.classMsg("updated parking lot: ") + blTxt(String.valueOf(parkingLot)));
 
                 //saving in local Java memory
                 parkingLotService.save(parkingLot);

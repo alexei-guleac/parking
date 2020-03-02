@@ -1,8 +1,10 @@
 package com.isd.parking;
 
 import com.isd.parking.service.StatisticsService;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -18,6 +20,13 @@ import static org.mockito.Mockito.mock;
 @ConditionalOnProperty(name = "spring.enable.scheduling")
 @Slf4j
 public class ScheduleTest {
+
+    private final ColorConsoleOutput console;
+
+    @Autowired
+    public ScheduleTest(ColorConsoleOutput console) {
+        this.console = console;
+    }
 
     /**
      * Sample scheduling tasks test

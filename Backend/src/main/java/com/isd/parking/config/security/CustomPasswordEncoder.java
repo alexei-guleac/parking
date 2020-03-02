@@ -9,6 +9,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
+import static com.isd.parking.utils.ColorConsoleOutput.grTxt;
+import static com.isd.parking.utils.ColorConsoleOutput.puBrTxt;
+
 @Component
 @Slf4j
 public class CustomPasswordEncoder implements PasswordEncoder {
@@ -17,13 +20,13 @@ public class CustomPasswordEncoder implements PasswordEncoder {
 
     @Override
     public String encode(CharSequence rawPassword) {
-        //log.info("in custom bc enc {encode}");
+        log.info(grTxt("in custom bc encoder ") + puBrTxt("{encode}"));
         return "{customBC}" + BCrypt.hashpw(rawPassword.toString(), salt);
     }
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        //log.info("in custom bc enc {matches}");
+        log.info(grTxt("in custom bc encoder ") + puBrTxt("{matches}"));
         return BCrypt.checkpw(rawPassword.toString(), encodedPassword.substring(10));
     }
 

@@ -1,6 +1,7 @@
 package com.isd.parking.scheduler;
 
 import com.isd.parking.service.StatisticsService;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -23,9 +24,12 @@ public class ScheduleStatisticsDeleter {
 
     private final StatisticsService statisticsService;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public ScheduleStatisticsDeleter(StatisticsService statisticsService) {
+    public ScheduleStatisticsDeleter(StatisticsService statisticsService, ColorConsoleOutput console) {
         this.statisticsService = statisticsService;
+        this.console = console;
     }
 
     /**
@@ -39,7 +43,7 @@ public class ScheduleStatisticsDeleter {
      * */
     @Scheduled(cron = "0 0 1 * * *")            //task will be executed at 13:00 every day
     public void scheduleTaskDeleteStats() {
-        log.info("Delete stats schedule job executing...");
+        log.info(console.classMsg("Delete stats schedule job executing..."));
         statisticsService.deleteStatsOlderThanWeek();
     }
 

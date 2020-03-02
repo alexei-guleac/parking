@@ -3,6 +3,7 @@ package com.isd.parking.service;
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.StatisticsRecord;
 import com.isd.parking.repository.StatisticsRepository;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,12 @@ public class StatisticsService {
 
     private final StatisticsRepository statisticsRepository;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public StatisticsService(StatisticsRepository statisticsRepository) {
+    public StatisticsService(StatisticsRepository statisticsRepository, ColorConsoleOutput console) {
         this.statisticsRepository = statisticsRepository;
+        this.console = console;
     }
 
     /**
@@ -36,9 +40,7 @@ public class StatisticsService {
      * @return - Statistics records list
      */
     public List<StatisticsRecord> listAll() {
-
-        log.info("Service get statistics list executed...");
-
+        log.info(console.classMsg("get statistics list executed..."));
         return statisticsRepository.findAll();
     }
 
@@ -52,7 +54,7 @@ public class StatisticsService {
         cal.add(Calendar.DATE, -7);
         java.sql.Date oneWeek = new java.sql.Date(cal.getTimeInMillis());
 
-        log.info("Service delete statistics older than one week executed...");
+        log.info(console.classMsg("delete statistics older than one week executed..."));
 
         statisticsRepository.removeOlderThan(oneWeek);
 
@@ -69,8 +71,8 @@ public class StatisticsService {
                 .status(parkingLot.getStatus())
                 .updatedAt(new Date(System.currentTimeMillis())).build();
 
-        log.info("Statistics record: " + statisticsRecord);
-        log.info("Service update statistics executed...");
+        log.info(console.classMsg("Statistics record: " + ColorConsoleOutput.blTxt(String.valueOf(statisticsRecord))));
+        log.info(console.classMsg("Service update statistics executed..."));
 
         save(statisticsRecord);
     }
@@ -82,7 +84,7 @@ public class StatisticsService {
      */
     @Transactional
     public StatisticsRecord save(StatisticsRecord statisticsRecord) {
-        log.info("Service save statistics event executed...");
+        log.info(console.classMsg("Service save statistics event executed..."));
         return statisticsRepository.save(statisticsRecord);
     }
 
@@ -94,8 +96,7 @@ public class StatisticsService {
      */
     @Transactional
     public StatisticsRecord save(ParkingLot parkingLot) {
-
-        log.info("Service save statistics event executed...");
+        log.info(console.classMsg("Service save statistics event executed..."));
 
         StatisticsRecord statisticsRecord = StatisticsRecord.builder()
                 .lotNumber(parkingLot.getNumber())

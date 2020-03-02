@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import static com.isd.parking.utils.ColorConsoleOutput.grTxt;
+
 
 /**
  * Enable CORS access to resources from the frontend,
@@ -32,7 +34,7 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
 
-        log.info("Call from front");
+        log.info(grTxt("Call from front application"));
         registry.addMapping("/**")
                 .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
                 .allowedOrigins(frontUrl);  //TODO: change the URL for the prod URL when we deploy

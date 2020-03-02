@@ -1,8 +1,8 @@
 package com.isd.parking;
 
-import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.repository.GroupRepository;
 import com.isd.parking.service.ldap.UserService;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -14,8 +14,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import static com.isd.parking.utils.ColorConsole.*;
-
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.isd.parking.*"})
 @Profile("default")
@@ -26,26 +24,23 @@ import static com.isd.parking.utils.ColorConsole.*;
 public class ParkingApplication {
 
     private final LdapContextSource contextSource;
- 
+
     private final UserService userRepository;
     private final GroupRepository groupRepository;
 
+
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public ParkingApplication(LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository) {
+    public ParkingApplication(LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository, ColorConsoleOutput console) {
         this.contextSource = contextSource;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        this.console = console;
     }
 
     public static void main(String[] args) {
         SpringApplication.run(ParkingApplication.class, args);
-
-        System.out.println(RED + "This text is red!" + RESET);
-        System.out.println(new CustomPasswordEncoder().getH("aRduin1$"));
-
-        System.out.println(GREEN_BACKGROUND + "This text has a green background but default text!" + RESET);
-        System.out.println(RED + "This text has red text but a default background!" + RESET);
-        System.out.println(RED + GREEN_BACKGROUND + "This text has a green background and red text!" + RESET);
     }
 
     /*@PostConstruct

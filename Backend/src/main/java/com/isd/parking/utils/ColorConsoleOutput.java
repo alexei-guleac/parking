@@ -1,8 +1,12 @@
 package com.isd.parking.utils;
 
-public class ColorConsole {
+import org.springframework.stereotype.Component;
+
+@Component
+public class ColorConsoleOutput {
+
     // Reset
-    public static final String RESET = "\033[0m";  // Text Reset
+    public static final String RESET = "\033[0m";       // Text Reset
 
     // Regular Colors
     public static final String BLACK = "\033[0;30m";   // BLACK
@@ -65,11 +69,67 @@ public class ColorConsole {
     public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
 
     // High Intensity backgrounds
-    public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK
-    public static final String RED_BACKGROUND_BRIGHT = "\033[0;101m";// RED
-    public static final String GREEN_BACKGROUND_BRIGHT = "\033[0;102m";// GREEN
+    public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m"; // BLACK
+    public static final String RED_BACKGROUND_BRIGHT = "\033[0;101m";   // RED
+    public static final String GREEN_BACKGROUND_BRIGHT = "\033[0;102m"; // GREEN
     public static final String YELLOW_BACKGROUND_BRIGHT = "\033[0;103m";// YELLOW
-    public static final String BLUE_BACKGROUND_BRIGHT = "\033[0;104m";// BLUE
-    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m"; // PURPLE
+    public static final String BLUE_BACKGROUND_BRIGHT = "\033[0;104m";  // BLUE
+    public static final String PURPLE_BACKGROUND_BRIGHT = "\033[0;105m";// PURPLE
     public static final String CYAN_BACKGROUND_BRIGHT = "\033[0;106m";  // CYAN
+
+    public static String ywTxt(String str) {
+        return drawColorString(str, YELLOW);
+    }
+
+    public static String ywBrTxt(String str) {
+        return drawColorString(str, YELLOW_BRIGHT);
+    }
+
+    public static String grTxt(String str) {
+        return drawColorString(str, GREEN);
+    }
+
+    public static String grBrTxt(String str) {
+        return drawColorString(str, GREEN_BRIGHT);
+    }
+
+    public static String blTxt(String str) {
+        return drawColorString(str, BLUE);
+    }
+
+    public static String cyBrTxt(String str) {
+        return drawColorString(str, CYAN_BRIGHT);
+    }
+
+    public static String puBrTxt(String str) {
+        return drawColorString(str, PURPLE_BRIGHT);
+    }
+
+    public static String redTxt(String str) {
+        return drawColorString(str, RED);
+    }
+
+    public static String redBrTxt(String str) {
+        return drawColorString(str, RED_BRIGHT);
+    }
+
+    public static String whTxt(String str) {
+        return drawColorString(str, WHITE);
+    }
+
+    private static String drawColorString(String str, String textColor) {
+        return textColor + str + RESET;
+    }
+
+    private static String drawColorStringBg(String str, String textColor, String bgColor) {
+        return textColor + bgColor + str + RESET;
+    }
+
+    public String classMsg(String msg) {
+        return cyBrTxt("{" + getClass().getSimpleName() + "} ") + grTxt(msg);
+    }
+
+    public String methodMsg(String msg) {
+        return grTxt(msg) + " executing in " + puBrTxt("{" + ReflectionMethods.getMethodName(0) + "} ");
+    }
 }

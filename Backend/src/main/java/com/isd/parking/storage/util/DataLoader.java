@@ -4,6 +4,7 @@ import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.ParkingLotService;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Optional;
+
+import static com.isd.parking.utils.ColorConsoleOutput.*;
 
 
 /**
@@ -32,10 +35,13 @@ public class DataLoader implements ApplicationRunner {
 
     private final ParkingLotLocalService parkingLotLocalService;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public DataLoader(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService) {
+    public DataLoader(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService, ColorConsoleOutput console) {
         this.parkingLotService = parkingLotService;
         this.parkingLotLocalService = parkingLotLocalService;
+        this.console = console;
     }
 
     /**
@@ -57,43 +63,32 @@ public class DataLoader implements ApplicationRunner {
 
                 //initial saving parking lots to database
                 parkingLotService.save(new ParkingLot((long) i+10, i, date, ParkingLotStatus.UNKNOWN));
-
                 //initial saving parking lots to local Java memory
                 parkingLotLocalService.save(new ParkingLot((long) i+10, i, date, ParkingLotStatus.UNKNOWN));
             }
 
             // fetch all parking lots from database
-            log.info("ParkingLot found with findAll() from DATABASE:");
-            printSeparator();
-            for (ParkingLot parkingLot : parkingLotService.listAll()) {
-                log.info(parkingLot.toString());
-            }
-            log.info("");
-
-            // fetch an individual parking lot by ID
-            Optional<ParkingLot> parkingLot = parkingLotService.findById(1L);
-
-            log.info("Parking Lot found with findById(1L):");
-            printSeparator();
-            log.info(parkingLot.toString());
-            log.info("");
-
+            fetchParkingLots(parkingLotService, " from DATABASE:");
             // fetch all parking lots from local Java memory
-            log.info("ParkingLot found with findAll() from LOCAL Java memory:");
-            printSeparator();
-            for (ParkingLot parkingLotLocal : parkingLotLocalService.listAll()) {
-                log.info(parkingLotLocal.toString());
-            }
-            log.info("");
-
-            // fetch an individual parking lot by ID
-            Optional<ParkingLot> parkingLotLocal = parkingLotLocalService.findById(1L);
-
-            log.info("Parking Lot found with findById(1L):");
-            printSeparator();
-            log.info(parkingLotLocal.toString());
-            log.info("");
+            fetchParkingLots(parkingLotService, redTxt(" LOCAL Java memory:"));
         };
+    }
+
+    private void fetchParkingLots(ParkingLotService parkingLotService, String from) {
+        log.info(console.classMsg("ParkingLot found with ") + puBrTxt("findAll()") + grTxt(from));
+        printSeparator();
+        for (ParkingLot parkingLot : parkingLotService.listAll()) {
+            log.info(parkingLot.toString());
+        }
+        log.info("");
+
+        // fetch an individual parking lot by ID
+        Optional<ParkingLot> parkingLot = parkingLotService.findById(1L);
+
+        log.info(grTxt("Parking Lot found with ") + puBrTxt("findById(1L):"));
+        printSeparator();
+        log.info(parkingLot.toString());
+        log.info("");
     }
 
     private void printSeparator() {

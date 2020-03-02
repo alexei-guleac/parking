@@ -2,6 +2,7 @@ package com.isd.parking.service;
 
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.repository.ParkingLotLocalRepository;
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,12 @@ public class ParkingLotLocalService {
 
     private final ParkingLotLocalRepository parkingLotLocalRepository;
 
+    private final ColorConsoleOutput console;
+
     @Autowired
-    public ParkingLotLocalService(ParkingLotLocalRepository parkingLotLocalRepository) {
+    public ParkingLotLocalService(ParkingLotLocalRepository parkingLotLocalRepository, ColorConsoleOutput console) {
         this.parkingLotLocalRepository = parkingLotLocalRepository;
+        this.console = console;
     }
 
     /**
@@ -34,9 +38,7 @@ public class ParkingLotLocalService {
      * @return - Parking lots list
      */
     public List<ParkingLot> listAll() {
-
-        log.info("Local parking lot service get all parking lots list executed...");
-
+        log.info(console.classMsg("get all parking lots list executed..."));
         return parkingLotLocalRepository.findAll();
     }
 
@@ -46,9 +48,7 @@ public class ParkingLotLocalService {
      * @return - specified parking lot
      */
     public Optional<ParkingLot> findById(Long parkingLotId) {
-
-        log.info("Local parking lot service get parking lot by id executed...");
-
+        log.info(console.classMsg("get parking lot by id executed..."));
         return parkingLotLocalRepository.findById(parkingLotId);
     }
 
@@ -59,9 +59,7 @@ public class ParkingLotLocalService {
      * @return - Parking lot which was saved in database
      */
     public ParkingLot save(ParkingLot parkingLot) {
-
-        log.info("Local parking lot service save parking lot executed...");
-
+        log.info(console.classMsg("save parking lot executed..."));
         return parkingLotLocalRepository.save(parkingLot);
     }
 }
