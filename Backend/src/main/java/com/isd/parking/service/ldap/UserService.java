@@ -29,6 +29,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.*;
 import javax.naming.ldap.LdapName;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -272,7 +274,7 @@ public class UserService {
      */
     public boolean createUser(User user) {
         log.info("executing {createUser}");
-        /*Attribute objectClass = new BasicAttribute("objectClass");
+        Attribute objectClass = new BasicAttribute("objectClass");
         {
             objectClass.add("top");
             objectClass.add("uidObject");
@@ -285,7 +287,7 @@ public class UserService {
         userAttributes.put("sn", user.getLastName());
         userAttributes.put("uid", user.getUsername());
         userAttributes.put(ldapPasswordAttribute, user.getPassword().getBytes());
-        ldapTemplate.bind(bindDN(user.getUsername()), null, userAttributes);*/
+        ldapTemplate.bind(bindDN(user.getUsername()), null, userAttributes);
 
         Entry entry = null;
         try {
@@ -293,18 +295,24 @@ public class UserService {
         } catch (LDAPException e) {
             e.printStackTrace();
         }
-        entry.addAttribute("objectClass", "top", "domain", "extensibleObject");
+        entry.addAttribute("objectClass", "top", "person", "organizationalPerson", "inetOrgPerson");
         entry.addAttribute("cn", user.getFirstName());
         entry.addAttribute("sn", user.getLastName());
         entry.addAttribute("uid", user.getUsername());
         entry.addAttribute(ldapPasswordAttribute, user.getPassword().getBytes());
 
-        File file = new File("N:\\Programming\\IFC\\Diplome\\Latest_backend\\Backend\\src\\main\\resources\\ldap-server-test.ldif");
+        File file = new File("N:\\Programming\\IFC\\Diplome\\Latest_backend\\Backend\\src\\main\\resources\\ldap-server.ldif");
 
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file, true);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         // Write all of the matching entries to LDIF.
         LDIFWriter ldifWriter;
         try {
-            ldifWriter = new LDIFWriter(file);
+            ldifWriter = new LDIFWriter(fos);
             ldifWriter.writeEntry(entry);
             ldifWriter.close();
         } catch (IOException e) {

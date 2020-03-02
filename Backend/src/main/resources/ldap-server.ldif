@@ -65,6 +65,7 @@ sn: Hamilton
 uid: bob
 userPassword: bobspassword
 
+
 dn: uid=joe,ou=otherpeople,dc=isd,dc=com
 objectclass: top
 objectclass: person
@@ -139,4 +140,24 @@ objectclass: groupOfUniqueNames
 cn: submanagers
 ou: submanager
 uniqueMember: uid=ben,ou=people,dc=isd,dc=com
+
+dn: uid=qwerty,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: test t
+sn: t
+uid: qwerty
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+
+dn: uid=aaaaa,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: test t
+sn: t
+uid: aaaaa
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
