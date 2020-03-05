@@ -3,7 +3,7 @@ package com.isd.parking.controller.arduino;
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
-import com.isd.parking.service.ParkingLotService;
+import com.isd.parking.service.ParkingLotDBService;
 import com.isd.parking.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
 @Component
 public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
-    private final ParkingLotService parkingLotService;
+    private final ParkingLotDBService parkingLotDBService;
 
     private final ParkingLotLocalService parkingLotLocalService;
 
@@ -38,8 +38,8 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
     private final String securityToken = "4a0a8679643673d083b23f52c21f27cac2b03fa2";           //{SHA1}arduino
 
     @Autowired
-    public ArduinoWebSocketHandler(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {
-        this.parkingLotService = parkingLotService;
+    public ArduinoWebSocketHandler(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {
+        this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
     }
@@ -73,14 +73,14 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
         System.out.println(message.getPayload());
 
         JSONObject msgObject = new JSONObject(message.getPayload());
-        String arduinoToken = msgObject.getString("token");
+        String arduinoToken = msgObject.getString("secure_key");
 
         if (arduinoToken.equals(securityToken)) {
 
             String lotId = msgObject.getString("id");
             String parkingLotStatus = msgObject.getString("status");
 
-            Optional<ParkingLot> parkingLotOptional = parkingLotService.findById(Long.valueOf(lotId));
+            Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(Long.valueOf(lotId));
 
             parkingLotOptional.ifPresent(parkingLot -> {
 
@@ -88,7 +88,7 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
                     parkingLot.setStatus(ParkingLotStatus.valueOf(parkingLotStatus));
                     parkingLot.setUpdatedNow();
 
-                    parkingLotService.save(parkingLot);
+                    //parkingLotDBService.save(parkingLot);
                     parkingLotLocalService.save(parkingLot);
                     statisticsService.save(parkingLot);
                 }

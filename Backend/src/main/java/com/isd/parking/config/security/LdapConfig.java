@@ -37,7 +37,7 @@ public class LdapConfig {
         /*contextSource.setUserDn(env.getRequiredProperty("ldap.username"));
         contextSource.setPassword(env.getRequiredProperty("ldap.password"));*/
 
-        log.info(console.classMsg("ldap configuration"));
+        log.info(console.classMsg(getClass().getSimpleName(),"ldap configuration"));
         log.info(blTxt(contextSource.getBaseLdapPathAsString()));
         log.info(blTxt(String.valueOf(contextSource.getBaseLdapName())));
         log.info(blTxt(String.valueOf(contextSource.getAuthenticationSource())));

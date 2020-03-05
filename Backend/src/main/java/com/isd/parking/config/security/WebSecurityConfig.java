@@ -1,6 +1,8 @@
 package com.isd.parking.config.security;
 
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.isd.parking.utils.ColorConsoleOutput.grTxt;
-import static com.isd.parking.utils.ColorConsoleOutput.puBrTxt;
 
 @Configuration
 @Slf4j
@@ -98,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .root(ldapPartitionSuffix)
                 .and()
                 .passwordCompare()
-                .passwordEncoder(new CustomPasswordEncoder())
+                .passwordEncoder(new CustomPasswordEncoder(new ColorConsoleOutput()))
                 .passwordAttribute(ldapPasswordAttribute);
     }
 
@@ -121,10 +120,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             encoders.put("SHA-1", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-1"));
             encoders.put("SHA-256", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256"));
             encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
-            encoders.put("customBC", new CustomPasswordEncoder());
+            encoders.put("customBC", new CustomPasswordEncoder(new ColorConsoleOutput()));
 
             DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(encodingId, encoders);
-            delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.getOrDefault("customBC", new CustomPasswordEncoder()));
+            delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.getOrDefault("customBC", new CustomPasswordEncoder(new ColorConsoleOutput())));
 
             return delegatingPasswordEncoder;
         }
@@ -139,15 +138,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static BCryptPasswordEncoder passwordEncoderBc() {
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         return new BCryptPasswordEncoder() {
+
+            @Autowired
+            private ColorConsoleOutput console;
+
             @Override
             public String encode(CharSequence rawPassword) {
-                log.info(grTxt("in ws config bc ") + puBrTxt("{encode}"));
+                log.info(console.methodMsg("in ws config bc"));
                 return "{bcrypt}" + bcrypt.encode(rawPassword.toString());
             }
 
             @Override
             public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                log.info(grTxt("in ws config bc ") + puBrTxt("{matches}"));
+                log.info(console.methodMsg("in ws config bc"));
                 return bcrypt.matches(rawPassword, encodedPassword.substring(8));
             }
         };

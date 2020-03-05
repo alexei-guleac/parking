@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.isd.parking.utils.ColorConsoleOutput.*;
+
 
 /**
  * Statistics Service class for database repository
@@ -40,7 +42,7 @@ public class StatisticsService {
      * @return - Statistics records list
      */
     public List<StatisticsRecord> listAll() {
-        log.info(console.classMsg("get statistics list executed..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"get statistics list executed..."));
         return statisticsRepository.findAll();
     }
 
@@ -54,7 +56,7 @@ public class StatisticsService {
         cal.add(Calendar.DATE, -7);
         java.sql.Date oneWeek = new java.sql.Date(cal.getTimeInMillis());
 
-        log.info(console.classMsg("delete statistics older than one week executed..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"delete statistics older than one week executed..."));
 
         statisticsRepository.removeOlderThan(oneWeek);
 
@@ -71,8 +73,8 @@ public class StatisticsService {
                 .status(parkingLot.getStatus())
                 .updatedAt(new Date(System.currentTimeMillis())).build();
 
-        log.info(console.classMsg("Statistics record: " + ColorConsoleOutput.blTxt(String.valueOf(statisticsRecord))));
-        log.info(console.classMsg("Service update statistics executed..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"Statistics record: " + blTxt(String.valueOf(statisticsRecord))));
+        log.info(console.classMsg(getClass().getSimpleName(),"Service update statistics executed..."));
 
         save(statisticsRecord);
     }
@@ -84,7 +86,7 @@ public class StatisticsService {
      */
     @Transactional
     public StatisticsRecord save(StatisticsRecord statisticsRecord) {
-        log.info(console.classMsg("Service save statistics event executed..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"Service save statistics event executed..."));
         return statisticsRepository.save(statisticsRecord);
     }
 
@@ -96,7 +98,7 @@ public class StatisticsService {
      */
     @Transactional
     public StatisticsRecord save(ParkingLot parkingLot) {
-        log.info(console.classMsg("Service save statistics event executed..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"Service save statistics event executed..."));
 
         StatisticsRecord statisticsRecord = StatisticsRecord.builder()
                 .lotNumber(parkingLot.getNumber())

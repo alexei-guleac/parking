@@ -53,8 +53,8 @@ public class UserController {
         //log.info(console.classMsg("Get: ") + test);
 
         // LDAP
-        log.info(console.classMsg(" Request body: ") + blTxt(String.valueOf(user)));
-        log.info(console.classMsg(" login request body: ") + blTxt(username + " " + password));
+        log.info(console.classMsg(getClass().getSimpleName()," Request body: ") + blTxt(String.valueOf(user)));
+        log.info(console.classMsg(getClass().getSimpleName()," login request body: ") + blTxt(username + " " + password));
         //log.info(String.valueOf(userService.authenticate(username, password)));
         return userService.authenticate(username, password);
     }
@@ -69,7 +69,7 @@ public class UserController {
     public boolean registration(@RequestBody User user) {
         final String username = user.getUsername();
         final String password = user.getPassword();
-        log.info(console.classMsg(" registration request body: ") + blTxt(username + " " + password));
+        log.info(console.classMsg(getClass().getSimpleName()," registration request body: ") + blTxt(username + " " + password));
 
         //verify if user exists in db and throw error, else create
         List<String> sameUserNames = userService.searchUser(username);
@@ -79,7 +79,7 @@ public class UserController {
         log.info(String.valueOf(sameUserNames));
 
         if (sameUserNames.isEmpty()) {
-            userService.createUser(new User(username, "test t","t", new CustomPasswordEncoder().encode(password)));
+            userService.createUser(new User(username, "test t","t", new CustomPasswordEncoder(console).encode(password)));
 
             sameUserNames = userService.searchUser(username);
             log.info(String.valueOf(sameUserNames));
@@ -90,10 +90,10 @@ public class UserController {
             User createdUser = userService.findUser("uid=" + username + "," + ldapSearchBase);
 
             if (createdUser == null) {
-                log.info(console.classMsg(" User not created: ") + blTxt(String.valueOf(createdUser)));
+                log.info(console.classMsg(getClass().getSimpleName()," User not created: ") + blTxt(String.valueOf(createdUser)));
                 return false;
             } else {
-                log.info(console.classMsg(" Created user found: ") + blTxt(String.valueOf(createdUser)));
+                log.info(console.classMsg(getClass().getSimpleName()," Created user found: ") + blTxt(String.valueOf(createdUser)));
                 return true;
             }
         } else {

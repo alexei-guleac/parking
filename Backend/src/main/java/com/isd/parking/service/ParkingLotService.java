@@ -1,70 +1,16 @@
 package com.isd.parking.service;
 
 import com.isd.parking.model.ParkingLot;
-import com.isd.parking.repository.ParkingLotRepository;
-import com.isd.parking.utils.ColorConsoleOutput;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+public interface ParkingLotService {
+    List<ParkingLot> findAll();
 
-/**
- * Parking Lot Service class for database repository
- * Contains methods for
- * getting all parking lots,
- * get parking lot by id,
- * saving (in this case updating) parking lot
- */
-@Service
-@Slf4j
-public class ParkingLotService {
+    Optional<ParkingLot> findById(Long parkingLotId);
 
-    private final ParkingLotRepository parkingLotRepository;
+    ParkingLot save(ParkingLot parkingLot);
 
-    private final ColorConsoleOutput console;
-
-    @Autowired
-    public ParkingLotService(ParkingLotRepository parkingLotRepository, ColorConsoleOutput console) {
-        this.parkingLotRepository = parkingLotRepository;
-        this.console = console;
-    }
-
-    /**
-     * Get all parking lots from database method
-     *
-     * @return - Parking lots list
-     */
-    @Transactional
-    public List<ParkingLot> listAll() {
-        log.info(console.classMsg("get all parking lots list executed..."));
-        return parkingLotRepository.findAll();
-    }
-
-    /**
-     * Get parking lot by id from database method
-     *
-     * @return - specified parking lot
-     */
-    @Transactional
-    public Optional<ParkingLot> findById(Long parkingLotId) {
-        log.info(console.classMsg("get parking lot by id executed..."));
-        return parkingLotRepository.findById(parkingLotId);
-    }
-
-    /**
-     * Save parking lot in database method
-     * Used for update status of parking lot
-     *
-     * @return - Parking lot which was saved in database
-     */
-    @Transactional
-    public ParkingLot save(ParkingLot parkingLot) {
-        log.info(console.classMsg("save parking lot in database executed..."));
-        return parkingLotRepository.save(parkingLot);
-    }
+    long countAll();
 }
-

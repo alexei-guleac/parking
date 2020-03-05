@@ -1,6 +1,8 @@
 package com.isd.parking.config.security;
 
+import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -9,24 +11,28 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-import static com.isd.parking.utils.ColorConsoleOutput.grTxt;
-import static com.isd.parking.utils.ColorConsoleOutput.puBrTxt;
-
 @Component
 @Slf4j
 public class CustomPasswordEncoder implements PasswordEncoder {
 
     private final String salt = "$2a$12$lIGeCCVi1fkIYIZA9ly6ge";
 
+    private final ColorConsoleOutput console;
+
+    @Autowired
+    public CustomPasswordEncoder(ColorConsoleOutput console) {
+        this.console = console;
+    }
+
     @Override
     public String encode(CharSequence rawPassword) {
-        log.info(grTxt("in custom bc encoder ") + puBrTxt("{encode}"));
+        log.info(console.methodMsg("in custom bc encoder"));
         return "{customBC}" + BCrypt.hashpw(rawPassword.toString(), salt);
     }
 
     @Override
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
-        log.info(grTxt("in custom bc encoder ") + puBrTxt("{matches}"));
+        log.info(console.methodMsg("in custom bc encoder"));
         return BCrypt.checkpw(rawPassword.toString(), encodedPassword.substring(10));
     }
 

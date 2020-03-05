@@ -43,7 +43,7 @@ public class ScheduleStatisticsDeleter {
      * */
     @Scheduled(cron = "0 0 1 * * *")            //task will be executed at 13:00 every day
     public void scheduleTaskDeleteStats() {
-        log.info(console.classMsg("Delete stats schedule job executing..."));
+        log.info(console.classMsg(getClass().getSimpleName(),"Delete stats schedule job executing..."));
         statisticsService.deleteStatsOlderThanWeek();
     }
 

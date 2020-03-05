@@ -2,14 +2,13 @@ package com.isd.parking.storage.util;
 
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.service.ParkingLotDBService;
 import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.ParkingLotService;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -26,20 +25,20 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
  */
 @Component
 @Slf4j
-public class DataLoader implements ApplicationRunner {
+public class DataLoader  {
 
     @Value("${parking.lots.number}")
     private String totalParkingLotsNumber;
 
-    private final ParkingLotService parkingLotService;
+    private final ParkingLotDBService parkingLotDBService;
 
     private final ParkingLotLocalService parkingLotLocalService;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public DataLoader(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService, ColorConsoleOutput console) {
-        this.parkingLotService = parkingLotService;
+    public DataLoader(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, ColorConsoleOutput console) {
+        this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
         this.console = console;
     }
@@ -48,42 +47,52 @@ public class DataLoader implements ApplicationRunner {
      * Method initiates the database and local Java memory storage with necessary data
      * This method runs once at every application start.
      *
-     * @param parkingLotService - parking lots service
      * @return - result of provided operation
      */
     @Bean
-    public CommandLineRunner loadData(ParkingLotService parkingLotService) {
+    public CommandLineRunner loadData() {
         return (args) -> {
 
-            // save parking lots
             Date date = new Date(System.currentTimeMillis());
-
             int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
-            for (int i = 1; i <= totalParkingLotsNumber; i++) {
+            long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
 
-                //initial saving parking lots to database
-                parkingLotService.save(new ParkingLot((long) i+10, i, date, ParkingLotStatus.UNKNOWN));
-                //initial saving parking lots to local Java memory
-                parkingLotLocalService.save(new ParkingLot((long) i+10, i, date, ParkingLotStatus.UNKNOWN));
+            //if db empty
+            if (numberOfParkLotsInDatabase == 0) {
+                //init with Unknown status parking lots
+                for (int i = 1; i <= totalParkingLotsNumber; i++) {
+                    //initial saving parking lots to local Java memory
+                    parkingLotLocalService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.FREE));
+
+                    //initial saving parking lots to Database
+                    //parkingLotDBService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.UNKNOWN));
+                }
+            } else {
+                for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
+                    //saving parking lots state to local Java memory from Database
+                    parkingLotLocalService.save(parkingLot);
+                }
             }
 
-            // fetch all parking lots from database
-            fetchParkingLots(parkingLotService, " from DATABASE:");
-            // fetch all parking lots from local Java memory
-            fetchParkingLots(parkingLotService, redTxt(" LOCAL Java memory:"));
+            // show all parking lots from database
+            fetchParkingLots(parkingLotDBService, blTxt(" from DATABASE:"));
+            // show all parking lots from local Java memory
+            fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
         };
     }
 
-    private void fetchParkingLots(ParkingLotService parkingLotService, String from) {
-        log.info(console.classMsg("ParkingLot found with ") + puBrTxt("findAll()") + grTxt(from));
+    public void fetchParkingLots(ParkingLotService parkingLotService, String from) {
         printSeparator();
-        for (ParkingLot parkingLot : parkingLotService.listAll()) {
+        log.info(console.classMsg(getClass().getSimpleName(), "ParkingLot's found with ") + puBrTxt("findAll()") + grTxt(from));
+        long numberOfParkLotsInStorage = parkingLotService.countAll();
+        log.info(console.classMsg(getClass().getSimpleName(), "Total number: ") + puBrTxt("" + numberOfParkLotsInStorage));
+        for (ParkingLot parkingLot : parkingLotService.findAll()) {
             log.info(parkingLot.toString());
         }
         log.info("");
 
         // fetch an individual parking lot by ID
-        Optional<ParkingLot> parkingLot = parkingLotService.findById(1L);
+        Optional<ParkingLot> parkingLot = parkingLotService.findById(11L);
 
         log.info(grTxt("Parking Lot found with ") + puBrTxt("findById(1L):"));
         printSeparator();
@@ -93,24 +102,5 @@ public class DataLoader implements ApplicationRunner {
 
     private void printSeparator() {
         log.info("-------------------------------");
-    }
-
-    /**
-     * Fallback method for initializing database.
-     * Use this if the previous one does not work
-     *
-     * @param args - application arguments
-     */
-    @Override
-    public void run(ApplicationArguments args) {
-        Date date = new Date(System.currentTimeMillis());
-
-        //initiate parking lots in database
-        // int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
-        /*for (int i = 1; i <= totalParkingLotsNumber; i++) {
-            //an fallback method to load initial data
-            //parkingLotService.save(new ParkingLot((long) i, i, date, ParkingLotStatus.FREE));
-            //parkingLotLocalService.save(new ParkingLot((long) i, i, date, ParkingLotStatus.FREE));
-        }*/
     }
 }

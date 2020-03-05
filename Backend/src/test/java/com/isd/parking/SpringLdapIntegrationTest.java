@@ -25,6 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -85,7 +86,7 @@ public class SpringLdapIntegrationTest {
     @Test
     public void testCreateUser() {
         //userLdapService.create("test_user", new CustomPasswordEncoder().encode("qwerty123"));
-        userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder().encode("qwerty123")));
+        userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder(console).encode("qwerty123")));
 
         User user = userLdapService.findUser("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
@@ -94,7 +95,7 @@ public class SpringLdapIntegrationTest {
 
     @Test
     public void testCreate() {
-        userLdapService.create("test_user", new CustomPasswordEncoder().encode("qwerty123"));
+        userLdapService.create("test_user", new CustomPasswordEncoder(console).encode("qwerty123"));
         //userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder().encode("qwerty123")));
 
         User user = userLdapService.findUser("uid=test_user,ou=people,dc=springframework,dc=org");
@@ -127,12 +128,12 @@ public class SpringLdapIntegrationTest {
     }
 
     @Test
-    public void testBasicAuth() throws Exception {
+    public void testBasicAuth() {
         RestTemplate rest = new RestTemplate(
                 new HttpComponentsClientHttpRequestFactory());
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> entity = null;
-        ResponseEntity<String> response = null;
+        HttpEntity<String> entity;
+        ResponseEntity<String> response;
         String url = "http://localhost:8080/login";
         String csrfToken = "";
         System.out.println("1---------------------");
@@ -142,11 +143,11 @@ public class SpringLdapIntegrationTest {
             headers.setContentType(
                     MediaType.APPLICATION_FORM_URLENCODED);
 
-            entity = new HttpEntity<String>("", headers);
+            entity = new HttpEntity<>("", headers);
             response = rest.exchange(url, HttpMethod.GET, entity,
                     String.class);
             System.out.println(response.getBody());
-            Document doc = Jsoup.parse(response.getBody());
+            Document doc = Jsoup.parse(Objects.requireNonNull(response.getBody()));
             Elements inputs = doc.getElementsByTag("input");
             for (Element input : inputs) {
                 if (input.toString().contains("_csrf")) {
@@ -164,7 +165,7 @@ public class SpringLdapIntegrationTest {
             headers.setContentType(
                     MediaType.APPLICATION_FORM_URLENCODED);
 
-            entity = new HttpEntity<String>(
+            entity = new HttpEntity<>(
                     "username=abhijit&password=abcd123&_csrf="
                             + csrfToken,
                     headers);

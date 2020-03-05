@@ -4,5 +4,10 @@
       "name": "spring.jpa.hibernate.naming_strategy",
       "type": "java.lang.String",
       "description": "Description for spring.jpa.hibernate.naming_strategy."
+    },
+    {
+      "name": "front.url",
+      "type": "java.lang.String",
+      "description": "Description for front.url."
     }
   ] }

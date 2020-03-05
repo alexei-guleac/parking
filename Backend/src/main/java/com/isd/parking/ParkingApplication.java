@@ -2,11 +2,14 @@ package com.isd.parking;
 
 import com.isd.parking.repository.GroupRepository;
 import com.isd.parking.service.ldap.UserService;
+import com.isd.parking.storage.util.DataSaver;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.ApplicationPidFileWriter;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
@@ -28,20 +31,47 @@ public class ParkingApplication {
     private final UserService userRepository;
     private final GroupRepository groupRepository;
 
+    private final DataSaver shutdownHandler;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public ParkingApplication(LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository, ColorConsoleOutput console) {
+    public ParkingApplication(LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository, DataSaver shutdownHandler, ColorConsoleOutput console) {
         this.contextSource = contextSource;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
+        this.shutdownHandler = shutdownHandler;
         this.console = console;
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(ParkingApplication.class, args);
+        SpringApplication application = new SpringApplication(ParkingApplication.class);
+        application.addListeners(new ApplicationPidFileWriter("./bin/app.pid"));
+        ConfigurableApplicationContext context = application.run(args);
+        log.info(String.valueOf(context));
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // write here any instructions that should be executed
+            //shutdownHandler.fromLocalToDatabaseTransfer();
+            System.out.println("Application shutdown...");
+        }));
     }
+
+
+
+    //get all beans
+    /*@Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return args -> {
+            log.info("Let's inspect the beans provided by Spring Boot:");
+            String[] beanNames = ctx.getBeanDefinitionNames();
+            Arrays.sort(beanNames);
+            for (String beanName : beanNames) {
+                System.out.println(beanName);
+            }
+
+        };
+    }*/
 
     /*@PostConstruct
     public void setup(){

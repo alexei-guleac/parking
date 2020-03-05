@@ -3,7 +3,7 @@ package com.isd.parking.controller.arduino;
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
-import com.isd.parking.service.ParkingLotService;
+import com.isd.parking.service.ParkingLotDBService;
 import com.isd.parking.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +25,15 @@ import static com.isd.parking.controller.frontapp.RestApiEndpoints.arduinoApi;
 @Slf4j
 public class ArduinoController {
 
-    private final ParkingLotService parkingLotService;
+    private final ParkingLotDBService parkingLotDBService;
 
     private final ParkingLotLocalService parkingLotLocalService;
 
     private final StatisticsService statisticsService;
 
     @Autowired
-    public ArduinoController(ParkingLotService parkingLotService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {
-        this.parkingLotService = parkingLotService;
+    public ArduinoController(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {
+        this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
     }
@@ -49,14 +49,14 @@ public class ArduinoController {
     @ResponseStatus(HttpStatus.OK)
     public void updateParkingLot(@Valid @RequestBody ParkingLot parkingLot) {
 
-        Optional<ParkingLot> parkingLotOptional = parkingLotService.findById(parkingLot.getId());
+        Optional<ParkingLot> parkingLotOptional = parkingLotDBService.findById(parkingLot.getId());
 
         parkingLotOptional.ifPresent(updatingParkingLot -> {
 
             updatingParkingLot.setStatus(parkingLot.getStatus());
             updatingParkingLot.setUpdatedNow();
 
-            parkingLotService.save(updatingParkingLot);
+            //parkingLotDBService.save(updatingParkingLot);
             parkingLotLocalService.save(updatingParkingLot);
 
             statisticsService.save(parkingLot);
@@ -79,14 +79,14 @@ public class ArduinoController {
     public void updateParkingLotById(@RequestParam(value = "id") Long id,
                                      @RequestParam(value = "status") ParkingLotStatus parkingLotStatus) {
 
-        Optional<ParkingLot> parkingLotOptional = parkingLotService.findById(id);
+        Optional<ParkingLot> parkingLotOptional = parkingLotDBService.findById(id);
 
         parkingLotOptional.ifPresent(parkingLot -> {
 
             parkingLot.setStatus(parkingLotStatus);
             parkingLot.setUpdatedNow();
 
-            parkingLotService.save(parkingLot);
+            //parkingLotDBService.save(parkingLot);
             parkingLotLocalService.save(parkingLot);
             statisticsService.save(parkingLot);
         });
