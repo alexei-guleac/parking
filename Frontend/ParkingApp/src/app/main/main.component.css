@@ -1,0 +1,54 @@
+.green {
+    background-color: #0aff7c;
+}
+
+.red {
+    background-color: #ff640a;
+}
+
+.grey {
+    background-color: grey;
+}
+
+.yellow {
+    background-color: #ffea00;
+}
+
+.lot {
+    margin-bottom: 20px;
+    height: 100px;
+    min-width: 150px;
+}
+
+.lot:hover {
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    transition: 0.5s;
+}
+
+.fas, .far {
+    font-size: 3rem;
+    vertical-align: middle;
+    margin-top: 1rem;
+}
+
+.elem {
+    text-align: center;
+}
+
+.lot-name {
+    font-size: 25px;
+    text-transform: uppercase;
+}
+
+.refresh {
+    width: 50%;
+    color: #fff;
+    border-color: #fff;
+    background-color: #0A8EFF;
+}
+
+.refresh:hover {
+    color: #0A8EFF;
+    background-color: #fff;
+    border-color: #fff;
+}
