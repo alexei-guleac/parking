@@ -60,12 +60,13 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit"
+                <button type="submit" [disabled]="loginForm.invalid" appNoDblClick (click)="onSubmit()"
                         class="btn btn-default isd-red full-width rounded-pill mt-3 hoverable z-depth-5 login-btn">
                     <span class="fas fa-check"></span></button>
             </form>
         </div>
     </div>
+
     <a class="btn full-width rounded-pill mt-3 link" (click)=navigateToRegistration()>Don't have an account yet?
         Register <span class="fas fa-arrow-right"></span></a>
 </div>

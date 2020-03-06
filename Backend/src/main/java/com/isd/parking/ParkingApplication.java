@@ -1,7 +1,7 @@
 package com.isd.parking;
 
 import com.isd.parking.repository.GroupRepository;
-import com.isd.parking.service.ldap.UserService;
+import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.storage.util.DataSaver;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class ParkingApplication {
 
     private final LdapContextSource contextSource;
 
-    private final UserService userRepository;
+    private final UserLdapClient userRepository;
     private final GroupRepository groupRepository;
 
     private final DataSaver shutdownHandler;
@@ -36,7 +36,7 @@ public class ParkingApplication {
     private final ColorConsoleOutput console;
 
     @Autowired
-    public ParkingApplication(LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository, DataSaver shutdownHandler, ColorConsoleOutput console) {
+    public ParkingApplication(LdapContextSource contextSource, UserLdapClient userRepository, GroupRepository groupRepository, DataSaver shutdownHandler, ColorConsoleOutput console) {
         this.contextSource = contextSource;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
@@ -52,14 +52,11 @@ public class ParkingApplication {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             // write here any instructions that should be executed
-            //shutdownHandler.fromLocalToDatabaseTransfer();
             System.out.println("Application shutdown...");
         }));
     }
 
-
-
-    //get all beans
+    //get all beans names
     /*@Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
         return args -> {
@@ -82,18 +79,18 @@ public class ParkingApplication {
         List<User> persons = userRepository.findAll();
         log.info("persons: " + persons);
 
-        User john = userRepository.findOne("john");
-        john.setLastName("custom last name");
+        User john = userRepository.findById("john");
+        john.setLastname("custom last name");
         userRepository.updateLastName(john);
 
-        User jahn = userRepository.findOne("jahn");
-        jahn.setLastName("custom last name");
+        User jahn = userRepository.findById("jahn");
+        jahn.setLastname("custom last name");
         userRepository.update(jahn);
 
         User user = new User("uid", "user");
         userRepository.createLdap(user);
 
-        User jihn = userRepository.findOne("jihn");
+        User jihn = userRepository.findById("jihn");
         userRepository.delete(jihn);
 
         persons = userRepository.findAll();

@@ -2,38 +2,24 @@ import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {credentials} from './credentials';
+import {User} from '../Model/User';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AuthenticationService {
 
-    // BASE_PATH: 'http://localhost:8080'
     USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser';
 
     public username: string;
     public password: string;
 
-    // local mockup for test admin
-    // map = new Map();
-    public admin = 'admin';
-    public adminPassword = 'aRduin1$';
-
-    // user1 test
-    public user = 'user1';
-    public userPassword = 'aRduin1$';
-
-    // user2 test
-    public user1 = 'user2';
-    public userPassword1 = 'aRduin1$';
-
     constructor(private http: HttpClient) {
     }
 
     authenticationServiceLogin(username: string, password: string) {
-
         const url = environment.restUrl + '/login';
-
         // console.log('Auth login');
         // console.log('Login ' + username + '  ' + password);
 
@@ -48,20 +34,21 @@ export class AuthenticationService {
         });
     }
 
-    authenticationServiceRegistration(username: string, password: string) {
-
+    authenticationServiceRegistration(user: User) {
         const url = environment.restUrl + `/registration`;
-
-        // console.log('Auth registration');
-        // console.log('Reg credentials ' + username + '  ' + password);
+        console.log('Registration');
+        console.log('User goes to server ' + user.lastname);
 
         return this.http.post<Observable<boolean>>(url, {
             headers: {
                 Accept: 'application/json',
             },
 
-            username,
-            password
+            username: user.username,
+            email: user.email,
+            fullname: user.fullname,
+            lastname: user.lastname,
+            password: user.password
         });
     }
 
@@ -91,7 +78,7 @@ export class AuthenticationService {
     }
 
     isAdminLoggedIn() {
-        return this.isUserLoggedIn() && this.getLoggedInUserName() === this.admin;
+        return this.isUserLoggedIn() && this.getLoggedInUserName() === credentials.admin;
     }
 
     getLoggedInUserName() {

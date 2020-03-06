@@ -1,7 +1,7 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {Injectable, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {AppComponent} from './app.component';
@@ -18,9 +18,9 @@ import {Feature2Component} from './feature/feature2/feature2.component';
 import {ParkingLayoutComponent} from './main/parking-layout/parking-layout.component';
 import {RegFormComponent} from './Account/registration-form/registration-form.component';
 import {EqualValidator} from './Account/validation/equal-validator.directive';
-import {AuthenticationService} from './Account/auth.service';
+import {NoDblClickDirective} from './Account/validation/no-dbl-click.directive';
 
-/*@Injectable()
+@Injectable()
 export class XhrInterceptor implements HttpInterceptor {
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -29,7 +29,7 @@ export class XhrInterceptor implements HttpInterceptor {
         });
         return next.handle(xhr);
     }
-}*/
+}
 
 const routes: Routes = [
     {path: 'test', component: FeatureComponent},
@@ -61,6 +61,7 @@ const routes: Routes = [
         LoginFormComponent,
         RegFormComponent,
         EqualValidator,
+        NoDblClickDirective,
         StatisticsComponent,
         FeatureComponent,
         Feature2Component,

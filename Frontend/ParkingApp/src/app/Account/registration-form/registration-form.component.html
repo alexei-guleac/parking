@@ -1,4 +1,4 @@
-<h1 class="text-light text-center font-weight-light m-5">Create account</h1>
+<h1 class="text-center font-weight-light m-5">Create account</h1>
 
 <div class="container col-lg-5 mt-5">
 
@@ -156,7 +156,15 @@
                         </div>
                     </div>
                 </div>
-                <button type="submit"
+                <script src="https://www.google.com/recaptcha/api.js?render=6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL"></script>
+                <script>
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute('6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL', {action: 'homepage'}).then(function(token) {
+                        //...
+                        });
+                    });
+                </script>
+                <button type="submit" [disabled]="regForm.invalid" appNoDblClick (click)="onSubmit()"
                         class="btn btn-default full-width rounded-pill mt-3 hoverable z-depth-5 login-btn">
                     <span class="fas fa-check"></span></button>
             </form>
@@ -165,5 +173,4 @@
 
     <a class="btn full-width rounded-pill mt-3 link" (click)=navigateToLogin()>Already registered? Login <span
             class="fas fa-arrow-right"></span></a>
-
 </div>

@@ -2,7 +2,7 @@ package com.isd.parking.controller.frontapp;
 
 import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.model.User;
-import com.isd.parking.service.ldap.UserService;
+import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
 @Slf4j
 public class UserController {
 
-    private final UserService userService;
+    private final UserLdapClient userLdapClient;
 
     private final ColorConsoleOutput console;
 
@@ -33,8 +33,8 @@ public class UserController {
     private String ldapSearchBase;
 
     @Autowired
-    public UserController(UserService userService, ColorConsoleOutput console) {
-        this.userService = userService;
+    public UserController(UserLdapClient userLdapClient, ColorConsoleOutput console) {
+        this.userLdapClient = userLdapClient;
         this.console = console;
     }
 
@@ -56,7 +56,7 @@ public class UserController {
         log.info(console.classMsg(getClass().getSimpleName()," Request body: ") + blTxt(String.valueOf(user)));
         log.info(console.classMsg(getClass().getSimpleName()," login request body: ") + blTxt(username + " " + password));
         //log.info(String.valueOf(userService.authenticate(username, password)));
-        return userService.authenticate(username, password);
+        return userLdapClient.authenticate(username, password);
     }
 
     /**
@@ -67,28 +67,22 @@ public class UserController {
      */
     @RequestMapping("/registration")
     public boolean registration(@RequestBody User user) {
+        log.info(console.classMsg(getClass().getSimpleName(),"request body: ") + user);
         final String username = user.getUsername();
         final String password = user.getPassword();
-        log.info(console.classMsg(getClass().getSimpleName()," registration request body: ") + blTxt(username + " " + password));
+        log.info(console.classMsg(getClass().getSimpleName(),"registration request body: ") + blTxt(username + " " + password));
 
         //verify if user exists in db and throw error, else create
-        List<String> sameUserNames = userService.searchUser(username);
-        log.info(String.valueOf(sameUserNames));
-
-        sameUserNames = userService.search(username);
+        List<String> sameUserNames = userLdapClient.searchUser(username);
         log.info(String.valueOf(sameUserNames));
 
         if (sameUserNames.isEmpty()) {
-            userService.createUser(new User(username, "test t","t", new CustomPasswordEncoder(console).encode(password)));
+            userLdapClient.createUser(new User(user, new CustomPasswordEncoder(console).encode(password)));
 
-            sameUserNames = userService.searchUser(username);
+            sameUserNames = userLdapClient.searchUser(username);
             log.info(String.valueOf(sameUserNames));
 
-            sameUserNames = userService.search(username);
-            log.info(String.valueOf(sameUserNames));
-
-            User createdUser = userService.findUser("uid=" + username + "," + ldapSearchBase);
-
+            User createdUser = userLdapClient.findByDn("uid=" + username + "," + ldapSearchBase);
             if (createdUser == null) {
                 log.info(console.classMsg(getClass().getSimpleName()," User not created: ") + blTxt(String.valueOf(createdUser)));
                 return false;
@@ -104,6 +98,6 @@ public class UserController {
     @ResponseBody
     @GetMapping("/" + users)
     public Iterable<User> getAllUsers() {
-        return userService.findAll();
+        return userLdapClient.findAll();
     }
 }

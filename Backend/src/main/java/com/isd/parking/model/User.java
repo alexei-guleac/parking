@@ -13,7 +13,7 @@ import javax.naming.Name;
 /**
  * LDAP user entry
  */
-@Entry(base = "ou=people", objectClasses = {"person", "inetOrgPerson", "top"})
+@Entry(base = "ou=people", objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
 @Data
 public final class User {
 
@@ -26,13 +26,17 @@ public final class User {
     @DnAttribute(value = "uid")
     String username;
 
-    @JsonProperty("firstName")
+    @JsonProperty("fullname")
     private @Attribute(name = "cn")
-    String firstName;
+    String fullname;
 
-    @JsonProperty("lastName")
+    @JsonProperty("lastname")
     private @Attribute(name = "sn")
-    String lastName;
+    String lastname;
+
+    @JsonProperty("email")
+    private @Attribute(name = "email")
+    String email;
 
     private @Attribute(name = "userPassword")
     String password;
@@ -40,19 +44,33 @@ public final class User {
     public User() {
     }
 
-    public User(String username, String firstName, String lastName, String password) {
+    public User(User user, String password) {
+        this.id = user.id;
+        this.username = user.username;
+        this.fullname = user.fullname;
+        this.lastname = user.lastname;
+        this.email = user.email;
+        this.password = password;
+    }
+
+    public User(Name id, String username, String fullname, String lastname, String email, String password) {
+        this.id = id;
         this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.fullname = fullname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+    }
+
+    public User(String username, String fullname, String lastname, String password) {
+        this.username = username;
+        this.fullname = fullname;
+        this.lastname = lastname;
         this.password = password;
     }
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-    }
-
-    public String getFullName() {
-        return firstName + " " + lastName;
     }
 }

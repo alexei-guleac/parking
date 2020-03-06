@@ -9,10 +9,9 @@ import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Optional;
 
@@ -36,6 +35,8 @@ public class DataLoader  {
 
     private final ColorConsoleOutput console;
 
+    public boolean flag = true;
+
     @Autowired
     public DataLoader(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, ColorConsoleOutput console) {
         this.parkingLotDBService = parkingLotDBService;
@@ -49,36 +50,33 @@ public class DataLoader  {
      *
      * @return - result of provided operation
      */
-    @Bean
-    public CommandLineRunner loadData() {
-        return (args) -> {
+    @PostConstruct
+    public void loadDatabase() {
+        Date date = new Date(System.currentTimeMillis());
+        int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
+        long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
 
-            Date date = new Date(System.currentTimeMillis());
-            int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
-            long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
+        //if db empty
+        if (numberOfParkLotsInDatabase == 0) {
+            //init with Unknown status parking lots
+            for (int i = 1; i <= totalParkingLotsNumber; i++) {
+                //initial saving parking lots to local Java memory
+                parkingLotLocalService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.FREE));
 
-            //if db empty
-            if (numberOfParkLotsInDatabase == 0) {
-                //init with Unknown status parking lots
-                for (int i = 1; i <= totalParkingLotsNumber; i++) {
-                    //initial saving parking lots to local Java memory
-                    parkingLotLocalService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.FREE));
-
-                    //initial saving parking lots to Database
-                    //parkingLotDBService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.UNKNOWN));
-                }
-            } else {
-                for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
-                    //saving parking lots state to local Java memory from Database
-                    parkingLotLocalService.save(parkingLot);
-                }
+                //initial saving parking lots to Database
+                //parkingLotDBService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.UNKNOWN));
             }
+        } else {
+            for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
+                //saving parking lots state to local Java memory from Database
+                parkingLotLocalService.save(parkingLot);
+            }
+        }
 
-            // show all parking lots from database
-            fetchParkingLots(parkingLotDBService, blTxt(" from DATABASE:"));
-            // show all parking lots from local Java memory
-            fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
-        };
+        // show all parking lots from database
+        fetchParkingLots(parkingLotDBService, blTxt(" from DATABASE:"));
+        // show all parking lots from local Java memory
+        fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
     }
 
     public void fetchParkingLots(ParkingLotService parkingLotService, String from) {

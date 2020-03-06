@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../Account/auth.service';
+import {capitalize} from '../Account/validation/string-utils';
 
 @Component({
     selector: 'app-menu',
@@ -71,7 +72,6 @@ export class MenuComponent implements OnInit {
     }
 
     capitalize(field: string) {
-        return field.charAt(0).toUpperCase() + field.slice(1);
+        return capitalize(field);
     }
-
 }

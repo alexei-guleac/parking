@@ -5,6 +5,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {regexpTestValidator} from '../validation/regexp-name-validator';
 import {isNonEmptyString} from '../validation/string-utils';
 import {RegularExpressions} from '../validation/reg-exp-patterns';
+import {credentials} from '../credentials';
 
 @Component({
     selector: 'app-login-form',
@@ -104,8 +105,8 @@ export class LoginFormComponent implements OnInit {
 
     private localLoginTest() {
         // only for testing purpose
-        if ((this.username === this.authenticationService.admin && this.password === this.authenticationService.adminPassword)
-            || (this.username === this.authenticationService.user && this.password === this.authenticationService.userPassword)
+        if ((this.username === credentials.admin && this.password === credentials.adminPassword)
+            || (this.username === credentials.user && this.password === credentials.userPassword)
         ) {
             // credentials error handle
             this.invalidLogin = false;

@@ -5,6 +5,8 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {regexpTestValidator} from '../validation/regexp-name-validator';
 import {isNonEmptyString} from '../validation/string-utils';
 import {RegularExpressions} from '../validation/reg-exp-patterns';
+import {User} from '../../Model/User';
+import  {capitalize} from '../validation/string-utils';
 
 @Component({
     selector: 'app-reg-form',
@@ -95,53 +97,32 @@ export class RegFormComponent implements OnInit {
         });
     }
 
-    get name() {
-        return this.regForm.get('username');
-    }
-
-    get mail() {
-        return this.regForm.get('email');
-    }
-
-    get fname() {
-        return this.regForm.get('firstname');
-    }
-
-    get lname() {
-        return this.regForm.get('lastname');
-    }
-
-    get pass() {
-        return this.regForm.get('password');
-    }
-
-    get passConf() {
-        return this.regForm.get('passConfirm');
-    }
-
     onSubmit() {
-        if (isNonEmptyString(this.username) && isNonEmptyString(this.password)) {
-            console.log(this.username + '  ' + this.password);
+        const username = this.username;
+        const email = this.email;
+        const lastname = capitalize(this.lastname);
+        const fullname = capitalize(this.firstname) + ' ' + lastname;
+        const pass = this.password;
+
+        if (isNonEmptyString(username) && isNonEmptyString(pass)) {
+            console.log(username + '  ' + pass);
             this.submitted = true;
 
-            /*const newUser = new User(
-                this.registerForm.value.username,
-                this.registerForm.value.email,
-                this.registerForm.value.password,
-                this.registerForm.value.name,
-                this.registerForm.value.url,
-                this.registerForm.value.address,
-                this.registerForm.value.city,
-                this.registerForm.value.state,
-                this.registerForm.value.zipcode,
-                this.registerForm.value.phone
-            );*/
-            this.handleRegistration();
+            const newUser = new User(
+                null,
+                username,
+                email,
+                pass,
+                fullname,
+                lastname,
+            );
+            console.log(newUser + '  ');
+            this.handleRegistration(newUser);
         }
     }
 
-    handleRegistration() {
-        this.authenticationService.authenticationServiceRegistration(this.username, this.password).subscribe(
+    handleRegistration(user: User) {
+        this.authenticationService.authenticationServiceRegistration(user).subscribe(
             response => {
 
                 if (response) {
@@ -167,5 +148,29 @@ export class RegFormComponent implements OnInit {
 
     navigateToLogin() {
         this.router.navigate(['login'], {queryParams: {action: 'login'}});
+    }
+
+    get name() {
+        return this.regForm.get('username');
+    }
+
+    get mail() {
+        return this.regForm.get('email');
+    }
+
+    get fname() {
+        return this.regForm.get('firstname');
+    }
+
+    get lname() {
+        return this.regForm.get('lastname');
+    }
+
+    get pass() {
+        return this.regForm.get('password');
+    }
+
+    get passConf() {
+        return this.regForm.get('passConfirm');
     }
 }

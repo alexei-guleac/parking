@@ -4,7 +4,7 @@ import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.model.Group;
 import com.isd.parking.model.User;
 import com.isd.parking.repository.GroupRepository;
-import com.isd.parking.service.ldap.UserService;
+import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -36,11 +36,11 @@ import static org.junit.Assert.assertNotNull;
 @Slf4j
 public class SpringLdapIntegrationTest {
 
-    private final UserService userLdapService;
+    private final UserLdapClient userLdapService;
 
     private final LdapContextSource contextSource;
 
-    private final UserService userRepository;
+    private final UserLdapClient userRepository;
 
     private final GroupRepository groupRepository;
 
@@ -50,7 +50,7 @@ public class SpringLdapIntegrationTest {
     private String ldapPartitionSuffix;
 
     @Autowired
-    public SpringLdapIntegrationTest(UserService userLdapService, LdapContextSource contextSource, UserService userRepository, GroupRepository groupRepository, ColorConsoleOutput console) {
+    public SpringLdapIntegrationTest(UserLdapClient userLdapService, LdapContextSource contextSource, UserLdapClient userRepository, GroupRepository groupRepository, ColorConsoleOutput console) {
         this.userLdapService = userLdapService;
         this.contextSource = contextSource;
         this.userRepository = userRepository;
@@ -78,9 +78,9 @@ public class SpringLdapIntegrationTest {
 
     @Test
     public void testFindPerson() {
-        User user = userLdapService.findUser("uid=user1,ou=people,dc=springframework,dc=org");
+        User user = userLdapService.findByDn("uid=user1,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
-        assertEquals(user.getFullName(), "Test A A");
+        assertEquals(user.getFullname(), "Test A A");
     }
 
     @Test
@@ -88,20 +88,20 @@ public class SpringLdapIntegrationTest {
         //userLdapService.create("test_user", new CustomPasswordEncoder().encode("qwerty123"));
         userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder(console).encode("qwerty123")));
 
-        User user = userLdapService.findUser("uid=test_user,ou=people,dc=springframework,dc=org");
+        User user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
         log.info("User found:" + user);
     }
 
-    @Test
+    /*@Test
     public void testCreate() {
         userLdapService.create("test_user", new CustomPasswordEncoder(console).encode("qwerty123"));
         //userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder().encode("qwerty123")));
 
-        User user = userLdapService.findUser("uid=test_user,ou=people,dc=springframework,dc=org");
+        User user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
         log.info("User found:" + user);
-    }
+    }*/
 
     @Test
     public void givenLdapClient_whenCorrectCredentials_thenSuccessfulLogin() {
@@ -189,36 +189,33 @@ public class SpringLdapIntegrationTest {
     @Test
     public void testLdapRepositories()  {
         log.info("Spring LDAP CRUD Operations Binding and Unbinding Example");
-
         log.info("- - - - - - Managing persons");
 
         List<User> persons = userRepository.findAll();
         log.info("persons: " + persons);
 
-        User john = userRepository.findOne("john");
-        john.setLastName("custom last name");
+        User john = userRepository.findById("john");
+        john.setLastname("custom last name");
         userRepository.updateLastName(john);
 
-        User jahn = userRepository.findOne("jahn");
-        jahn.setLastName("custom last name");
+        User jahn = userRepository.findById("jahn");
+        jahn.setLastname("custom last name");
         userRepository.update(jahn);
 
         User user = new User("uid", "user");
         userRepository.createLdap(user);
 
-        User jihn = userRepository.findOne("jihn");
+        User jihn = userRepository.findById("jihn");
         userRepository.delete(jihn);
 
         persons = userRepository.findAll();
         log.info("persons: " + persons);
-
         log.info("- - - - - - Managing groups");
 
         List<Group> groups = groupRepository.findAll();
         log.info("groups: " + groups);
 
         groupRepository.removeMemberFromGroup("developers", jihn);
-
         groupRepository.addMemberToGroup("managers", jihn);
 
         groups = groupRepository.findAll();
