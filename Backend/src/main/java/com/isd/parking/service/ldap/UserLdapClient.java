@@ -63,7 +63,7 @@ public class UserLdapClient {
     private final String[] objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"};
 
     // private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
-    private final String ldifFilePath = "N:\\Programming\\IFC\\Diplome\\Latest_backend\\Backend\\src\\main\\resources\\ldap-server.ldif";
+    private final String ldifFilePath = "N:\\Programming\\IFC\\Diplome\\Diplome\\Back\\Backend\\src\\main\\resources\\ldap-server.ldif";
     //private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
 
     private final LdapTemplate ldapTemplate;

@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${ldap.passwordAttribute}")
     private String ldapPasswordAttribute;
 
-    private final String[] pathArray = new String[]{"/login", "/registration", "/parking", "/arduino", "/demo"};
+    private final String[] pathArray = new String[]{"/login", "/registration", "/validate_captcha", "/parking", "/arduino", "/demo"};
 
     // ----------  LDAP auth --------------
 
