@@ -19,6 +19,9 @@ import {ParkingLayoutComponent} from './main/parking-layout/parking-layout.compo
 import {RegFormComponent} from './Account/registration-form/registration-form.component';
 import {EqualValidator} from './Account/validation/equal-validator.directive';
 import {NoDblClickDirective} from './Account/validation/no-dbl-click.directive';
+import {RECAPTCHA_URL, ReCaptchaDirective} from './Account/validation/recaptcha-validator';
+import {environment} from '../environments/environment';
+
 
 @Injectable()
 export class XhrInterceptor implements HttpInterceptor {
@@ -60,6 +63,7 @@ const routes: Routes = [
         ParkingLotDetailComponent,
         LoginFormComponent,
         RegFormComponent,
+        ReCaptchaDirective,
         EqualValidator,
         NoDblClickDirective,
         StatisticsComponent,
@@ -80,6 +84,10 @@ const routes: Routes = [
     /*
     providers: [AuthenticationService/*, {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true}* /],
     */
+    providers: [{
+        provide: RECAPTCHA_URL,
+        useValue: environment.restUrl + '/validate_captcha'
+    }],
     bootstrap: [AppComponent]
 })
 

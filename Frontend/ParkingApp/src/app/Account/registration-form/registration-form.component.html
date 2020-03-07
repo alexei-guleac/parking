@@ -53,7 +53,7 @@
                         <div *ngIf="mail.errors.maxlength">
                             Email must be maximum 35 characters long.
                         </div>
-<!--                        <div *ngIf="mail.errors.forbiddenName">-->
+                        <!--                        <div *ngIf="mail.errors.forbiddenName">-->
                         <div *ngIf="mail.errors.pattern">
                             Email should contain @<br/>
                             A-Z, a-z, 0-9 symbols and "_", ".".
@@ -156,14 +156,15 @@
                         </div>
                     </div>
                 </div>
-                <script src="https://www.google.com/recaptcha/api.js?render=6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL"></script>
-                <script>
-                    grecaptcha.ready(function() {
-                        grecaptcha.execute('6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL', {action: 'homepage'}).then(function(token) {
-                        //...
-                        });
-                    });
-                </script>
+
+                <!--  <script src="https://www.google.com/recaptcha/api.js?render=6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL"></script>-->
+
+                <!--
+                    the SITE_KEY is the sitekey from your admin console.
+                    use form control for validation
+                  -->
+                <div nbRecaptcha key="6Lcngd8UAAAAAPaKwd9CzEpiM8a8hGnRnBumf9RK" formControlName="captcha"></div>
+
                 <button type="submit" [disabled]="regForm.invalid" appNoDblClick (click)="onSubmit()"
                         class="btn btn-default full-width rounded-pill mt-3 hoverable z-depth-5 login-btn">
                     <span class="fas fa-check"></span></button>
@@ -172,5 +173,5 @@
     </div>
 
     <a class="btn full-width rounded-pill mt-3 link" (click)=navigateToLogin()>Already registered? Login <span
-            class="fas fa-arrow-right"></span></a>
+        class="fas fa-arrow-right"></span></a>
 </div>

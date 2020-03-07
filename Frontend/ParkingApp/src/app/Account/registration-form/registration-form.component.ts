@@ -1,12 +1,12 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AuthenticationService} from '../auth.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {regexpTestValidator} from '../validation/regexp-name-validator';
-import {isNonEmptyString} from '../validation/string-utils';
+import {capitalize, isNonEmptyString} from '../validation/string-utils';
 import {RegularExpressions} from '../validation/reg-exp-patterns';
 import {User} from '../../Model/User';
-import  {capitalize} from '../validation/string-utils';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
     selector: 'app-reg-form',
@@ -35,10 +35,14 @@ export class RegFormComponent implements OnInit {
 
     submitted = false;
 
+    private grecaptcha: any;
+
     constructor(
+        @Inject(DOCUMENT) private document: any,
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService) {
+        this.grecaptcha = this.document.grecaptcha;
     }
 
     ngOnInit(): void {
@@ -88,16 +92,36 @@ export class RegFormComponent implements OnInit {
                 Validators.pattern(RegularExpressions.passwordPatternStr)
             ]),
 
-            passConfirm:
-                new FormControl(this.passConfirm, [
-                    Validators.required,
-                    Validators.minLength(6),
-                    Validators.maxLength(10),
-                ])
+            passConfirm: new FormControl(this.passConfirm, [
+                Validators.required,
+                Validators.minLength(6),
+                Validators.maxLength(10),
+            ]),
+
+            captcha: new FormControl()
         });
     }
 
     onSubmit() {
+
+        /*this.grecaptcha.ready(() => {
+            // do request for recaptcha token
+            // response is promise with passed token
+            this.grecaptcha.execute('6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL', {action: 'register'}).then((token) => {
+                // add token to form
+                $('#comment_form').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+                $.post('form.php', {email, comment, token}, function (result) {
+                    console.log(result);
+                    if (result.success) {
+                        alert('Thanks for posting comment.');
+                    } else {
+                        alert('You are spammer ! Get the @$%K out.');
+                    }
+                });
+            });
+        });*/
+
+
         const username = this.username;
         const email = this.email;
         const lastname = capitalize(this.lastname);
