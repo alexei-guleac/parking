@@ -30,6 +30,9 @@ export class EqualValidator implements Validator {
 
         // value not equal
         if (controlValue && value !== controlValue.value && !this.isReverse) {
+            controlValue.setErrors({
+                validateEqual: false
+            });
             return {
                 validateEqual: false
             };

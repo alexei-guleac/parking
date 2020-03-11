@@ -4,43 +4,155 @@
         </a>
         <a class="navbar-brand abs">
             <!--      ParKing-->
-            <img src="../../assets/img/ParKingLogo.png" class="appname-logo" (click)="navigateToMain()" alt="parking_logo"/></a>
+            <img (click)="navigateToMain()" alt="parking_logo" class="appname-logo"
+                 src="../../assets/img/ParKingLogo.png"/></a>
         <!--    to do : make logo in svg-->
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+        <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler collapsed"
+                data-target="#navbarNav" data-toggle="collapse" type="button">
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto text-light">
                 <!-- <div class="user nav-link text-light" (click)="navigateTo404()"><i class="fas fa-user"></i> User</div> -->
-                <li class="nav-item" *ngIf='!this.isUserLoggedIn()'>
+                <li *ngIf='!this.isUserLoggedIn()' class="nav-item mx-auto">
                     <a class="nav-link" (click)="navigateToLogin()"><i class="fa fa-user"></i> Login</a>
                 </li>
-                <li class="nav-item" *ngIf='this.isUserLoggedIn()'>
+                <li *ngIf='this.isUserLoggedIn()' class="nav-item mx-auto">
                     <a class="nav-link" (click)="navigateTo404()"><i
-                            class="fa fa-user"></i> {{this?.getUserName() == null ? 'Unknown user' : this.capitalize(this?.getUserName())}}
+                        class="fa fa-user"></i> {{this?.getUserName() == null ? 'Unknown user' : this.capitalize(this?.getUserName())}}
                     </a>
                 </li>
-                <li class="nav-item" *ngIf='this.isUserLoggedIn()'>
-                    <a class="nav-link" (click)="logout()"><i class="fa fa-sign-out-alt"></i> Logout</a>
+                <li *ngIf='this.isUserLoggedIn()' class="nav-item mx-auto">
+                    <a (click)="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
                 </li>
                 <li class="nav-item dropdown" *ngIf='this.isUserLoggedIn()'>
                     <a class="nav-link dropdown-toggle text-light" data-toggle="dropdown">
                         Menu
                     </a>
                     <div class="dropdown-menu bg-blue" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item text-light" (click)="navigateToStats()"><i class="fa fa-clipboard"></i>
+                        <a (click)="navigateToStats()" class="dropdown-item text-light"><i class="fas fa-clipboard"></i>
                             Statistics</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-light" (click)="navigateToTest2()"><i class="fa fa-map"></i>
+                        <a (click)="navigateToTest2()" class="dropdown-item text-light"><i
+                            class="fas fa-map-marked-alt"></i>
                             Parking layout</a>
                         <!-- <a class="dropdown-item text-light" (click)="navigateToTest2()">Test layout</a> -->
                     </div>
                 </li>
             </ul>
+
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
         </div>
     </div>
 </nav>
 <div class="container">
     <hr style="border-top: 3px solid rgb(241, 93, 34)!important;">
 </div>
+<div class="user-toggle">
+    <div class="[ visually-hidden ][ js-mode-status ]" role="status"></div>
+    <button class="[ toggle-button ] [ js-mode-toggle ]">
+        <span class="[ toggle-button__text ] [ js-mode-toggle-text ]">Enable dark mode</span>
+        <span aria-hidden="true" class="toggle-button__icon"></span>
+    </button>
+</div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {// Remove the no JS class so that the button will show
+        document.documentElement.classList.remove('no-js');
+
+        const STORAGE_KEY = 'user-color-scheme';
+        const COLOR_MODE_KEY = '--color-mode';
+
+        const modeToggleButton = document.querySelector('.js-mode-toggle');
+        console.log('mdtb ' + modeToggleButton);
+        const modeToggleText = document.querySelector('.js-mode-toggle-text');
+        const modeStatusElement = document.querySelector('.js-mode-status');
+
+        /**
+         * Pass in a custom prop key and this function will return its
+         * computed value.
+         * A reduced version of this: https://andy-bell.design/wrote/get-css-custom-property-value-with-javascript/
+         */
+        const getCSSCustomProp = (propKey) => {
+            let response = getComputedStyle(document.documentElement).getPropertyValue(propKey);
+
+            // Tidy up the string if there’s something to work with
+            if (response.length) {
+                response = response.replace(/\'|"/g, '').trim();
+            }
+
+            // Return the string response by default
+            return response;
+        };
+
+        /**
+         * Takes either a passed settings ('light'|'dark') or grabs that from localStorage.
+         * If it can’t find the setting in either, it tries to load the CSS color mode,
+         * controlled by the media query
+         */
+        const applySetting = passedSetting => {
+            console.log('test const applySetting');
+            let currentSetting = passedSetting || localStorage.getItem(STORAGE_KEY);
+
+            if (currentSetting) {
+                document.documentElement.setAttribute('data-user-color-scheme', currentSetting);
+                setButtonLabelAndStatus(currentSetting);
+            } else {
+                setButtonLabelAndStatus(getCSSCustomProp(COLOR_MODE_KEY));
+            }
+        }
+
+        /**
+         * Get’s the current setting > reverses it > stores it
+         */
+        const toggleSetting = () => {
+            console.log('test const toggleSetting');
+            let currentSetting = localStorage.getItem(STORAGE_KEY);
+
+            switch (currentSetting) {
+                case null:
+                    currentSetting = getCSSCustomProp(COLOR_MODE_KEY) === 'dark' ? 'light' : 'dark';
+                    break;
+                case 'light':
+                    currentSetting = 'dark';
+                    break;
+                case 'dark':
+                    currentSetting = 'light';
+                    break;
+            }
+
+            localStorage.setItem(STORAGE_KEY, currentSetting);
+
+            return currentSetting;
+        }
+
+        /**
+         * A shared method for setting the button text label and visually hidden status element
+         */
+        const setButtonLabelAndStatus = currentSetting => {
+            modeToggleText.innerText = `Enable ${currentSetting === 'dark' ? 'light' : 'dark'} mode`;
+            modeStatusElement.innerText = `Color mode is now "${currentSetting}"`;
+        }
+
+        /**
+         * Clicking the button runs the apply setting method which grabs its parameter
+         * from the toggle setting method.
+         */
+        modeToggleButton.addEventListener('click', evt => {
+            evt.preventDefault();
+
+            applySetting(toggleSetting());
+        });
+
+        applySetting();
+    });
+
+</script>
+<script src="../../switch.js"></script>

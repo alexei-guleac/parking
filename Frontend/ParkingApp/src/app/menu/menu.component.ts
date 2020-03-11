@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../Account/auth.service';
-import {capitalize} from '../Account/validation/string-utils';
+import {capitalize} from '../Account/Forms/validation/string-utils';
 
 @Component({
     selector: 'app-menu',

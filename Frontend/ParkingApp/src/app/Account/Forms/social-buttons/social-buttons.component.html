@@ -1,0 +1,28 @@
+<div class="social-btn">
+    <span (click)="signInWithFB()" class="btn btn-fb btn-lg btn-block"><i class="fa fa-facebook"></i>
+        <span class="mx-auto"><b>Facebook</b></span></span>
+    <span class="btn btn-twitter btn-lg btn-block"><i class="fa fa-twitter"></i>
+        <span class="mx-auto"><b>Twitter</b></span></span>
+    <span class="btn btn-google btn-lg btn-block"><i class="fa fa-google"></i>
+        <span class="mx-auto"><b>Google</b></span></span>
+</div>
+<button (click)="toogleShowMoreSocial()" *ngIf="showMore==false"
+        class="btn btn-show-more text-center m-3">Show more
+</button>
+<div *ngIf="showMore==true" class="social-btn fade-in">
+    <span class="btn btn-microsoft btn-lg btn-block">
+        <img class="ml-2 mr-n4" src="../../assets/img/microsoft_icon_logo.png"
+             style="width: 1.3em; height: 1.3em">
+        <span class="mx-auto"><b>Microsoft</b></span></span>
+    <span class="btn btn-github btn-lg btn-block "><i class="fa fa-github"></i>
+        <span class="mx-auto"><b>Github</b></span></span>
+    <span class="btn btn-inst btn-lg btn-block"><i class="fa fa-instagram"></i>
+        <span class="mx-auto"><b>Instagram</b></span></span>
+    <span class="btn btn-apple btn-lg btn-block"><i class="fa fa-apple"></i>
+        <span class="mx-auto"><b>Apple ID</b></span></span>
+    <span class="btn btn-vk btn-lg btn-block"><i class="fa fa-vk"></i>
+        <span class="mx-auto"><b>VK</b></span></span>
+    <span class="btn btn-linkedin btn-lg btn-block"><i class="fa fa-linkedin"></i>
+        <span class="mx-auto"><b>LinkedIn</b></span></span>
+
+</div>

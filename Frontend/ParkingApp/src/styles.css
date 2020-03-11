@@ -1,5 +1,66 @@
 /* You can add global styles to this file, and also import other style files */
-/*@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&display=swap');*/
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=PT+Sans:400,700");
+@import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700");
+
+:root {
+    /* Colors */
+    --foreground-default: #08090a;
+    --foreground-secondary: #41474d;
+    --foreground-tertiary: #797c80;
+    --foreground-quaternary: #f4faff;
+    --foreground-light: #41474d;
+
+    --background-default: #f4faff;
+    --background-secondary: #a3b9cc;
+    --background-tertiary: #5c7d99;
+    --background-light: #ffffff;
+
+    --primary-default: #5dfdcb;
+    --primary-dark: #24b286;
+    --primary-light: #b2ffe7;
+
+    --error-default: #ef3e36;
+    --error-dark: #800600;
+    --error-light: #ffcecc;
+
+    /* My Colors */
+
+    --white: #fff;
+    --btn-background-color: #F7B432;
+    --btn-border-color: #F7B432;
+
+    --input-valid-border: #51d357;
+    --input-invalid-border: #df4544;
+
+    --isd-red: #f44e00;
+
+    --facebook: #507cc0;
+    --twitter: #64ccf1;
+    --linkedin: #0b5ea3;
+    --microsoft: #e3b30d;
+    --vkontakte: #4a76a8;
+    --github: #2a2a2a;
+    --google: #df4930;
+    --instagram: rgba(158, 94, 223, 0.68);
+    --apple: rgba(48, 104, 87, 0.62);
+
+    /* Shadows */
+    --background-tertiary-shadow: 0 1px 3px 0 rgba(92, 125, 153, 0.5);
+    --card-material-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --btn-material-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    --material-shadow-thin: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+* {
+    -webkit-border-top-right-radius: 0;
+    -webkit-border-bottom-right-radius: 0;
+    -moz-border-radius-topright: 0;
+    -moz-border-radius-bottomright: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
 
 .ngx-pagination a:hover, .ngx-pagination button:hover {
     background: none !important;
@@ -11,11 +72,11 @@
 }
 
 .ngx-pagination a:hover {
-    color: #f44e00 !important;
+    color: var(--isd-red) !important;
 }
 
 .ngx-pagination .current {
-    background: #f44e00 !important;
+    background: var(--isd-red) !important;
 }
 
 /** {*/
@@ -28,4 +89,13 @@ body {
 
 footer {
     color: #919495 !important;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
 }

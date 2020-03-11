@@ -67,8 +67,8 @@ export interface ReCaptchaConfig {
 
 @Directive({
     // tslint:disable-next-line:directive-selector
-    selector: '[nbRecaptcha]',
-    exportAs: 'nbRecaptcha',
+    selector: '[appNbRecaptcha]',
+    exportAs: 'appNbRecaptcha',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -218,8 +218,10 @@ export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAc
      */
     addScript() {
         const script = document.createElement('script');
-        const lang = this.lang ? '&hl=' + this.lang : '';
-        script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;
+        //for other languages
+        //const lang = this.lang ? '&hl=' + this.lang : '';
+        //script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;
+        script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit&hl=en`;
         script.async = true;
         script.defer = true;
         document.body.appendChild(script);

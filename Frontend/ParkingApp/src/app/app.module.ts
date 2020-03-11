@@ -9,18 +9,27 @@ import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {MainComponent} from './main/main.component';
 import {MenuComponent} from './menu/menu.component';
 import {ParkingLotDetailComponent} from './main/parking-lot-detail/parking-lot-detail.component';
-import {LoginFormComponent} from './Account/login-form/login-form.component';
+import {LoginFormComponent} from './Account/Forms/login-form/login-form.component';
 import {StatisticsComponent} from './statistics/statistics.component';
 import {FeatureComponent} from './feature/feature.component';
 import {PrefetchStatsService} from './prefetch-stats.service';
 import {PrefetchParkingLotsService} from './prefetch-parking-lots.service';
 import {Feature2Component} from './feature/feature2/feature2.component';
 import {ParkingLayoutComponent} from './main/parking-layout/parking-layout.component';
-import {RegFormComponent} from './Account/registration-form/registration-form.component';
-import {EqualValidator} from './Account/validation/equal-validator.directive';
-import {NoDblClickDirective} from './Account/validation/no-dbl-click.directive';
-import {RECAPTCHA_URL, ReCaptchaDirective} from './Account/validation/recaptcha-validator';
+import {RegFormComponent} from './Account/Forms/registration-form/registration-form.component';
+import {EqualValidator} from './Account/Forms/validation/equal-validator.directive';
+import {NoDblClickDirective} from './Account/Forms/validation/no-dbl-click.directive';
+import {AuthServiceConfig, FacebookLoginProvider, SocialLoginModule} from 'angularx-social-login';
+import {RECAPTCHA_URL, ReCaptchaDirective} from './Account/Forms/validation/recaptcha-validator';
 import {environment} from '../environments/environment';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatCardModule} from '@angular/material/card';
+import {MatButtonModule} from '@angular/material/button';
+import {OrSeparatorComponent} from './Account/Forms/or-separator/or-separator.component';
+import {UsernameInputComponent} from './Account/Forms/username-input/username-input.component';
+import {SocialButtonsComponent} from './Account/Forms/social-buttons/social-buttons.component';
+
+// import {} from 'bower_components/angular-mailcheck';
 
 
 @Injectable()
@@ -32,6 +41,17 @@ export class XhrInterceptor implements HttpInterceptor {
         });
         return next.handle(xhr);
     }
+}
+
+const config = new AuthServiceConfig([
+    {
+        id: FacebookLoginProvider.PROVIDER_ID,
+        provider: new FacebookLoginProvider('509861456396823')   // nata.nemuza
+    }
+]);
+
+export function provideConfig() {
+    return config;
 }
 
 const routes: Routes = [
@@ -69,7 +89,10 @@ const routes: Routes = [
         StatisticsComponent,
         FeatureComponent,
         Feature2Component,
-        ParkingLayoutComponent
+        ParkingLayoutComponent,
+        OrSeparatorComponent,
+        UsernameInputComponent,
+        SocialButtonsComponent
     ],
 
     imports: [
@@ -78,7 +101,12 @@ const routes: Routes = [
         ReactiveFormsModule,
         HttpClientModule,
         RouterModule.forRoot(routes),
-        NgxPaginationModule
+        NgxPaginationModule,
+        BrowserAnimationsModule,
+        SocialLoginModule,
+        MatCardModule,
+        MatButtonModule,
+        // AngularMailAutocompleteModule
     ],
 
     /*
@@ -87,6 +115,9 @@ const routes: Routes = [
     providers: [{
         provide: RECAPTCHA_URL,
         useValue: environment.restUrl + '/validate_captcha'
+    }, {
+        provide: AuthServiceConfig,
+        useFactory: provideConfig
     }],
     bootstrap: [AppComponent]
 })

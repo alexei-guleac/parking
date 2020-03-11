@@ -4,6 +4,10 @@ import {Observable} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {credentials} from './credentials';
 import {User} from '../Model/User';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/empty';
+import 'rxjs/add/operator/retry';
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +15,7 @@ import {User} from '../Model/User';
 export class AuthenticationService {
 
     USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser';
+    TOKEN_NAME = 'token';
 
     public username: string;
     public password: string;
@@ -32,6 +37,38 @@ export class AuthenticationService {
             username,
             password
         });
+    }
+
+    authenticationServiceAuth<T>(username: string, password: string) {
+        const url = environment.restUrl + '/auth';
+        // console.log('Auth login');
+        // console.log('Login ' + username + '  ' + password);
+
+        return this.http.post<Observable<T>>(url, {
+            username,
+            password
+        }, {
+            headers: {
+                Accept: 'application/json'
+            }
+        }).retry(2)         // optionally add the retry
+            /*.catch((err: HttpErrorResponse) => {
+
+                if (err.error instanceof Error) {
+                    // A client-side or network error occurred. Handle it accordingly.
+                    console.error('An error occurred:', err.error.message);
+                } else {
+                    // The backend returned an unsuccessful response code.
+                    // The response body may contain clues as to what went wrong,
+                    console.error(`Backend returned code ${err.status}, body was: ${err.error}`);
+                }
+
+                // ...optionally return a default fallback value so app can continue (pick one)
+                // which could be a default value
+                // return Observable.of<any>({my: "default value..."});
+                // or simply an empty observable
+                return Observable.empty<>();
+            })*/;
     }
 
     authenticationServiceRegistration(user: User) {
@@ -59,14 +96,25 @@ export class AuthenticationService {
     registerSuccessfulLogin(username) {
         sessionStorage.setItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME, username);
         sessionStorage.setItem(
-            'token',
+            this.TOKEN_NAME,
             btoa(this.username + ':' + this.password)
+        );
+    }
+
+    registerSuccessfulAuth(username, token) {
+        /*console.log(username);
+        console.log(token);*/
+
+        sessionStorage.setItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME, username);
+        sessionStorage.setItem(
+            this.TOKEN_NAME,
+            token
         );
     }
 
     authenticationServiceLogout() {
         sessionStorage.removeItem(this.USER_NAME_SESSION_ATTRIBUTE_NAME);
-        sessionStorage.removeItem('token');
+        sessionStorage.removeItem(this.TOKEN_NAME);
 
         this.username = null;
         this.password = null;

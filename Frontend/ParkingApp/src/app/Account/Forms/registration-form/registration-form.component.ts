@@ -1,12 +1,13 @@
 import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthenticationService} from '../auth.service';
+import {AuthenticationService} from '../../auth.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {regexpTestValidator} from '../validation/regexp-name-validator';
 import {capitalize, isNonEmptyString} from '../validation/string-utils';
 import {RegularExpressions} from '../validation/reg-exp-patterns';
-import {User} from '../../Model/User';
+import {User} from '../../../Model/User';
 import {DOCUMENT} from '@angular/common';
+
 
 @Component({
     selector: 'app-reg-form',
@@ -28,12 +29,16 @@ export class RegFormComponent implements OnInit {
     invalidReg = false;
     regSuccess = false;
 
+    fieldTextTypePass: boolean;
+    fieldTextTypePassConfirm: boolean;
+
     @Output()
     userRegEvent = new EventEmitter();
 
     private regForm: FormGroup;
 
     submitted = false;
+    showHint = false;
 
     private grecaptcha: any;
 
@@ -43,6 +48,29 @@ export class RegFormComponent implements OnInit {
         private router: Router,
         private authenticationService: AuthenticationService) {
         this.grecaptcha = this.document.grecaptcha;
+    }
+
+    // Switching method
+    togglePassTextType() {
+        this.fieldTextTypePass = !this.fieldTextTypePass;
+    }
+
+    togglePassConfirmTextType() {
+        this.fieldTextTypePassConfirm = !this.fieldTextTypePassConfirm;
+    }
+
+    // Show/hide form hint
+    toogleHint() {
+        this.showHint = !this.showHint;
+
+        setTimeout(() => {
+            this.showHint = false;
+            console.log(this.showHint);
+        }, 60000);
+    }
+
+    handleSelect(value) {
+        console.log('Selected value will be available here' + value);
     }
 
     ngOnInit(): void {
@@ -61,6 +89,7 @@ export class RegFormComponent implements OnInit {
                 Validators.required,
                 Validators.minLength(8),
                 Validators.maxLength(35),
+                Validators.email,
 
                 Validators.pattern(RegularExpressions.emailPattern)
                 // regexpTestNameValidator(RegularExpressions.emailPatternStr)
@@ -103,24 +132,10 @@ export class RegFormComponent implements OnInit {
     }
 
     onSubmit() {
-
-        /*this.grecaptcha.ready(() => {
-            // do request for recaptcha token
-            // response is promise with passed token
-            this.grecaptcha.execute('6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL', {action: 'register'}).then((token) => {
-                // add token to form
-                $('#comment_form').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
-                $.post('form.php', {email, comment, token}, function (result) {
-                    console.log(result);
-                    if (result.success) {
-                        alert('Thanks for posting comment.');
-                    } else {
-                        alert('You are spammer ! Get the @$%K out.');
-                    }
-                });
-            });
-        });*/
-
+        this.submitted = true;
+        if (this.regForm.hasError('invalid')) {
+            this.submitted = false;
+        }
 
         const username = this.username;
         const email = this.email;
@@ -130,8 +145,6 @@ export class RegFormComponent implements OnInit {
 
         if (isNonEmptyString(username) && isNonEmptyString(pass)) {
             console.log(username + '  ' + pass);
-            this.submitted = true;
-
             const newUser = new User(
                 null,
                 username,

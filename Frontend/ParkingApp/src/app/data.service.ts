@@ -51,9 +51,15 @@ export class DataService {
 
     private setHeaders() {
         if (this.authService.isUserLoggedIn()) {
+
+            console.log('SET HEADERS');
+            console.log(this.authService.isUserLoggedIn());
+            console.log(sessionStorage.getItem('token'));
+
             this.authHeaders = {
                 Accept: 'application/json',
-                Authorization: 'Basic ' + sessionStorage.getItem('token')
+                // Authorization: 'Basic ' + sessionStorage.getItem('token')
+                Authorization: 'Bearer ' + sessionStorage.getItem('token')
             };
         } else {
             this.authHeaders = {Accept: 'application/json'};
