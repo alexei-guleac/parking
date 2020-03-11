@@ -1,6 +1,6 @@
-package com.isd.parking.controller.frontapp;
+package com.isd.parking.controller.web;
 
-import com.isd.parking.exception.ResourceNotFoundException;
+import com.isd.parking.exceptions.ResourceNotFoundException;
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.isd.parking.controller.frontapp.RestApiEndpoints.parking;
+import static com.isd.parking.controller.web.RestApiEndpoints.parking;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 import static com.isd.parking.utils.ColorConsoleOutput.redTxt;
 

@@ -1,4 +1,4 @@
-package com.isd.parking.config.websocket;
+package com.isd.parking.websocket;
 
 
 import com.isd.parking.controller.arduino.ArduinoWebSocketHandler;
@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import static com.isd.parking.controller.frontapp.RestApiEndpoints.arduinoWS;
+import static com.isd.parking.controller.web.RestApiEndpoints.arduinoWS;
 
 /**
  * Class used to configure a WebSocketHandler

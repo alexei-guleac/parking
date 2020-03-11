@@ -8,6 +8,7 @@ dn: ou=groups,dc=isd,dc=com
 objectclass: top
 objectclass: organizationalUnit
 ou: groups
+description: generic groups branch
 
 dn: ou=subgroups,ou=groups,dc=isd,dc=com
 objectclass: top
@@ -126,6 +127,7 @@ ou: developer
 uniqueMember: uid=ben,ou=people,dc=isd,dc=com
 uniqueMember: uid=bob,ou=people,dc=isd,dc=com
 
+
 dn: cn=managers,ou=groups,dc=isd,dc=com
 objectclass: top
 objectclass: groupOfUniqueNames
@@ -198,4 +200,62 @@ email: ter@fg.uy
 creationDate: Sat Mar 07 16:54:16 EET 2020
 uid: Yuiuiui
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+
+# Контейнер для ролей
+dn: ou=roles,dc=isd,dc=com
+objectClass: organizationalUnit
+ou: roles
+description: generic roles branch
+
+dn: cn=ADMIN,ou=roles,dc=isd,dc=com
+objectClass: top
+objectClass: groupOfURLs
+cn: ADMIN
+memberURL: ldap:///ou=people,dc=isd,dc=com??sub?user_role=ADMIN
+
+dn: uid=user3,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Gfhhh Fghfhg
+sn: Fghfhg
+email: erer@fdfdfdf.rty
+creationDate: Tue Mar 10 00:49:34 EET 2020
+fbid: 637849780349462
+uid: ghjhjhj
+memberOf: cn=developers,ou=groups
+memberOf: cn=ADMIN,ou=roles
+user_role: ADMIN
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+
+dn: uid=user2,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Tyty Tyty
+sn: Tyty
+email: we@df.rtrt
+creationDate: Tue Mar 10 15:20:44 EET 2020
+uid: user2
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+
+# Группа "Разработчики"
+dn: cn=developers2,ou=groups,dc=isd,dc=com
+objectClass: groupOfNames
+cn: developers2
+member: uid=user3,ou=people,dc=isd,dc=com
+
+# Группа "Дизайнеры"
+dn: cn=designers,ou=groups,dc=isd,dc=com
+objectClass: groupOfNames
+cn: designers
+member: uid=user3,ou=people,dc=isd,dc=com
+
+# Роль "Начальник отдела разработки"
+dn: cn=Chief of Developers,ou=Roles,dc=isd,dc=com
+objectClass: organizationalRole
+cn: Chief of Developers
+roleOccupant: uid=user3,ou=People,dc=isd,dc=com
 

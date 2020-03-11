@@ -41,6 +41,9 @@ public final class User {
     private @Attribute(name = "userPassword")
     String password;
 
+    private @Attribute(name = "fbid")
+    String fbid;
+
     public User() {
     }
 

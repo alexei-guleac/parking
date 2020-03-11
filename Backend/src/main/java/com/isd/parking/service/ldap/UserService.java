@@ -1,8 +1,8 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.model.User;
 import com.isd.parking.repository.UserRepository;
+import com.isd.parking.security.CustomPasswordEncoder;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ldap.support.LdapUtils;

@@ -18,9 +18,14 @@ import java.util.List;
 @Repository
 public class GroupRepository implements BaseLdapNameAware {
 
-    @Autowired
-    private LdapTemplate ldapTemplate;
+    private final LdapTemplate ldapTemplate;
+
     private LdapName baseLdapPath;
+
+    @Autowired
+    public GroupRepository(LdapTemplate ldapTemplate) {
+        this.ldapTemplate = ldapTemplate;
+    }
 
     public void setBaseLdapPath(LdapName baseLdapPath) {
         this.baseLdapPath = baseLdapPath;
@@ -34,7 +39,7 @@ public class GroupRepository implements BaseLdapNameAware {
 
     public void addMemberToGroup(String groupName, User p) {
         Name groupDn = buildGroupDn(groupName);
-        Name personDn = buildPersonDn(p);
+        Name personDn = buildUserDn(p);
 
         DirContextOperations ctx = ldapTemplate.lookupContext(groupDn);
         ctx.addAttributeValue("uniqueMember", personDn);
@@ -44,7 +49,7 @@ public class GroupRepository implements BaseLdapNameAware {
 
     public void removeMemberFromGroup(String groupName, User p) {
         Name groupDn = buildGroupDn(groupName);
-        Name personDn = buildPersonDn(p);
+        Name personDn = buildUserDn(p);
 
         DirContextOperations ctx = ldapTemplate.lookupContext(groupDn);
         ctx.removeAttributeValue("uniqueMember", personDn);
@@ -59,10 +64,10 @@ public class GroupRepository implements BaseLdapNameAware {
                 .build();
     }
 
-    private Name buildPersonDn(User person) {
+    private Name buildUserDn(User user) {
         return LdapNameBuilder.newInstance(baseLdapPath)
                 .add("ou", "people")
-                .add("uid", person.getId())
+                .add("uid", user.getId())
                 .build();
     }
 

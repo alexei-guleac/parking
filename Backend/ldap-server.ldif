@@ -1,0 +1,12 @@
+dn: uid=fgffgfg,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Hjjh Ghjhj
+sn: Ghjhj
+email: ty@hgo.rt
+creationDate: Tue Mar 10 00:29:04 EET 2020
+uid: fgffgfg
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+

@@ -1,4 +1,4 @@
-package com.isd.parking.controller.frontapp;
+package com.isd.parking.controller.web;
 
 import org.springframework.stereotype.Component;
 

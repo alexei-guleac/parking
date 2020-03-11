@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.isd.parking.config;
+package com.isd.parking.web.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +26,8 @@ public class CORSConfig implements WebMvcConfigurer {
     @Value("${front.url}")
     private String frontUrl;
 
+    private final long MAX_AGE_SECS = 3600;
+
     /**
      * Method specifies CORS mapping - which methods are allowed from allowed origins (frontend Angular SPA)
      *
@@ -37,6 +39,8 @@ public class CORSConfig implements WebMvcConfigurer {
         log.info(grTxt("Call from front application"));
         registry.addMapping("/**")
                 .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
-                .allowedOrigins(frontUrl);  //TODO: change the URL for the prod URL when we deploy
+                .allowedOrigins(frontUrl)  //TODO: change the URL for the prod URL when we deploy
+                .allowCredentials(true)
+                .maxAge(MAX_AGE_SECS);
     }
 }

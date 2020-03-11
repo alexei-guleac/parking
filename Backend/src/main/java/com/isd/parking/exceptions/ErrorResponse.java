@@ -1,4 +1,4 @@
-package com.isd.parking.exception;
+package com.isd.parking.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

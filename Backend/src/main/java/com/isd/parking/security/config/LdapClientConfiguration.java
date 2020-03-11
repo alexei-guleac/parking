@@ -1,11 +1,6 @@
-package com.isd.parking.config.security;
+package com.isd.parking.security.config;
 
 import com.isd.parking.utils.ColorConsoleOutput;
-import com.isd.parking.utils.FileUtils;
-import com.unboundid.ldap.listener.InMemoryDirectoryServer;
-import com.unboundid.ldap.listener.InMemoryDirectoryServerConfig;
-import com.unboundid.ldap.listener.InMemoryListenerConfig;
-import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.schema.Schema;
 import lombok.extern.slf4j.Slf4j;
@@ -24,14 +19,14 @@ import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 @Configuration
 @EnableLdapRepositories(basePackages = "com.isd.parking.** ** ")
 @Slf4j
-public class LdapConfig {
+public class LdapClientConfiguration {
 
     private final Environment env;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public LdapConfig(Environment env, ColorConsoleOutput console) {
+    public LdapClientConfiguration(Environment env, ColorConsoleOutput console) {
         this.env = env;
         this.console = console;
     }
@@ -62,14 +57,14 @@ public class LdapConfig {
         return contextSource;
     }
 
-    public void setSchema() throws Exception {
+    /*public void setSchema() throws Exception {
         // Create the configuration to use for the server.
         InMemoryDirectoryServerConfig config = new InMemoryDirectoryServerConfig(env.getRequiredProperty("ldap.partitionSuffix"));
         config.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("LDAP", 8389));
-        config.setSchema(
+        *//*config.setSchema(
                 Schema.getSchema(
                         FileUtils.readPropertiesFiles("custom-schema.ldif")
-                ));
+                ));*//*
         log.info(console.methodMsg(String.valueOf(Schema.getDefaultStandardSchema())));
 
         // Create the directory server instance, populate it with data from the
@@ -77,9 +72,9 @@ public class LdapConfig {
         InMemoryDirectoryServer ds = new InMemoryDirectoryServer(config);
         LDAPConnection connection = ds.getConnection();
         log.info(connection + " CONNECTION");
-        ds.importFromLDIF(true, FileUtils.readPropertiesFiles("ldap-server.ldif"));
+        //ds.importFromLDIF(true, FileUtils.readPropertiesFiles("ldap-server.ldif"));
         ds.startListening();
-    }
+    }*/
 
     public void getDefaultSchema() {
         try {

@@ -2,8 +2,8 @@ package com.isd.parking.controller.arduino;
 
 import com.isd.parking.model.ParkingLot;
 import com.isd.parking.model.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.ParkingLotDBService;
+import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
-import static com.isd.parking.controller.frontapp.RestApiEndpoints.arduinoApi;
+import static com.isd.parking.controller.web.RestApiEndpoints.arduinoApi;
 
 
 /**

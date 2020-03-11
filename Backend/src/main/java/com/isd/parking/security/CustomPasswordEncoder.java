@@ -1,4 +1,4 @@
-package com.isd.parking.config.security;
+package com.isd.parking.security;
 
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;

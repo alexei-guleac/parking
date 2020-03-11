@@ -1,6 +1,6 @@
 package com.isd.parking;
 
-import com.isd.parking.config.security.CustomPasswordEncoder;
+import com.isd.parking.security.CustomPasswordEncoder;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

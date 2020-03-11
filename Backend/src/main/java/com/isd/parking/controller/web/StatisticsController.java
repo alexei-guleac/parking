@@ -1,4 +1,4 @@
-package com.isd.parking.controller.frontapp;
+package com.isd.parking.controller.web;
 
 import com.isd.parking.model.StatisticsRecord;
 import com.isd.parking.service.StatisticsService;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.isd.parking.controller.frontapp.RestApiEndpoints.statistics;
+import static com.isd.parking.controller.web.RestApiEndpoints.statistics;
 
 
 /**

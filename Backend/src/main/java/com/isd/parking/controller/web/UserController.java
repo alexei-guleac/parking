@@ -1,7 +1,7 @@
-package com.isd.parking.controller.frontapp;
+package com.isd.parking.controller.web;
 
-import com.isd.parking.config.security.CustomPasswordEncoder;
 import com.isd.parking.model.User;
+import com.isd.parking.security.CustomPasswordEncoder;
 import com.isd.parking.service.RestService;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-import static com.isd.parking.controller.frontapp.RestApiEndpoints.users;
+import static com.isd.parking.controller.web.RestApiEndpoints.users;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 
 
@@ -64,6 +62,15 @@ public class UserController {
         return userLdapClient.authenticate(username, password);
     }
 
+    @RequestMapping("/login/fb")
+    public boolean loginFb(@RequestBody String id) {
+        //log.info(console.classMsg("LDAP enabled: ") + Boolean.parseBoolean(ldapEnabled));
+        //String test = userService.getUserDetail(username);
+        log.info(console.classMsg(getClass().getSimpleName(), "fb login " + id));
+
+        return userLdapClient.searchUserBySocialId(new JSONObject(id).getString("id"), "fb");
+    }
+
     /**
      * Users registration controller
      * Handles user registration in system
@@ -78,15 +85,11 @@ public class UserController {
         log.info(console.classMsg(getClass().getSimpleName(), "registration request body: ") + blTxt(username + " " + password));
 
         //verify if user exists in db and throw error, else create
-        List<String> sameUserNames = userLdapClient.searchUser(username);
-        log.info(String.valueOf(sameUserNames));
-
-        if (sameUserNames.isEmpty()) {
+        if (!userLdapClient.searchUser(username)) {
             userLdapClient.createUser(new User(user, new CustomPasswordEncoder(console).encode(password)));
 
-            sameUserNames = userLdapClient.searchUser(username);
-            log.info(String.valueOf(sameUserNames));
-
+            boolean exists = userLdapClient.searchUser(username);
+            log.info(String.valueOf(exists));
             User createdUser = userLdapClient.findByDn("uid=" + username + "," + ldapSearchBase);
             if (createdUser == null) {
                 log.info(console.classMsg(getClass().getSimpleName(), " User not created: ") + blTxt(String.valueOf(createdUser)));
