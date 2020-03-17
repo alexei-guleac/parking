@@ -1,12 +1,12 @@
 package com.isd.parking.security.config;
 
-import com.isd.parking.security.CustomPasswordEncoder;
+import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.security.filter.JwtTokenAuthenticationFilter;
 import com.isd.parking.security.filter.RestAccessDeniedHandler;
 import com.isd.parking.security.filter.SecurityAuthenticationEntryPoint;
 import com.isd.parking.utils.ColorConsoleOutput;
+import com.isd.parking.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,11 +22,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
-import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.ldap.SpringSecurityLdapTemplate;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
@@ -42,8 +37,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,11 +45,19 @@ import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+
 @Configuration
 @Slf4j
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final String[] pathArray = new String[]{"/auth/**", "/login", "/login/**", "/registration", "/validate_captcha", "/parking", "/arduino", "/demo"};
+    private final LdapContextSource contextSource;
+
+    private final String[] pathArray = new String[]{
+            "/auth/**", "/login", "/login/**", "/registration",
+            "/validate_captcha", "/confirm_account",
+            "/forgot-password", "/reset-password",
+            "/parking", "/arduino", "/demo"
+    };
 
     @Value("${spring.ldap.embedded.ldif}")
     private String ldapFile;
@@ -83,9 +85,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${ldap.passwordAttribute}")
     private String ldapPasswordAttribute;
-    private final LdapContextSource contextSource;
+
     @Value("${ldap.url}")
     private String ldapProviderUrl;
+
+    private final String secretKeyFile = "secret.key";
 
     @Autowired
     public WebSecurityConfiguration(LdapContextSource contextSource) {
@@ -97,7 +101,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    LdapAuthoritiesPopulator ldapAuthoritiesPopulator() throws Exception {
+    LdapAuthoritiesPopulator ldapAuthoritiesPopulator() {
 
         /*
           Specificity here : we don't get the Role by reading the members of available groups (which is implemented by
@@ -117,9 +121,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             public Collection<? extends GrantedAuthority> getGrantedAuthorities(DirContextOperations userData, String username) {
 
                 String roles = "";
-                log.info("{getGrantedAuthorities} " + username + " userData " + userData);
                 String[] groupDns = userData.getStringAttributes(GROUP_MEMBER_OF);
-                log.info("{groupDns} " + Arrays.toString(groupDns));
+                log.info(String.valueOf(userData));
+                log.info(String.valueOf(groupDns));
 
                 // if user entry contains memberOf attribute
                 if (!(groupDns == null || groupDns.length == 0)) {
@@ -145,9 +149,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         /* the secret key used to sign the JWT token is known exclusively by the server.
          With Nimbus JOSE implementation, it must be at least 256 characters longs.
          */
-        String secret = IOUtils.toString(Objects.requireNonNull(
-                getClass().getClassLoader().getResourceAsStream("secret.key")), Charset.defaultCharset()
-        );
+        String secret = new FileUtils().getResourceAsString(secretKeyFile);
 
         http.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class);
         http.
@@ -216,7 +218,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .root(ldapPartitionSuffix)
                 .and()
                 .passwordCompare()
-                .passwordEncoder(new CustomPasswordEncoder(new ColorConsoleOutput()))
+                .passwordEncoder(new PasswordEncoding.CustomPasswordEncoder(new ColorConsoleOutput()))
                 .passwordAttribute(ldapPasswordAttribute);
     }
 
@@ -236,61 +238,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
            This bean is used by the AuthenticationController.
          */
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return DefaultPasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
-    static class DefaultPasswordEncoderFactories {
-        static PasswordEncoder createDelegatingPasswordEncoder() {
-            String encodingId = "bcrypt";
-            Map<String, PasswordEncoder> encoders = new HashMap<>();
-            encoders.put(encodingId, bcryptEncoder());
-            encoders.put("ldap", new org.springframework.security.crypto.password.LdapShaPasswordEncoder());
-            encoders.put("MD4", new org.springframework.security.crypto.password.Md4PasswordEncoder());
-            encoders.put("MD5", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("MD5"));
-            encoders.put("noop", org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance());
-            encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());
-            encoders.put("scrypt", new SCryptPasswordEncoder());
-            encoders.put("SHA-1", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-1"));
-            encoders.put("SHA-256", new org.springframework.security.crypto.password.MessageDigestPasswordEncoder("SHA-256"));
-            encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
-            encoders.put("customBC", new CustomPasswordEncoder(new ColorConsoleOutput()));
-
-            DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(encodingId, encoders);
-            delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.getOrDefault("customBC", new CustomPasswordEncoder(new ColorConsoleOutput())));
-
-            return delegatingPasswordEncoder;
-        }
-    }
-
-    @Bean
-    public static BCryptPasswordEncoder bcryptEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public static BCryptPasswordEncoder passwordEncoderBc() {
-        final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-        return new BCryptPasswordEncoder() {
-
-            @Autowired
-            private ColorConsoleOutput console;
-
-            @Override
-            public String encode(CharSequence rawPassword) {
-                log.info(console.methodMsg("in ws config bc"));
-                return "{bcrypt}" + bcrypt.encode(rawPassword.toString());
-            }
-
-            @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
-                log.info(console.methodMsg("in ws config bc"));
-                return bcrypt.matches(rawPassword, encodedPassword.substring(8));
-            }
-        };
     }
 
     private JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter(String path, String secret) {
@@ -348,7 +295,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             final HttpServletResponse response = (HttpServletResponse) res;
             response.setHeader("Access-Control-Allow-Origin", frontUrl);
 
-            // without this header jquery.ajax calls returns 401 even after successful login and SSESSIONID being succesfully stored.
+            // without this header jquery.ajax calls returns 401 even after successful login and SESSION-ID being successfully stored.
             response.setHeader("Access-Control-Allow-Credentials", "true");
 
             response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");

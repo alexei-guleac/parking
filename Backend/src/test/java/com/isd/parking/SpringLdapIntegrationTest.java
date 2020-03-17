@@ -1,9 +1,9 @@
 package com.isd.parking;
 
-import com.isd.parking.model.Group;
-import com.isd.parking.model.User;
+import com.isd.parking.models.Group;
+import com.isd.parking.models.User;
 import com.isd.parking.repository.GroupRepository;
-import com.isd.parking.security.CustomPasswordEncoder;
+import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -86,7 +86,7 @@ public class SpringLdapIntegrationTest {
     @Test
     public void testCreateUser() {
         //userLdapService.create("test_user", new CustomPasswordEncoder().encode("qwerty123"));
-        userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder(console).encode("qwerty123")));
+        userLdapService.createUser(new User("test_user", "Test U", "U", new PasswordEncoding.CustomPasswordEncoder(console).encode("qwerty123")));
 
         User user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);

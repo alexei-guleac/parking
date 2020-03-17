@@ -1,9 +1,9 @@
 package com.isd.parking.controller.arduino;
 
-import com.isd.parking.model.ParkingLot;
-import com.isd.parking.model.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotLocalService;
+import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotDBService;
+import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;

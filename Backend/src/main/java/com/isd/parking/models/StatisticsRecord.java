@@ -1,11 +1,10 @@
-package com.isd.parking.model;
+package com.isd.parking.models;
 
-import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.Date;

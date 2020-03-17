@@ -1,4 +1,4 @@
-package com.isd.parking.model;
+package com.isd.parking.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,11 +9,13 @@ import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
 
 import javax.naming.Name;
+import javax.validation.constraints.Email;
 
 /**
  * LDAP user entry
  */
-@Entry(base = "ou=people", objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
+@Entry(base = "ou=people",
+        objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
 @Data
 public final class User {
 
@@ -35,6 +37,7 @@ public final class User {
     String lastname;
 
     @JsonProperty("email")
+    @Email
     private @Attribute(name = "email")
     String email;
 

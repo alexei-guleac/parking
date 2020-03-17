@@ -1,8 +1,8 @@
 package com.isd.parking.controller.web;
 
 import com.isd.parking.exceptions.ResourceNotFoundException;
-import com.isd.parking.model.ParkingLot;
-import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.StatisticsService;
 import com.isd.parking.storage.util.DataLoader;

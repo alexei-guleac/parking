@@ -6,9 +6,9 @@ import org.springframework.stereotype.Component;
 public class RestApiEndpoints {
 
     public static final String arduinoApi = "/arduino";
-    static final String parking = "/parking";
-    static final String statistics = "/statistics";
     public static final String arduinoWS = "/demo";
     public static final String users = "/users";
+    static final String parking = "/parking";
+    static final String statistics = "/statistics";
 
 }

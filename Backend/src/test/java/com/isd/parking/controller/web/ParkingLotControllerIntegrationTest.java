@@ -2,8 +2,8 @@ package com.isd.parking.controller.web;
 
 
 import com.isd.parking.ParkingApplication;
-import com.isd.parking.model.ParkingLot;
-import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

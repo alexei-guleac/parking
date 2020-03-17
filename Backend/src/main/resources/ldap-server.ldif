@@ -223,10 +223,11 @@ sn: Fghfhg
 email: erer@fdfdfdf.rty
 creationDate: Tue Mar 10 00:49:34 EET 2020
 fbid: 637849780349462
-uid: ghjhjhj
+gid: 100421727970413510958
 memberOf: cn=developers,ou=groups
 memberOf: cn=ADMIN,ou=roles
 user_role: ADMIN
+uid: user3
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
 dn: uid=user2,ou=people,dc=isd,dc=com
@@ -258,4 +259,28 @@ dn: cn=Chief of Developers,ou=Roles,dc=isd,dc=com
 objectClass: organizationalRole
 cn: Chief of Developers
 roleOccupant: uid=user3,ou=People,dc=isd,dc=com
+
+dn: uid=tytyt,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Dffdf Dfgdfgf
+sn: Dfgdfgf
+email: rtwer@gmaso.sd
+creationDate: Thu Mar 12 20:24:54 EET 2020
+uid: tytyt
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+
+dn: uid=Qwerwertwer,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+cn: Dfdff Dfdfdf
+sn: Dfdfdf
+email: aleks7900@gmail.com
+creationDate: Mon Mar 16 21:32:20 EET 2020
+uid: Qwerwertwer
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 

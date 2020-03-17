@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.model.User;
+import com.isd.parking.models.User;
 import org.springframework.data.ldap.repository.LdapRepository;
 import org.springframework.stereotype.Repository;
 

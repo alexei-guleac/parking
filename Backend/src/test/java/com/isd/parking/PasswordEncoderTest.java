@@ -1,6 +1,6 @@
 package com.isd.parking;
 
-import com.isd.parking.security.CustomPasswordEncoder;
+import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -12,6 +12,6 @@ public class PasswordEncoderTest {
 
     @Test
     public void testPassEncoding() {
-        log.info(new CustomPasswordEncoder(new ColorConsoleOutput()).getH("aRduin1$"));
+        log.info(new PasswordEncoding.CustomPasswordEncoder(new ColorConsoleOutput()).getH("aRduin1$"));
     }
 }

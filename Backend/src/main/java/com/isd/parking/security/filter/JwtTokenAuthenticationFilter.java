@@ -120,5 +120,4 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         return authentication;
     }
-
 }

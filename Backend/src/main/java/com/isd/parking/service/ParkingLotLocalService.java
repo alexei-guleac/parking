@@ -1,6 +1,6 @@
 package com.isd.parking.service;
 
-import com.isd.parking.model.ParkingLot;
+import com.isd.parking.models.ParkingLot;
 import com.isd.parking.repository.ParkingLotLocalStorage;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;

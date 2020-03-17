@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.model.ParkingLot;
+import com.isd.parking.models.ParkingLot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

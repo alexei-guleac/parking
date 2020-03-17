@@ -1,8 +1,8 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.model.User;
+import com.isd.parking.models.User;
 import com.isd.parking.repository.UserRepository;
-import com.isd.parking.security.CustomPasswordEncoder;
+import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ldap.support.LdapUtils;
@@ -62,7 +62,7 @@ public class UserService {
      */
     public void create(final String username, final String password) {
         log.info(console.methodMsg(""));
-        User newUser = new User(username, CustomPasswordEncoder.digestSHA(password));
+        User newUser = new User(username, PasswordEncoding.CustomPasswordEncoder.digestSHA(password));
         newUser.setId(LdapUtils.emptyLdapName());
         //newUser.setId(LdapUtils.newLdapName(new DistinguishedName("uid=" + username + ",ou=people")));
 

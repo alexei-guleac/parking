@@ -1,8 +1,9 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.model.User;
-import com.isd.parking.security.CustomPasswordEncoder;
+import com.isd.parking.models.User;
+import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.utils.ColorConsoleOutput;
+import com.isd.parking.utils.MyStringUtils;
 import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.LDAPException;
@@ -36,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -67,26 +69,18 @@ public class UserLdapClient {
 
     private final String[] objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"};
 
-    private final String ldifFilePath = "N:\\Programming\\IFC\\Diplome\\Diplome\\Back\\Backend\\src\\main\\resources\\ldap-server.ldif";
-    //private final String ldifFilePath = "classpath:ldap-server.ldif";
-    //private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
-    /*@Value(value = ldifFilePath)
-    private Resource companiesXml;*/
-    // private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
-
     private static final Integer THREE_SECONDS = 3000;
 
     private final LdapTemplate ldapTemplate;
-    private File ldifFile;
 
     private final LdapName baseLdapPath = LdapUtils.newLdapName(ldapBaseDn);
 
-    private final CustomPasswordEncoder passwordEncoder;
+    private final PasswordEncoding.CustomPasswordEncoder passwordEncoder;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public UserLdapClient(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate, CustomPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
+    public UserLdapClient(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate, PasswordEncoding.CustomPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
         this.ldapTemplate = ldapTemplate;
         this.passwordEncoder = passwordEncoder;
         this.console = console;
@@ -116,14 +110,14 @@ public class UserLdapClient {
     }
 
     private Name buildDn(User user) {
-        return LdapNameBuilder.newInstance(baseLdapPath)
+        return LdapNameBuilder.newInstance(ldapBaseDn)
                 .add("ou", "people")
                 .add("uid", user.getId())
                 .build();
     }
 
     private Name bindDnByUid(String uid) {
-        return LdapNameBuilder.newInstance(baseLdapPath)
+        return LdapNameBuilder.newInstance()
                 .add("ou", "people")
                 .add("uid", uid)
                 .build();
@@ -161,9 +155,14 @@ public class UserLdapClient {
 
             // Write all of the matching entries to LDIF.
             LDIFWriter ldifWriter;
-            final String path = ldifFile.getPath();
-            log.info(console.methodMsg(path));
             try {
+                String ldifFilePath = "N:\\Programming\\IFC\\Diplome\\Diplome\\Back\\Backend\\src\\main\\resources\\ldap-server.ldif";
+                //private final String ldifFilePath = "classpath:ldap-server.ldif";
+                //private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
+                /*@Value(value = ldifFilePath)
+                private Resource companiesXml;*/
+                // private final String ldifFilePath = FileUtils.readPropertiesFiles("ldap-server.ldif");
+
                 ldifWriter = new LDIFWriter(new FileOutputStream(new File(ldifFilePath), true));
                 ldifWriter.writeEntry(entry);
                 ldifWriter.close();
@@ -213,6 +212,13 @@ public class UserLdapClient {
         Attribute attr = new BasicAttribute("sn", user.getLastname());
         ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
         ldapTemplate.modifyAttributes(buildDn(user), new ModificationItem[]{item});
+    }
+
+    public void updateUserPassword(String username, String password) {
+        log.info(console.methodMsg(""));
+        Attribute attr = new BasicAttribute("userPassword", password);
+        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
+        ldapTemplate.modifyAttributes(bindDnByUid(username), new ModificationItem[]{item});
     }
 
     public void modify(final String username, final String password) {
@@ -274,6 +280,28 @@ public class UserLdapClient {
                         .get("cn")
                         .get());
     }
+
+    public List<String> getAuthoritiesMembershipById(final String username) {
+
+        List<String> l = new ArrayList<>();
+        log.info(console.methodMsg(""));
+
+        return ldapTemplate.search(
+                ldapSearchBase,
+                "uid=" + username,
+                (AttributesMapper<String>) attrs -> {
+                    Attribute attr = attrs.get("memberOf");
+
+                    for (int i = 0; i < attr.size(); i++) {
+                        String s = (String) attr.get(i);
+                        String[] str = s.split(",");
+                        str = str[0].split("=");
+                        l.add("ROLE_" + str[1]);
+                    }
+                    return new MyStringUtils().collectionToString(l);
+                });
+    }
+
 
     public boolean searchUser(final String username) {
         log.info(console.methodMsg(""));
@@ -350,6 +378,161 @@ public class UserLdapClient {
                 .where("objectclass").is("person"), new UserAttributesMapper());
     }
 
+    /* Custom search */
+
+    public boolean searchUsersBySocialId(final String id, String social) {
+        log.info(console.methodMsg("Id " + id + " social " + social));
+        log.info(String.valueOf(getUsersBySocialId(id, social)));
+
+        return !getUsersBySocialId(id, social).isEmpty();
+    }
+
+    public boolean searchUsersByEmail(final String email) {
+        log.info(console.methodMsg("Email " + email));
+        log.info(String.valueOf(getUsersByEmail(email)));
+
+        return !getUsersByEmail(email).isEmpty();
+    }
+
+    public List<User> getUsersBySocialId(String id, String social) {
+        LdapQuery query = getUserBySocialIdLdapQuery(id, social);
+
+        return ldapTemplate.search(query, new UserAttributesMapper());
+    }
+
+    public User getUserBySocialId(String id, String social) {
+        LdapQuery query = getUserBySocialIdLdapQuery(id, social);
+
+        return ldapTemplate.search(query, new UserAttributesMapper()).get(0);
+    }
+
+    public List<User> getFullnameBySocialId(String id, String social) {
+        LdapQuery query = getUserBySocialIdLdapQuery(id, social);
+
+        return ldapTemplate.search(query, new UserAttributesMapperShort());
+    }
+
+    private LdapQuery getUserBySocialIdLdapQuery(String id, String social) {
+        LdapQuery query = query()
+                .searchScope(SearchScope.SUBTREE)
+                .timeLimit(THREE_SECONDS)
+                .countLimit(3)
+                //.attributes("cn")
+                .base(ldapSearchBase)
+                .where("objectclass").is("person")
+                .and(social + "id").like(id)
+                .and("uid").isPresent();
+        log.info(console.methodMsg("Query " + query));
+        return query;
+    }
+
+    public List<User> getPersonNamesByLastName(String lastName) {
+
+        LdapQuery query = query()
+                .searchScope(SearchScope.SUBTREE)
+                .timeLimit(THREE_SECONDS)
+                .countLimit(3)
+                .attributes("cn")
+                .base(LdapUtils.emptyLdapName())
+                .where("objectclass").is("person")
+                .and("sn").like(lastName)
+                .and("uid").isPresent();
+
+        return ldapTemplate.search(query, new UserAttributesMapperShort());
+    }
+
+    public List<User> getUsersByEmail(String email) {
+
+        LdapQuery query = query()
+                .searchScope(SearchScope.SUBTREE)
+                .timeLimit(THREE_SECONDS)
+                .countLimit(3)
+                .base(LdapUtils.emptyLdapName())
+                .where("objectclass").is("person")
+                .and("email").like(email)
+                .and("uid").isPresent();
+
+        return ldapTemplate.search(query, new UserAttributesMapper());
+    }
+
+    public User getUserByEmail(String email) {
+        List<User> users = getUsersByEmail(email);
+        if (!users.isEmpty()) {
+            return users.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    /*public List<User> getPersonNamesByLastName2(String lastName) {
+
+        SearchControls sc = new SearchControls();
+        sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        sc.setTimeLimit(THREE_SECONDS);
+        sc.setCountLimit(3);
+        sc.setReturningAttributes(new String[]{"cn"});
+
+        String filter = "(&(objectclass=person)(sn=" + lastName + "))";
+        return ldapTemplate.search(LdapUtils.emptyLdapName(), filter, sc, new UserAttributesMapperShort());
+    }
+
+    public List<User> getPersonNamesByLastName3(String lastName) {
+
+        SearchControls sc = new SearchControls();
+        sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        sc.setTimeLimit(THREE_SECONDS);
+        sc.setCountLimit(10);
+        sc.setReturningAttributes(new String[]{"cn"});
+
+        AndFilter filter = new AndFilter();
+        filter.and(new EqualsFilter("objectclass", "person"));
+        filter.and(new EqualsFilter("sn", lastName));
+
+        return ldapTemplate.search(LdapUtils.emptyLdapName(), filter.encode(), sc, new UserAttributesMapperShort());
+    }*/
+
+    @PostConstruct
+    private void readFilename() throws FileNotFoundException {
+
+        String ldifFilePath = "ldap-server.ldif";
+        String ldifFilePath2 = "classpath:ldap-server.ldif";
+
+        File f = new File(ldifFilePath);
+        log.info("File Found : " + f.exists());
+        log.info("File name : " + f.getName());
+        log.info("File path : " + f.getPath());
+
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+        File ldifFile = new File(Objects.requireNonNull(classLoader.getResource(ldifFilePath)).getFile());
+        log.info("File Found : " + ldifFile.exists());
+        log.info("File name : " + ldifFile.getName());
+        log.info("File path : " + ldifFile.getPath());
+
+        ldifFile = ResourceUtils.getFile(ldifFilePath2);
+        //File is found
+        log.info("File Found : " + ldifFile.exists());
+        log.info("File name : " + ldifFile.getName());
+        log.info("File path : " + ldifFile.getPath());
+    }
+
+    /**
+     * Custom user attributes mapper, maps the attributes to the person POJO
+     */
+    private class UserAttributesMapperShort implements AttributesMapper<User> {
+        @Override
+        public User mapFromAttributes(Attributes attrs) throws NamingException {
+            User user = new User();
+            user.setFullname((String) attrs.get("cn").get());
+
+            Attribute sn = attrs.get("sn");
+            if (sn != null) {
+                user.setLastname((String) sn.get());
+            }
+            return user;
+        }
+    }
+
+
     /**
      * This class is responsible to prepare User object after ldap search.
      *
@@ -364,15 +547,18 @@ public class UserLdapClient {
                 return null;
             }
             user = new User();
-            user.setFullname(attributes.get("cn").get().toString());
+            user.setUsername(attributes.get("uid").get().toString());
 
             if (attributes.get("userPassword") != null) {
                 String userPassword;
                 userPassword = new String((byte[]) attributes.get("userPassword").get(), StandardCharsets.UTF_8);
                 user.setPassword(userPassword);
             }
-            if (attributes.get("uid") != null) {
-                user.setUsername(attributes.get("uid").get().toString());
+            if (attributes.get("email") != null) {
+                user.setEmail(attributes.get("email").get().toString());
+            }
+            if (attributes.get("cn") != null) {
+                user.setFullname(attributes.get("cn").get().toString());
             }
             if (attributes.get("sn") != null) {
                 user.setLastname(attributes.get("sn").get().toString());
@@ -425,107 +611,6 @@ public class UserLdapClient {
             }
             result.append("\n } ");
             return result.toString();
-        }
-    }
-
-    /* Custom search */
-
-    public List<User> getPersonNamesBySocialId(String id, String social) {
-
-        LdapQuery query = query()
-                .searchScope(SearchScope.SUBTREE)
-                .timeLimit(THREE_SECONDS)
-                .countLimit(3)
-                .attributes("cn")
-                .base(LdapUtils.emptyLdapName())
-                .where("objectclass").is("person")
-                .and(social + "id").like(id)
-                .and("uid").isPresent();
-
-        return ldapTemplate.search(query, new UserAttributesMapperShort());
-    }
-
-    public boolean searchUserBySocialId(final String id, String social) {
-        log.info(console.methodMsg("Id " + id + " social " + social));
-        log.info(String.valueOf(getPersonNamesBySocialId(id, social)));
-        return !getPersonNamesBySocialId(id, social).isEmpty();
-    }
-
-    public List<User> getPersonNamesByLastName(String lastName) {
-
-        LdapQuery query = query()
-                .searchScope(SearchScope.SUBTREE)
-                .timeLimit(THREE_SECONDS)
-                .countLimit(3)
-                .attributes("cn")
-                .base(LdapUtils.emptyLdapName())
-                .where("objectclass").is("person")
-                .and("sn").like("j*hn")
-                .and("uid").isPresent();
-
-        return ldapTemplate.search(query, new UserAttributesMapperShort());
-    }
-
-    /*public List<User> getPersonNamesByLastName2(String lastName) {
-
-        SearchControls sc = new SearchControls();
-        sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        sc.setTimeLimit(THREE_SECONDS);
-        sc.setCountLimit(3);
-        sc.setReturningAttributes(new String[]{"cn"});
-
-        String filter = "(&(objectclass=person)(sn=" + lastName + "))";
-        return ldapTemplate.search(LdapUtils.emptyLdapName(), filter, sc, new UserAttributesMapperShort());
-    }
-
-    public List<User> getPersonNamesByLastName3(String lastName) {
-
-        SearchControls sc = new SearchControls();
-        sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        sc.setTimeLimit(THREE_SECONDS);
-        sc.setCountLimit(10);
-        sc.setReturningAttributes(new String[]{"cn"});
-
-        AndFilter filter = new AndFilter();
-        filter.and(new EqualsFilter("objectclass", "person"));
-        filter.and(new EqualsFilter("sn", lastName));
-
-        return ldapTemplate.search(LdapUtils.emptyLdapName(), filter.encode(), sc, new UserAttributesMapperShort());
-    }*/
-
-    @PostConstruct
-    private void readFilename() throws FileNotFoundException {
-
-        String ldifFilePath = "ldap-server.ldif";
-        String ldifFilePath2 = "classpath:ldap-server.ldif";
-
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        ldifFile = new File(Objects.requireNonNull(classLoader.getResource(ldifFilePath)).getFile());
-        log.info("File Found : " + ldifFile.exists());
-        log.info("File name : " + ldifFile.getName());
-        log.info("File path : " + ldifFile.getPath());
-
-        ldifFile = ResourceUtils.getFile(ldifFilePath2);
-        //File is found
-        log.info("File Found : " + ldifFile.exists());
-        log.info("File name : " + ldifFile.getName());
-        log.info("File path : " + ldifFile.getPath());
-    }
-
-    /**
-     * Custom user attributes mapper, maps the attributes to the person POJO
-     */
-    private class UserAttributesMapperShort implements AttributesMapper<User> {
-        @Override
-        public User mapFromAttributes(Attributes attrs) throws NamingException {
-            User user = new User();
-            user.setFullname((String) attrs.get("cn").get());
-
-            Attribute sn = attrs.get("sn");
-            if (sn != null) {
-                user.setLastname((String) sn.get());
-            }
-            return user;
         }
     }
 }

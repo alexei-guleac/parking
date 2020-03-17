@@ -1,4 +1,4 @@
-package com.isd.parking.web.config;
+package com.isd.parking.config.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;

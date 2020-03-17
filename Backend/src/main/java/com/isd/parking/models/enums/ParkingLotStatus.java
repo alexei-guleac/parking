@@ -1,4 +1,4 @@
-package com.isd.parking.model.enums;
+package com.isd.parking.models.enums;
 
 /**
  * Permissible parking lot statuses enumeration

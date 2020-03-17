@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.model.ParkingLot;
+import com.isd.parking.models.ParkingLot;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

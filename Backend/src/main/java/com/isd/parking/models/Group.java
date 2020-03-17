@@ -1,4 +1,4 @@
-package com.isd.parking.model;
+package com.isd.parking.models;
 
 import javax.naming.Name;
 import java.util.HashSet;

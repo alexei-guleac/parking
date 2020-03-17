@@ -1,7 +1,7 @@
 package com.isd.parking.service;
 
-import com.isd.parking.model.ParkingLot;
-import com.isd.parking.model.StatisticsRecord;
+import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.StatisticsRecord;
 import com.isd.parking.repository.StatisticsRepository;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static com.isd.parking.utils.ColorConsoleOutput.*;
+import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 
 
 /**

@@ -1,6 +1,6 @@
 package com.isd.parking.controller.web;
 
-import com.isd.parking.model.StatisticsRecord;
+import com.isd.parking.models.StatisticsRecord;
 import com.isd.parking.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.isd.parking.storage;
 
-import com.isd.parking.model.ParkingLot;
+import com.isd.parking.models.ParkingLot;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;

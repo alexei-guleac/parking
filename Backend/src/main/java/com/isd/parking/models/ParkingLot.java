@@ -1,6 +1,6 @@
-package com.isd.parking.model;
+package com.isd.parking.models;
 
-import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

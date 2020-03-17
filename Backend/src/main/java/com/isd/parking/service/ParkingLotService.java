@@ -1,6 +1,6 @@
 package com.isd.parking.service;
 
-import com.isd.parking.model.ParkingLot;
+import com.isd.parking.models.ParkingLot;
 
 import java.util.List;
 import java.util.Optional;

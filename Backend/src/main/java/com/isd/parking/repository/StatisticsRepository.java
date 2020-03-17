@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.model.StatisticsRecord;
+import com.isd.parking.models.StatisticsRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

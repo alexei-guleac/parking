@@ -3,15 +3,13 @@ package com.isd.parking.security;
 
 import com.isd.parking.security.exceptions.JwtBadSignatureException;
 import com.isd.parking.security.exceptions.JwtExpirationException;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.JWSVerifier;
+import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import com.nimbusds.jwt.util.DateUtils;
+import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -21,8 +19,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
-import static com.nimbusds.jose.JWSAlgorithm.HS256;
-
 public final class JwtUtils {
 
     private final static String AUDIENCE_UNKNOWN = "unknown";
@@ -31,13 +27,15 @@ public final class JwtUtils {
     private final static String AUDIENCE_TABLET = "tablet";
     private final static String ROLES_CLAIM = "roles";
 
-    public static String generateHMACToken(String subject, Collection<? extends GrantedAuthority> roles, String secret, int expirationInMinutes) throws JOSEException {
+    public static String generateHMACToken(String subject, Collection<? extends GrantedAuthority> roles,
+                                           String secret, int expirationInMinutes) throws JOSEException {
         return generateHMACToken(subject, AuthorityListToCommaSeparatedString(roles), secret, expirationInMinutes);
     }
 
-    public static String generateHMACToken(String subject, String roles, String secret, int expirationInMinutes) throws JOSEException {
+    public static String generateHMACToken(String subject, String roles, String secret, int expirationInMinutes)
+            throws JOSEException {
         JWSSigner signer = new MACSigner(secret);
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+        JWTClaimsSet payload = new JWTClaimsSet.Builder()
                 .subject(subject)
                 .issueTime(currentDate())
                 .expirationTime(expirationDate(expirationInMinutes))
@@ -45,7 +43,11 @@ public final class JwtUtils {
                 .audience(AUDIENCE_WEB)
                 .build();
 
-        SignedJWT signedJWT = new SignedJWT(new JWSHeader(HS256), claimsSet);
+        val header = new JWSHeader.Builder(JWSAlgorithm.HS256)
+                .type(JOSEObjectType.JWT)
+                .build();
+
+        SignedJWT signedJWT = new SignedJWT(header, payload);
         signedJWT.sign(signer);
         return signedJWT.serialize();
     }

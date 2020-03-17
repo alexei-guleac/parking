@@ -1,7 +1,7 @@
 package com.isd.parking.storage.util;
 
-import com.isd.parking.model.ParkingLot;
-import com.isd.parking.model.enums.ParkingLotStatus;
+import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotDBService;
 import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.ParkingLotService;
