@@ -1,0 +1,20 @@
+import {Injectable} from '@angular/core';
+import {Resolve} from '@angular/router';
+import {Observable} from 'rxjs';
+import {DataService} from './data.service';
+import {Statistics} from '../../models/Statistics';
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class PrefetchStatsService implements Resolve<Observable<Array<Statistics>>> {
+
+
+    constructor(private dataService: DataService) {
+    }
+
+    resolve() {
+        return this.dataService.getAllStats();
+    }
+}

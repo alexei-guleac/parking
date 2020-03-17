@@ -1,78 +1,48 @@
+import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {Injectable, NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {RouterModule, Routes} from '@angular/router';
-import {NgxPaginationModule} from 'ngx-pagination';
-import {AppComponent} from './app.component';
-import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
-import {MainComponent} from './main/main.component';
-import {MenuComponent} from './menu/menu.component';
-import {ParkingLotDetailComponent} from './main/parking-lot-detail/parking-lot-detail.component';
-import {LoginFormComponent} from './Account/Forms/login-form/login-form.component';
-import {StatisticsComponent} from './statistics/statistics.component';
-import {FeatureComponent} from './feature/feature.component';
-import {PrefetchStatsService} from './prefetch-stats.service';
-import {PrefetchParkingLotsService} from './prefetch-parking-lots.service';
-import {Feature2Component} from './feature/feature2/feature2.component';
-import {ParkingLayoutComponent} from './main/parking-layout/parking-layout.component';
-import {RegFormComponent} from './Account/Forms/registration-form/registration-form.component';
-import {EqualValidator} from './Account/Forms/validation/equal-validator.directive';
-import {NoDblClickDirective} from './Account/Forms/validation/no-dbl-click.directive';
-import {AuthServiceConfig, FacebookLoginProvider, SocialLoginModule} from 'angularx-social-login';
-import {RECAPTCHA_URL, ReCaptchaDirective} from './Account/Forms/validation/recaptcha-validator';
-import {environment} from '../environments/environment';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
-import {OrSeparatorComponent} from './Account/Forms/or-separator/or-separator.component';
-import {UsernameInputComponent} from './Account/Forms/username-input/username-input.component';
-import {SocialButtonsComponent} from './Account/Forms/social-buttons/social-buttons.component';
+import {NgxPaginationModule} from 'ngx-pagination';
+import {AppComponent} from './app.component';
+import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
+import {MainComponent} from './components/main/main.component';
+import {MenuComponent} from './components/menu/menu.component';
+import {ParkingLotDetailComponent} from './components/main/parking-lot-detail/parking-lot-detail.component';
+import {LoginFormComponent} from './components/Account/Forms/login-form/login-form.component';
+import {StatisticsComponent} from './components/statistics/statistics.component';
+import {FeatureComponent} from './components/old/features/feature.component';
+import {ParkingLayoutComponent} from './components/parking-layout/parking-layout.component';
+import {ParkingLayoutOldComponent} from './components/old/parking-layout-old/parking-layout-old.component';
+import {RegFormComponent} from './components/Account/Forms/registration-form/registration-form.component';
+import {EqualValidator} from './validation/equal-validator.directive';
+import {NoDblClickDirective} from './validation/no-dbl-click.directive';
+import {AuthServiceConfig, SocialLoginModule} from 'angularx-social-login';
+import {RECAPTCHA_URL, ReCaptchaDirective} from './validation/recaptcha-validator';
+import {OrSeparatorComponent} from './components/Account/Forms/or-separator/or-separator.component';
+import {UsernameInputComponent} from './components/Account/Forms/username-input/username-input.component';
+import {SocialButtonsComponent} from './components/Account/Forms/social-buttons/social-buttons.component';
+import {GlobalHttpErrorInterceptorService} from './services/helpers/global-http-interceptor-service.service';
+import {Angulartics2Module} from 'angulartics2';
+import {XhrInterceptor} from './services/helpers/xhr-interceptor.service';
+import {TokenInterceptor} from './services/helpers/token-interceptor.service';
+import {provideConfig} from './services/account/social-auth.service';
+import {AccountStorageTypeService} from './services/account/session-storage.service';
+import {environment} from '../environments/environment';
+import {api} from './services/navigation/app.endpoints';
+import {AccountFormComponent} from './components/Account/Forms/account-form/account-form.component';
+import {ForgotPassFormComponent} from './components/Account/Forms/forgot-pass-form/forgot-pass-form.component';
+import {ConfirmUserComponent} from './components/Account/confirm-user/confirm-user.component';
+import {AppRouting} from './app.routing';
+import {JwtAppModule} from './jwt.module';
+import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 'ngx-ui-loader';
+import {NoConnectionComponent} from "./components/no-connection/no-connection.component";
+import {ResetPasswordComponent} from "./components/Account/Forms/reset-password/reset-password.component";
 
 // import {} from 'bower_components/angular-mailcheck';
 
-
-@Injectable()
-export class XhrInterceptor implements HttpInterceptor {
-
-    intercept(req: HttpRequest<any>, next: HttpHandler) {
-        const xhr = req.clone({
-            headers: req.headers.set('X-Requested-With', 'XMLHttpRequest')
-        });
-        return next.handle(xhr);
-    }
-}
-
-const config = new AuthServiceConfig([
-    {
-        id: FacebookLoginProvider.PROVIDER_ID,
-        provider: new FacebookLoginProvider('509861456396823')   // nata.nemuza
-    }
-]);
-
-export function provideConfig() {
-    return config;
-}
-
-const routes: Routes = [
-    {path: 'test', component: FeatureComponent},
-    {path: 'test2', component: Feature2Component},
-    {path: 'layout', component: ParkingLayoutComponent},
-    {
-        path: 'stats',
-        component: StatisticsComponent,
-        resolve: {stats: PrefetchStatsService, parkingLots: PrefetchParkingLotsService}
-    },
-    {path: '', component: MainComponent},
-
-    {path: 'login', component: LoginFormComponent},
-    {path: 'logout', component: LoginFormComponent},
-    {path: 'registration', component: RegFormComponent},
-    // {path: '', component: LoginFormComponent},
-
-    {path: '404', component: PageNotFoundComponent},
-    {path: '**', redirectTo: '/404'}
-];
 
 @NgModule({
     declarations: [
@@ -88,37 +58,58 @@ const routes: Routes = [
         NoDblClickDirective,
         StatisticsComponent,
         FeatureComponent,
-        Feature2Component,
         ParkingLayoutComponent,
+        ParkingLayoutOldComponent,
         OrSeparatorComponent,
         UsernameInputComponent,
-        SocialButtonsComponent
+        SocialButtonsComponent,
+        AccountFormComponent,
+        ForgotPassFormComponent,
+        ConfirmUserComponent,
+        ResetPasswordComponent,
+        NoConnectionComponent
     ],
 
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         FormsModule,
         ReactiveFormsModule,
         HttpClientModule,
-        RouterModule.forRoot(routes),
+        AppRouting,
         NgxPaginationModule,
         BrowserAnimationsModule,
         SocialLoginModule,
         MatCardModule,
         MatButtonModule,
+        Angulartics2Module.forRoot(),
+        JwtAppModule,
+        NgxUiLoaderModule,      // import NgxUiLoaderModule
+        NgxUiLoaderRouterModule.forRoot({
+            showForeground: true
+        }), // import NgxUiLoaderRouterModule. By default, it will show foreground loader.
+        // If you need to show background spinner, do as follow:
+        // NgxUiLoaderRouterModule.forRoot({ showForeground: false })
         // AngularMailAutocompleteModule
+        NgxUiLoaderHttpModule.forRoot({
+            showForeground: true,
+            minTime: 3000
+        }) // import NgxUiLoaderHttpModule. By default, it will show background loader.
+        // If you need to show foreground spinner, do as follow:
+        // NgxUiLoaderHttpModule.forRoot({ showForeground: true })
     ],
 
-    /*
-    providers: [AuthenticationService/*, {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true}* /],
-    */
     providers: [{
         provide: RECAPTCHA_URL,
-        useValue: environment.restUrl + '/validate_captcha'
-    }, {
-        provide: AuthServiceConfig,
-        useFactory: provideConfig
-    }],
+        useValue: environment.restUrl + api.recaptcha
+    },
+        {provide: HTTP_INTERCEPTORS, useClass: GlobalHttpErrorInterceptorService, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true},
+        {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+        {
+            provide: AuthServiceConfig,
+            useFactory: provideConfig
+        }, AccountStorageTypeService],
     bootstrap: [AppComponent]
 })
 

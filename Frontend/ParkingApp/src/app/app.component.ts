@@ -1,16 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {routerTransition} from './components/animations/animations';
+import {actions} from "./services/navigation/app.endpoints";
+
 
 @Component({
     selector: 'app-root',
+    animations: [routerTransition],
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
-    userLogged = false;
-
-    action: string;
+    private action: string;
+    actions = actions;
 
     constructor(private route: ActivatedRoute) {
     }
@@ -24,5 +27,9 @@ export class AppComponent implements OnInit {
             // tslint:disable-next-line: no-string-literal
             params => this.action = params['action']
         );
+    }
+
+    getState(outlet) {
+        return outlet.activatedRouteData.state;
     }
 }

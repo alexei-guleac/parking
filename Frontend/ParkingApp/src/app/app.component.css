@@ -1,3 +1,7 @@
 footer {
     color: #D1E7FA;
 }
+
+.container {
+    height: 100%;
+}

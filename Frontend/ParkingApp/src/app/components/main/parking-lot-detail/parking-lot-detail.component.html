@@ -1,0 +1,52 @@
+<h2 class="m-3 my-5">Parking lot details</h2>
+<div class="card mx-auto shadow" style="width: 20rem;">
+    <div *ngIf="parkingLot != null">
+
+        <div [ngClass]="parkingLot.status.toLowerCase()" class="btn lot col-sm-12 ">
+            <i class="fas " [ngClass]="{'fa-car': parkingLot.status === 'OCCUPIED',
+                                        'fa-parking': parkingLot.status === 'FREE',
+                                        'fa-ban': parkingLot.status === 'UNKNOWN',
+                                        'fa-clipboard-check': parkingLot.status === 'RESERVED'}"></i>
+        </div>
+
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><b>Name: </b>{{'LOT ' + parkingLot.number}}</li>
+                <li class="list-group-item"><b>Status: </b>{{parkingLot.status}}</li>
+                <li class="list-group-item">Since {{parkingLot.updatedAt | date : 'HH:mm dd-MMM-yyyy'}}</li>
+            </ul>
+
+            <button (click)="goBack()" appNoDblClick class="btn col refresh text-center">
+                <i class="fas fa-backspace fa-sm"></i> Back
+            </button>
+            <button *ngIf="this.isAdminLoggedIn()" (click)="handleReservation()"
+                    [disabled]="reservationSuccess" appNoDblClick class="btn col refresh text-center">
+                <i class="fa fa-bell"></i> {{(parkingLot.status === 'RESERVED' ? 'Reset' : 'Make') + ' reservation'}}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div [hidden]="parkingLot != null">
+
+    <div class="smthg-error mt-3 mx-auto text-center">
+        <div class="unable-to-connect mx-auto text-center">
+            <h2>Something went wrong.</h2>
+        </div>
+    </div>
+    <div class="message mx-auto text-center m-1 px-3">
+        Please click on Back button.
+    </div>
+
+    <!--    <div class="error mx-auto text-center text-dark m-5">Something went wrong, please click on Back button</div>-->
+
+    <div class="container">
+        <div class="row my-5">
+            <div class="col text-center">
+                <button (click)="goBack() " appNoDblClick class="btn refresh"><i class="fas fa-backspace fa-sm"></i>
+                    Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

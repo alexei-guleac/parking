@@ -1,6 +1,17 @@
-<div class="container p-0">
-    <app-menu *ngIf="userLogged || action !== 'login'"></app-menu>
-    <router-outlet *ngIf="!userLogged"></router-outlet>
+<div class="container p-0 mx-auto align-items-center align-content-center">
+    <app-menu *ngIf="action !== actions.login"></app-menu>
+
+    <app-no-connection *ngIf="action === actions.serverError"></app-no-connection>
+
+    <!--<nav>
+        <a routerLink="/" routerLinkActive="active">parking</a>
+        <a routerLink="/stats" routerLinkActive="active">stats</a>
+    </nav>-->
+
+    <div [@routerTransition]="getState(o)">
+        <router-outlet #o="outlet"></router-outlet>
+    </div>
+
     <footer class="fixed-bottom blockquote-footer text-right">
         <cite>ParKing Project </cite>
         <cite>by ISD Internship Team</cite>

@@ -1,0 +1,58 @@
+<h1 *ngIf="register" class="text-center font-weight-light m-5 mx-auto">Create your account</h1>
+
+<div class="container col-lg-5 mt-5">
+
+    <div class="card border-radius-m z-depth-5 mx-auto">
+        <div class="card-body border-radius-m text-center mx-auto full-width">
+
+            <button *ngIf="forgotPass" type="button" (click)="navigateToLogin()"
+                    class="btn btn-mater text-center m-3 back-btn"><i class="fas fa-arrow-left"></i>
+            </button>
+            <button *ngIf="!forgotPass" type="button" (click)="navigateToMain()"
+                    class="btn btn-mater text-center m-3 back-btn"><i class="fas fa-home"></i>
+            </button>
+
+            <div>
+                <button *ngIf="register" (click)="toogleHint()"
+                        class="btn text-center m-3 info-btn"><i class="fas fa-info-circle"></i>
+                </button>
+
+                <div *ngIf="showHint==true" class="hint">
+                    <h1>Hint</h1>
+                </div>
+            </div>
+
+            <div (click)="navigateToMain()" class="isd-logo mx-auto text-center"
+                 style="height: 200px; width: 200px;"></div>
+
+            <h1 class="h1">ParKing</h1>
+
+            <app-login-form *ngIf="login"
+                            [isLogFailed]="isLoginFailed"
+                            [errMessage]="errorMessage"
+                            [isConfirmSuccess]="isConfirmSuccess"
+                            [confMessage]="successMessage"
+                            (userForgotEvent)="navigateToForgotPass()"></app-login-form>
+
+            <app-reg-form *ngIf="register" (userLoginEvent)="navigateToLogin()"></app-reg-form>
+
+            <app-forgot-pass-form *ngIf="forgotPass"></app-forgot-pass-form>
+
+            <app-reset-password *ngIf="resetPass"
+                                [username]="username"></app-reset-password>
+
+        </div>
+    </div>
+
+    <div class="text-center m-4">
+        <div *ngIf="register" (click)=navigateToLogin()>
+            <span class="text-light-muted">Already registered? </span>
+            <span class="pseudolink">Login </span><span class="fas fa-arrow-right"></span>
+        </div>
+
+        <div *ngIf="login" (click)=navigateToRegistration()>
+            <span class="text-light-muted">Don't have an account yet? </span>
+            <span class="pseudolink">Register </span><span class="fas fa-arrow-right"></span>
+        </div>
+    </div>
+</div>

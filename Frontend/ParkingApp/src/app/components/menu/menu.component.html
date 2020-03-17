@@ -1,0 +1,70 @@
+<nav class="navbar navbar-expand-lg navbar-light isd-navbar bg-dark" [@openClose]>
+    <div class="container">
+        <a class="navbar-brand logo" (click)="navigateToMain()">
+            <img src="../../../assets/img/isd-logo.png" alt=""/>
+        </a>
+        <a class="navbar-brand abs">
+            <!--      ParKing-->
+            <img (click)="navigateToMain()" alt="parking_logo" class="appname-logo"
+                 src="../../../assets/img/ParKingLogo.png"/>
+        </a>
+        <!--    to do : make logo in svg-->
+        <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+                class="navbar-toggler collapsed align-self-center mt-4 p-3"
+                data-target="#navbarNav" data-toggle="collapse" type="button">
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto text-light align-self-center mt-4">
+                <li *ngIf='!this.isUserLoggedIn()' class="nav-item mx-auto pl-4">
+                    <a class="nav-link" (click)="navigateToLogin()"><i class="fa fa-user"></i> Login</a>
+                </li>
+                <li *ngIf='this.isUserLoggedIn()' class="nav-item mx-auto">
+                    <a class="nav-link" (click)="navigateTo404()"><i
+                        class="fa fa-user"></i> {{this?.getUserName() == null ? 'Unknown user' : this.capitalize(this?.getUserName())}}
+                    </a>
+                </li>
+                <li *ngIf='this.isUserLoggedIn()' class="nav-item mx-auto">
+                    <a (click)="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+                <li class="nav-item dropdown" *ngIf='this.isUserLoggedIn()'>
+                    <a class="nav-link dropdown-toggle text-light" data-toggle="dropdown">
+                        Menu
+                    </a>
+                    <div class="dropdown-menu bg-blue" aria-labelledby="navbarDropdown">
+                        <a (click)="navigateToStatistics()" class="dropdown-item text-light"><i
+                            class="fas fa-clipboard"></i>
+                            Statistics</a>
+                        <div class="dropdown-divider"></div>
+                        <a (click)="navigateToLayout()" class="dropdown-item text-light"><i
+                            class="fas fa-map-marked-alt"></i>
+                            Parking layout</a>
+                        <!-- <a class="dropdown-item text-light" (click)="navigateToTest2()">Test layout</a> -->
+                    </div>
+                </li>
+
+                <div class="align-content-center mx-auto pl-4">
+                    <label class="switch">
+                        <input type="checkbox" [(ngModel)]="themeToogleChecked" name="theme-switch">
+                        <span class="slider round"><span class="slider-img"></span></span>
+                    </label>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <hr style="border-top: 3px solid var(--isd-red) !important;">
+</div>
+
+<!--<div class="user-toggle">
+    <div class="[ visually-hidden ][ js-mode-status ]" role="status">{{modeStatusElement}}</div>
+    <button class="[ toggle-button ] [ js-mode-toggle ]">
+        <span class="[ toggle-button__text ] [ js-mode-toggle-text ]">{{modeToggleText}}</span>
+        <span aria-hidden="true" class="toggle-button__icon"></span>
+    </button>
+</div>-->

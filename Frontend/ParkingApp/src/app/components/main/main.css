@@ -1,0 +1,15 @@
+.free {
+    background-color: var(--parking-free);
+}
+
+.occupied {
+    background-color: var(--isd-red);
+}
+
+.unknown {
+    background-color: var(--parking-unknown);
+}
+
+.reserved {
+    background-color: var(--parking-reserved);
+}

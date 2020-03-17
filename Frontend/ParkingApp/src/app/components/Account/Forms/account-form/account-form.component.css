@@ -1,0 +1,191 @@
+@import "../custom-checkbox.css";
+@import "../form-inputs.css";
+
+.card-body, .card, .btn-mater, .back-btn {
+    background-color: var(--background) !important;
+    color: var(--text-color) !important;
+}
+
+.card {
+    min-width: 25rem;
+    box-shadow: var(--card-material-shadow);
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.isd-logo {
+    content: var(--isd-account-logo);
+}
+
+form input.form-control {
+    background: var(--input-color);
+    color: var(--input-text-color);
+}
+
+.btn-default:not(:disabled):not(.disabled).active,
+.btn-default:not(:disabled):not(.disabled):active,
+.show > .btn-default.dropdown-toggle {
+    color: var(--white);
+    background-color: var(--btn-background-color);
+    border-color: var(--btn-border-color);
+    box-shadow: none;
+}
+
+.btn {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Form fields */
+
+.w-20rem {
+    width: 20rem;
+}
+
+.border-radius-m {
+    border-radius: 1.2rem;
+}
+
+.info-box {
+    max-width: 30rem;
+}
+
+.button-box {
+    max-width: 35rem;
+}
+
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .card {
+        width: 25rem;
+    }
+
+    .card-body {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+}
+
+.submit-btn {
+    font-family: 'Montserrat', sans-serif;
+    display: inline-block;
+    border-radius: 1.5rem;
+    box-shadow: var(--material-shadow-thin);
+    font-weight: 700;
+    text-decoration: none;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 13px 23px;
+    background: var(--isd-red);
+    font-size: 18px;
+    -webkit-transition: 0.2s all;
+    transition: 0.2s all;
+}
+
+.submit-btn:hover:enabled {
+    box-shadow: var(--btn-material-shadow);
+}
+
+.hint {
+    display: block;
+    position: absolute;
+    top: 5%;
+    right: -50%;
+    z-index: 100;
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    box-shadow: 0px 0px 6px #B2B2B2;
+    height: 200px;
+    width: 275px;
+    margin: 20px 20px;
+}
+
+.hint::after {
+    background-color: #F2F2F2;
+    box-shadow: -2px -2px 2px 0 rgba(178, 178, 178, .4);
+    content: "\00a0";
+    display: block;
+    height: 20px;
+    left: 30px;
+    position: relative;
+    top: -64px;
+    transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    width: 20px;
+}
+
+
+.pseudolink {
+    color: var(--pseudolink-color);
+}
+
+.pseudolink:hover {
+    color: var(--pseudolink-color-hover);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+.info-icon {
+    background: var(--background);
+    color: var(--text-color);
+    position: absolute;
+    top: 2%;
+    right: 10%;
+    width: 2rem;
+    text-align: right;
+}
+
+.info-btn {
+    color: var(--text-color);
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding-top: 8px;
+    padding-right: 12px;
+    margin-top: 10px;
+    margin-right: 8px;
+    position: absolute;
+    right: 2%;
+    top: 1%;
+    border-radius: 50px;
+    border: none;
+    background: none;
+}
+
+.btn-mater {
+    border-radius: 50px;
+    border: none;
+}
+
+.btn-mater:hover {
+    color: var(--isd-red) !important;
+    box-shadow: var(--material-shadow-thin);
+    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+}
+
+.back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    text-align: center;
+    padding-top: 8px;
+    padding-right: 18px;
+    position: absolute;
+    left: 2%;
+    top: 1%
+}
+
+.back-btn:hover {
+    color: var(--isd-red);
+}
+
+.text-light-muted {
+    color: var(--other-text-color);
+}
