@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import static org.apache.commons.lang.StringUtils.strip;
 
-public class MyStringUtils {
+public class AppStringUtils {
 
     // public String collectionToString(Collection e) {
     //     return Arrays.toString(e.toArray()).replace("[", "").replace("]", "");

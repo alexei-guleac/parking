@@ -1,11 +1,43 @@
 package com.isd.parking.utils;
 
+import org.apache.commons.beanutils.PropertyUtils;
+
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ReflectionMethods {
+
+    public static void setProperty(Object bean, String name, Object value) {
+        try {
+            PropertyUtils.setSimpleProperty(bean, name, value);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Object getProperty(Object bean, String name) {
+        Object value = "";
+        try {
+            value = PropertyUtils.getSimpleProperty(bean, name);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
+    public static Class getPropertyType(Object bean, String name) {
+        Class type = null;
+        try {
+            type = PropertyUtils.getPropertyType(bean, name);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return type;
+    }
 
     public String[] getFields() {
         Class<? extends Object> componentClass = getClass();
@@ -23,6 +55,19 @@ public class ReflectionMethods {
 
         System.out.println(lines);
         return lines.toArray(new String[lines.size()]);
+    }
+
+    public List<String> getFieldsNames(Class<? extends Object> componentClass) {
+        List<String> privateFields = new ArrayList<>();
+        Field[] allFields = componentClass.getDeclaredFields();
+        for (Field field : allFields) {
+            if (Modifier.isPrivate(field.getModifiers())) {
+                privateFields.add(field.getName());
+                System.out.format("type is %s", field.getType());
+            }
+        }
+
+        return privateFields;
     }
 
     /**

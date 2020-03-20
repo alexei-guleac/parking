@@ -134,4 +134,8 @@ public class ColorConsoleOutput {
     public String methodMsg(String msg) {
         return grTxt(msg) + " executing in " + puBrTxt("{" + ReflectionMethods.getMethodName(3) + "} ");
     }
+
+    public static String methodMsgStatic(String msg) {
+        return grTxt(msg) + " executing in " + puBrTxt("{" + ReflectionMethods.getMethodName(3) + "} ");
+    }
 }

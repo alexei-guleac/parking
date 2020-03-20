@@ -1,5 +1,6 @@
 package com.isd.parking.security.model;
 
+import com.isd.parking.security.AccountConfirmationPeriods;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -11,8 +12,6 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 public class ConfirmationToken {
-
-    private static final int EXPIRATION_IN_DAYS = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,10 +30,14 @@ public class ConfirmationToken {
     @Column(nullable = false, name = "uid")
     private String uid;
 
-    public ConfirmationToken(String uid) {
+    @Column(name = "operation_type")
+    private AcoountOperation operationType;
+
+    public ConfirmationToken(String uid, AcoountOperation operationType) {
         this.uid = uid;
         createdAt = LocalDateTime.now();
-        expirationDate = createdAt.plusDays(EXPIRATION_IN_DAYS);
+        expirationDate = createdAt.plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES);
         confirmationToken = UUID.randomUUID().toString();
+        this.operationType = operationType;
     }
 }

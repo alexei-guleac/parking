@@ -33,19 +33,19 @@ public final class JwtUtils {
     }
 
     public static String generateHMACToken(String subject, String roles, String secret, int expirationInMinutes)
-            throws JOSEException {
+        throws JOSEException {
         JWSSigner signer = new MACSigner(secret);
         JWTClaimsSet payload = new JWTClaimsSet.Builder()
-                .subject(subject)
-                .issueTime(currentDate())
-                .expirationTime(expirationDate(expirationInMinutes))
-                .claim(ROLES_CLAIM, roles)
-                .audience(AUDIENCE_WEB)
-                .build();
+            .subject(subject)
+            .issueTime(currentDate())
+            .expirationTime(expirationDate(expirationInMinutes))
+            .claim(ROLES_CLAIM, roles)
+            .audience(AUDIENCE_WEB)
+            .build();
 
         val header = new JWSHeader.Builder(JWSAlgorithm.HS256)
-                .type(JOSEObjectType.JWT)
-                .build();
+            .type(JOSEObjectType.JWT)
+            .build();
 
         SignedJWT signedJWT = new SignedJWT(header, payload);
         signedJWT.sign(signer);

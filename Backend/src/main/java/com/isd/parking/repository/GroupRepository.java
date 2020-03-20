@@ -1,7 +1,7 @@
 package com.isd.parking.repository;
 
 import com.isd.parking.models.Group;
-import com.isd.parking.models.User;
+import com.isd.parking.models.UserLdap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
@@ -37,7 +37,7 @@ public class GroupRepository implements BaseLdapNameAware {
                 new GroupContextMapper());
     }
 
-    public void addMemberToGroup(String groupName, User p) {
+    public void addMemberToGroup(String groupName, UserLdap p) {
         Name groupDn = buildGroupDn(groupName);
         Name personDn = buildUserDn(p);
 
@@ -47,7 +47,7 @@ public class GroupRepository implements BaseLdapNameAware {
         ldapTemplate.modifyAttributes(ctx);
     }
 
-    public void removeMemberFromGroup(String groupName, User p) {
+    public void removeMemberFromGroup(String groupName, UserLdap p) {
         Name groupDn = buildGroupDn(groupName);
         Name personDn = buildUserDn(p);
 
@@ -64,10 +64,10 @@ public class GroupRepository implements BaseLdapNameAware {
                 .build();
     }
 
-    private Name buildUserDn(User user) {
+    private Name buildUserDn(UserLdap user) {
         return LdapNameBuilder.newInstance(baseLdapPath)
                 .add("ou", "people")
-                .add("uid", user.getId())
+            .add("uid", user.getUid())
                 .build();
     }
 

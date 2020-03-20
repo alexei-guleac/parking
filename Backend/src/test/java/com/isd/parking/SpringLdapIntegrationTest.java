@@ -1,9 +1,9 @@
 package com.isd.parking;
 
 import com.isd.parking.models.Group;
-import com.isd.parking.models.User;
+import com.isd.parking.models.UserLdap;
 import com.isd.parking.repository.GroupRepository;
-import com.isd.parking.security.PasswordEncoding;
+import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +60,7 @@ public class SpringLdapIntegrationTest {
 
     @Test
     public void testGetAllUsers() {
-        List<User> users = userLdapService.getAllUsers();
+        List<UserLdap> users = userLdapService.getAllUsers();
         assertNotNull(users);
 
         log.info("Users found:" + users);
@@ -78,25 +78,25 @@ public class SpringLdapIntegrationTest {
 
     @Test
     public void testFindPerson() {
-        User user = userLdapService.findByDn("uid=user1,ou=people,dc=springframework,dc=org");
+        UserLdap user = userLdapService.findByDn("uid=user1,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
-        assertEquals(user.getFullname(), "Test A A");
+        assertEquals(user.getCn(), "Test A A");
     }
 
     @Test
     public void testCreateUser() {
-        //userLdapService.create("test_user", new CustomPasswordEncoder().encode("qwerty123"));
-        userLdapService.createUser(new User("test_user", "Test U", "U", new PasswordEncoding.CustomPasswordEncoder(console).encode("qwerty123")));
+        //userLdapService.create("test_user", new CustomBcryptPasswordEncoder().encode("qwerty123"));
+        userLdapService.createUser(new UserLdap("test_user", "Test U", "U", new CustomBcryptPasswordEncoder().encode("qwerty123")));
 
-        User user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
+        UserLdap user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
         log.info("User found:" + user);
     }
 
     /*@Test
     public void testCreate() {
-        userLdapService.create("test_user", new CustomPasswordEncoder(console).encode("qwerty123"));
-        //userLdapService.createUser(new User("test_user", "Test U", "U", new CustomPasswordEncoder().encode("qwerty123")));
+        userLdapService.create("test_user", new CustomBcryptPasswordEncoder(console).encode("qwerty123"));
+        //userLdapService.createUser(new User("test_user", "Test U", "U", new CustomBcryptPasswordEncoder().encode("qwerty123")));
 
         User user = userLdapService.findByDn("uid=test_user,ou=people,dc=springframework,dc=org");
         assertNotNull(user);
@@ -111,7 +111,7 @@ public class SpringLdapIntegrationTest {
 
     @Test
     public void testFindAllUsers() {
-        List<User> users = userLdapService.findAll();
+        List<UserLdap> users = userLdapService.findAll();
         assertNotNull(users);
 
         log.info("Users found:" + users);
@@ -191,22 +191,22 @@ public class SpringLdapIntegrationTest {
         log.info("Spring LDAP CRUD Operations Binding and Unbinding Example");
         log.info("- - - - - - Managing persons");
 
-        List<User> persons = userRepository.findAll();
+        List<UserLdap> persons = userRepository.findAll();
         log.info("persons: " + persons);
 
-        User john = userRepository.findById("john");
-        john.setLastname("custom last name");
+        UserLdap john = userRepository.findById("john");
+        john.setSn("custom last name");
         userRepository.updateLastName(john);
 
-        User jahn = userRepository.findById("jahn");
-        jahn.setLastname("custom last name");
-        userRepository.update(jahn);
+        UserLdap jahn = userRepository.findById("jahn");
+        jahn.setSn("custom last name");
+        userRepository.updateUser(jahn);
 
-        User user = new User("uid", "user");
+        UserLdap user = new UserLdap("uid", "user");
         userRepository.createLdap(user);
 
-        User jihn = userRepository.findById("jihn");
-        userRepository.delete(jihn);
+        UserLdap jihn = userRepository.findById("jihn");
+        userRepository.deleteUser(jihn);
 
         persons = userRepository.findAll();
         log.info("persons: " + persons);

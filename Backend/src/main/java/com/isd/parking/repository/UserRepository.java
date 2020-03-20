@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.models.User;
+import com.isd.parking.models.UserLdap;
 import org.springframework.data.ldap.repository.LdapRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,13 +10,13 @@ import java.util.List;
  * User ldap repository
  */
 @Repository
-public interface UserRepository extends LdapRepository<User> {
+public interface UserRepository extends LdapRepository<UserLdap> {
 
-    User findByUsername(String username);
+    UserLdap findByUid(String username);
 
-    User findByUsernameAndPassword(String username, String password);
+    UserLdap findByUidAndUserPassword(String username, String password);
 
-    List<User> findByUsernameLikeIgnoreCase(String username);
+    List<UserLdap> findByUidLikeIgnoreCase(String username);
 
-    List<User> findAll();
+    List<UserLdap> findAll();
 }

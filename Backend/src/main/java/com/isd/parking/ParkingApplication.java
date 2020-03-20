@@ -24,8 +24,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaRepositories
 @EnableScheduling
 @PropertySources({
-        @PropertySource("classpath:application.properties"),
-        @PropertySource("classpath:postgresql-config.properties"),
+    @PropertySource("classpath:application.properties"),
+    @PropertySource("classpath:postgresql-config.properties"),
 })
 @Slf4j
 public class ParkingApplication {

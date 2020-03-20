@@ -1,6 +1,6 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.models.User;
+import com.isd.parking.models.UserLdap;
 import com.isd.parking.repository.UserRepository;
 import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.utils.ColorConsoleOutput;
@@ -29,13 +29,13 @@ public class UserService {
 
     public List<String> search(final String username) {
         log.info(console.methodMsg(""));
-        List<User> userList = userRepository.findByUsernameLikeIgnoreCase(username);
+        List<UserLdap> userList = userRepository.findByUidLikeIgnoreCase(username);
         if (userList == null) {
             return Collections.emptyList();
         }
         //return userList;
         return userList.stream()
-                .map(User::getFullname)
+            .map(UserLdap::getCn)
                 .collect(Collectors.toList());
     }
 
@@ -46,8 +46,8 @@ public class UserService {
      * @param password - user pass
      */
     public void modify(final String username, final String password) {
-        User user = userRepository.findByUsername(username);
-        user.setPassword(password);
+        UserLdap user = userRepository.findByUid(username);
+        user.setUserPassword(password);
 
         userRepository.save(user);
     }
@@ -62,14 +62,14 @@ public class UserService {
      */
     public void create(final String username, final String password) {
         log.info(console.methodMsg(""));
-        User newUser = new User(username, PasswordEncoding.CustomPasswordEncoder.digestSHA(password));
+        UserLdap newUser = new UserLdap(username, PasswordEncoding.CustomBcryptPasswordEncoder.digestSHA(password));
         newUser.setId(LdapUtils.emptyLdapName());
         //newUser.setId(LdapUtils.newLdapName(new DistinguishedName("uid=" + username + ",ou=people")));
 
         userRepository.save(newUser);
     }
 
-    public List<User> findAll() {
+    public List<UserLdap> findAll() {
         log.info(console.methodMsg(""));
         return userRepository.findAll();
     }

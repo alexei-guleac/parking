@@ -46,7 +46,7 @@ public class LdapClientConfiguration {
         /*contextSource.setUserDn(env.getRequiredProperty("ldap.username"));
         contextSource.setPassword(env.getRequiredProperty("ldap.password"));*/
 
-        log.info(console.classMsg(getClass().getSimpleName(),"ldap configuration"));
+        log.info(console.classMsg(getClass().getSimpleName(), "ldap configuration"));
         log.info(blTxt(contextSource.getBaseLdapPathAsString()));
         log.info(blTxt(String.valueOf(contextSource.getBaseLdapName())));
         log.info(blTxt(String.valueOf(contextSource.getAuthenticationSource())));
@@ -57,13 +57,15 @@ public class LdapClientConfiguration {
         return contextSource;
     }
 
+
+
     /*public void setSchema() throws Exception {
         // Create the configuration to use for the server.
         InMemoryDirectoryServerConfig config = new InMemoryDirectoryServerConfig(env.getRequiredProperty("ldap.partitionSuffix"));
         config.setListenerConfigs(InMemoryListenerConfig.createLDAPConfig("LDAP", 8389));
         *//*config.setSchema(
                 Schema.getSchema(
-                        FileUtils.readPropertiesFiles("custom-schema.ldif")
+                        AppFileUtils.readPropertiesFiles("custom-schema.ldif")
                 ));*//*
         log.info(console.methodMsg(String.valueOf(Schema.getDefaultStandardSchema())));
 
@@ -72,11 +74,11 @@ public class LdapClientConfiguration {
         InMemoryDirectoryServer ds = new InMemoryDirectoryServer(config);
         LDAPConnection connection = ds.getConnection();
         log.info(connection + " CONNECTION");
-        //ds.importFromLDIF(true, FileUtils.readPropertiesFiles("ldap-server.ldif"));
+        //ds.importFromLDIF(true, AppFileUtils.readPropertiesFiles("ldap-server.ldif"));
         ds.startListening();
     }*/
 
-    public void getDefaultSchema() {
+    private void getDefaultSchema() {
         try {
             log.info(console.methodMsg(String.valueOf(Schema.getDefaultStandardSchema())));
         } catch (LDAPException e) {

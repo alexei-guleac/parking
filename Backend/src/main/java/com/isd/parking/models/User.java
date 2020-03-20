@@ -1,70 +1,50 @@
 package com.isd.parking.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.springframework.ldap.odm.annotations.Attribute;
-import org.springframework.ldap.odm.annotations.DnAttribute;
-import org.springframework.ldap.odm.annotations.Entry;
-import org.springframework.ldap.odm.annotations.Id;
 
 import javax.naming.Name;
 import javax.validation.constraints.Email;
 
-/**
- * LDAP user entry
- */
-@Entry(base = "ou=people",
-        objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
+
 @Data
-public final class User {
+public final class User extends BaseEmailUser {
 
-    @JsonIgnore
-    @Id
-    private Name id;
-
-    @JsonProperty("username")
-    private @Attribute(name = "uid")
-    @DnAttribute(value = "uid")
+    @JsonProperty()
+    @JsonAlias({"username"})
     String username;
 
-    @JsonProperty("fullname")
-    private @Attribute(name = "cn")
+    @JsonProperty()
+    @JsonAlias({"fullname"})
     String fullname;
 
-    @JsonProperty("lastname")
-    private @Attribute(name = "sn")
+    @JsonProperty()
+    @JsonAlias({"lastname"})
     String lastname;
 
-    @JsonProperty("email")
+    @JsonProperty()
+    @JsonAlias({"email"})
     @Email
-    private @Attribute(name = "email")
     String email;
 
-    private @Attribute(name = "userPassword")
+    @JsonProperty()
+    @JsonAlias({"password"})
     String password;
-
-    private @Attribute(name = "fbid")
-    String fbid;
 
     public User() {
     }
 
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     public User(User user, String password) {
-        this.id = user.id;
         this.username = user.username;
         this.fullname = user.fullname;
         this.lastname = user.lastname;
         this.email = user.email;
-        this.password = password;
-    }
-
-    public User(Name id, String username, String fullname, String lastname, String email, String password) {
-        this.id = id;
-        this.username = username;
-        this.fullname = fullname;
-        this.lastname = lastname;
-        this.email = email;
         this.password = password;
     }
 
@@ -75,8 +55,11 @@ public final class User {
         this.password = password;
     }
 
-    public User(String username, String password) {
+    public User(Name id, String username, String fullname, String lastname, String email, String password) {
         this.username = username;
+        this.fullname = fullname;
+        this.lastname = lastname;
+        this.email = email;
         this.password = password;
     }
 }

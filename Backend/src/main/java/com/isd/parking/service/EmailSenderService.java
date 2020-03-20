@@ -1,7 +1,8 @@
 package com.isd.parking.service;
 
+import com.isd.parking.models.BaseEmailUser;
 import com.isd.parking.models.Mail;
-import com.isd.parking.models.User;
+import com.isd.parking.security.AccountConfirmationPeriods;
 import com.isd.parking.security.model.ConfirmationToken;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -37,15 +38,15 @@ public class EmailSenderService {
     }
 
     @Async
-    public void sendPassResetMail(User existingUser, ConfirmationToken confirmationToken) {
+    public void sendPassResetMail(BaseEmailUser existingUser, ConfirmationToken confirmationToken) {
         // Create the message
         SimpleMailMessage mailMessage = createSimpleMailMessage(existingUser);
         mailMessage.setSubject("Complete Password Reset!");
         mailMessage.setFrom("parking_noreply_service@gmail.com");
         mailMessage.setText("To complete the password reset process, please click here: "
-                + "http://localhost:4200/confirm_reset?user="
-                + existingUser.getUsername() + "&confirmation_token="
-                + confirmationToken.getConfirmationToken());
+            + "http://localhost:4200/confirm_reset?confirmation_token="
+            + confirmationToken.getConfirmationToken()
+            + "\n\nThis link is valid for " + AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES + " minute(s)");
 
         log.info(console.classMsg(getClass().getSimpleName(), " Forgot password email sended: ") + blTxt(String.valueOf(existingUser)));
 
@@ -54,19 +55,21 @@ public class EmailSenderService {
     }
 
     @Async
-    public void sendRegistrationConfirmMail(User user, ConfirmationToken confirmationToken) {
+    public void sendRegistrationConfirmMail(BaseEmailUser user, ConfirmationToken confirmationToken) {
         // Create the message
         SimpleMailMessage mailMessage = createSimpleMailMessage(user);
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom(from);
         mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:4200/confirm-account?confirmation_token=" + confirmationToken.getConfirmationToken());
+            + "http://localhost:4200/confirm-account?confirmation_token="
+            + confirmationToken.getConfirmationToken()
+            + "\n\nThis link is valid for " + AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES + " minute(s)");
 
         // Send the email
         sendEmail(mailMessage);
     }
 
-    private SimpleMailMessage createSimpleMailMessage(User user) {
+    private SimpleMailMessage createSimpleMailMessage(BaseEmailUser user) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(user.getEmail());
         return mailMessage;

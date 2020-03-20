@@ -5,6 +5,7 @@ import com.isd.parking.models.ParkingLot;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface ParkingLotService {
     List<ParkingLot> findAll();
 

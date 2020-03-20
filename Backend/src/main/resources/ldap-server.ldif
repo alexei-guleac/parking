@@ -55,7 +55,6 @@ sn: A
 uid: user1
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
-
 dn: uid=bob,ou=people,dc=isd,dc=com
 objectclass: top
 objectclass: person
@@ -65,7 +64,6 @@ cn: Bob Hamilton
 sn: Hamilton
 uid: bob
 userPassword: bobspassword
-
 
 dn: uid=joe,ou=otherpeople,dc=isd,dc=com
 objectclass: top
@@ -117,8 +115,6 @@ sn: Cadet
 uid: space cadet
 userPassword: spacecadetspassword
 
-
-
 dn: cn=developers,ou=groups,dc=isd,dc=com
 objectclass: top
 objectclass: groupOfUniqueNames
@@ -126,7 +122,6 @@ cn: developers
 ou: developer
 uniqueMember: uid=ben,ou=people,dc=isd,dc=com
 uniqueMember: uid=bob,ou=people,dc=isd,dc=com
-
 
 dn: cn=managers,ou=groups,dc=isd,dc=com
 objectclass: top
@@ -201,7 +196,6 @@ creationDate: Sat Mar 07 16:54:16 EET 2020
 uid: Yuiuiui
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
-# Контейнер для ролей
 dn: ou=roles,dc=isd,dc=com
 objectClass: organizationalUnit
 ou: roles
@@ -230,57 +224,123 @@ user_role: ADMIN
 uid: user3
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
-dn: uid=user2,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-cn: Tyty Tyty
-sn: Tyty
-email: we@df.rtrt
-creationDate: Tue Mar 10 15:20:44 EET 2020
-uid: user2
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
-
-# Группа "Разработчики"
 dn: cn=developers2,ou=groups,dc=isd,dc=com
 objectClass: groupOfNames
 cn: developers2
 member: uid=user3,ou=people,dc=isd,dc=com
 
-# Группа "Дизайнеры"
 dn: cn=designers,ou=groups,dc=isd,dc=com
 objectClass: groupOfNames
 cn: designers
 member: uid=user3,ou=people,dc=isd,dc=com
 
-# Роль "Начальник отдела разработки"
 dn: cn=Chief of Developers,ou=Roles,dc=isd,dc=com
 objectClass: organizationalRole
 cn: Chief of Developers
 roleOccupant: uid=user3,ou=People,dc=isd,dc=com
 
-dn: uid=tytyt,ou=people,dc=isd,dc=com
+dn: uid=TTTTTTT,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
-cn: Dffdf Dfgdfgf
-sn: Dfgdfgf
-email: rtwer@gmaso.sd
-creationDate: Thu Mar 12 20:24:54 EET 2020
-uid: tytyt
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+uid: TTTTTTT
+accountState: ENABLED
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: testtt@gmail.co
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
+creationDate: 2020-03-21T14:04:42.762679600
+updatedAt: 2020-03-21T14:05:06.247302400
+passwordUpdatedAt: 2020-03-21T14:04:42.762679600
 
-dn: uid=Qwerwertwer,ou=people,dc=isd,dc=com
+dn: uid=wwwwww,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
-cn: Dfdff Dfdfdf
-sn: Dfdfdf
-email: aleks7900@gmail.com
-creationDate: Mon Mar 16 21:32:20 EET 2020
-uid: Qwerwertwer
+uid: wwwwww
+accountState: WAITING_CONFIRMATION
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: sdsdsd@gmail.co
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
+creationDate: 2020-03-21T14:43:02.696036
+updatedAt: 2020-03-21T14:43:02.696036
+passwordUpdatedAt: 2020-03-21T14:43:02.696036
+
+dn: uid=wwwwwww,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: wwwwwww
+accountState: WAITING_CONFIRMATION
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: sdsdsds@gmail.co
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
+creationDate: 2020-03-21T14:48:17.089344300
+updatedAt: 2020-03-21T14:48:17.089344300
+passwordUpdatedAt: 2020-03-21T14:48:17.089344300
+
+dn: uid=ccccc,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: ccccc
+accountState: WAITING_CONFIRMATION
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: sds@gmail.co
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
+creationDate: 2020-03-21T14:54:54.024152300
+updatedAt: 2020-03-21T14:54:54.024152300
+passwordUpdatedAt: 2020-03-21T14:54:54.024152300
+
+dn: uid=nmnmnm,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: nmnmnm
+accountState: ENABLED
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: sdssdss@gmail.co
+userPassword: [B@66218ffc
+creationDate: 2020-03-21T15:02:38.020537600
+updatedAt: 2020-03-21T15:13:24.530956
+passwordUpdatedAt: 2020-03-21T15:02:38.020537600
+
+dn: uid=xxxxxxx,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: xxxxxxx
+accountState: ENABLED
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: sdssdsssx@gmail.co
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+creationDate: 2020-03-21T15:32:53.940252700
+updatedAt: 2020-03-21T19:45:24.627967500
+passwordUpdatedAt: 2020-03-21T15:32:53.940252700
+
+dn: uid=xxxxxxx2323,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: xxxxxxx2323
+accountState: ENABLED
+cn: Dfgfgfg Dfgfffg
+sn: Dfgfffg
+email: alek7900@gmail.com
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geOYnN8MBMiX9p86v5VRduR.edymbkuhe
+creationDate: 2020-03-21T15:32:53.940252700
+updatedAt: 2020-03-21T21:32:25.203206800
+passwordUpdatedAt: 2020-03-21T21:32:25.203206800
 
