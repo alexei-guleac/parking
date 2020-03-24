@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {fadeInOut} from '../../../animations/animations';
 
+
 @Component({
     selector: 'app-social-buttons',
     animations: [
@@ -13,11 +14,17 @@ export class SocialButtonsComponent implements OnInit {
 
     private showMore = false;
 
-    @Output('fbLogin')
-    fbLoginLocal: EventEmitter<any> = new EventEmitter();
+    @Output()
+    fbLogin: EventEmitter<any> = new EventEmitter();
 
-    @Output('gLogin')
-    gLoginLocal: EventEmitter<any> = new EventEmitter();
+    @Output()
+    gLogin: EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    gitLogin: EventEmitter<any> = new EventEmitter();
+
+    @Output()
+    msLogin: EventEmitter<any> = new EventEmitter();
 
     constructor() {
     }
@@ -26,7 +33,7 @@ export class SocialButtonsComponent implements OnInit {
     }
 
     // Show/hide more social buttons
-    toogleShowMoreSocial() {
+    private toogleShowMoreSocial() {
         this.showMore = !this.showMore;
 
         setTimeout(() => {
@@ -36,11 +43,19 @@ export class SocialButtonsComponent implements OnInit {
     }
 
 
-    signInWithFB(): void {
-        this.fbLoginLocal.emit();
+    private signInWithFB(): void {
+        this.fbLogin.emit();
     }
 
-    signInWithG() {
-        this.gLoginLocal.emit();
+    private signInWithG() {
+        this.gLogin.emit();
+    }
+
+    private signInWithGit() {
+        this.gitLogin.emit();
+    }
+
+    private signInWithMs() {
+        this.msLogin.emit();
     }
 }

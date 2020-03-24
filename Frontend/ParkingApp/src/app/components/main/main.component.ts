@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DataService} from '../../services/data/data.service';
-import {ParkingLot} from '../../models/ParkingLot';
 import {delay} from 'rxjs/operators';
-import {actions, routes} from '../../services/navigation/app.endpoints';
+import {ParkingLot} from '../../models/ParkingLot';
+import {status} from "../../models/ParkingLotStatus";
+import {DataService} from '../../services/data/data.service';
+import {actions, appRoutes} from '../../services/navigation/app.endpoints';
+
 
 @Component({
     selector: 'app-main',
@@ -15,6 +17,8 @@ export class MainComponent implements OnInit {
     private parkingLots: Array<ParkingLot>;
     private selectedParkingLot: ParkingLot;
     private action: string;
+
+    parkingLotStatus = status;
 
     private noData: Array<number>;
 
@@ -32,7 +36,15 @@ export class MainComponent implements OnInit {
         this.processUrlParams();
     }
 
-    loadData() {
+    async refresh() {
+        this.loadData();
+        await delay(500);
+        await this.router.navigate([appRoutes.main]);
+        await delay(1500);
+        this.loadData();
+    }
+
+    private loadData() {
         this.dataService.getAllParkingLots().subscribe(
             data => {
                 if (data.length !== 0) {
@@ -48,23 +60,15 @@ export class MainComponent implements OnInit {
         );
     }
 
-    processUrlParams() {
+    private processUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
             params => this.action = params['action']
         );
     }
 
-    async refresh() {
-        this.loadData();
-        await delay(500);
-        await this.router.navigate([routes.main]);
-        await delay(1500);
-        this.loadData();
-    }
-
-    showDetails(id: number) {
-        this.router.navigate([routes.main], {queryParams: {id, action: actions.view}});
+    private showDetails(id: number) {
+        this.router.navigate([appRoutes.main], {queryParams: {id, action: actions.view}});
         this.selectedParkingLot = this.parkingLots.find(pl => pl.id === id);
         this.processUrlParams();
     }

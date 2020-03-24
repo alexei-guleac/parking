@@ -1,12 +1,13 @@
+import {HttpClient} from '@angular/common/http';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
-import {AuthenticationService} from '../../../services/account/auth.service';
 import {Observable} from 'rxjs';
 import {delay} from 'rxjs/operators';
-import {setAcceptJsonHeaders} from '../../../services/data/data.service';
 import {ParkingLot} from 'src/app/models/ParkingLot';
 import {environment} from '../../../../environments/environment';
+import {setAcceptJsonHeaders} from '../../../config/http-config';
+import {status} from '../../../models/ParkingLotStatus';
+import {AuthenticationService} from '../../../services/account/auth.service';
 import {api} from '../../../services/navigation/app.endpoints';
 
 
@@ -16,6 +17,8 @@ import {api} from '../../../services/navigation/app.endpoints';
     styleUrls: ['./parking-lot-detail.component.css']
 })
 export class ParkingLotDetailComponent implements OnInit {
+
+    parkingLotStatus = status;
 
     @Input()
     parkingLot: ParkingLot;
@@ -51,12 +54,12 @@ export class ParkingLotDetailComponent implements OnInit {
         this.goBackEvent.emit();
     }
 
-    handleReservation() {
+    private handleReservation() {
         const parkingLotNumber = this.parkingLot.number;
         const parkingLotStatus = this.parkingLot.status;
         console.log('handleReservation() parking lot #' + parkingLotNumber + ' ' + parkingLotStatus);
 
-        if (parkingLotStatus === 'FREE') {
+        if (parkingLotStatus === status.FREE) {
             this.reserveParkingLot(parkingLotNumber).subscribe(response => {
 
                 if (response) {
@@ -74,7 +77,7 @@ export class ParkingLotDetailComponent implements OnInit {
             });
         }
 
-        if (parkingLotStatus === 'RESERVED') {
+        if (parkingLotStatus === status.RESERVED) {
             this.unreserveParkingLot(parkingLotNumber).subscribe(response => {
 
                 if (response) {
@@ -99,7 +102,7 @@ export class ParkingLotDetailComponent implements OnInit {
         }, 1050);
     }
 
-    reserveParkingLot(parkingLotNumber: number): Observable<boolean> {
+    private reserveParkingLot(parkingLotNumber: number): Observable<boolean> {
         const url = environment.restUrl + api.reservation + '/1' + parkingLotNumber;
         console.log('Reservation... parking lot #' + parkingLotNumber);
 
@@ -108,8 +111,8 @@ export class ParkingLotDetailComponent implements OnInit {
         });
     }
 
-    unreserveParkingLot(parkingLotNumber: number): Observable<boolean> {
-        const url = environment.restUrl + api.unreservation + '/1' + parkingLotNumber;
+    private unreserveParkingLot(parkingLotNumber: number): Observable<boolean> {
+        const url = environment.restUrl + api.cancelReservation + '/1' + parkingLotNumber;
         console.log('Cancel reservation... parking lot #' + parkingLotNumber);
 
         return this.http.get<boolean>(url, {
@@ -117,15 +120,15 @@ export class ParkingLotDetailComponent implements OnInit {
         });
     }
 
-    isAdminLoggedIn() {
+    private isAdminLoggedIn() {
         return this.authenticationService.isAdminLoggedIn();
     }
 
-    isUserLoggedIn() {
+    private isUserLoggedIn() {
         return this.authenticationService.isUserLoggedIn();
     }
 
-    refresh(): void {
+    private refresh(): void {
         window.location.reload();
     }
 }

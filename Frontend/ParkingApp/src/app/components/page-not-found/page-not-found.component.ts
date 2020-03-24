@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {routes} from '../../services/navigation/app.endpoints';
 import {Router} from '@angular/router';
+import {appRoutes} from '../../services/navigation/app.endpoints';
+
 
 @Component({
     selector: 'app-page-not-found',
@@ -16,6 +17,6 @@ export class PageNotFoundComponent implements OnInit {
     }
 
     goBack() {
-        this.router.navigate([routes.main]);
+        this.router.navigate([appRoutes.main]);
     }
 }

@@ -1,10 +1,11 @@
-import {Component, OnInit} from '@angular/core';
 import {formatDate} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {DataService} from '../../services/data/data.service';
-import {Statistics} from '../../models/Statistics';
 import {ParkingLot} from '../../models/ParkingLot';
-import {routes} from '../../services/navigation/app.endpoints';
+import {status} from '../../models/ParkingLotStatus';
+import {Statistics} from '../../models/Statistics';
+import {DataService} from '../../services/data/data.service';
+import {appRoutes} from '../../services/navigation/app.endpoints';
 
 
 @Component({
@@ -14,35 +15,41 @@ import {routes} from '../../services/navigation/app.endpoints';
 })
 export class StatisticsComponent implements OnInit {
 
-    p = 1;  // declaration of page index used for pagination
+    private p = 1;  // declaration of page index used for pagination
 
     // set the table row color depending on status
-    colors = [
-        {status: 'FREE', background: '#28a745'},
-        {status: 'OCCUPIED', background: '#dc3545'},
-        {status: 'UNKNOWN', background: 'gray'},
-        {status: 'RESERVED', background: '#ffbf0f'},
+    private colors = [
+        {status: status.FREE, background: '#28a745'},
+        {status: status.OCCUPIED, background: '#dc3545'},
+        {status: status.UNKNOWN, background: 'gray'},
+        {status: status.RESERVED, background: '#ffbf0f'},
     ];
 
-    statistics: Array<Statistics>;
-    filteredStatistics: Array<Statistics>;
-    parkingLots: Array<ParkingLot>;
+    private statistics: Array<Statistics>;
 
-    lotNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    private filteredStatistics: Array<Statistics>;
 
-    selectedLotNumber: string = null;
+    private parkingLots: Array<ParkingLot>;
 
-    startDate: string;
-    endDate: string;
+    private lotNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-    lotSortedAsc = false;
-    lotSortedDesc = false;
+    private selectedLotNumber: string = null;
 
-    dateSortedAsc = false;
-    dateSortedDesc = false;
+    private startDate: string;
 
-    timeSortedAsc = false;
-    timeSortedDesc = false;
+    private endDate: string;
+
+    private lotSortedAsc = false;
+
+    private lotSortedDesc = false;
+
+    private dateSortedAsc = false;
+
+    private dateSortedDesc = false;
+
+    private timeSortedAsc = false;
+
+    private timeSortedDesc = false;
 
     constructor(private dataService: DataService,
                 private route: ActivatedRoute) {
@@ -52,12 +59,12 @@ export class StatisticsComponent implements OnInit {
         this.loadData();
     }
 
-    loadData() {
+    private loadData() {
         // tslint:disable: no-string-literal
         // this.parkingLots = this.route.snapshot.data['parkingLots'];
         // this.parkingLots.sort((a, b) => (a.number > b.number) ? 1 : (a.number < b.number ? -1 : 0));
 
-        this.statistics = this.route.snapshot.data[routes.statistics];
+        this.statistics = this.route.snapshot.data[appRoutes.statistics];
         this.statistics.sort((a, b) => a.updatedAt > b.updatedAt ? 1 : (a.updatedAt < b.updatedAt ? -1 : 0));
 
         this.filteredStatistics = this.statistics;
@@ -67,7 +74,7 @@ export class StatisticsComponent implements OnInit {
         this.filterData();
     }
 
-    filterData() {
+    private filterData() {
         let tempStats = new Array<Statistics>();
 
         if (this.selectedLotNumber === 'All') {
@@ -90,84 +97,57 @@ export class StatisticsComponent implements OnInit {
         this.filteredStatistics = tempStats;
     }
 
-    sortTableByLotNumber() {
-
-        this.lotSortedAsc = true;
-        this.lotSortedDesc = true;
-
-
-        for (let i = 0; i < this.filteredStatistics.length - 1; i++) {
-
-            if (this.filteredStatistics[i].lotNumber > this.filteredStatistics[i + 1].lotNumber) {
-                this.lotSortedAsc = false;
-            }
-
-            if (this.filteredStatistics[i].lotNumber < this.filteredStatistics[i + 1].lotNumber) {
-                this.lotSortedDesc = false;
-            }
-        }
-
-
-        if (this.lotSortedAsc) {
-            this.filteredStatistics.sort(
-                (a, b) => a.lotNumber < b.lotNumber ? 1 : (a.lotNumber > b.lotNumber ? -1 : 0));
-
-            this.lotSortedAsc = false;
-            this.lotSortedDesc = true;
-        } else {
-            this.filteredStatistics.sort(
-                (a, b) => a.lotNumber > b.lotNumber ? 1 : (a.lotNumber < b.lotNumber ? -1 : 0));
-
-            this.lotSortedDesc = false;
-            this.lotSortedAsc = true;
-        }
-
-        this.dateSortedAsc = false;
-        this.dateSortedDesc = false;
-
-        this.timeSortedDesc = false;
-        this.timeSortedAsc = false;
+    private sortTableByLotNumber() {
+        this.sortTable(this.lotSortedAsc, this.lotSortedDesc, this.filteredStatistics,
+            'lotNumber',
+            this.dateSortedAsc = false,
+            this.dateSortedDesc = false,
+            this.timeSortedDesc = false,
+            this.timeSortedAsc = false);
     }
 
-    sortTableByDate() {
-        this.dateSortedDesc = true;
-        this.dateSortedAsc = true;
 
-        for (let i = 0; i < this.filteredStatistics.length - 1; i++) {
-
-            if (this.filteredStatistics[i].updatedAt > this.filteredStatistics[i + 1].updatedAt) {
-                this.dateSortedAsc = false;
-            }
-
-            if (this.filteredStatistics[i].updatedAt < this.filteredStatistics[i + 1].updatedAt) {
-                this.dateSortedDesc = false;
-            }
-        }
-
-        if (this.dateSortedAsc) {
-            this.filteredStatistics.sort(
-                (a, b) => a.updatedAt < b.updatedAt ? 1 : (a.updatedAt > b.updatedAt ? -1 : 0)
-            );
-
-            this.dateSortedAsc = false;
-            this.dateSortedDesc = true;
-        } else {
-            this.filteredStatistics.sort(
-                (a, b) => a.updatedAt > b.updatedAt ? 1 : (a.updatedAt < b.updatedAt ? -1 : 0)
-            );
-
-            this.dateSortedDesc = false;
-            this.dateSortedAsc = true;
-        }
-
-        this.lotSortedAsc = false;
-        this.lotSortedDesc = false;
-
-        this.timeSortedDesc = false;
-        this.timeSortedAsc = false;
+    private sortTableByDate() {
+        this.sortTable(this.dateSortedAsc, this.dateSortedDesc, this.filteredStatistics,
+            'updatedAt',
+            this.lotSortedAsc = false,
+            this.lotSortedDesc = false,
+            this.timeSortedDesc = false,
+            this.timeSortedAsc = false);
     }
 
-    sortTableByTime() {
+    private sortTable(targetSortedAsc: boolean, targetSortedDesc: boolean,
+                      statistics: Array<Statistics>, sortByField: string, ...otherFields: boolean[]) {
+        targetSortedAsc = true;
+        targetSortedDesc = true;
+
+        for (let i = 0; i < statistics.length - 1; i++) {
+            if (statistics[i][sortByField] > statistics[i + 1][sortByField]) {
+                targetSortedAsc = false;
+            }
+            if (statistics[i][sortByField] < statistics[i + 1][sortByField]) {
+                targetSortedDesc = false;
+            }
+        }
+
+        if (targetSortedAsc) {
+            statistics.sort(
+                (a, b) => a[sortByField] < b[sortByField] ? 1 : (a[sortByField] > b[sortByField] ? -1 : 0));
+            targetSortedAsc = false;
+            targetSortedDesc = true;
+        } else {
+            statistics.sort(
+                (a, b) => a[sortByField] > b[sortByField] ? 1 : (a[sortByField] < b[sortByField] ? -1 : 0));
+            targetSortedDesc = false;
+            targetSortedAsc = true;
+        }
+
+        for (let i = 0; i < otherFields.length; i++) {
+            otherFields[i] = false;
+        }
+    }
+
+    private sortTableByTime() {
         this.timeSortedDesc = true;
         this.timeSortedAsc = true;
 
@@ -205,7 +185,7 @@ export class StatisticsComponent implements OnInit {
         this.dateSortedAsc = false;
     }
 
-    getColor(status: string) {
-        return this.colors.filter(item => item.status === status)[0].background;
+    private getColor(parkingLotStatus: string) {
+        return this.colors.filter(item => item.status === parkingLotStatus)[0].background;
     }
 }

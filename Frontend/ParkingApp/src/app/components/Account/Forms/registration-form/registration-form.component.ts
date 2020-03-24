@@ -1,14 +1,14 @@
+import {DOCUMENT} from '@angular/common';
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
+import {NgxUiLoaderService} from 'ngx-ui-loader';
+import {User} from '../../../../models/User';
 import {AuthenticationService} from '../../../../services/account/auth.service';
-import {regexpTestValidator} from '../../../../validation/regexp-name-validator';
 import {capitalize, isNonEmptyString} from '../../../../utils/string-utils';
 import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
-import {User} from '../../../../models/User';
-import {DOCUMENT} from '@angular/common';
-import {HttpErrorResponse} from '@angular/common/http';
-import {NgxUiLoaderService} from "ngx-ui-loader";
+import {regexpTestValidator} from '../../../../validation/regexp-name-validator';
 
 
 @Component({
@@ -19,19 +19,27 @@ import {NgxUiLoaderService} from "ngx-ui-loader";
 export class RegFormComponent implements OnInit {
 
     private username: string;
+
     private email: string;
+
     private firstname: string;
+
     private lastname: string;
+
     private password: string;
+
     private passConfirm: string;
 
     private errorMessage = 'Invalid Credentials';
+
     private successMessage: string;
 
     private invalidReg = false;
+
     private regSuccess = false;
 
     private fieldTextTypePass: boolean;
+
     private fieldTextTypePassConfirm: boolean;
 
     @Output()
@@ -56,11 +64,11 @@ export class RegFormComponent implements OnInit {
     }
 
     // Switching method
-    togglePassTextType() {
+    private togglePassTextType() {
         this.fieldTextTypePass = !this.fieldTextTypePass;
     }
 
-    togglePassConfirmTextType() {
+    private togglePassConfirmTextType() {
         this.fieldTextTypePassConfirm = !this.fieldTextTypePassConfirm;
     }
 
@@ -149,7 +157,7 @@ export class RegFormComponent implements OnInit {
         }
     }
 
-    handleRegistration(user: User) {
+    private handleRegistration(user: User) {
 
         this.ngxService.startLoader('loader-01'); // start foreground spinner of the loader "loader-01" with 'default' taskId
         // Stop the foreground loading after 5s
@@ -167,7 +175,7 @@ export class RegFormComponent implements OnInit {
                     console.log(this.successMessage);
                     alert(this.successMessage);
 
-                    this.navigateToLogin();
+                    // this.navigateToLogin();
                 } else {
                     this.invalidReg = true;
                     this.regSuccess = false;

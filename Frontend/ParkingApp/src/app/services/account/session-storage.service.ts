@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {JWTToken} from "../../models/JWTToken";
+import {JWTToken} from '../../models/JWTToken';
 
 
 @Injectable({
@@ -96,7 +96,7 @@ export class SessionStorageService {
         const token = getJwtToken();
 
         const decodedToken = this.jwtHelper.decodeToken(token);
-        console.log(`decodedToken ${decodedToken}`);
+        console.log(`decodedToken ` + JSON.stringify(decodedToken));
         const expirationDate = this.jwtHelper.getTokenExpirationDate(token);
         console.log(`expirationDate ${expirationDate}`);
         const isExpired = this.jwtHelper.isTokenExpired(token);
@@ -110,7 +110,7 @@ export class SessionStorageService {
 
         if (token) {
             const decodedToken = this.jwtHelper.decodeToken(token) as JWTToken;
-            console.log(`decodedToken ${decodedToken}`);
+            // console.log(`decodedToken ` + JSON.stringify(decodedToken));
 
             return decodedToken.roles;
         } else {

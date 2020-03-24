@@ -37,13 +37,13 @@
             'lot-side' : parkingLots[num]?.number < 4,
             'lot-top' : parkingLots[num]?.number >= 4,
 
-            'car-occupied-side' : (parkingLots[num]?.status === 'OCCUPIED' || parkingLots[num].status == null) && parkingLots[num]?.number < 4,
-            'car-lost-side' : (parkingLots[num]?.status === 'UNKNOWN') && parkingLots[num]?.number < 4,
-            'car-free-side' : parkingLots[num]?.status === 'FREE'  && parkingLots[num]?.number < 4,
+            'car-occupied-side' : (parkingLots[num]?.status === parkingLotStatus.OCCUPIED || parkingLots[num].status == null) && parkingLots[num]?.number < 4,
+            'car-lost-side' : (parkingLots[num]?.status === parkingLotStatus.UNKNOWN) && parkingLots[num]?.number < 4,
+            'car-free-side' : parkingLots[num]?.status === parkingLotStatus.FREE  && parkingLots[num]?.number < 4,
 
-            'car-occupied-top' : (parkingLots[num]?.status === 'OCCUPIED'  || parkingLots[num].status == null) && parkingLots[num]?.number >= 4,
-            'car-lost-top' : (parkingLots[num]?.status === 'UNKNOWN') && parkingLots[num]?.number >= 4,
-            'car-free-top' : parkingLots[num]?.status === 'FREE' && parkingLots[num]?.number >= 4,
+            'car-occupied-top' : (parkingLots[num]?.status === parkingLotStatus.OCCUPIED  || parkingLots[num].status == null) && parkingLots[num]?.number >= 4,
+            'car-lost-top' : (parkingLots[num]?.status === parkingLotStatus.UNKNOWN) && parkingLots[num]?.number >= 4,
+            'car-free-top' : parkingLots[num]?.status === parkingLotStatus.FREE && parkingLots[num]?.number >= 4,
 
             'lot-1' : parkingLots[num]?.number === 1,
             'lot-2' : parkingLots[num]?.number === 2,
@@ -57,7 +57,7 @@
             'lot-10' : parkingLots[num]?.number === 10
           }"
                      (click)="showDetails(parkingLots[num]?.id)">
-          <span *ngIf="parkingLots[num]?.status === 'FREE'"
+          <span *ngIf="parkingLots[num]?.status === parkingLotStatus.FREE"
                 [ngClass]="{
               'lot-number-side' : parkingLots[num]?.number < 4,
               'lot-number-top' : parkingLots[num]?.number >= 4

@@ -1,12 +1,12 @@
-import {Injectable, NgZone} from '@angular/core';
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable, NgZone} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
+import {AuthService} from 'angularx-social-login-vk';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {AuthenticationService} from '../account/auth.service';
 import {SessionStorageService} from '../account/session-storage.service';
 import {actions} from '../navigation/app.endpoints';
-import {AuthService} from 'angularx-social-login';
 import {NavigationService} from '../navigation/navigation.service';
 
 

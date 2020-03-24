@@ -1,13 +1,13 @@
-import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/empty';
-import {AccountStorageTypeService, getUsername, roleAdmin, SessionStorageService} from './session-storage.service';
-import {setAcceptJsonHeaders} from '../data/data.service';
-import {User} from '../../models/User';
 import {environment} from '../../../environments/environment';
+import {setAcceptJsonHeaders} from '../../config/http-config';
+import {User} from '../../models/User';
 import {api} from '../navigation/app.endpoints';
+import {AccountStorageTypeService, getUsername, roleAdmin, SessionStorageService} from './session-storage.service';
 
 
 @Injectable({
@@ -79,12 +79,12 @@ export class AuthenticationService {
         });
     }
 
-    processResetPasswordRequest(username: string, password: string): Observable<any> {
+    processResetPasswordRequest(confirmationToken: string, password: string): Observable<any> {
         const url = environment.restUrl + api.resetPass;
         console.log('reset pass ' + password);
 
         return this.http.post<any>(url, {
-            username,
+            confirmationToken,
             password
 
         }, {

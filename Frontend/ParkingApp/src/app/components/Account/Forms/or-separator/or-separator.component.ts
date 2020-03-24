@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 
+
 @Component({
     selector: 'app-or-separator',
     template: '<div class="or-seperator"><b>or</b></div>',

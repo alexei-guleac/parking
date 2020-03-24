@@ -1,11 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {_getFingerprint} from '../../../../utils/device-fingerprint';
 import {ServerErrorMessage} from '../../../../models/ServerErrorMessage';
+import {actions} from '../../../../services/navigation/app.endpoints';
+import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {_getFingerprint} from '../../../../utils/device-fingerprint';
 import {containsString} from '../../../../utils/string-utils';
 import {fadeInOut} from '../../../animations/animations';
-import {NavigationService} from '../../../../services/navigation/navigation.service';
-import {actions} from '../../../../services/navigation/app.endpoints';
+
 
 @Component({
     selector: 'app-account-form',
@@ -27,7 +28,7 @@ export class AccountFormComponent implements OnInit {
     private errorMessage: string;
     private successMessage: string;
 
-    private username: string;
+    private confirmationToken: string;
 
     constructor(private router: Router,
                 private route: ActivatedRoute,
@@ -44,7 +45,7 @@ export class AccountFormComponent implements OnInit {
         console.log('Called Constructor');
         this.route.queryParams.subscribe(params => {
             if (params.action === actions.reset) {
-                this.username = params.user;
+                this.confirmationToken = params.confirmation_token;
                 this.navigateToResetPass();
             }
             if (params.action === actions.login) {
@@ -87,7 +88,7 @@ export class AccountFormComponent implements OnInit {
     }
 
     // Show/hide form hint
-    toogleHint() {
+    private toogleHint() {
         this.showHint = !this.showHint;
 
         setTimeout(() => {
@@ -96,27 +97,27 @@ export class AccountFormComponent implements OnInit {
         }, 60000);
     }
 
-    navigateToMain() {
+    private navigateToMain() {
         this.navigation.navigateToMain();
     }
 
-    navigateToLogin() {
+    private navigateToLogin() {
         this.switchLayout(true, false, false, false);
     }
 
-    navigateToRegistration() {
+    private navigateToRegistration() {
         this.switchLayout(false, true, false, false);
     }
 
-    navigateToForgotPass() {
+    private navigateToForgotPass() {
         this.switchLayout(false, false, true, false);
     }
 
-    navigateToResetPass() {
+    private navigateToResetPass() {
         this.switchLayout(false, false, false, true);
     }
 
-    switchLayout(stateLogin: boolean, stateRegister: boolean, stateForgotPassword: boolean, stateResetPassword: boolean) {
+    private switchLayout(stateLogin: boolean, stateRegister: boolean, stateForgotPassword: boolean, stateResetPassword: boolean) {
         this.login = stateLogin;
         this.register = stateRegister;
         this.forgotPass = stateForgotPassword;

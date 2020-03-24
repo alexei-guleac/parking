@@ -3,10 +3,11 @@
     <div *ngIf="parkingLot != null">
 
         <div [ngClass]="parkingLot.status.toLowerCase()" class="btn lot col-sm-12 ">
-            <i class="fas " [ngClass]="{'fa-car': parkingLot.status === 'OCCUPIED',
-                                        'fa-parking': parkingLot.status === 'FREE',
-                                        'fa-ban': parkingLot.status === 'UNKNOWN',
-                                        'fa-clipboard-check': parkingLot.status === 'RESERVED'}"></i>
+            <i [ngClass]="{'fa-car': parkingLot.status === parkingLotStatus.OCCUPIED,
+                                        'fa-parking': parkingLot.status === parkingLotStatus.FREE,
+                                        'fa-ban': parkingLot.status === parkingLotStatus.UNKNOWN,
+                                        'fa-clipboard-check': parkingLot.status === parkingLotStatus.RESERVED}"
+               class="fas "></i>
         </div>
 
         <div class="card-body">
@@ -21,7 +22,7 @@
             </button>
             <button *ngIf="this.isAdminLoggedIn()" (click)="handleReservation()"
                     [disabled]="reservationSuccess" appNoDblClick class="btn col refresh text-center">
-                <i class="fa fa-bell"></i> {{(parkingLot.status === 'RESERVED' ? 'Reset' : 'Make') + ' reservation'}}
+                <i class="fa fa-bell"></i> {{(parkingLot.status === parkingLotStatus.RESERVED ? 'Reset' : 'Make') + ' reservation'}}
             </button>
         </div>
     </div>

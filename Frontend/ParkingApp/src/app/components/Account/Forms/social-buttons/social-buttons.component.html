@@ -18,12 +18,12 @@
 </button>
 
 <div *ngIf="showMore==true" [@fadeInOut] class="social-btn social-btn-fade-in">
-    <span class="btn btn-microsoft btn-lg btn-block">
+    <span (click)="signInWithMs()" class="btn btn-microsoft btn-lg btn-block">
         <img class="ml-2 mr-n4" src="../../../../../assets/img/microsoft_icon_logo.png"
              style="width: 1.3em; height: 1.3em">
         <span class="mx-auto"><b>Microsoft</b></span>
     </span>
-    <span class="btn btn-github btn-lg btn-block ">
+    <span (click)="signInWithGit()" class="btn btn-github btn-lg btn-block ">
         <i class="fa fa-github"></i>
         <span class="mx-auto"><b>Github</b></span>
     </span>

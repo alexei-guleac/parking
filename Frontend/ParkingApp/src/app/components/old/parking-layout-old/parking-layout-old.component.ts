@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {interval, Subscription} from 'rxjs';
-import {DataService} from 'src/app/services/data/data.service';
 import {ParkingLot} from 'src/app/models/ParkingLot';
-import {routes} from '../../../services/navigation/app.endpoints';
+import {DataService} from 'src/app/services/data/data.service';
+import {appRoutes} from '../../../services/navigation/app.endpoints';
+
 
 @Component({
     selector: 'app-parking-layout',
@@ -89,11 +90,11 @@ export class ParkingLayoutOldComponent implements OnInit, OnDestroy {
 
     refresh() {
         this.loadData();
-        this.router.navigate([routes.layout]);
+        this.router.navigate([appRoutes.layout]);
     }
 
     showDetails(id: number) {
-        this.router.navigate([routes.layout], {queryParams: {id, action: 'view'}});
+        this.router.navigate([appRoutes.layout], {queryParams: {id, action: 'view'}});
         this.selectedParkingLot = this.parkingLots.find(pl => pl.id === id);
         this.subscribeOnUrlParams();
     }

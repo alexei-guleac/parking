@@ -1,10 +1,10 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../services/account/auth.service';
-import {capitalize} from '../../utils/string-utils';
 import {storageKeys} from '../../services/account/session-storage.service';
-import {openClose} from '../animations/animations';
 import {NavigationService} from '../../services/navigation/navigation.service';
+import {capitalize} from '../../utils/string-utils';
+import {openClose} from '../animations/animations';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class MenuComponent implements OnInit {
     private modeToggleText: string;
     private modeStatusElement: string;
 
-    themeToogleChecked = false;
+    private themeToogleChecked = false;
 
     constructor(private router: Router,
                 private authenticationService: AuthenticationService,
@@ -35,36 +35,36 @@ export class MenuComponent implements OnInit {
         this.initThemeToogle();
     }
 
-    navigateToMain() {
+    private navigateToMain() {
         this.navigation.navigateToMain();
     }
 
-    navigateToStatistics() {
+    private navigateToStatistics() {
         this.navigation.navigateToStatistics();
     }
 
-    navigateToLayout() {
+    private navigateToLayout() {
         this.navigation.navigateToLayout();
     }
 
-    navigateToLogin() {
+    private navigateToLogin() {
         this.navigation.navigateToLogin();
     }
 
-    navigateTo404() {
+    private navigateTo404() {
         this.navigation.navigateTo404();
     }
 
-    isAdminLoggedIn() {
+    private isAdminLoggedIn() {
         return this.authenticationService.isAdminLoggedIn();
     }
 
-    isUserLoggedIn() {
-        console.log('isUserLoggedIn ' + this.authenticationService.isUserLoggedIn());
+    private isUserLoggedIn() {
+        // console.log('isUserLoggedIn ' + this.authenticationService.isUserLoggedIn());
         return this.authenticationService.isUserLoggedIn();
     }
 
-    logout() {
+    private logout() {
         this.authenticationService.processLogout();
 
         console.log(sessionStorage.getItem(storageKeys.TOKEN_NAME));
@@ -74,11 +74,11 @@ export class MenuComponent implements OnInit {
         this.goBackEvent.emit();
     }
 
-    getUserName() {
+    private getUserName() {
         return this.authenticationService.getLoggedInUserName();
     }
 
-    capitalize(field: string) {
+    private capitalize(field: string) {
         return capitalize(field);
     }
 

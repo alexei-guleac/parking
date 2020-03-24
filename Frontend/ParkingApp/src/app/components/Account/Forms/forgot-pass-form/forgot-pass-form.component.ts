@@ -1,10 +1,10 @@
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
-import {isNonEmptyString} from '../../../../utils/string-utils';
 import {AuthenticationService} from '../../../../services/account/auth.service';
-import {HttpErrorResponse} from '@angular/common/http';
 import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {isNonEmptyString} from '../../../../utils/string-utils';
+import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
 
 
 @Component({
@@ -19,15 +19,18 @@ export class ForgotPassFormComponent implements OnInit {
     private forgotForm: FormGroup;
 
     private requestSuccess: boolean;
+
     private requestFailed: boolean;
 
     private confirmationMessage: string;
+
     private errorMessage: string;
 
     private submitted = false;
 
     @Output()
     userLoginEvent: EventEmitter<any> = new EventEmitter<any>();
+
     sendSuccess = false;
 
     constructor(private authenticationService: AuthenticationService,
@@ -65,7 +68,7 @@ export class ForgotPassFormComponent implements OnInit {
         }
     }
 
-    handleForgotPass() {
+    private handleForgotPass() {
         this.authenticationService.processForgotPasswordRequest(this.email).subscribe(
             (response: any) => {
 

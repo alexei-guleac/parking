@@ -85,6 +85,8 @@
     <app-social-buttons
         (fbLogin)="this.socialSignIn('facebook')"
         (gLogin)="this.socialSignIn('google')"
+        (gitLogin)="this.socialSignInOther('github')"
+        (msLogin)="this.socialSignInOther('microsoft')"
     ></app-social-buttons>
 
     <div class="clearfix m-3 px-3 info-box mx-auto">

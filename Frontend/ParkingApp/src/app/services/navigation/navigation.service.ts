@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {NavigationExtras, Router} from '@angular/router';
-import {actions, routes} from './app.endpoints';
+import {actions, appRoutes} from './app.endpoints';
 
 
 @Injectable({providedIn: 'root'})
@@ -12,34 +12,34 @@ export class NavigationService {
     }
 
     navigateToMain() {
-        this.router.navigate([routes.main]);
+        this.router.navigate([appRoutes.main]);
     }
 
     navigateToStatistics() {
-        this.router.navigate([routes.statistics]);
+        this.router.navigate([appRoutes.statistics]);
     }
 
     navigateToLayout() {
-        this.router.navigate([routes.layout]);
+        this.router.navigate([appRoutes.layout]);
     }
 
     navigateToLogin() {
-        this.router.navigate([routes.account], {queryParams: {action: actions.login}});
+        this.router.navigate([appRoutes.account], {queryParams: {action: actions.login}});
     }
 
     navigateToLoginWithExtras(navigationExtras: NavigationExtras) {
-        this.router.navigate([routes.account], navigationExtras);
+        this.router.navigate([appRoutes.account], navigationExtras);
     }
 
     navigateToResetWithExtras(navigationExtras: NavigationExtras) {
-        this.router.navigate([routes.reset], navigationExtras);
+        this.router.navigate([appRoutes.reset], navigationExtras);
     }
 
     navigateTo404() {
-        this.router.navigate([routes.notFound]);
+        this.router.navigate([appRoutes.notFound]);
     }
 
     navigateToServerNotRunning() {
-        this.router.navigate([routes.main], {queryParams: {action: actions.serverError}});
+        this.router.navigate([appRoutes.main], {queryParams: {action: actions.serverError}});
     }
 }

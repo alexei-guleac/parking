@@ -1,15 +1,20 @@
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
-import {HttpErrorResponse} from '@angular/common/http';
-import {AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser} from 'angularx-social-login';
+import {BroadcastService, MsalService} from '@azure/msal-angular';
+import {AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser} from 'angularx-social-login-vk';
 import {AuthenticationService} from '../../../../services/account/auth.service';
+import {GithubOauthService} from '../../../../services/account/github-oauth.service';
+import {providerNames, SocialAuthService} from '../../../../services/account/social-auth.service';
+import {LoggerService} from '../../../../services/helpers/logger.service';
+import {isNonEmptyString} from '../../../../utils/string-utils';
+import {credentials} from '../../../../validation/credentials';
 import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
 import {regexpTestValidator} from '../../../../validation/regexp-name-validator';
-import {isNonEmptyString} from '../../../../utils/string-utils';
-import {providerNames, SocialAuthService} from '../../../../services/account/social-auth.service';
-import {credentials} from '../../../../validation/credentials';
 
+
+const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
 
 @Component({
     selector: 'app-login-form',
@@ -18,21 +23,33 @@ import {credentials} from '../../../../validation/credentials';
 })
 export class LoginFormComponent implements OnInit {
 
+    @Input() isLogFailed: boolean;
+
+    @Input() errMessage: string;
+
+    @Input() isConfirmSuccess: boolean;
+
+    @Input() confMessage: string;
+
+    @Output()
+    userLoginEvent: EventEmitter<any> = new EventEmitter<any>();
+
+    @Output()
+    userForgotEvent: EventEmitter<any> = new EventEmitter<any>();
+
     private user: SocialUser;
 
     private username: string;
+
     private password: string;
 
     private errorMessage = 'Invalid Credentials';
+
     private successMessage: string;
 
     private isLoginSuccess = false;
-    private isLoginFailed = false;
 
-    @Input() isLogFailed: boolean;
-    @Input() errMessage: string;
-    @Input() isConfirmSuccess: boolean;
-    @Input() confMessage: string;
+    private isLoginFailed = false;
 
     private fieldTextTypePass: boolean;
 
@@ -42,19 +59,31 @@ export class LoginFormComponent implements OnInit {
 
     private rememberUser = false;
 
-    @Output()
-    userLoginEvent: EventEmitter<any> = new EventEmitter<any>();
-    @Output()
-    userForgotEvent: EventEmitter<any> = new EventEmitter<any>();
-
     private loginForm: FormGroup;
+
+    isIframe = false;
+
+    profile;
+
+    private code: string;
+
+    private socialProviders = providerNames;
 
     constructor(
         private route: ActivatedRoute,
         private router: Router,
         private authenticationService: AuthenticationService,
         private OAuth: AuthService,
-        private socialService: SocialAuthService) {
+        private githubAuthService: GithubOauthService,
+        private socialService: SocialAuthService,
+        private broadcastService: BroadcastService,
+        private msalAuthService: MsalService,
+        private log: LoggerService,
+        private http: HttpClient) {
+    }
+
+    getProfile() {
+        return this.http.get(GRAPH_ENDPOINT);
     }
 
     get name() {
@@ -63,11 +92,6 @@ export class LoginFormComponent implements OnInit {
 
     get pass() {
         return this.loginForm.get('password');
-    }
-
-    // Switching method
-    togglePassTextType() {
-        this.fieldTextTypePass = !this.fieldTextTypePass;
     }
 
     ngOnInit(): void {
@@ -91,8 +115,22 @@ export class LoginFormComponent implements OnInit {
             rememberMe: new FormControl()
         });
 
+        this.msalInit();
+        this.processGithubOauthCallback();
         this.initSocialLogin();
         this.initMsgFromParent();
+        this.log.logMethod('Hellloooo!!!');
+
+
+        this.getProfile().subscribe(
+            profile => {
+                this.profile = profile;
+                console.log(profile);
+            });
+    }
+
+    msalCheckoutAccount() {
+        this.loggedIn = !!this.msalAuthService.getAccount();
     }
 
     onSubmit() {
@@ -111,7 +149,26 @@ export class LoginFormComponent implements OnInit {
         }
     }
 
-    handleLogin() {
+    msalLogin() {
+        const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
+
+        if (isIE) {
+            this.msalAuthService.loginRedirect();
+        } else {
+            this.msalAuthService.loginPopup();
+        }
+    }
+
+    msalLogout() {
+        this.msalAuthService.logout();
+    }
+
+    // Switching method
+    private togglePassTextType() {
+        this.fieldTextTypePass = !this.fieldTextTypePass;
+    }
+
+    private handleLogin() {
         this.authenticationService.processAuthentification(this.username, this.password).subscribe(
             (response: any) => {
 
@@ -143,35 +200,63 @@ export class LoginFormComponent implements OnInit {
             });
     }
 
-    socialSignIn(socialProvider: string): void {
+    private socialSignIn(socialProvider: string): void {
 
         let socialPlatformProvider: string;
         let social: string;
 
-        if (socialProvider === providerNames.facebook.name) {
+        if (socialProvider === this.socialProviders.facebook.name) {
             socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;
-            social = providerNames.facebook.short;
+            social = this.socialProviders.facebook.short;
         }
-        if (socialProvider === providerNames.google.name) {
+        if (socialProvider === this.socialProviders.google.name) {
             socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
-            social = providerNames.google.short;
+            social = this.socialProviders.google.short;
         }
 
         this.OAuth.signIn(socialPlatformProvider)
-            .then((socialuser) => {
-                console.log('then ', socialProvider, socialuser);
+            .then((socialUser) => {
+                console.log('then ', socialProvider, socialUser);
 
-                if (socialuser !== null) {
+                if (socialUser !== null) {
                     console.log(this.user);
-                    console.log(socialuser.provider);
+                    console.log(socialUser.provider);
                     console.log(this.OAuth.readyState);
 
-                    this.sendSocialLoginRequest(socialuser.id, social);
+                    this.sendSocialLoginRequest(socialUser.id, social);
                 }
             });
     }
 
-    sendSocialLoginRequest(id: string, social: string) {
+    /*Savesresponse(socialusers: SocialUser) {
+
+        this.SocialloginService.Savesresponse(socialusers).subscribe((res: any) => {
+            debugger;
+            console.log(res);
+            this.socialusers=res;
+            this.response = res.userDetail;
+            localStorage.setItem('socialusers', JSON.stringify( this.socialusers));
+            console.log(localStorage.setItem('socialusers', JSON.stringify(this.socialusers)));
+            this.router.navigate([`/Dashboard`]);
+        })
+    }*/
+
+    private socialSignInOther(socialProvider: string) {
+
+        if (socialProvider === this.socialProviders.github.name) {
+            const social = this.socialProviders.github.short;
+
+            this.githubAuthService.loginWithGithub();
+        }
+
+        if (socialProvider === this.socialProviders.microsoft.name) {
+            const social = this.socialProviders.microsoft.short;
+
+            this.msalLogin();
+        }
+    }
+
+    private sendSocialLoginRequest(id: string, social: string) {
         // console.log('Social login');
         // console.log('Login ' + id);
 
@@ -214,23 +299,6 @@ export class LoginFormComponent implements OnInit {
             });
     }
 
-    signOut(): void {
-        this.OAuth.signOut();
-    }
-
-    /*Savesresponse(socialusers: SocialUser) {
-
-        this.SocialloginService.Savesresponse(socialusers).subscribe((res: any) => {
-            debugger;
-            console.log(res);
-            this.socialusers=res;
-            this.response = res.userDetail;
-            localStorage.setItem('socialusers', JSON.stringify( this.socialusers));
-            console.log(localStorage.setItem('socialusers', JSON.stringify(this.socialusers)));
-            this.router.navigate([`/Dashboard`]);
-        })
-    }*/
-
     private localLoginTest() {
         // only for testing purpose
         if ((this.username === credentials.admin && this.password === credentials.adminPassword)
@@ -262,6 +330,8 @@ export class LoginFormComponent implements OnInit {
         });
     }
 
+    // GITHUB
+
     private initMsgFromParent() {
         if (this.isConfirmSuccess) {
             this.isLoginSuccess = true;
@@ -273,7 +343,60 @@ export class LoginFormComponent implements OnInit {
         }
     }
 
-    navigateToForgotPass() {
+    private signOut(): void {
+        this.OAuth.signOut();
+    }
+
+    private navigateToForgotPass() {
         this.userForgotEvent.emit();
+    }
+
+    private processGithubOauthCallback() {
+        this.subscribeUrlParams();
+
+        if (this.code != null) {
+            this.githubAuthService.handleGithubOauthRequest(this.code);
+        }
+
+        this.githubAuthService.gitUserChange.subscribe((socialUser: any) => {
+            if (socialUser.id) {
+                this.sendSocialLoginRequest(socialUser.id, 'git');
+            }
+        });
+    }
+
+    private subscribeUrlParams() {
+        console.log('Called Constructor');
+        this.route.queryParams.subscribe(params => {
+            this.code = params.code;
+        });
+        console.log('CODEEEEEEE' + this.code);
+    }
+
+    private msalInit() {
+        this.isIframe = window !== window.parent && !window.opener;
+
+        this.msalCheckoutAccount();
+
+        this.broadcastService.subscribe('msal:loginSuccess', (account) => {
+            this.msalCheckoutAccount();
+            console.log('ACCOUNT  ' + JSON.stringify(account));
+        });
+
+        this.msalAuthService.handleRedirectCallback((authError, response) => {
+            if (authError) {
+                console.error('Redirect Error: ', authError.errorMessage);
+                return;
+            }
+
+            console.log('Redirect Success: ', response.accessToken);
+        });
+
+        // this.msalAuthService.setLogger(new Logger((logLevel, message, piiEnabled) => {
+        //     console.log('MSAL Logging: ', message);
+        // }, {
+        //     correlationId: CryptoUtils.createNewGuid(),
+        //     piiLoggingEnabled: false
+        // }));
     }
 }

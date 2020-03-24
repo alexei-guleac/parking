@@ -1,8 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {ParkingLot} from '../../models/ParkingLot';
-import {User} from '../../models/User';
+// @ts-ignore
+import {status} from '../../models/ParkingLotStatus';
 import {Statistics} from '../../models/Statistics';
+import {User} from '../../models/User';
 
 
 @Injectable({
@@ -30,7 +32,7 @@ export class DataService {
             const parkingLot = new ParkingLot();
             parkingLot.id = i;
             parkingLot.number = i;
-            parkingLot.status = this.getRandomNum === 0 ? 'FREE' : this.getRandomNum === 1 ? 'OCCUPIED' : 'UNKNOWN';
+            parkingLot.status = this.getRandomNum === 0 ? status.FREE : this.getRandomNum === 1 ? status.OCCUPIED : status.UNKNOWN;
             parkingLot.updatedAt = new Date();
 
             this.parkingLots.push(parkingLot);
@@ -53,9 +55,9 @@ export class DataService {
         for (let i = 0; i < 10; i++) {
             this.date = new Date('2020-01-05 9:00');
             this.date.setHours(this.date.getHours() + 10);
-            status = this.getRandomNum === 0 ? 'FREE' : this.getRandomNum === 1 ? 'OCCUPIED' : 'UNKNOWN';
+            const parkingLotStatus = this.getRandomNum === 0 ? status.FREE : this.getRandomNum === 1 ? status.OCCUPIED : status.UNKNOWN;
 
-            const stats = new Statistics(i + 1, i + 1, status, this.date);
+            const stats = new Statistics(i + 1, i + 1, parkingLotStatus, this.date);
             this.statistics.push(stats);
         }
     }

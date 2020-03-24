@@ -1,12 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationExtras} from '@angular/router';
 import {HttpErrorResponse} from '@angular/common/http';
-import {AuthenticationService} from '../../../../services/account/auth.service';
-import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {Component, Input, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
-import {isNonEmptyString} from '../../../../utils/string-utils';
+import {ActivatedRoute, NavigationExtras} from '@angular/router';
+import {AuthenticationService} from '../../../../services/account/auth.service';
 import {actions} from "../../../../services/navigation/app.endpoints";
+import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {isNonEmptyString} from '../../../../utils/string-utils';
+import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
 
 
 @Component({
@@ -17,17 +17,20 @@ import {actions} from "../../../../services/navigation/app.endpoints";
 export class ResetPasswordComponent implements OnInit {
 
     private password: string;
+
     private passConfirm: string;
 
     private invalidReset = false;
+
     private resetSuccess = false;
 
     private fieldTextTypePass: boolean;
+
     private fieldTextTypePassConfirm: boolean;
 
     private resetForm: FormGroup;
 
-    @Input() username: string;
+    @Input() confirmationToken: string;
 
     private submitted = false;
 
@@ -60,11 +63,11 @@ export class ResetPasswordComponent implements OnInit {
 
 
     // Switching method
-    togglePassTextType() {
+    private togglePassTextType() {
         this.fieldTextTypePass = !this.fieldTextTypePass;
     }
 
-    togglePassConfirmTextType() {
+    private togglePassConfirmTextType() {
         this.fieldTextTypePassConfirm = !this.fieldTextTypePassConfirm;
     }
 
@@ -81,8 +84,8 @@ export class ResetPasswordComponent implements OnInit {
         }
     }
 
-    handlePassReset() {
-        this.authenticationService.processResetPasswordRequest(this.username, this.password).subscribe(
+    private handlePassReset() {
+        this.authenticationService.processResetPasswordRequest(this.confirmationToken, this.password).subscribe(
             (response: any) => {
 
                 if (response.success) {
@@ -107,7 +110,7 @@ export class ResetPasswordComponent implements OnInit {
             });
     }
 
-    navigateToLogin() {
+    private navigateToLogin() {
         const navigationExtras: NavigationExtras = {
             state: {message: this.confirmationMessage},
             queryParams: {action: actions.login}

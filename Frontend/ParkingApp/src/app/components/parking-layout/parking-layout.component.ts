@@ -1,9 +1,10 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {interval, Subscription} from 'rxjs';
-import {DataService} from 'src/app/services/data/data.service';
 import {ParkingLot} from 'src/app/models/ParkingLot';
-import {NavigationService} from "../../services/navigation/navigation.service";
+import {DataService} from 'src/app/services/data/data.service';
+import {status} from '../../models/ParkingLotStatus';
+import {NavigationService} from '../../services/navigation/navigation.service';
 
 
 @Component({
@@ -13,11 +14,13 @@ import {NavigationService} from "../../services/navigation/navigation.service";
 })
 export class ParkingLayoutComponent implements OnInit, OnDestroy {
 
-    numberOfParkingLots: Array<number> = new Array<number>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    parkingLotStatus = status;
+
+    private numberOfParkingLots: Array<number> = new Array<number>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     parkingLots: Array<ParkingLot>;
 
-    selectedParkingLot: ParkingLot;
+    private selectedParkingLot: ParkingLot;
 
     action: string;
 
@@ -25,11 +28,11 @@ export class ParkingLayoutComponent implements OnInit, OnDestroy {
 
     message = 'Please wait...';
 
-    updateSubscription: Subscription;
+    private updateSubscription: Subscription;
 
-    connectionLostSubscription: Subscription;
+    private connectionLostSubscription: Subscription;
 
-    loadDataSubscription: Subscription;
+    private loadDataSubscription: Subscription;
 
     loadDataCounter = 0;
 
@@ -95,19 +98,19 @@ export class ParkingLayoutComponent implements OnInit, OnDestroy {
         );
     }
 
-    subscribeOnUrlParams() {
+    private subscribeOnUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
             params => this.action = params['action']
         );
     }
 
-    refresh() {
+    private refresh() {
         this.loadData();
         this.navigation.navigateToLayout();
     }
 
-    showDetails(id: number) {
+    private showDetails(id: number) {
         this.router.navigate(['test2'], {queryParams: {id, action: 'view'}});
         this.selectedParkingLot = this.parkingLots.find(pl => pl.id === id);
         this.subscribeOnUrlParams();
