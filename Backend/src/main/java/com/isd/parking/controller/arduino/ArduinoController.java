@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
-import static com.isd.parking.controller.web.RestApiEndpoints.arduinoApi;
+import static com.isd.parking.controller.ApiEndpoints.arduinoApi;
 
 
 /**

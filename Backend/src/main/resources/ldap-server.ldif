@@ -215,14 +215,16 @@ objectClass: inetOrgPerson
 cn: Gfhhh Fghfhg
 sn: Fghfhg
 email: erer@fdfdfdf.rty
-creationDate: Tue Mar 10 00:49:34 EET 2020
-fbid: 637849780349462
-gid: 100421727970413510958
+fbid: 637849780349462w
+gid: 100421727970413510958w
 memberOf: cn=developers,ou=groups
 memberOf: cn=ADMIN,ou=roles
 user_role: ADMIN
 uid: user3
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+creationDate: 2020-03-21T14:04:42.762679600
+updatedAt: 2020-03-21T14:05:06.247302400
+passwordUpdatedAt: 2020-03-21T14:04:42.762679600
 
 dn: cn=developers2,ou=groups,dc=isd,dc=com
 objectClass: groupOfNames
@@ -239,108 +241,104 @@ objectClass: organizationalRole
 cn: Chief of Developers
 roleOccupant: uid=user3,ou=People,dc=isd,dc=com
 
-dn: uid=TTTTTTT,ou=people,dc=isd,dc=com
+dn: uid=qwertyty,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
-uid: TTTTTTT
+uid: qwertyty
 accountState: ENABLED
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: testtt@gmail.co
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
-creationDate: 2020-03-21T14:04:42.762679600
-updatedAt: 2020-03-21T14:05:06.247302400
-passwordUpdatedAt: 2020-03-21T14:04:42.762679600
-
-dn: uid=wwwwww,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: wwwwww
-accountState: WAITING_CONFIRMATION
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: sdsdsd@gmail.co
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
-creationDate: 2020-03-21T14:43:02.696036
-updatedAt: 2020-03-21T14:43:02.696036
-passwordUpdatedAt: 2020-03-21T14:43:02.696036
-
-dn: uid=wwwwwww,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: wwwwwww
-accountState: WAITING_CONFIRMATION
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: sdsdsds@gmail.co
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
-creationDate: 2020-03-21T14:48:17.089344300
-updatedAt: 2020-03-21T14:48:17.089344300
-passwordUpdatedAt: 2020-03-21T14:48:17.089344300
-
-dn: uid=ccccc,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: ccccc
-accountState: WAITING_CONFIRMATION
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: sds@gmail.co
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geFFYRvS8RrWHCTw4iMfFywmG4WEuBZhy
-creationDate: 2020-03-21T14:54:54.024152300
-updatedAt: 2020-03-21T14:54:54.024152300
-passwordUpdatedAt: 2020-03-21T14:54:54.024152300
-
-dn: uid=nmnmnm,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: nmnmnm
-accountState: ENABLED
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: sdssdss@gmail.co
-userPassword: [B@66218ffc
-creationDate: 2020-03-21T15:02:38.020537600
-updatedAt: 2020-03-21T15:13:24.530956
-passwordUpdatedAt: 2020-03-21T15:02:38.020537600
-
-dn: uid=xxxxxxx,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: xxxxxxx
-accountState: ENABLED
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: sdssdsssx@gmail.co
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
-creationDate: 2020-03-21T15:32:53.940252700
-updatedAt: 2020-03-21T19:45:24.627967500
-passwordUpdatedAt: 2020-03-21T15:32:53.940252700
-
-dn: uid=xxxxxxx2323,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: xxxxxxx2323
-accountState: ENABLED
-cn: Dfgfgfg Dfgfffg
-sn: Dfgfffg
-email: alek7900@gmail.com
+cn: Fghfghfgh Fghfghghf
+sn: Fghfghghf
+email: aleks73900@gmail.com
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6geOYnN8MBMiX9p86v5VRduR.edymbkuhe
-creationDate: 2020-03-21T15:32:53.940252700
-updatedAt: 2020-03-21T21:32:25.203206800
-passwordUpdatedAt: 2020-03-21T21:32:25.203206800
+creationDate: 2020-03-30T17:56:07.029567100
+updatedAt: 2020-03-30T18:07:40.750495
+passwordUpdatedAt: 2020-03-30T18:07:40.750495
+
+dn: uid=qwertytyWE,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: qwertytyWE
+accountState: ENABLED
+cn: Fghfghfgh Fghfghghf
+sn: Fghfghghf
+email: aleks7a900@gmail.com
+userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
+creationDate: 2020-03-30T17:59:55.771360
+updatedAt: 2020-03-30T18:00:50.499690900
+passwordUpdatedAt: 2020-03-30T17:59:55.771360
+
+dn: uid=social-477bd306-068b-417c-a8ae-2bee84318a01,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: social-477bd306-068b-417c-a8ae-2bee84318a01
+accountState: ENABLED
+cn: Nata Nemuza
+sn: Nemuza
+email: nata.nemuza@gmail.com
+creationDate: 2020-03-30T19:43:58.407249300
+updatedAt: 2020-03-30T19:51:15.334069700
+passwordUpdatedAt: 2020-03-30T19:43:58.407249300
+fbid: 637849780349462
+
+dn: uid=social-1a7f57fb-8f4d-4534-ba2b-01947625f4fe,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: social-1a7f57fb-8f4d-4534-ba2b-01947625f4fe
+accountState: SOCIAL
+cn: Alexei.Guleac
+creationDate: 2020-03-31T14:46:16.270257900
+updatedAt: 2020-03-31T14:46:16.270257900
+passwordUpdatedAt: 2020-03-31T14:46:16.270257900
+gitid: 44027065
+
+dn: uid=social-e8fe2829-9cef-4ed1-9cdd-67d5f6297e64,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: social-e8fe2829-9cef-4ed1-9cdd-67d5f6297e64
+accountState: ENABLED
+cn: Aleksej Gulak
+sn: Gulak
+email: aleks7900@outlook.com
+creationDate: 2020-03-31T15:19:36.939438600
+updatedAt: 2020-03-31T15:20:47.518052
+passwordUpdatedAt: 2020-03-31T15:19:36.939438600
+msid: 6184200a378de0c3
+
+dn: uid=social-e90ecfa8,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: social-e90ecfa8
+accountState: SOCIAL
+cn: Aleksej Gulak
+sn: Gulak
+creationDate: 2020-03-31T17:38:54.565860900
+updatedAt: 2020-03-31T17:38:54.565860900
+passwordUpdatedAt: 2020-03-31T17:38:54.565860900
+vkid: 70434057
+
+dn: uid=social-b7b7150b,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: social-b7b7150b
+accountState: ENABLED
+cn: Alexei
+email: aleks7900@gmail.com
+creationDate: 2020-04-01T16:44:41.922696
+updatedAt: 2020-04-01T16:47:27.863193300
+passwordUpdatedAt: 2020-04-01T16:44:41.922696
+aid: amzn1.account.AGYY3GUIQYVMPSQ6WWMODJ4QDF5Q
 

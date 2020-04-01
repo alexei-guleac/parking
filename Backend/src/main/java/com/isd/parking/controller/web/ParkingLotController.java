@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.isd.parking.controller.web.RestApiEndpoints.parking;
+import static com.isd.parking.controller.ApiEndpoints.*;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 import static com.isd.parking.utils.ColorConsoleOutput.redTxt;
 
@@ -76,11 +76,11 @@ public class ParkingLotController {
      */
     @GetMapping(parking + "/{id}")
     public ResponseEntity<ParkingLot> getParkingLotById(@PathVariable("id") Long parkingLotId)
-            throws ResourceNotFoundException {
+        throws ResourceNotFoundException {
         log.info(console.classMsg(getClass().getSimpleName(), "get parking lot by id"));
 
         ParkingLot parkingLot = parkingLotLocalService.findById(parkingLotId)
-                .orElseThrow(() -> new ResourceNotFoundException("Parking Lot not found for this id :: " + parkingLotId));
+            .orElseThrow(() -> new ResourceNotFoundException("Parking Lot not found for this id :: " + parkingLotId));
 
         return ResponseEntity.ok().body(parkingLot);
     }
@@ -92,7 +92,7 @@ public class ParkingLotController {
      * @param parkingLotId - id of parking lot
      * @return - success status of parking lot reservation
      */
-    @RequestMapping("/reserve/{id}")
+    @RequestMapping(reserve + "/{id}")
     public boolean reservation(@PathVariable("id") Long parkingLotId) {
         log.info(console.classMsg(getClass().getSimpleName(), "Parking lot number in reservation request: ") + blTxt(String.valueOf(parkingLotId)));
 
@@ -124,7 +124,7 @@ public class ParkingLotController {
      * @param parkingLotId - id of parking lot
      * @return - success status of parking lot reservation
      */
-    @RequestMapping("/unreserve/{id}")
+    @RequestMapping(unreserve + "/{id}")
     public boolean cancelReservation(@PathVariable("id") Long parkingLotId) {
 
         log.info(console.classMsg(getClass().getSimpleName(), "Parking lot number in cancel reservation request: ") + blTxt(String.valueOf(parkingLotId)));

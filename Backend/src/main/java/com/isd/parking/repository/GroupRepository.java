@@ -1,7 +1,7 @@
 package com.isd.parking.repository;
 
 import com.isd.parking.models.Group;
-import com.isd.parking.models.UserLdap;
+import com.isd.parking.models.users.UserLdap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;

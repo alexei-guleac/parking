@@ -1,4 +1,4 @@
-package com.isd.parking.models;
+package com.isd.parking.models.users;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -14,16 +14,21 @@ import org.springframework.ldap.odm.annotations.Id;
 import javax.naming.Name;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import static com.isd.parking.utils.AppDateUtils.isAfterNow;
 import static com.isd.parking.utils.AppDateUtils.isBeforeNow;
+import static com.isd.parking.utils.AppStringUtils.isCyrillicString;
+import static com.isd.parking.utils.AppStringUtils.transliterateCyrillicToLatin;
+import static com.isd.parking.utils.ReflectionMethods.setPropertyValue;
+import static org.apache.commons.lang.StringUtils.strip;
 
 
 @Entry(base = "ou=people",
     objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
 @Data
-public class UserLdap extends BaseEmailUser {
+public class UserLdap {
 
     @JsonIgnore
     @Id
@@ -53,7 +58,7 @@ public class UserLdap extends BaseEmailUser {
     @JsonProperty()
     @JsonAlias({"email"})
     @Email
-    private @Attribute(name = "mail")
+    private @Attribute(name = "email")
     String email;
 
     @JsonProperty()
@@ -72,7 +77,7 @@ public class UserLdap extends BaseEmailUser {
 
     /* Social id's*/
 
-    /*@JsonProperty()
+    @JsonProperty()
     @JsonAlias({"fbid"})
     private @Attribute(name = "fbid")
     String fbid;
@@ -88,9 +93,9 @@ public class UserLdap extends BaseEmailUser {
     String twid;
 
     @JsonProperty()
-    @JsonAlias({"mid"})
-    private @Attribute(name = "mid")
-    String mid;
+    @JsonAlias({"msid"})
+    private @Attribute(name = "msid")
+    String msid;
 
     @JsonProperty()
     @JsonAlias({"gitid"})
@@ -115,7 +120,7 @@ public class UserLdap extends BaseEmailUser {
     @JsonProperty()
     @JsonAlias({"linkid"})
     private @Attribute(name = "linkid")
-    String linkid;*/
+    String linkid;
 
     public UserLdap() {
     }
@@ -160,14 +165,22 @@ public class UserLdap extends BaseEmailUser {
     }
 
     public void setUserRegistered() {
-        setUserPassword(new CustomBcryptPasswordEncoder().encode(getUserPassword()));
-        System.out.println(" password" + new CustomBcryptPasswordEncoder().encode(getUserPassword()));
+        if (this.userPassword != null) {
+            this.userPassword = new CustomBcryptPasswordEncoder().encode(this.userPassword);
+            System.out.println(" password QWERTY" + new CustomBcryptPasswordEncoder().encode(this.userPassword));
+        }
         setCreatedNow();
-        setAccountState(AccountState.WAITING_CONFIRMATION);
+        if (this.email != null) {
+            setAccountState(AccountState.WAITING_CONFIRMATION);
+        } else {
+            setAccountState(AccountState.SOCIAL);
+        }
     }
 
-    public void setAccountEnabled() {
-        setAccountState(AccountState.ENABLED);
+    public void setAccountConfirmed() {
+        if (this.accountState == AccountState.WAITING_CONFIRMATION) {
+            setAccountState(AccountState.ENABLED);
+        }
         setUpdatedNow();
     }
 
@@ -176,18 +189,39 @@ public class UserLdap extends BaseEmailUser {
     }
 
     public boolean accountConfirmationIsExpired() {
-
-        // log.info(methodMsgStatic("getAccountState() == AccountState.WAITING_CONFIRMATION " + (getAccountState() == AccountState.WAITING_CONFIRMATION)));
-        // log.info(methodMsgStatic("isBeforeNow(getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES - 1) " + isBeforeNow(getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES),1)));
-        // log.info(methodMsgStatic("getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES - 1) " + isBeforeNow(getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES),1)));
-        // log.info(methodMsgStatic("isBeforeNow(getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES - 1) " + isBeforeNow(getCreationDate().plusDays(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES - 1),1)));
-
-        return getAccountState() == AccountState.WAITING_CONFIRMATION
+        return this.accountState == AccountState.WAITING_CONFIRMATION
             && isBeforeNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
     }
 
     public boolean accountConfirmationValid() {
         return getAccountState() == AccountState.WAITING_CONFIRMATION
             && isAfterNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
+    }
+
+    private void checkCyrillicName() {
+        if (this.cn != null) {
+            if (isCyrillicString(strip(this.cn))) {
+                this.cn = transliterateCyrillicToLatin(this.cn);
+            }
+        }
+        if (this.sn != null) {
+            if (isCyrillicString(strip(this.sn))) {
+                this.sn = transliterateCyrillicToLatin(this.sn);
+            }
+        }
+    }
+
+    private void setSocialId(String id, String provider) {
+        String social = provider + "id";
+        setPropertyValue(this, social, id);
+        // log.info(methodMsgStatic("getPropertyValue: " + getPropertyValue(this, social)));
+    }
+
+    public void prepareSocialUser(String id, String provider) {
+        setUid("social-" + UUID.randomUUID().toString().split("-")[0]);
+        setSocialId(id, provider);
+        System.out.println();
+        checkCyrillicName();
+        System.out.println("prepareSocialUser");
     }
 }

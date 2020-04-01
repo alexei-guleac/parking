@@ -1,6 +1,7 @@
-package com.isd.parking.models;
+package com.isd.parking.models.users;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -9,11 +10,17 @@ import javax.validation.constraints.Email;
 
 
 @Data
-public final class User extends BaseEmailUser {
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+public class User {
 
     @JsonProperty()
     @JsonAlias({"username"})
     String username;
+
+    @JsonProperty()
+    @JsonAlias({"email"})
+    @Email
+    String email;
 
     @JsonProperty()
     @JsonAlias({"fullname"})
@@ -22,11 +29,6 @@ public final class User extends BaseEmailUser {
     @JsonProperty()
     @JsonAlias({"lastname"})
     String lastname;
-
-    @JsonProperty()
-    @JsonAlias({"email"})
-    @Email
-    String email;
 
     @JsonProperty()
     @JsonAlias({"password"})

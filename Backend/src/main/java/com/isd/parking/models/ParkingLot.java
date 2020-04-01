@@ -46,17 +46,17 @@ public class ParkingLot {
     @Override
     public String toString() {
         return cyBrTxt(getClass().getSimpleName()) + " {" +
-                "id = " + redTxt(String.valueOf(id)) +
-                ", number = " + ywTxt(String.valueOf(number)) +
-                ", updatedAt = " + blTxt(String.valueOf(updatedAt)) +
-                ", status = " + switchStatusColor() +
-                " }";
+            "id = " + redTxt(String.valueOf(id)) +
+            ", number = " + ywTxt(String.valueOf(number)) +
+            ", updatedAt = " + blTxt(String.valueOf(updatedAt)) +
+            ", status = " + getStatusColor() +
+            " }";
     }
 
-    private String switchStatusColor() {
+    private String getStatusColor() {
         return status == ParkingLotStatus.UNKNOWN ? whTxt(String.valueOf(status)) :
-                status == ParkingLotStatus.FREE ? grBrTxt(String.valueOf(status)) :
+            status == ParkingLotStatus.FREE ? grBrTxt(String.valueOf(status)) :
                 status == ParkingLotStatus.OCCUPIED ? redBrTxt(String.valueOf(status)) :
-                status == ParkingLotStatus.RESERVED ? ywBrTxt(String.valueOf(status)) : String.valueOf(status);
+                    status == ParkingLotStatus.RESERVED ? ywBrTxt(String.valueOf(status)) : String.valueOf(status);
     }
 }

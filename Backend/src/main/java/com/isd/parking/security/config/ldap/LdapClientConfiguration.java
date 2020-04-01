@@ -1,4 +1,4 @@
-package com.isd.parking.security.config;
+package com.isd.parking.security.config.ldap;
 
 import com.isd.parking.utils.ColorConsoleOutput;
 import com.unboundid.ldap.sdk.LDAPException;

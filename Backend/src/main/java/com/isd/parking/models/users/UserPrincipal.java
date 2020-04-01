@@ -1,4 +1,4 @@
-package com.isd.parking.models;
+package com.isd.parking.models.users;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,15 +12,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+
 @Data
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
 
     private String username;
+
     private String email;
+
     private String password;
+
     private Collection<? extends GrantedAuthority> authorities;
+
     private Map<String, Object> attributes;
 
     public UserPrincipal(String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
@@ -32,13 +37,13 @@ public class UserPrincipal implements UserDetails {
 
     public static UserPrincipal create(User user) {
         List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
         return new UserPrincipal(
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
-                authorities
+            user.getUsername(),
+            user.getEmail(),
+            user.getPassword(),
+            authorities
         );
     }
 
@@ -81,13 +86,5 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
     }
 }

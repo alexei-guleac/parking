@@ -84,9 +84,9 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             chain.doFilter(request, response);
 
         } catch (JwtExpirationException ex) {
-            throw new AccountExpiredException("Token is not valid anymore");
+            throw new AccountExpiredException("Account authorization JWT token is not valid anymore. Log in again");
         } catch (JwtBadSignatureException | ParseException | JOSEException ex) {
-            throw new MalformedJwtException("Token is malformed");
+            throw new MalformedJwtException("Authorization JWT token is malformed");
         }
 
         /* SecurityContext is then cleared since we are stateless.*/

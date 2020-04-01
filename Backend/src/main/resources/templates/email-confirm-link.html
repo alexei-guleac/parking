@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="confirm-link">
+    <p class="text-block-2"><small>Or verify using this link: <br/>
+        <!--/*@thymesVar id="confirmation_link" type="java.lang.String"*/-->
+        <a th:href="${confirmation_link}" th:text="${confirmation_link}">Link</a></small>
+    </p>
+    <p class="text-block-3">* This link is valid for
+        <!--/*@thymesVar id="confirmation_token_valid_period" type="java.lang.Integer"*/-->
+        <strong th:text="${confirmation_token_valid_period} + ' minute(s)'"></strong>
+    </p>
+</div>
+
+</html>

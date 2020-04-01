@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
+
 /**
  * All user information handled by the JWT token
  */
@@ -59,7 +60,6 @@ public class JwtUser implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         // == token expiration
-        // TODO
         return true;
     }
 

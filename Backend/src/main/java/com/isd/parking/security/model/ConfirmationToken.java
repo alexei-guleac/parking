@@ -31,13 +31,17 @@ public class ConfirmationToken {
     private String uid;
 
     @Column(name = "operation_type")
-    private AcoountOperation operationType;
+    private AccountOperation operationType;
 
-    public ConfirmationToken(String uid, AcoountOperation operationType) {
+    @Column(name = "claimed")
+    private boolean claimed;
+
+    public ConfirmationToken(String uid, AccountOperation operationType) {
         this.uid = uid;
         createdAt = LocalDateTime.now();
         expirationDate = createdAt.plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES);
         confirmationToken = UUID.randomUUID().toString();
         this.operationType = operationType;
+        this.claimed = false;
     }
 }

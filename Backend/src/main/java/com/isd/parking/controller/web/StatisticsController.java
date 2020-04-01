@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.isd.parking.controller.web.RestApiEndpoints.statistics;
+import static com.isd.parking.controller.ApiEndpoints.statistics;
 
 
 /**

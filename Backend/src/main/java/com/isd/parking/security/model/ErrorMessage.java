@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -13,7 +14,9 @@ import lombok.NoArgsConstructor;
 public class ErrorMessage {
 
     private String message;
+
     private String code;
+
     private String detail;
 
     public ErrorMessage(String message, String code) {

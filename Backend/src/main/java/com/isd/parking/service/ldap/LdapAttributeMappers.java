@@ -1,7 +1,7 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.models.UserLdap;
 import com.isd.parking.models.enums.AccountState;
+import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.utils.AppStringUtils;
 import com.isd.parking.utils.ReflectionMethods;
 import com.unboundid.ldap.sdk.DN;
@@ -35,7 +35,7 @@ public class LdapAttributeMappers {
         (ArrayList<String>) new ReflectionMethods().getFieldsNames(UserLdap.class);
 
     static Attributes buildAttributes(UserLdap user) {
-        Attribute objectClass = new BasicAttribute(OBJECT_CLASS);
+        Attribute objectClass = new BasicAttribute("objectClass");
         {
             for (String objClass : personObjectClasses) {
                 objectClass.add(objClass);
@@ -44,33 +44,23 @@ public class LdapAttributeMappers {
         Attributes userAttributes = new BasicAttributes();
         userAttributes.put(objectClass);
 
-        log.info(methodMsgStatic("" + user));
-        log.info(methodMsgStatic("" + buildAttributesMap(user).entrySet()));
-        // bind attributes
-        for (Map.Entry<String, Object> entry : buildAttributesMap(user).entrySet()) {
-            userAttributes.put(entry.getKey(), entry.getValue().toString());
+        log.info("fields " + userLdapClassAttributesList);
+        for (String attribute : userLdapClassAttributesList) {
+            if (attribute.equals("userPassword")) {
+                if (user.getUserPassword() != null) {
+                    userAttributes.put("userPassword", user.getUserPassword().getBytes());
+                }
+            }
+            String propertyValue = getUserLdapStringProperty(user, attribute);
+
+            log.info(methodMsgStatic("propertyValue " + propertyValue));
+            if (propertyValue != null) {
+                userAttributes.put(attribute, propertyValue);
+            }
         }
-        log.info(methodMsgStatic("userAttributes" + userAttributes));
+        log.info("userAttributes " + userAttributes);
+
         return userAttributes;
-    }
-
-    static String buildLdapFileEntry(UserLdap user) {
-
-        StringBuilder userEntry = new StringBuilder();
-        log.info(methodMsgStatic("USER " + user));
-        userEntry.append("dn: uid=").append(user.getUid()).append(",ou=people,").append(LDAP_BASE_DN).append("\n");
-        for (String objClass : personObjectClasses) {
-            userEntry.append(OBJECT_CLASS + ": ").append(objClass).append("\n");
-        }
-
-        // bind attributes
-        log.info(methodMsgStatic("mapped " + buildAttributesMap(user).entrySet()));
-        for (Map.Entry<String, Object> entry : buildAttributesMap(user).entrySet()) {
-            userEntry.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
-        }
-        userEntry.append("\n\n");
-
-        return userEntry.toString();
     }
 
     private static LinkedHashMap<String, Object> buildAttributesMap(UserLdap user) {
@@ -80,7 +70,13 @@ public class LdapAttributeMappers {
                 for (String attribute : userLdapClassAttributesList) {
                     Object propertyValue = getUserLdapProperty(user, attribute);
                     if (propertyValue != null) {
-                        put(attribute, propertyValue);
+                        if (attribute.equals("userPassword")) {
+                            String pass = user.getUserPassword();
+                            log.info(methodMsgStatic("userPassword buildAttributesMap VVVVV " + pass));
+                            put(attribute, pass);
+                        } else {
+                            put(attribute, propertyValue);
+                        }
                     }
                 }
             }
@@ -107,16 +103,20 @@ public class LdapAttributeMappers {
     }
 
     private static void setUserLdapProperty(UserLdap user, String name, Object value) {
-        ReflectionMethods.setProperty(user, name, value);
+        ReflectionMethods.setPropertyValue(user, name, value);
     }
 
     private static void setUserLdapProperty(UserLdap user, String name, Attributes values) throws NamingException {
         log.info(methodMsgStatic("set value " + values.get(name).get()));
-        ReflectionMethods.setProperty(user, name, values.get(name).get().toString());
+        ReflectionMethods.setPropertyValue(user, name, values.get(name).get().toString());
     }
 
     private static Object getUserLdapProperty(UserLdap user, String name) {
-        return ReflectionMethods.getProperty(user, name);
+        return ReflectionMethods.getPropertyValue(user, name);
+    }
+
+    private static String getUserLdapStringProperty(UserLdap user, String name) {
+        return ReflectionMethods.getStringPropertyValue(user, name);
     }
 
     /**
@@ -156,12 +156,6 @@ public class LdapAttributeMappers {
             log.info(methodMsgStatic("mapFromAttributes " + attributes));
             for (String attributeName : userLdapClassAttributesList) {
                 if (attributes.get(attributeName) != null) {
-                    /*if (attributeName.equals("userPassword")) {
-                        log.info(methodMsgStatic("userPassword value " + attributes.get(attributeName).get().toString()));
-                        setUserLdapProperty(user, attributeName, attributes.get(attributeName).get().toString());
-                        // skip password value in result user
-                        // continue;
-                    } else*/
                     if (attributeName.equals("accountState")) {
                         log.info(methodMsgStatic("acc state value " + attributes.get(attributeName).get()));
                         setUserLdapProperty(user, attributeName, AccountState.valueOf(getAttributeStringValue(attributes, attributeName)));
@@ -235,11 +229,13 @@ public class LdapAttributeMappers {
             List<String> rolesList = new ArrayList<>();
 
             Attribute attr = attrs.get("memberOf");
-            for (int i = 0; i < attr.size(); i++) {
-                String s = (String) attr.get(i);
-                String[] str = s.split(",");
-                str = str[0].split("=");
-                rolesList.add("ROLE_" + str[1]);
+            if (attr != null) {
+                for (int i = 0; i < attr.size(); i++) {
+                    String s = (String) attr.get(i);
+                    String[] str = s.split(",");
+                    str = str[0].split("=");
+                    rolesList.add("ROLE_" + str[1]);
+                }
             }
             return new AppStringUtils().collectionToString(rolesList);
         }

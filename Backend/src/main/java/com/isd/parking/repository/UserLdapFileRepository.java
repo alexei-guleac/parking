@@ -1,16 +1,18 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.models.UserLdap;
+import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.service.ldap.LdapMappingException;
 import com.unboundid.ldap.sdk.Entry;
 import org.springframework.stereotype.Repository;
+
+import javax.annotation.Nullable;
 
 import static com.isd.parking.service.ldap.LdapAttributeMappers.mapUserToEntry;
 import static com.isd.parking.service.ldap.LdapFileUtils.*;
 
 
 @Repository
-public class UserLdapRepository {
+public class UserLdapFileRepository {
 
     public boolean save(UserLdap user) {
         Entry entry = mapUserToEntry(user);
@@ -23,12 +25,17 @@ public class UserLdapRepository {
     }
 
     public boolean update(UserLdap user) {
-        updateEntryInLdifFile(user, null, null);
+        updateEntryInLdifFile(user.getUid(), null, null);
         return true;
     }
 
-    public boolean updatePassword(UserLdap user, String password) {
-        updateEntryPassword(user, password);
+    public boolean update(String uid, @Nullable String attributeName, @Nullable String attributeValue) {
+        updateEntryInLdifFile(uid, attributeName, attributeValue);
+        return true;
+    }
+
+    public boolean updatePassword(String uid, String password) {
+        updateEntryPassword(uid, password);
         return true;
     }
 }

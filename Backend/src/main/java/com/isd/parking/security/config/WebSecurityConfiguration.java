@@ -1,6 +1,7 @@
 package com.isd.parking.security.config;
 
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
+import com.isd.parking.security.config.cookie.CookieFilter;
 import com.isd.parking.security.filter.JwtTokenAuthenticationFilter;
 import com.isd.parking.security.filter.RestAccessDeniedHandler;
 import com.isd.parking.security.filter.SecurityAuthenticationEntryPoint;
@@ -24,6 +25,7 @@ import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -31,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.isd.parking.controller.ApiEndpoints.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
@@ -39,41 +42,58 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final String secretKeyFile = "secret.key";
+
     private final LdapAuthoritiesPopulator ldapAuthoritiesPopulator;
+
     private final String[] pathArray = new String[]{
-        "/auth/**", "/login", "/login/**", "/registration",
-        "/validate_captcha", "/confirm_account",
-        "/forgot-password", "/reset-password",
-        "/parking", "/arduino", "/demo"
+        auth + "/**", login + "/**", register + "/**",
+        validateCaptcha, gitOAuth, confirmAction,
+        forgotPassword, resetPassword,
+        parking, arduinoApi, arduinoWS
     };
+
     @Value("${spring.data.ldap.enabled}")
     private boolean ldapEnabled;
+
     @Value("${spring.ldap.embedded.ldif}")
     private String ldapFile;
+
     @Value("${spring.ldap.embedded.port}")
     private String ldapPort;
+
     @Value("${ldap.partitionSuffix}")
     private String ldapPartitionSuffix;
+
     @Value("${ldap.user.dn.pattern}")
     private String ldapUserDnPattern;
+
     @Value("${spring.ldap.base}")
     private String ldapSearchBase;
+
     @Value("${ldap.userSearchFilter}")
     private String ldapUserSearchFilter;
+
     @Value("${ldap.groupSearchBase}")
     private String ldapGroupSearchBase;
+
     @Value("${ldap.groupSearchFilter}")
     private String ldapGroupSearchFilter;
+
     @Value("${ldap.passwordAttribute}")
     private String ldapPasswordAttribute;
+
     @Value("${ldap.url}")
     private String ldapProviderUrl;
+
     @Value("${spring.inmemoryauth.user}")
     private String usernameInMemory;
+
     @Value("${spring.inmemoryauth.userpassword}")
     private String userPasswordInMemory;
+
     @Value("${spring.inmemoryauth.admin}")
     private String adminInMemory;
+
     @Value("${spring.inmemoryauth.adminpassword}")
     private String adminPasswordInMemory;
 
@@ -99,7 +119,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             cors()
             .and()
             // We don't need CSRF for this cause
-            .csrf().disable()
+            .csrf()
+            .disable()
+            .formLogin()
+            .disable()
+            .httpBasic()
+            .disable()
             .headers()
             .frameOptions().sameOrigin()
             .and()
@@ -108,6 +133,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
              Further information about the order of filters, see FilterComparator
              */
             .addFilterAfter(jwtTokenAuthenticationFilter("/**", secret), ExceptionTranslationFilter.class)
+            .addFilterAfter(new CookieFilter(), BasicAuthenticationFilter.class)
             /*
              Exception management is handled by the authenticationEntryPoint (for exceptions related to authentications)
              and by the AccessDeniedHandler (for exceptions related to access rights)
@@ -128,9 +154,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             // dont authenticate this particular request
             .antMatchers(pathArray).permitAll()
             // all other requests need to be authenticated
-            .anyRequest().fullyAuthenticated()
-            .and()
-            .httpBasic();
+            .anyRequest().fullyAuthenticated();
     }
 
     // ----------  LDAP auth --------------

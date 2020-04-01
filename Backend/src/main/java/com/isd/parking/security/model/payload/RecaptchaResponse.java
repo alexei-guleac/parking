@@ -1,5 +1,7 @@
 package com.isd.parking.security.model.payload;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,14 +14,20 @@ import java.util.Date;
 @Data
 public class RecaptchaResponse extends ActionSuccessResponse {
 
+    @JsonProperty()
+    @JsonAlias({"challenge_ts"})
     @NotBlank
     @NonNull
     private Date challenge_ts;
 
+    @JsonProperty()
+    @JsonAlias({"hostname"})
     @NotBlank
     @NonNull
     private String hostname;
 
+    @JsonProperty()
+    @JsonAlias({"message"})
     private String message;
 
     @Builder
@@ -37,7 +45,7 @@ public class RecaptchaResponse extends ActionSuccessResponse {
         this.message = message;
     }
 
-    public static class GRecaptcha {
+    public static class GoogleRecaptchaConstants {
 
         // the secret key from google developer admin console;
         public static final String SECRET_KEY = "6Lcngd8UAAAAAGP04a5nTLgeZKXDWKasd-A1rHHQ";

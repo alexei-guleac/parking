@@ -1,12 +1,17 @@
 package com.isd.parking.models;
 
+import lombok.Data;
+
 import javax.naming.Name;
 import java.util.HashSet;
 import java.util.Set;
 
+
+@Data
 public class Group {
 
     private String name;
+
     private Set<Name> members;
 
     public Group() {
@@ -20,22 +25,6 @@ public class Group {
     public Group(Name dn, String name, Set<Name> members) {
         this.name = name;
         this.members = members;
-    }
-
-    public Set<Name> getMembers() {
-        return members;
-    }
-
-    public void setMembers(Set<Name> members) {
-        this.members = members;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void addMember(Name member) {
@@ -52,8 +41,8 @@ public class Group {
     @Override
     public String toString() {
         return "Group{" +
-                "name='" + name + '\'' +
-                ", members=" + members +
-                '}';
+            "name='" + name + '\'' +
+            ", members=" + members +
+            '}';
     }
 }

@@ -1,13 +1,14 @@
 package com.isd.parking.controller.web;
 
-import com.isd.parking.models.User;
-import com.isd.parking.models.UserLdap;
-import com.isd.parking.models.UserMapper;
+import com.isd.parking.models.enums.AccountState;
+import com.isd.parking.models.users.User;
+import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.security.AccountConfirmationPeriods;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
-import com.isd.parking.security.model.AcoountOperation;
+import com.isd.parking.security.model.AccountOperation;
 import com.isd.parking.security.model.ConfirmationToken;
 import com.isd.parking.security.model.payload.ActionSuccessResponse;
+import com.isd.parking.security.model.payload.ForgotPassRequest;
 import com.isd.parking.security.model.payload.RecaptchaResponse;
 import com.isd.parking.security.model.payload.ResetPasswordRequest;
 import com.isd.parking.service.ConfirmationTokenService;
@@ -24,11 +25,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.isd.parking.controller.web.RestApiEndpoints.users;
+import static com.isd.parking.controller.ApiEndpoints.*;
 import static com.isd.parking.utils.AppDateUtils.isBeforeNow;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -60,16 +63,15 @@ public class UserController {
     @Value("${spring.mail.from.email}")
     private String from;
 
-    private final UserMapper userMapper;
-
     @Autowired
-    public UserController(UserLdapClient userLdapClient, RestService restService, ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService, ColorConsoleOutput console, UserMapper userMapper) {
+    public UserController(UserLdapClient userLdapClient,
+                          RestService restService, ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService,
+                          ColorConsoleOutput console) {
         this.userLdapClient = userLdapClient;
         this.restService = restService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
         this.console = console;
-        this.userMapper = userMapper;
     }
 
     /**
@@ -78,7 +80,7 @@ public class UserController {
      *
      * @return - success status of provided login
      */
-    @RequestMapping("/login")
+    @RequestMapping(login)
     public boolean login(@RequestBody User user) {
         final String username = user.getUsername();
         final String password = user.getPassword();
@@ -94,118 +96,9 @@ public class UserController {
         return userLdapClient.authenticate(username, password);
     }
 
-    /**
-     * Users registration controller
-     * Handles user registration in system
-     *
-     * @return - success status of provided registration
-     */
-    @RequestMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody User user) {
-        log.info(console.classMsg(getClass().getSimpleName(), "request body: ") + user);
-        final String username = user.getUsername();
-        final String password = user.getPassword();
-        final String email = user.getEmail();
-        log.info(console.classMsg(getClass().getSimpleName(), "registration request body: ") + blTxt(username + " " + password));
-
-        //verify if user exists in db and throw error, else create
-        boolean userExists = userLdapClient.searchUser(username);
-        boolean emailExists = userLdapClient.searchUsersByEmail(email);
-
-        if (userExists) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account with this username already exists");
-        } else if (emailExists) {
-            UserLdap existedUser = userLdapClient.getUserByEmail(email);
-
-            log.info(console.methodMsg("accountConfirmationIsExpired " + existedUser.accountConfirmationIsExpired()));
-            log.info(console.methodMsg("accountConfirmationValid " + existedUser.accountConfirmationValid()));
-
-            if (existedUser.accountConfirmationIsExpired()) {
-                log.info("from mapped user " + user);
-                UserLdap newUser = userMapper.userToUserLdap(user);
-                log.info("mapped user " + newUser);
-
-                userLdapClient.deleteUser(newUser);
-                return createUserResult(newUser);
-            }
-            if (existedUser.accountConfirmationValid()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Account with this email already exists and waiting for confirmation");
-            }
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account with this email already exists");
-
-        } else {
-            log.info("from mapped user " + user);
-            UserLdap newUser = userMapper.userToUserLdap(user);
-            log.info("mapped user " + newUser);
-
-            return createUserResult(newUser);
-        }
-    }
-
-    private ResponseEntity<?> createUserResult(UserLdap newUser) {
-        userLdapClient.createUser(newUser);
-
-        boolean exists = userLdapClient.searchUser(newUser.getUid());
-        log.info("exists" + exists);
-
-        UserLdap createdUser = userLdapClient.findById(newUser.getUid());
-        if (createdUser == null) {
-            log.info(console.classMsg(getClass().getSimpleName(), " User not created: ") + blTxt(String.valueOf(createdUser)));
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User was not created");
-        } else {
-            createConfirmation(createdUser);
-            log.info(console.classMsg(getClass().getSimpleName(), " Created user found: ") + blTxt(String.valueOf(createdUser)));
-            return ResponseEntity.ok(new ActionSuccessResponse(true));
-        }
-    }
-
-    private void createConfirmation(UserLdap createdUser) {
-        // Create token
-        ConfirmationToken confirmationToken = new ConfirmationToken(createdUser.getUid(), AcoountOperation.ACCOUNT_CONFIRMATION);
-        // Save it
-        confirmationTokenService.save(confirmationToken);
-        // Send email
-        emailSenderService.sendRegistrationConfirmMail(createdUser, confirmationToken);
-    }
-
-    // Endpoint to confirm the token
-    @RequestMapping(value = "/confirm_account", method = POST)
-    public ResponseEntity<?> confirmUserAccount(@RequestBody String body) {
-        log.info("body " + body);
-        final String confirmationToken = new JSONObject(body).getString("confirmationToken");
-        Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
-        log.info("token " + optionalConfirmationToken);
-
-        if (optionalConfirmationToken.isPresent()) {
-            ConfirmationToken token = optionalConfirmationToken.get();
-
-            if (confirmationTokenService.assertNotExpired(token)) {
-                UserLdap user = userLdapClient.findById(optionalConfirmationToken.get().getUid());
-                log.info(console.classMsg(getClass().getSimpleName(), " Created user found: ") + blTxt(String.valueOf(user)));
-
-                if (token.getOperationType() == AcoountOperation.ACCOUNT_CONFIRMATION) {
-                    user.setAccountEnabled();
-                    userLdapClient.updateUser(user);
-                }
-
-                return ResponseEntity.ok(new ActionSuccessResponse(true));
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Confirmation token is expired. Register again");
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Confirmation token not found. Register again");
-        }
-    }
 
     @ResponseBody
-    @RequestMapping("/validate_captcha")
+    @RequestMapping(validateCaptcha)
     public ResponseEntity grecaptcha(@RequestBody String grecaptcha) {
         final String grecaptchaToken = new JSONObject(grecaptcha).getJSONObject("grecaptcha").getString("token");
 
@@ -217,8 +110,8 @@ public class UserController {
                 .hostname("localhost")
                 .message("Token is empty or invalid").build());
         } else {
-            String secretKey = RecaptchaResponse.GRecaptcha.SECRET_KEY;
-            String url = String.format(RecaptchaResponse.GRecaptcha.GRECAPTCHA_API_URL, secretKey, grecaptchaToken);
+            String secretKey = RecaptchaResponse.GoogleRecaptchaConstants.SECRET_KEY;
+            String url = String.format(RecaptchaResponse.GoogleRecaptchaConstants.GRECAPTCHA_API_URL, secretKey, grecaptchaToken);
 
             String response = restService.getPlainJSON(url);
             log.info(response);
@@ -234,11 +127,48 @@ public class UserController {
         }
     }
 
-    // Receive the address and send an email
-    @RequestMapping(value = "/forgot-password", method = POST)
-    public ResponseEntity<?> forgotUserPassword(@RequestBody String email) {
+    // Endpoint to confirm the token
+    @RequestMapping(value = confirmAction, method = POST)
+    public ResponseEntity<?> confirmUserAccount(@RequestBody String body) {
+        log.info("body " + body);
+        final String confirmationToken = new JSONObject(body).getString("confirmationToken");
+        Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
+        log.info("token " + optionalConfirmationToken);
 
-        final String userEmail = new JSONObject(email).getString("email");
+        if (optionalConfirmationToken.isPresent()) {
+            ConfirmationToken token = optionalConfirmationToken.get();
+
+            if (confirmationTokenService.assertNotExpired(token)) {
+                if (!token.isClaimed()) {
+                    UserLdap user = userLdapClient.findById(optionalConfirmationToken.get().getUid());
+                    log.info(console.classMsg(getClass().getSimpleName(), " Created user found: ") + blTxt(String.valueOf(user)));
+
+                    if (token.getOperationType() == AccountOperation.ACCOUNT_CONFIRMATION) {
+                        userLdapClient.updateUser(user.getUid(), "accountState", String.valueOf(AccountState.ENABLED));
+                    }
+                    token.setClaimed(true);
+                    confirmationTokenService.save(token);
+
+                    return ResponseEntity.ok(new ActionSuccessResponse(true));
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Confirmation token is already used. Login or register again");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Confirmation token is expired. Register again");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Confirmation token not found. Register again");
+        }
+    }
+
+    // Receive the address and send an email
+    @RequestMapping(value = forgotPassword, method = POST)
+    public ResponseEntity<?> forgotUserPassword(@RequestBody ForgotPassRequest request) throws IOException, MessagingException {
+
+        final String userEmail = request.getEmail();
         UserLdap existingUser = userLdapClient.getUserByEmail(userEmail);
 
         if (existingUser != null) {
@@ -258,11 +188,11 @@ public class UserController {
                 }
             }
             // Create token
-            ConfirmationToken confirmationToken = new ConfirmationToken(existingUser.getUid(), AcoountOperation.PASSWORD_RESET);
+            ConfirmationToken confirmationToken = new ConfirmationToken(existingUser.getUid(), AccountOperation.PASSWORD_RESET);
             // Save it
             confirmationTokenService.save(confirmationToken);
             // Send email
-            emailSenderService.sendPassResetMail(existingUser, confirmationToken);
+            emailSenderService.sendPassResetMail(existingUser, confirmationToken, request.getDeviceInfo());
 
             return ResponseEntity.ok(new ActionSuccessResponse(true));
 
@@ -274,11 +204,11 @@ public class UserController {
     }
 
     // Endpoint to update a user's password
-    @RequestMapping(value = "/reset-password", method = POST)
+    @RequestMapping(value = resetPassword, method = POST)
     public ResponseEntity<?> resetUserPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
 
-        final String confirmationToken = resetPasswordRequest.getConfirmationToken();
-        final String password = resetPasswordRequest.getPassword();
+        final String confirmationToken = resetPasswordRequest.getResetDetails().getConfirmationToken();
+        final String password = resetPasswordRequest.getResetDetails().getPassword();
 
         Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
         log.info("token reset-password" + optionalConfirmationToken);

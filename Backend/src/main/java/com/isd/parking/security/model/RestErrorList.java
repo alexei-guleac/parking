@@ -1,6 +1,7 @@
 package com.isd.parking.security.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
@@ -8,6 +9,8 @@ import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
 
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class RestErrorList extends ArrayList<ErrorMessage> {

@@ -16,7 +16,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Date;
 
-import static com.isd.parking.controller.web.RestApiEndpoints.parking;
+import static com.isd.parking.controller.ApiEndpoints.parking;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

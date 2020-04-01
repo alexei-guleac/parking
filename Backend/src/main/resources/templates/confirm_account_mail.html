@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{mail-html-head}">
+    <link href="../static/css/confirm_account_style.css" rel="stylesheet"
+          th:href="@{/static/css/confirm_account_style.css}"/>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="container">
+        <div th:insert="~{mail-app-name :: app-name}"></div>
+
+        <div class="card-body">
+            <div th:insert="~{mail-message-head :: message-head('https://i.imgur.com/TGAUR6r.png')}"></div>
+
+            <p class="text-block-1">Please verify your <span class="appname">ISD ParKing App</span>
+                account by clicking the button below.</p>
+            <div class="mx-auto mb-4">
+                <!--/*@thymesVar id="confirmation_link" type="java.lang.String"*/-->
+                <a class="btn-round" th:href="${confirmation_link}">Verify your email</a>
+            </div>
+
+            <div th:insert="~{email-confirm-link :: confirm-link}"></div>
+        </div>
+        <div th:insert="~{mail-info :: mail-information}"></div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -16,9 +16,11 @@
 
     <properties>
         <java.version>11</java.version>
-
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.compiler.source>${java.version}</maven.compiler.source>
+
+        <spring-boot.version>2.2.5.RELEASE</spring-boot.version>
+        <docs.resources.version>0.1.2.RELEASE</docs.resources.version>
 
         <io.jsonwebtoken.version>0.11.1</io.jsonwebtoken.version>
         <org.mapstruct.version>1.3.1.Final</org.mapstruct.version>
@@ -26,6 +28,20 @@
         <commons-compress-version>1.15</commons-compress-version>
         <lombok.version>1.18.12</lombok.version>
     </properties>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-repo</id>
+            <url>https://repo.spring.io/release</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <repositories>
+        <repository>
+            <id>spring-repo</id>
+            <url>https://repo.spring.io/release</url>
+        </repository>
+    </repositories>
 
     <!-- ====================================== -->
     <dependencies>
@@ -141,26 +157,6 @@
 
 
         <!-- ====================================== -->
-        <!-- Test -->
-        <!-- ====================================== -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- ====================================== -->
         <!-- JSON Parse -->
         <!-- ====================================== -->
         <!-- https://mvnrepository.com/artifact/org.json/json -->
@@ -240,83 +236,140 @@
             <artifactId>jackson-annotations</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.2-jre</version>
+        </dependency>
+
+
         <!-- ====================================== -->
-        <!-- Spring social connect -->
+        <!-- MVC and WEB pages Processor -->
         <!-- ====================================== -->
-        <!-- https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
         <dependency>
-            <groupId>org.springframework.security.oauth</groupId>
-            <artifactId>spring-security-oauth2</artifactId>
-            <version>2.4.0.RELEASE</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-core -->
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-core</artifactId>
-            <version>${org.springframework.social.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-config -->
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-config</artifactId>
-            <version>${org.springframework.social.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-web -->
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-thymeleaf -->
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-web</artifactId>
-            <version>${org.springframework.social.version}</version>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <version>3.0.11.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf-spring5</artifactId>
+            <version>3.0.11.RELEASE</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-security -->
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-security</artifactId>
-            <version>${org.springframework.social.version}</version>
-        </dependency>
+        <!--
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-facebook -->
+        &lt;!&ndash; ====================================== &ndash;&gt;
+        &lt;!&ndash; Spring social connect &ndash;&gt;
+        &lt;!&ndash; ====================================== &ndash;&gt;
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2 &ndash;&gt;
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-facebook</artifactId>
-            <version>2.0.3.RELEASE</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-twitter -->
+        <groupId>org.springframework.security.oauth</groupId>
+        <artifactId>spring-security-oauth2</artifactId>
+        <version>2.4.0.RELEASE</version>
+    </dependency>
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-core &ndash;&gt;
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-twitter</artifactId>
-            <version>1.1.2.RELEASE</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-github -->
-        <!--<dependency>
-           <groupId>org.springframework.social</groupId>
-           <artifactId>spring-social-github</artifactId>
-           <version>1.0.0.M4</version>
-       </dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-linkedin -->
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-core</artifactId>
+        <version>${org.springframework.social.version}</version>
+    </dependency>
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-config &ndash;&gt;
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-linkedin</artifactId>
-            <version>1.0.2.RELEASE</version>
-        </dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-config</artifactId>
+        <version>${org.springframework.social.version}</version>
+    </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.springframework.social/spring-social-google -->
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-web &ndash;&gt;
         <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-google</artifactId>
-            <version>1.0.0.RELEASE</version>
-        </dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-web</artifactId>
+        <version>${org.springframework.social.version}</version>
+    </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-security &ndash;&gt;
+        <dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-security</artifactId>
+        <version>${org.springframework.social.version}</version>
+    </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-facebook &ndash;&gt;
+        <dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-facebook</artifactId>
+        <version>2.0.3.RELEASE</version>
+    </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-twitter &ndash;&gt;
+        <dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-twitter</artifactId>
+        <version>1.1.2.RELEASE</version>
+    </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-github &ndash;&gt;
+        &lt;!&ndash;<dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-github</artifactId>
+        <version>1.0.0.M4</version>
+    </dependency>&ndash;&gt;
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-linkedin &ndash;&gt;
+        <dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-linkedin</artifactId>
+        <version>1.0.2.RELEASE</version>
+    </dependency>
+
+        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.social/spring-social-google &ndash;&gt;
+        <dependency>
+        <groupId>org.springframework.social</groupId>
+        <artifactId>spring-social-google</artifactId>
+        <version>1.0.0.RELEASE</version>
+    </dependency>
+        -->
 
         <!-- ====================================== -->
         <!-- Remote shutdown -->
         <!-- ====================================== -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>-->
+
+
+        <!-- ====================================== -->
+        <!-- Documentation -->
+        <!-- ====================================== -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.spring.docresources/spring-doc-resources -->
+        <dependency>
+            <groupId>io.spring.docresources</groupId>
+            <artifactId>spring-doc-resources</artifactId>
+            <version>0.1.3.RELEASE</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.spring.asciidoctor/spring-asciidoctor-extensions-spring-boot -->
+        <dependency>
+            <groupId>io.spring.asciidoctor</groupId>
+            <artifactId>spring-asciidoctor-extensions-spring-boot</artifactId>
+            <version>0.4.1.RELEASE</version>
         </dependency>
 
         <!-- ====================================== -->
@@ -334,10 +387,43 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+        <!-- ====================================== -->
+        <!-- Tests -->
+        <!-- ====================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail</artifactId>
+            <version>1.5.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <addResources>true</addResources>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -346,6 +432,7 @@
                     <release>${java.version}</release>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
+                    <encoding>UTF-8</encoding>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -363,6 +450,7 @@
                             <artifactId>hibernate-jpamodelgen</artifactId>
                         </path>
                     </annotationProcessorPaths>
+
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -372,12 +460,11 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-dependency-plugin -->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <addResources>true</addResources>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.2</version>
             </plugin>
             <!--            tests reports  -->
             <plugin>
@@ -400,6 +487,76 @@
                         <exclude>org.apache.commons:commons-collections4</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.spring.javaformat</groupId>
+                <artifactId>spring-javaformat-maven-plugin</artifactId>
+                <version>0.0.20</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <inherited>true</inherited>
+                        <goals>
+                            <goal>validate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.0.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>8.29</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>io.spring.javaformat</groupId>
+                        <artifactId>spring-javaformat-checkstyle</artifactId>
+                        <version>0.0.20</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>checkstyle-validation</id>
+                        <phase>validate</phase>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <configLocation>io/spring/javaformat/checkstyle/checkstyle.xml</configLocation>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                        </configuration>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- https://mvnrepository.com/artifact/org.asciidoctor/asciidoctor-maven-plugin -->
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>2.0.0-RC.1</version>
+
+                <executions>
+                    <execution>
+                        <configuration>
+                            <extensions>
+                                <extension>
+                                    <className>org.asciidoctor.maven.SomePreprocessor</className>
+                                </extension>
+                                <extension>
+                                    <className>org.asciidoctor.maven.SomeBlockProcessor</className>
+                                    <blockName>yell</blockName>
+                                </extension>
+                            </extensions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
         <finalName>docker-spring-boot</finalName>

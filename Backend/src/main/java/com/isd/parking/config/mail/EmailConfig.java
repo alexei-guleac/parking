@@ -12,9 +12,10 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import java.util.Properties;
 
+
 @Configuration
 @PropertySource("classpath:email-config.properties")
-public class MailConfig {
+public class EmailConfig {
 
     @Value("${spring.mail.host}")
     private String host;

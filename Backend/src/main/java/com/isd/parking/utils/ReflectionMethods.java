@@ -1,5 +1,6 @@
 package com.isd.parking.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.PropertyUtils;
 
 import java.lang.reflect.Field;
@@ -9,9 +10,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
+
+
+@Slf4j
 public class ReflectionMethods {
 
-    public static void setProperty(Object bean, String name, Object value) {
+    public static void setPropertyValue(Object bean, String name, Object value) {
         try {
             PropertyUtils.setSimpleProperty(bean, name, value);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
@@ -19,14 +24,35 @@ public class ReflectionMethods {
         }
     }
 
-    public static Object getProperty(Object bean, String name) {
-        Object value = "";
+    public static Object getPropertyValue(Object bean, String name) {
+        Object value = null;
         try {
             value = PropertyUtils.getSimpleProperty(bean, name);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }
         return value;
+    }
+
+    public static String getStringPropertyValue(Object bean, String name) {
+        String value = null;
+        Object objValue = null;
+
+        try {
+            log.info(methodMsgStatic("getPropertyType(bean, name) == String.class " + (getPropertyType(bean, name) == String.class)));
+            log.info(methodMsgStatic("getPropertyType(bean, name)" + getPropertyType(bean, name)));
+            if (getPropertyType(bean, name) == String.class) {
+
+                value = (String) PropertyUtils.getSimpleProperty(bean, name);
+                log.info(methodMsgStatic("VALUE " + value));
+            } else {
+                objValue = PropertyUtils.getSimpleProperty(bean, name);
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        log.info(methodMsgStatic("VALUE" + value));
+        return value != null ? value : objValue != null ? objValue.toString() : null;
     }
 
     public static Class getPropertyType(Object bean, String name) {

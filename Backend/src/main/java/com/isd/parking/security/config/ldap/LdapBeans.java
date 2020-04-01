@@ -1,4 +1,4 @@
-package com.isd.parking.security.config;
+package com.isd.parking.security.config.ldap;
 
 
 import lombok.extern.slf4j.Slf4j;

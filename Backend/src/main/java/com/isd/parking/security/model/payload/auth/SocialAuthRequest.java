@@ -1,5 +1,7 @@
-package com.isd.parking.security.model.payload;
+package com.isd.parking.security.model.payload.auth;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +14,14 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class SocialAuthRequest {
 
+    @JsonProperty()
+    @JsonAlias({"id"})
     @NotBlank
     @NonNull
     private String id;
 
+    @JsonProperty()
+    @JsonAlias({"socialProvider"})
     @NotBlank
     @NonNull
     private String socialProvider;

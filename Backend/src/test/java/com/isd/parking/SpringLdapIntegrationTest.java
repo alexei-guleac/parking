@@ -1,7 +1,7 @@
 package com.isd.parking;
 
 import com.isd.parking.models.Group;
-import com.isd.parking.models.UserLdap;
+import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.repository.GroupRepository;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import com.isd.parking.service.ldap.UserLdapClient;
@@ -183,7 +183,7 @@ public class SpringLdapIntegrationTest {
         this.context.register(EmbeddedLdapAutoConfiguration.class, LdapClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class);
         this.context.refresh();
         LDAPConnection connection = this.context.getBean(LDAPConnection.class);
-        assertThat(connection.getConnectedPort()).isEqualTo(this.context.getEnvironment().getProperty("local.ldap.port", Integer.class));
+        assertThat(connection.getConnectedPort()).isEqualTo(this.context.getEnvironment().getPropertyValue("local.ldap.port", Integer.class));
     }*/
 
     @Test
@@ -203,7 +203,7 @@ public class SpringLdapIntegrationTest {
         userRepository.updateUser(jahn);
 
         UserLdap user = new UserLdap("uid", "user");
-        userRepository.createLdap(user);
+        userRepository.createUser(user);
 
         UserLdap jihn = userRepository.findById("jihn");
         userRepository.deleteUser(jihn);

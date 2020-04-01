@@ -1,6 +1,8 @@
-package com.isd.parking.security.model.payload;
+package com.isd.parking.security.model.payload.auth;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class AuthenticationResponse {
 
+    @JsonProperty()
+    @JsonAlias({"token"})
     @NotBlank
     @NonNull
     private String token;

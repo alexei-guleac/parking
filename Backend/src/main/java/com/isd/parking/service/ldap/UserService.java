@@ -1,6 +1,6 @@
 package com.isd.parking.service.ldap;
 
-import com.isd.parking.models.UserLdap;
+import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.repository.UserRepository;
 import com.isd.parking.security.PasswordEncoding;
 import com.isd.parking.utils.ColorConsoleOutput;

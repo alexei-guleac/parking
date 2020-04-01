@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="message-head(imgLink)">
+    <!--/*@thymesVar id="imgLink" type="java.lang.String"*/-->
+    <img alt="isd_app_logo"
+         class="check-img"
+         src="https://i.imgur.com/TGAUR6r.png"
+         style="width: 4.5rem; height: 5.5rem"
+         th:src="${imgLink}">
+    <!--/*@thymesVar id="username" type="java.lang.String"*/-->
+    <h2 class="username" th:text="'Hi, ' + ${username}">Hi, User!</h2>
+</div>
+
+</html>

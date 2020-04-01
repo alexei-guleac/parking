@@ -19,12 +19,17 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
+
 public final class JwtUtils {
 
     private final static String AUDIENCE_UNKNOWN = "unknown";
+
     private final static String AUDIENCE_WEB = "web";
+
     private final static String AUDIENCE_MOBILE = "mobile";
+
     private final static String AUDIENCE_TABLET = "tablet";
+
     private final static String ROLES_CLAIM = "roles";
 
     public static String generateHMACToken(String subject, Collection<? extends GrantedAuthority> roles,

@@ -1,4 +1,4 @@
-package com.isd.parking.models;
+package com.isd.parking.models.users;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

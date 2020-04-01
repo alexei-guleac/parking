@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="mail-information">
+    <div class="text-block-3 m-2">This email was sent for
+        <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+        <u th:text="${email}"></u><br/>
+        <p th:if="${timezone}">This action email was initiated from
+            <!--/*@thymesVar id="timezone" type="java.lang.String"*/-->
+            <b th:text="${timezone} + '. '"></b></p>
+        <!--/*@thymesVar id="browser" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="os" type="java.lang.String"*/-->
+        <!--/*@thymesVar id="platformType" type="java.lang.String"*/-->
+        <p th:if="${browser}">You're using
+            <b th:text="${browser} + ' on ' + ${platformType} + ' platform ' + ${os}"></b></p>
+        <p>If you didn't just signup with <span class="appname">ISD ParKing App</span>,
+            you can simply ignore this email.</p>
+    </div>
+    <div class="subtitle m-2"><strong>Need help?</strong></div>
+    <div>Please send any feedback or bug reports to <a
+        href="mailto: support.parking@isd.com">support.parking@isd.com</a></div>
+    <div class="subtitle m-2"><strong>Stay in touch</strong></div>
+    <div class="social">
+        <a class="" href="https://facebook.com/">
+            <img alt="fb_social_button" class="m-1" src="https://i.imgur.com/upcboM5.png"
+                 style="width: 2.2rem; height: 2.2rem"></a>
+        <a class="" href="https://instagram.com/">
+            <img alt="inst_social_button" class="m-1" src="https://i.imgur.com/QAQlnz3.png"
+                 style="width: 2.2rem; height: 2.2rem"></a>
+        <a class="" href="https://linkedin.com/">
+            <img alt="linkedin_social_button" class="m-1" src="https://i.imgur.com/kr1GuUg.png"
+                 style="width: 2.2rem; height: 2.2rem"></a>
+        <a class="" href="https://twitter.com/">
+            <img alt="twitter_social_button" class="m-1" src="https://i.imgur.com/CvPUKkk.png"
+                 style="width: 2.2rem; height: 2.2rem"></a>
+        <a class="" href="https://pinterest.com/">
+            <img alt="pin_social_button" class="m-1" src="https://i.imgur.com/gFwU4GS.png"
+                 style="width: 2.2rem; height: 2.2rem"></a>
+    </div>
+
+    <div class="m-2">
+        <hr class="border"/>
+    </div>
+
+    <p>&copy; ISD Parking Application <span th:text="${#dates.year(#dates.createNow())}">2020</span>. All rights
+        reserved.</p>
+</div>
+
+</html>

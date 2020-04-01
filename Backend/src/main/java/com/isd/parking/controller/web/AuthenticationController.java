@@ -1,18 +1,19 @@
 package com.isd.parking.controller.web;
 
-import com.isd.parking.models.UserLdap;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Splitter;
 import com.isd.parking.models.enums.AccountState;
-import com.isd.parking.security.model.payload.AuthenticationRequest;
-import com.isd.parking.security.model.payload.AuthenticationResponse;
-import com.isd.parking.security.model.payload.SocialAuthRequest;
-import com.isd.parking.security.model.payload.SocialAuthResponse;
+import com.isd.parking.models.users.UserLdap;
+import com.isd.parking.security.model.payload.auth.*;
 import com.isd.parking.service.ConfirmationTokenService;
 import com.isd.parking.service.EmailSenderService;
+import com.isd.parking.service.RestService;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.AppFileUtils;
 import com.isd.parking.utils.ColorConsoleOutput;
 import com.nimbusds.jose.JOSEException;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,21 +25,30 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Map;
+
+import static com.isd.parking.controller.ApiEndpoints.*;
 import static com.isd.parking.security.JwtUtils.generateHMACToken;
+import static com.isd.parking.utils.AppJsonUtils.getJsonStringFromObject;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
+import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+
 @RestController
-@RequestMapping("auth")
+@RequestMapping(auth)
 @Slf4j
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
 
     private final UserLdapClient userLdapClient;
+
+    private final RestService restService;
 
     private final ConfirmationTokenService confirmationTokenService;
 
@@ -57,11 +67,11 @@ public class AuthenticationController {
     private final int expirationInMinutes = 10;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager,
-                                    UserLdapClient userLdapClient,
-                                    ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService, ColorConsoleOutput console) {
+    public AuthenticationController(AuthenticationManager authenticationManager, UserLdapClient userLdapClient,
+                                    RestService restService, ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService, ColorConsoleOutput console) {
         this.authenticationManager = authenticationManager;
         this.userLdapClient = userLdapClient;
+        this.restService = restService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
         this.console = console;
@@ -71,15 +81,18 @@ public class AuthenticationController {
     public ResponseEntity<?> authenticationRequest(@RequestBody AuthenticationRequest authenticationRequest)
         throws AuthenticationException, JOSEException {
 
-        final String username = authenticationRequest.getUsername();
-        final String password = authenticationRequest.getPassword();
-
+        AuthenticationRequest.AuthDetails credentials = authenticationRequest.getAuthDetails();
+        final String username = credentials.getUsername();
+        final String password = credentials.getPassword();
+        log.info(methodMsgStatic("AuthDetails auth " + username + " " + password));
         UserLdap userFound = userLdapClient.findById(username);
         if (userFound != null) {
+            log.info(methodMsgStatic("USER auth " + userFound));
             assertAccountEnabled(userFound);
 
             UsernamePasswordAuthenticationToken userAuthToken = new UsernamePasswordAuthenticationToken(username, password);
             // throws authenticationException if it fails !
+            log.info(methodMsgStatic("userAuthToken " + userAuthToken));
             Authentication authentication = authenticationManager.authenticate(userAuthToken);
             if (userAuthToken.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(userAuthToken);
@@ -118,11 +131,12 @@ public class AuthenticationController {
         }
     }
 
-    @RequestMapping(value = "/social", method = POST)
+    @RequestMapping(value = social, method = POST)
     public ResponseEntity<?> socialLogin(@RequestBody SocialAuthRequest socialAuthRequest) throws JOSEException {
 
         final String id = socialAuthRequest.getId();
         final String provider = socialAuthRequest.getSocialProvider();
+        log.info(methodMsgStatic(" social: " + socialAuthRequest));
 
         final UserLdap userFound = userLdapClient.getUserBySocialId(id, provider);
         if (userFound != null) {
@@ -136,7 +150,29 @@ public class AuthenticationController {
             return ResponseEntity.ok(new SocialAuthResponse(token, username));
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account associated with this credentials not found");
+                .body("Account associated with this social profile not found");
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(gitOAuth)
+    public ResponseEntity githubOAuth(@RequestBody String githubOAuthCode) throws JsonProcessingException {
+        final String code = new JSONObject(githubOAuthCode).getString("code");
+
+        if (code == null || code.equals("")) {
+            return ResponseEntity.ok("Code not provided");
+        } else {
+            String url = GithubOauthRequest.GithubOauthConstants.TOKEN_URL;
+            String requestJsonString = getJsonStringFromObject(new GithubOauthRequest(code));
+
+            log.info("requestJsonString " + requestJsonString);
+            String response = restService.postPlainJSON(url, requestJsonString);
+            log.info("response " + response);
+
+            @SuppressWarnings("UnstableApiUsage") final Map<String, String> parameters = Splitter.on('&').trimResults().withKeyValueSeparator('=').split(response);
+            log.info("parameters " + parameters);
+
+            return ResponseEntity.ok(new GithubOauthResponse(parameters.get("access_token")));
         }
     }
 
@@ -161,5 +197,7 @@ public class AuthenticationController {
     private String generateSignedJWTToken(String username, String roles) throws JOSEException {
         return generateHMACToken(username, roles, secret, expirationInMinutes);
     }
+
+
 }
 
