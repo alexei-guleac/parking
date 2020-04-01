@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ResetPasswordComponent} from './reset-password.component';
 
+
 describe('ResetPasswordComponent', () => {
     let component: ResetPasswordComponent;
     let fixture: ComponentFixture<ResetPasswordComponent>;
@@ -9,8 +10,7 @@ describe('ResetPasswordComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ResetPasswordComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

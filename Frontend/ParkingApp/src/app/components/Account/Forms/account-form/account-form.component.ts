@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
 import {ServerErrorMessage} from '../../../../models/ServerErrorMessage';
+import {SocialUserService} from "../../../../services/account/social/social-user.service";
 import {actions} from '../../../../services/navigation/app.endpoints';
 import {NavigationService} from '../../../../services/navigation/navigation.service';
-import {_getFingerprint} from '../../../../utils/device-fingerprint';
+import {DeviceInfoStorage} from '../../../../utils/device-fingerprint';
 import {containsString} from '../../../../utils/string-utils';
 import {fadeInOut} from '../../../animations/animations';
 
@@ -16,40 +16,63 @@ import {fadeInOut} from '../../../animations/animations';
 })
 export class AccountFormComponent implements OnInit {
 
+    constructor(
+        private navigationService: NavigationService,
+        private socialUserService: SocialUserService
+    ) {
+        this.handleRedirect();
+        this.subscribeUrlParams();
+        DeviceInfoStorage._getComponentsInfo();
+    }
+
     private login = true;
+
     private register = false;
+
     private forgotPass = false;
+
     private resetPass = false;
 
     private showHint = false;
 
     private isLoginFailed = false;
+
     private isConfirmSuccess = false;
+
     private errorMessage: string;
+
     private successMessage: string;
 
     private confirmationToken: string;
 
-    constructor(private router: Router,
-                private route: ActivatedRoute,
-                private navigation: NavigationService) {
-        this.handleRedirect();
-        this.subscribeUrlParams();
-    }
-
     ngOnInit() {
-        _getFingerprint();
     }
 
     private subscribeUrlParams() {
-        console.log('Called Constructor');
-        this.route.queryParams.subscribe(params => {
-            if (params.action === actions.reset) {
-                this.confirmationToken = params.confirmation_token;
-                this.navigateToResetPass();
-            }
-            if (params.action === actions.login) {
-                this.navigateToLogin();
+        // console.log('Called Constructor');
+        this.navigationService.subscribeUrlParams(params => {
+
+            if (params.code) {
+                console.log(' gitCode = ' + params.code);
+                console.log(' this.socialUserService.gitAuth.action = ' + this.socialUserService.getGitOauthAction());
+                this.socialUserService.setGitOauthCode(params.code);
+
+                if (this.socialUserService.getGitOauthAction() === actions.login) {
+                    this.setLoginLayout();
+                }
+                if (this.socialUserService.getGitOauthAction() === actions.registration) {
+                    this.setRegistrationLayout();
+                }
+            } else {
+                if (params.action === actions.reset) {
+                    if (params.confirmation_token) {
+                        this.confirmationToken = params.confirmation_token;
+                        this.setResetPassLayout();
+                    }
+                }
+                if (params.action === actions.login) {
+                    this.setLoginLayout();
+                }
             }
         });
     }
@@ -57,9 +80,7 @@ export class AccountFormComponent implements OnInit {
     // Show error message from global error interceptor
     // or registration confirmation service
     private handleRedirect() {
-
-        const navigation = this.router.getCurrentNavigation();
-        const state = navigation.extras.state as any;
+        const state = this.navigationService.getRouterState();
 
         if (state != null) {
             if (state.errors) {
@@ -98,26 +119,42 @@ export class AccountFormComponent implements OnInit {
     }
 
     private navigateToMain() {
-        this.navigation.navigateToMain();
+        this.navigationService.navigateToMain();
     }
 
     private navigateToLogin() {
-        this.switchLayout(true, false, false, false);
+        this.socialUserService.cleanGitAuth();
+        this.setLoginLayout()
     }
 
     private navigateToRegistration() {
+        this.socialUserService.cleanGitAuth();
+        this.setRegistrationLayout();
+    }
+
+
+    private setLoginLayout() {
+        this.switchLayout(true, false, false, false);
+    }
+
+    private setRegistrationLayout() {
         this.switchLayout(false, true, false, false);
     }
 
-    private navigateToForgotPass() {
+    private setForgotPassLayout() {
         this.switchLayout(false, false, true, false);
     }
 
-    private navigateToResetPass() {
+    private setResetPassLayout() {
         this.switchLayout(false, false, false, true);
     }
 
-    private switchLayout(stateLogin: boolean, stateRegister: boolean, stateForgotPassword: boolean, stateResetPassword: boolean) {
+    private switchLayout(
+        stateLogin: boolean,
+        stateRegister: boolean,
+        stateForgotPassword: boolean,
+        stateResetPassword: boolean
+    ) {
         this.login = stateLogin;
         this.register = stateRegister;
         this.forgotPass = stateForgotPassword;

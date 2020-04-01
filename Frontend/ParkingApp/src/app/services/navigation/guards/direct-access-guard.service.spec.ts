@@ -7,7 +7,9 @@ describe('DirectAccessGuardService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: DirectAccessGuardService = TestBed.get(DirectAccessGuardService);
+        const service: DirectAccessGuardService = TestBed.get(
+            DirectAccessGuardService
+        );
         expect(service).toBeTruthy();
     });
 });

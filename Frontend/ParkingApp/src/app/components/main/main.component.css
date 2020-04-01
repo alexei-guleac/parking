@@ -1,19 +1,20 @@
-@import 'main.css';
+@import "main.css";
 
 .lot {
     margin-bottom: 20px;
     height: 100px;
     min-width: 150px;
     box-shadow: var(--card-material-shadow);
-    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .lot:hover {
-    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     transition: 0.5s;
 }
 
-.fas, .far {
+.fas,
+.far {
     font-size: 3rem;
     vertical-align: middle;
     margin-top: 1rem;
@@ -32,11 +33,11 @@
     width: 50%;
     color: #fff;
     border-color: #fff;
-    background-color: #0A8EFF;
+    background-color: #0a8eff;
 }
 
 .refresh:hover {
-    color: #0A8EFF;
+    color: #0a8eff;
     background-color: #fff;
     border-color: #fff;
 }

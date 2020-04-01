@@ -9,7 +9,6 @@ import {appRoutes} from '../../services/navigation/app.endpoints';
     styleUrls: ['./page-not-found.component.css']
 })
 export class PageNotFoundComponent implements OnInit {
-
     constructor(private router: Router) {
     }
 

@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&display=swap");
 @import url("https://fonts.googleapis.com/css?family=PT+Sans:400,700");
 @import url("https://fonts.googleapis.com/css?family=Inconsolata:400,700");
 
@@ -27,8 +27,8 @@
     /* My Colors */
 
     --white: #fff;
-    --btn-background-color: #F7B432;
-    --btn-border-color: #F7B432;
+    --btn-background-color: #f7b432;
+    --btn-border-color: #f7b432;
 
     /* Inputs */
 
@@ -51,7 +51,8 @@
     --facebook: #507cc0;
     --twitter: #64ccf1;
     --linkedin: #0b5ea3;
-    --microsoft: #e3b30d;
+    --microsoft: #63b175;
+    --amazon: #e3b30d;
     --vkontakte: #4a76a8;
     --github: #2a2a2a;
     --google: #df4930;
@@ -61,16 +62,19 @@
     /* Shadows */
 
     --background-tertiary-shadow: 0 1px 3px 0 rgba(92, 125, 153, 0.5);
-    --card-material-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    --btn-material-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-    --material-shadow-thin: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --card-material-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
+    --btn-material-shadow: 0 10px 20px rgba(0, 0, 0, 0.19),
+    0 6px 6px rgba(0, 0, 0, 0.23);
+    --material-shadow-thin: 0 1px 3px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.24);
     --box-shadow-navbar-menu: 0px 11px 12px 12px rgba(50, 50, 50, 0.2);
 
     --not-found-color: #211b19;
 
     /* Night theme */
 
-    --color-mode: 'light';
+    --color-mode: "light";
 
     --color-dark: #3a383a;
     --color-dark-alpha: rgba(0, 0, 0, 0.07);
@@ -78,8 +82,8 @@
     --color-light: #f5f5f5;
     --color-light-alpha: rgba(255, 255, 255, 0.9);
 
-    --text-color-light: #1f1f1f;
-    --text-color-dark: #e8eaed;
+    --text-color-dark: #1f1f1f;
+    --text-color-light: #e8eaed;
 
     --background-secondary-light: #fefcfe;
     --background-secondary-dark: #5d5b5d;
@@ -90,11 +94,11 @@
     --input-color-light: #ffffff;
     --input-color-dark: rgba(114, 75, 76, 0.68);
 
-    --text-color-secondary-light: var(--text-color-light);
-    --text-color-secondary-dark: var(--text-color-dark);
+    --text-color-secondary-light: var(--text-color-dark);
+    --text-color-secondary-dark: var(--text-color-light);
 
-    --input-text-color-light: var(--text-color-light);
-    --input-text-color-dark: var(--text-color-dark);
+    --input-text-color-light: var(--text-color-dark);
+    --input-text-color-dark: var(--text-color-light);
 
     --pseudolink-color-light: #007bff;
     --pseudolink-color-light-hover: #3355a2;
@@ -119,20 +123,20 @@
     --icon-moon-filter: invert(0.75);
 
     /* noinspection CssUnknownTarget */
-    --isd-account-logo-light: url('https://i.imgur.com/8Keuvcs.png'); /* aleks7900@gmail.com */
+    --isd-account-logo-light: url("https://i.imgur.com/8Keuvcs.png"); /* aleks7900@gmail.com */
     /* noinspection CssUnknownTarget */
-    --isd-account-logo-dark: url('https://i.imgur.com/1CK4s4t.png');
+    --isd-account-logo-dark: url("https://i.imgur.com/1CK4s4t.png");
 
     /* noinspection CssUnknownTarget */
-    --parking-logo-light: url('https://i.imgur.com/rLrK7tL.png');
+    --parking-logo-light: url("https://i.imgur.com/rLrK7tL.png");
     /* noinspection CssUnknownTarget */
-    --parking-logo-dark: url('https://i.imgur.com/GT1fA89.png');
+    --parking-logo-dark: url("https://i.imgur.com/GT1fA89.png");
 
     --or-separator-light: #e0e0e0;
     --or-separator-dark: rgba(116, 116, 116, 0.85);
 
     --background: var(--color-light);
-    --text-color: var(--text-color-light);
+    --text-color: var(--text-color-dark);
 
     --background-secondary: var(--background-secondary-light);
     --text-color-secondary: var(--text-color-secondary-light);
@@ -160,12 +164,12 @@ body {
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-mode: 'dark';
+        --color-mode: "dark";
     }
 
     :root:not([data-user-color-scheme]) {
         --background: var(--color-dark);
-        --text-color: var(--text-color-dark);
+        --text-color: var(--text-color-light);
 
         --background-secondary: var(--background-secondary-dark);
         --text-color-secondary: var(--text-color-secondary-dark);
@@ -188,7 +192,7 @@ body {
 
 [data-user-color-scheme="dark"] {
     --background: var(--color-dark);
-    --text-color: var(--text-color-dark);
+    --text-color: var(--text-color-light);
 
     --background-secondary: var(--background-secondary-dark);
     --text-color-secondary: var(--text-color-secondary-dark);
@@ -281,8 +285,8 @@ body {
     border-bottom-right-radius: 0;
 }
 
-
-.ngx-pagination a:hover, .ngx-pagination button:hover {
+.ngx-pagination a:hover,
+.ngx-pagination button:hover {
     background: none !important;
 }
 
@@ -303,7 +307,8 @@ footer {
     color: #919495 !important;
 }
 
-html, body {
+html,
+body {
     height: 100%;
 }
 

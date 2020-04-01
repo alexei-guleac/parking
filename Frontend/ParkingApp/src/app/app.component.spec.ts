@@ -1,12 +1,11 @@
 import {async, TestBed} from '@angular/core/testing';
 import {AppComponent} from './app.component';
 
+
 describe('AppComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [
-                AppComponent
-            ],
+            declarations: [AppComponent]
         }).compileComponents();
     }));
 
@@ -26,6 +25,8 @@ describe('AppComponent', () => {
         const fixture = TestBed.createComponent(AppComponent);
         fixture.detectChanges();
         const compiled = fixture.debugElement.nativeElement;
-        expect(compiled.querySelector('.content span').textContent).toContain('ParkingApp app is running!');
+        expect(compiled.querySelector('.content span').textContent).toContain(
+            'ParkingApp app is running!'
+        );
     });
 });

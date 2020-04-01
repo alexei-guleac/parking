@@ -1,5 +1,4 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="forgotForm"
-      class="form-group mx-auto text-center">
+<form #f="ngForm" (ngSubmit)="onSubmit(f.valid)" [formGroup]="forgotForm" class="form-group mx-auto text-center">
 
     <div *ngIf='requestSuccess' class="alert alert-success">{{confirmationMessage}}</div>
     <div *ngIf='requestFailed' class="alert alert-warning">{{errorMessage}}</div>
@@ -13,18 +12,15 @@
         <label for="email"></label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="fa fa-envelope"></i></span></div>
-            <input [(ngModel)]="email" class="form-control" formControlName="email"
-                   id="email"
-                   minlength="8"
-                   name="email"
-                   placeholder="example@mail.com" required type="email">
+                <span class="input-group-text">
+                    <i class="fa fa-envelope"></i></span></div>
+            <input [(ngModel)]="this.email" class="form-control" formControlName="email" id="email" minlength="8"
+                   name="email" placeholder="example@mail.com" required type="email">
         </div>
         <!--                    <autocomplete givenPlaceHolder="Your email address"-->
         <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
 
-        <div *ngIf="mail.invalid && (mail.dirty || mail.pristine) && this.submitted"
+        <div *ngIf="mail.invalid && this.submitted"
              class="alert alert-danger font-error mx-auto text-center w-20rem">
             <div *ngIf="mail.errors.required">
                 Email is required.
@@ -44,10 +40,9 @@
     </div>
 
     <div class="button-box mx-auto">
-        <button (click)="onSubmit()" appNoDblClick [disabled]="sendSuccess"
+        <button (click)="onSubmit(this.forgotForm.valid)" [disabled]="sendSuccess" appNoDblClick
                 class="btn btn-default submit-btn full-width form-group mx-auto text-center rounded-pill mt-3 mb-n2"
                 type="submit">
             Send email&nbsp;&nbsp;<i class="far fa-envelope"></i></button>
     </div>
 </form>
-

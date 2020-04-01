@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {RegFormComponent} from './registration-form.component';
 
+
 describe('RegFormComponent', () => {
     let component: RegFormComponent;
     let fixture: ComponentFixture<RegFormComponent>;
@@ -9,8 +10,7 @@ describe('RegFormComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [RegFormComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

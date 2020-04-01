@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {ParkingLot} from '../../models/ParkingLot';
-// @ts-ignore
 import {status} from '../../models/ParkingLotStatus';
 import {Statistics} from '../../models/Statistics';
 import {User} from '../../models/User';
@@ -11,28 +10,33 @@ import {User} from '../../models/User';
     providedIn: 'root'
 })
 export class DataService {
-
     private readonly parkingLots: Array<ParkingLot>;
+
     private readonly statistics: Array<Statistics>;
 
     users: Array<User>;
 
     private readonly getRandomNum: any;
+
     private readonly date: Date;
 
     constructor() {
-
         this.parkingLots = new Array<ParkingLot>();
 
         this.getRandomNum = () => {
-            return Math.floor((Math.random() * 3) + 1);
+            return Math.floor(Math.random() * 3 + 1);
         };
 
         for (let i = 0; i < 10; i++) {
             const parkingLot = new ParkingLot();
             parkingLot.id = i;
             parkingLot.number = i;
-            parkingLot.status = this.getRandomNum === 0 ? status.FREE : this.getRandomNum === 1 ? status.OCCUPIED : status.UNKNOWN;
+            parkingLot.status =
+                this.getRandomNum === 0
+                    ? status.FREE
+                    : this.getRandomNum === 1
+                    ? status.OCCUPIED
+                    : status.UNKNOWN;
             parkingLot.updatedAt = new Date();
 
             this.parkingLots.push(parkingLot);
@@ -55,9 +59,19 @@ export class DataService {
         for (let i = 0; i < 10; i++) {
             this.date = new Date('2020-01-05 9:00');
             this.date.setHours(this.date.getHours() + 10);
-            const parkingLotStatus = this.getRandomNum === 0 ? status.FREE : this.getRandomNum === 1 ? status.OCCUPIED : status.UNKNOWN;
+            const parkingLotStatus =
+                this.getRandomNum === 0
+                    ? status.FREE
+                    : this.getRandomNum === 1
+                    ? status.OCCUPIED
+                    : status.UNKNOWN;
 
-            const stats = new Statistics(i + 1, i + 1, parkingLotStatus, this.date);
+            const stats = new Statistics(
+                i + 1,
+                i + 1,
+                parkingLotStatus,
+                this.date
+            );
             this.statistics.push(stats);
         }
     }

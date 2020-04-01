@@ -1,18 +1,18 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {NavigationExtras} from '@angular/router';
 import {AuthenticationService} from '../../../services/account/auth.service';
 import {actions, api} from '../../../services/navigation/app.endpoints';
 import {NavigationService} from '../../../services/navigation/navigation.service';
-import {containsString} from '../../../utils/string-utils';
 
 
 @Component({
-    selector: "app-confirm-registration",
-    templateUrl: "./confirm-user.component.html",
-    styleUrls: ["./confirm-user.component.css"]
+    selector: 'app-confirm-registration',
+    templateUrl: './confirm-user.component.html',
+    styleUrls: ['./confirm-user.component.css']
 })
 export class ConfirmUserComponent implements OnInit {
+
     private confirmationToken: string;
 
     private confirmationSuccess: boolean;
@@ -21,14 +21,14 @@ export class ConfirmUserComponent implements OnInit {
 
     private errorMessage: string;
 
-    private urlPath: string;
+    counter = 11;
 
     private formAction = actions.login;
 
+    private formActions = actions;
+
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private navigation: NavigationService,
+        private navigationService: NavigationService,
         private authenticationService: AuthenticationService
     ) {
         this.processUrlPath();
@@ -40,19 +40,16 @@ export class ConfirmUserComponent implements OnInit {
     }
 
     private subscribeUrlParams() {
-        console.log("Called Constructor");
-        this.route.queryParams.subscribe(params => {
+        console.log('Called Constructor');
+        this.navigationService.subscribeUrlParams(params => {
             this.confirmationToken = params.confirmation_token;
         });
         console.log(this.confirmationToken);
     }
 
     private processUrlPath() {
-        this.urlPath = this.router.url;
-        console.log(this.router.url);
-
-        if (containsString(this.urlPath, api.confirmReset)) {
-            console.log("dfdfdfdffffffffZZZZZZZZZZ");
+        if (this.navigationService.assertUrlPath(api.confirmReset)) {
+            console.log('dfdfdfdffffffffZZZZZZZZZZ');
             this.formAction = actions.reset;
         }
     }
@@ -64,14 +61,14 @@ export class ConfirmUserComponent implements OnInit {
                 (response: any) => {
                     if (response.success) {
                         this.confirmationSuccess = true;
-                        this.confirmationMessage = "Confirmation Successful.";
+                        this.confirmationMessage = 'Confirmation Successful.';
                         console.log(this.confirmationMessage);
-
+                        console.log('formAction' + this.formAction);
                         this.navigateToAccountForm(this.formAction);
                     } else {
                         this.confirmationSuccess = false;
-                        this.confirmationMessage =
-                            "Confirmation failed. Submit again";
+                        this.confirmationMessage = 'Confirmation failed. Submit again';
+                        this.navigateToMain();
                     }
                 },
                 error => {
@@ -82,6 +79,7 @@ export class ConfirmUserComponent implements OnInit {
                         this.errorMessage = error.error.message
                             ? error.error.message
                             : error.error;
+                        this.navigateToMain();
                     }
                 }
             );
@@ -93,13 +91,39 @@ export class ConfirmUserComponent implements OnInit {
             queryParams: {action, confirmation_token: this.confirmationToken}
         };
 
+        const interval = setInterval(() => {
+            this.counter--;
+        }, 1000);
+
         setTimeout(() => {
+            clearInterval(interval);
+            this.counter = 7;
+
+            console.log('formAction2' + this.formAction);
             if (this.formAction === actions.login) {
-                this.navigation.navigateToLoginWithExtras(navigationExtras);
+                this.navigationService.navigateToLoginWithExtras(
+                    navigationExtras
+                );
             }
             if (this.formAction === actions.reset) {
-                this.navigation.navigateToResetWithExtras(navigationExtras);
+                this.navigationService.navigateToResetWithExtras(
+                    navigationExtras
+                );
             }
         }, 7000);
+    }
+
+    private navigateToMain() {
+        const interval = setInterval(() => {
+            this.counter--;
+        }, 1000);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            this.counter = 10;
+
+            this.navigationService.navigateToMain();
+
+        }, 10000);
     }
 }

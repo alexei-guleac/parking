@@ -1,7 +1,10 @@
 export class ParkingLot {
     id: number;
+
     number: number;
+
     status: string;
+
     updatedAt: Date;
 
     static fromHttp(pl: ParkingLot): ParkingLot {

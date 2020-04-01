@@ -5,10 +5,12 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MsalInterceptor, MsalModule} from '@azure/msal-angular';
+import {MsalInterceptor} from '@azure/msal-angular';
 import {Angulartics2Module} from 'angulartics2';
 import {AuthServiceConfig, SocialLoginModule} from 'angularx-social-login-vk';
+import {NgxLinkedinModule} from 'ngx-linkedin';
 import {LoggerModule, NgxLoggerLevel} from 'ngx-logger';
+import {NgxLoginWithAmazonButtonModule} from 'ngx-login-with-amazon-button';
 import {NgxPaginationModule} from 'ngx-pagination';
 import {NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule} from 'ngx-ui-loader';
 import {environment} from '../environments/environment';
@@ -22,38 +24,27 @@ import {OrSeparatorComponent} from './components/Account/Forms/or-separator/or-s
 import {RegFormComponent} from './components/Account/Forms/registration-form/registration-form.component';
 import {ResetPasswordComponent} from './components/Account/Forms/reset-password/reset-password.component';
 import {SocialButtonsComponent} from './components/Account/Forms/social-buttons/social-buttons.component';
-import {UsernameInputComponent} from './components/Account/Forms/username-input/username-input.component';
-import {GithubOauthComponent} from './components/Account/github-oauth/github-oauth.component';
 import {MainComponent} from './components/main/main.component';
 import {ParkingLotDetailComponent} from './components/main/parking-lot-detail/parking-lot-detail.component';
 import {MenuComponent} from './components/menu/menu.component';
 import {NoConnectionComponent} from './components/no-connection/no-connection.component';
-import {FeatureComponent} from './components/old/features/feature.component';
-import {ParkingLayoutOldComponent} from './components/old/parking-layout-old/parking-layout-old.component';
 import {PageNotFoundComponent} from './components/page-not-found/page-not-found.component';
 import {ParkingLayoutComponent} from './components/parking-layout/parking-layout.component';
 import {StatisticsComponent} from './components/statistics/statistics.component';
 import {JwtAppModule} from './jwt.module';
+import {MsalAppModule} from './msal.module';
 import {AccountStorageTypeService} from './services/account/session-storage.service';
-import {provideConfig} from './services/account/social-auth.service';
+import {provideConfig} from './services/account/social/social-account.service';
 import {GlobalHttpErrorInterceptorService} from './services/helpers/global-http-interceptor-service.service';
 import {TokenInterceptor} from './services/helpers/token-interceptor.service';
 import {XhrInterceptor} from './services/helpers/xhr-interceptor.service';
 import {api} from './services/navigation/app.endpoints';
 import {DirectAccessGuard} from './services/navigation/guards/direct-access-guard.service';
 import {ResetGuard} from './services/navigation/guards/reset-guard.service';
-import {EqualValidator} from './validation/equal-validator.directive';
 import {NoDblClickDirective} from './validation/no-dbl-click.directive';
 import {RECAPTCHA_URL, ReCaptchaDirective} from './validation/recaptcha-validator';
 
 // import {} from 'bower_components/angular-mailcheck';
-
-
-export const protectedResourceMap: [string, string[]][] = [
-    ['https://graph.microsoft.com/v1.0/me', ['user.read']]
-];
-
-const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 @NgModule({
     declarations: [
@@ -65,22 +56,16 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         LoginFormComponent,
         RegFormComponent,
         ReCaptchaDirective,
-        EqualValidator,
         NoDblClickDirective,
         StatisticsComponent,
-        FeatureComponent,
         ParkingLayoutComponent,
-        ParkingLayoutOldComponent,
         OrSeparatorComponent,
-        UsernameInputComponent,
         SocialButtonsComponent,
         AccountFormComponent,
         ForgotPassFormComponent,
         ConfirmUserComponent,
         ResetPasswordComponent,
-        NoConnectionComponent,
-        GithubOauthComponent,
-
+        NoConnectionComponent
     ],
 
     imports: [
@@ -97,7 +82,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         MatButtonModule,
         Angulartics2Module.forRoot(),
         JwtAppModule,
-        NgxUiLoaderModule,      // import NgxUiLoaderModule
+        NgxUiLoaderModule, // import NgxUiLoaderModule
         NgxUiLoaderRouterModule.forRoot({
             showForeground: true
         }), // import NgxUiLoaderRouterModule. By default, it will show foreground loader.
@@ -111,39 +96,24 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
         // If you need to show foreground spinner, do as follow:
         // NgxUiLoaderHttpModule.forRoot({ showForeground: true })
         LoggerModule.forRoot({
-            level: !environment.production ? NgxLoggerLevel.LOG : NgxLoggerLevel.OFF,
+            level: !environment.production
+                ? NgxLoggerLevel.LOG
+                : NgxLoggerLevel.OFF,
             // serverLogLevel
             serverLogLevel: NgxLoggerLevel.OFF
         }),
-        MsalModule.forRoot({
-                auth: {
-                    clientId: 'f90657e8-cfae-450c-98b8-f595ca39a884',
-                    authority: 'https://login.microsoftonline.com/common/',
-                    validateAuthority: true,
-                    redirectUri: 'http://localhost:4200/account',
-                    postLogoutRedirectUri: 'http://localhost:4200/account',
-                    navigateToLoginRequestUrl: true,
-                },
-                cache: {
-                    cacheLocation: 'localStorage',
-                    storeAuthStateInCookie: isIE, // set to true for IE 11
-                },
-            },
-            {
-                popUp: !isIE,
-                consentScopes: [
-                    'user.read',
-                    'openid',
-                    'profile'
-                ],
-                unprotectedResources: ['https://www.microsoft.com/en-us/'],
-                protectedResourceMap,
-                extraQueryParameters: {}
-            })
+        MsalAppModule,
+        NgxLinkedinModule.forRoot({
+            clientId: ':clientId:'
+        }),
+        NgxLoginWithAmazonButtonModule.forRoot(
+            'amzn1.application-oa2-client.041834d99fcd4c4fb5f59493ed285af8'
+        )
     ],
 
     providers: [
-        ResetGuard, DirectAccessGuard,
+        ResetGuard,
+        DirectAccessGuard,
         {
             provide: RECAPTCHA_URL,
             useValue: environment.restUrl + api.recaptcha
@@ -153,13 +123,19 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
             useClass: MsalInterceptor,
             multi: true
         },
-        {provide: HTTP_INTERCEPTORS, useClass: GlobalHttpErrorInterceptorService, multi: true},
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: GlobalHttpErrorInterceptorService,
+            multi: true
+        },
         {provide: HTTP_INTERCEPTORS, useClass: XhrInterceptor, multi: true},
         {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
         {
             provide: AuthServiceConfig,
             useFactory: provideConfig
-        }, AccountStorageTypeService],
+        },
+        AccountStorageTypeService
+    ],
     bootstrap: [AppComponent]
 })
 

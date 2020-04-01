@@ -9,14 +9,11 @@ import {openClose} from '../animations/animations';
 
 @Component({
     selector: 'app-menu',
-    animations: [
-        openClose,
-    ],
+    animations: [openClose],
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.css']
 })
 export class MenuComponent implements OnInit {
-
     // for refreshing data
     @Output()
     goBackEvent = new EventEmitter();
@@ -26,9 +23,11 @@ export class MenuComponent implements OnInit {
 
     private themeToogleChecked = false;
 
-    constructor(private router: Router,
-                private authenticationService: AuthenticationService,
-                private navigation: NavigationService) {
+    constructor(
+        private router: Router,
+        private authenticationService: AuthenticationService,
+        private navigation: NavigationService
+    ) {
     }
 
     ngOnInit() {
@@ -90,7 +89,7 @@ export class MenuComponent implements OnInit {
 
         // const modeToggleButton = document.querySelector('.js-mode-toggle');
         const modeToggleButton = document.querySelector('.slider');
-        console.log('mdtb ' + modeToggleButton);
+        // console.log('mdtb ' + modeToggleButton);
 
         /**
          * Pass in an element and its CSS Custom Property that you want the value of.
@@ -102,7 +101,11 @@ export class MenuComponent implements OnInit {
          * @param {String} castAs='string'
          * @returns {*}
          */
-        const getCSSCustomProp = (propKey, element = document.documentElement, castAs = 'string') => {
+        const getCSSCustomProp = (
+            propKey,
+            element = document.documentElement,
+            castAs = 'string'
+        ) => {
             let response = getComputedStyle(element).getPropertyValue(propKey);
 
             // Tidy up the string if there's something to work with
@@ -132,20 +135,23 @@ export class MenuComponent implements OnInit {
          * controlled by the media query
          */
         const applySetting = passedSetting => {
-            console.log('test const applySetting');
-            const currentSetting = passedSetting || localStorage.getItem(STORAGE_KEY);
+            // console.log('test const applySetting');
+            const currentSetting =
+                passedSetting || localStorage.getItem(STORAGE_KEY);
 
             if (currentSetting) {
-                document.documentElement.setAttribute('data-user-color-scheme', currentSetting);
+                document.documentElement.setAttribute(
+                    'data-user-color-scheme',
+                    currentSetting
+                );
                 setButtonLabelAndStatus(currentSetting);
-
             } else {
                 setButtonLabelAndStatus(getCSSCustomProp(COLOR_MODE_KEY));
             }
         };
 
         const initSettings = () => {
-            console.log('test const initSetting');
+            // console.log('test const initSetting');
             const currentSetting = localStorage.getItem(STORAGE_KEY);
 
             if (currentSetting) {
@@ -162,7 +168,10 @@ export class MenuComponent implements OnInit {
 
             switch (currentSetting) {
                 case null:
-                    currentSetting = getCSSCustomProp(COLOR_MODE_KEY) === 'dark' ? 'light' : 'dark';
+                    currentSetting =
+                        getCSSCustomProp(COLOR_MODE_KEY) === 'dark'
+                            ? 'light'
+                            : 'dark';
                     break;
                 case 'light':
                     currentSetting = 'dark';
@@ -181,7 +190,9 @@ export class MenuComponent implements OnInit {
          * A shared method for setting the button text label and visually hidden status element
          */
         const setButtonLabelAndStatus = currentSetting => {
-            this.modeToggleText = `Enable ${currentSetting === 'dark' ? 'light' : 'dark'} mode`;
+            this.modeToggleText = `Enable ${
+                currentSetting === 'dark' ? 'light' : 'dark'
+            } mode`;
             this.modeStatusElement = `Color mode is now "${currentSetting}"`;
         };
 

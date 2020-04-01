@@ -28,7 +28,8 @@ h1 {
     cursor: pointer;
 }
 
-.form-control, .btn {
+.form-control,
+.btn {
     outline: none !important;
 }
 

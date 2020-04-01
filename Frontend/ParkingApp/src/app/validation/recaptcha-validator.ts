@@ -1,3 +1,4 @@
+import {HttpClient} from '@angular/common/http';
 import {
     AfterViewInit,
     Directive,
@@ -24,7 +25,6 @@ import {
 } from '@angular/forms';
 
 import 'rxjs/add/operator/map';
-import {HttpClient} from '@angular/common/http';
 
 
 declare const grecaptcha: any;
@@ -41,35 +41,36 @@ export const RECAPTCHA_URL = new InjectionToken('RECAPTCHA_URL');
 /* tslint:disable */
 @Injectable()
 class ReCaptchaAsyncValidator {
-
     constructor(private http: HttpClient, @Inject(RECAPTCHA_URL) private url) {
     }
 
     validateToken(token: string) {
         return (_: AbstractControl) => {
             console.log("validateToken");
-            return this.http.post(this.url, {grecaptcha: {token}}).map((result: any) => {
-                console.log(result)
-                if (!result.success) {
-                    return {tokenInvalid: true};
-                }
-                return null;
-            });
+            return this.http
+                .post(this.url, {grecaptcha: {token}})
+                .map((result: any) => {
+                    console.log(result);
+                    if (!result.success) {
+                        return {tokenInvalid: true};
+                    }
+                    return null;
+                });
         };
     }
 }
 
 export interface ReCaptchaConfig {
-    theme?: 'dark' | 'light';
-    type?: 'audio' | 'image';
-    size?: 'compact' | 'normal';
+    theme?: "dark" | "light";
+    type?: "audio" | "image";
+    size?: "compact" | "normal";
     tabindex?: number;
 }
 
 @Directive({
     // tslint:disable-next-line:directive-selector
-    selector: '[appNbRecaptcha]',
-    exportAs: 'appNbRecaptcha',
+    selector: "[appNbRecaptcha]",
+    exportAs: "appNbRecaptcha",
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -79,26 +80,32 @@ export interface ReCaptchaConfig {
         ReCaptchaAsyncValidator
     ]
 })
-
-export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAccessor {
-
+export class ReCaptchaDirective
+    implements OnInit, AfterViewInit, ControlValueAccessor {
     @Input() key: string;
+
     @Input() config: ReCaptchaConfig = {};
+
     @Input() lang: string;
 
     @Output() captchaResponse = new EventEmitter<string>();
+
     @Output() captchaExpired = new EventEmitter();
 
     private control: FormControl;
+
     private widgetId: number;
 
     private onChange: (value: string) => void;
+
     private onTouched: (value: string) => void;
 
-    constructor(private element: ElementRef,
-                private  ngZone: NgZone,
-                private injector: Injector,
-                private reCaptchaAsyncValidator: ReCaptchaAsyncValidator) {
+    constructor(
+        private element: ElementRef,
+        private ngZone: NgZone,
+        private injector: Injector,
+        private reCaptchaAsyncValidator: ReCaptchaAsyncValidator
+    ) {
     }
 
     ngOnInit() {
@@ -112,7 +119,7 @@ export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAc
                 ...this.config,
                 sitekey: this.key,
                 callback: this.onSuccess.bind(this),
-                'expired-callback': this.onExpired.bind(this)
+                "expired-callback": this.onExpired.bind(this)
             };
             this.widgetId = this.render(this.element.nativeElement, config);
         };
@@ -180,7 +187,9 @@ export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAc
      * @param token
      */
     verifyToken(token: string) {
-        this.control.setAsyncValidators(this.reCaptchaAsyncValidator.validateToken(token));
+        this.control.setAsyncValidators(
+            this.reCaptchaAsyncValidator.validateToken(token)
+        );
         this.control.updateValueAndValidity();
     }
 
@@ -219,7 +228,7 @@ export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAc
      * Add the script
      */
     addScript() {
-        const script = document.createElement('script');
+        const script = document.createElement("script");
         //for other languages
         //const lang = this.lang ? '&hl=' + this.lang : '';
         //script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;
@@ -228,5 +237,4 @@ export class ReCaptchaDirective implements OnInit, AfterViewInit, ControlValueAc
         script.defer = true;
         document.body.appendChild(script);
     }
-
 }

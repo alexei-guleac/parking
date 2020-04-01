@@ -9,7 +9,6 @@ import {appRoutes} from '../../services/navigation/app.endpoints';
     styleUrls: ['./no-connection.component.css']
 })
 export class NoConnectionComponent implements OnInit {
-
     constructor(private router: Router) {
     }
 

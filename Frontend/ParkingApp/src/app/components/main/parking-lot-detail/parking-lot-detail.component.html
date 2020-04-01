@@ -20,9 +20,10 @@
             <button (click)="goBack()" appNoDblClick class="btn col refresh text-center">
                 <i class="fas fa-backspace fa-sm"></i> Back
             </button>
-            <button *ngIf="this.isAdminLoggedIn()" (click)="handleReservation()"
-                    [disabled]="reservationSuccess" appNoDblClick class="btn col refresh text-center">
-                <i class="fa fa-bell"></i> {{(parkingLot.status === parkingLotStatus.RESERVED ? 'Reset' : 'Make') + ' reservation'}}
+            <button (click)="handleReservation()" *ngIf="this.isAdminLoggedIn()" [disabled]="reservationSuccess"
+                    appNoDblClick class="btn col refresh text-center">
+                <i class="fa fa-bell"></i>
+                {{(parkingLot.status === parkingLotStatus.RESERVED ? 'Reset' : 'Make') + ' reservation'}}
             </button>
         </div>
     </div>

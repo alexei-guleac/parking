@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {NoConnectionComponent} from './no-connection.component';
 
+
 describe('PageNotFoundComponent', () => {
     let component: NoConnectionComponent;
     let fixture: ComponentFixture<NoConnectionComponent>;
@@ -9,8 +10,7 @@ describe('PageNotFoundComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [NoConnectionComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

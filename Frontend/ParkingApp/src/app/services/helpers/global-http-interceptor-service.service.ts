@@ -14,19 +14,22 @@ import {NavigationService} from '../navigation/navigation.service';
     providedIn: 'root'
 })
 export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
-
-    constructor(public router: Router,
-                private authService: AuthenticationService,
-                private sessionService: SessionStorageService,
-                private OAuth: AuthService,
-                private navigation: NavigationService,
-                public zone: NgZone) {
+    constructor(
+        public router: Router,
+        private authService: AuthenticationService,
+        private sessionService: SessionStorageService,
+        private OAuth: AuthService,
+        private navigation: NavigationService,
+        public zone: NgZone
+    ) {
     }
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+    intercept(
+        req: HttpRequest<any>,
+        next: HttpHandler
+    ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
-            catchError((errorResponse) => {
+            catchError(errorResponse => {
                 console.log('error is intercept');
                 console.error(errorResponse);
                 // handle the error
@@ -45,9 +48,7 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
     }
 
     private handleError(errorResponse: any) {
-
         if (errorResponse instanceof HttpErrorResponse) {
-
             // A client-side or network error occurred. Handle it accordingly.
             const errorStatus = errorResponse.status;
             const errorMessage = errorResponse.message;
@@ -66,16 +67,18 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
             console.log('Error navigationExtras:', navigationExtras);
 
             switch (errorStatus) {
-                case 401:       // login, unauthorized
-
-                    if (this.authService.isUserLoggedIn() || this.sessionService.isJwtTokenExpired()) {
+                case 401: // login, unauthorized
+                    if (
+                        this.authService.isUserLoggedIn() ||
+                        this.sessionService.isJwtTokenExpired()
+                    ) {
                         this.authService.processLogout();
                         this.OAuth.signOut();
                     }
 
                     this.navigateToLogin(navigationExtras);
                     break;
-                case 403:       // forbidden
+                case 403: // forbidden
                     this.navigateToLogin(navigationExtras);
                     break;
                 case 500:
@@ -96,7 +99,9 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
             } else {
                 // The backend returned an unsuccessful response code.
                 // The response body may contain clues as to what went wrong,
-                console.error(`Backend returned code ${errorStatus}, body was: ${error}`);
+                console.error(
+                    `Backend returned code ${errorStatus}, body was: ${error}`
+                );
             }
         } else {
             console.error('Other Errors');
@@ -104,10 +109,11 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
     }
 
     private navigateToLogin(navigationExtras: NavigationExtras) {
-        this.zone.run(() => this.navigation.navigateToLoginWithExtras(navigationExtras));
+        this.zone.run(() =>
+            this.navigation.navigateToLoginWithExtras(navigationExtras)
+        );
         // this.router.navigateByUrl('/login');
         console.log(`redirect to login`);
         // handled = true;
     }
 }
-

@@ -19,7 +19,8 @@
     text-align: center;
 }
 
-.user, a {
+.user,
+a {
     cursor: pointer;
 }
 
@@ -46,7 +47,6 @@
     color: black !important;
 }
 
-
 .dropdown-divider {
     margin: 0;
 }
@@ -61,6 +61,14 @@
         position: relative;
         left: 145%;
     }
+
+    .user-logged {
+        left: 115%;
+    }
+
+    .username {
+        max-width: 10rem;
+    }
 }
 
 @media (min-width: 1200px) {
@@ -73,7 +81,6 @@
 .navbar-brand.abs:hover {
     cursor: default;
 }
-
 
 .isd-navbar {
     background-color: var(--background) !important;
@@ -112,18 +119,17 @@
 
     .dropdown-item {
         padding: 5px;
-        color: rgba(0, 0, 0, .5);
+        color: rgba(0, 0, 0, 0.5);
     }
 }
-
 
 .icon-bar {
     width: 26px;
     height: 2px;
-    background-color: #B6B6B6;
+    background-color: #b6b6b6;
     display: block;
     transition: all 0.2s;
-    margin-top: 5px
+    margin-top: 5px;
 }
 
 /* Hamburger menu */
@@ -159,7 +165,6 @@
     transform: rotate(0);
 }
 
-
 /* Custom toogle */
 
 /* The switch - the box around the slider */
@@ -188,7 +193,8 @@
     bottom: 0;
     background-color: #ccc;
     transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
-    -webkit-transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
+    -webkit-transition: all 500ms, background 500ms ease-in-out,
+    color 200ms ease;
 }
 
 .slider:before {
@@ -202,7 +208,8 @@
     color: var(--text-color);
     color-interpolation-filters: var(--button-icon-filter);
     transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
-    -webkit-transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
+    -webkit-transition: all 500ms, background 500ms ease-in-out,
+    color 200ms ease;
 }
 
 input[name="theme-switch"]:checked + .slider {

@@ -1,10 +1,12 @@
-@import '../main.css';
+@import "../main.css";
 
-.card-body, .list-group li {
+.card-body,
+.list-group li {
     background: var(--background);
 }
 
-.card, .card-body {
+.card,
+.card-body {
     border: none;
 }
 
@@ -24,7 +26,8 @@
     border-color: white;
 }
 
-.fas, .far {
+.fas,
+.far {
     font-size: 3rem;
 }
 
@@ -40,7 +43,6 @@ span {
     font-size: 1rem;
 }
 
-
 .smthg-error .unable-to-connect h2 {
     max-width: 720px;
 }
@@ -53,7 +55,7 @@ span {
 }
 
 .smthg-error .unable-to-connect h2 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
     font-size: 28px;
     font-weight: 400;
     text-transform: uppercase;
@@ -95,4 +97,3 @@ span {
         padding-top: 1rem;
     }
 }
-

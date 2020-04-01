@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ParkingLayoutComponent} from './parking-layout.component';
 
+
 describe('Feature2Component', () => {
     let component: ParkingLayoutComponent;
     let fixture: ComponentFixture<ParkingLayoutComponent>;
@@ -9,8 +10,7 @@ describe('Feature2Component', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ParkingLayoutComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

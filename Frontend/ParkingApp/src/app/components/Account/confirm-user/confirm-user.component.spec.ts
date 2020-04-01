@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ConfirmUserComponent} from './confirm-user.component';
 
+
 describe('ConfirmRegistrationComponent', () => {
     let component: ConfirmUserComponent;
     let fixture: ComponentFixture<ConfirmUserComponent>;
@@ -9,8 +10,7 @@ describe('ConfirmRegistrationComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ConfirmUserComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

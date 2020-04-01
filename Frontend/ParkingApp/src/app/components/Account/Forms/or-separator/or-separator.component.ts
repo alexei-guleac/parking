@@ -7,11 +7,9 @@ import {Component, OnInit} from '@angular/core';
     styleUrls: ['./or-separator.component.css']
 })
 export class OrSeparatorComponent implements OnInit {
-
     constructor() {
     }
 
     ngOnInit() {
     }
-
 }

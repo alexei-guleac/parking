@@ -1,13 +1,13 @@
 .refresh {
-    color: #D1E7FA;
-    border-color: #D1E7FA;
-    background-color: #0A8EFF;
+    color: #d1e7fa;
+    border-color: #d1e7fa;
+    background-color: #0a8eff;
 }
 
 .refresh:hover {
-    color: #0A8EFF;
-    background-color: #D1E7FA;
-    border-color: #D1E7FA;
+    color: #0a8eff;
+    background-color: #d1e7fa;
+    border-color: #d1e7fa;
 }
 
 img.legend {
@@ -17,6 +17,8 @@ img.legend {
 .legend-group {
     display: flex;
     justify-content: center;
+    max-width: 70%;
+    padding: 2rem 0;
 }
 
 .legend-elem:nth-child(2) {
@@ -33,7 +35,7 @@ img.layout {
 }
 
 span {
-    font-family: 'Allerta Stencil', serif;
+    font-family: "Allerta Stencil", serif;
     font-size: 22px;
 }
 
@@ -43,27 +45,35 @@ span {
 }
 
 .car-occupied-side {
-    background-image: url("../../../assets/img/car-side-blue.png");
+    background-image: url("../../../assets/img/car-side.png");
 }
 
 .car-occupied-top {
-    background-image: url("../../../assets/img/car-top-blue.png");
+    background-image: url("../../../assets/img/car-top.png");
 }
 
 .car-lost-side {
-    background-image: url("../../../assets/img/car-side-blue-lost.png");
+    background-image: url("../../../assets/img/car-side-lost.png");
 }
 
 .car-lost-top {
-    background-image: url("../../../assets/img/car-top-blue-lost.png");
+    background-image: url("../../../assets/img/car-top-lost.png");
 }
 
 .car-free-side {
-    background-image: url("../../../assets/img/car-side-blue-free-border.png");
+    background-image: url("../../../assets/img/car-side-free-border.png");
 }
 
 .car-free-top {
-    background-image: url("../../../assets/img/car-top-blue-free-border.png");
+    background-image: url("../../../assets/img/car-top-free-border.png");
+}
+
+.car-reserved-side {
+    background-image: url("../../../assets/img/car-side-reserved.png");
+}
+
+.car-reserved-top {
+    background-image: url("../../../assets/img/car-top-reserved.png");
 }
 
 .container {
@@ -81,6 +91,14 @@ span {
     color: var(--text-color);
 }
 
+.lot-number-reserved-side {
+    color: var(--text-color-dark);
+}
+
+.lot-number-reserved-top {
+    color: var(--text-color-dark);
+}
+
 .lot-side {
     position: absolute;
     width: 4.2rem;
@@ -88,11 +106,12 @@ span {
     cursor: pointer;
     display: flex;
     justify-content: center;
-    color: #D1E7FA;
+    color: #d1e7fa;
 }
 
-.lot-side:hover, .lot-top:hover {
-    opacity: .75;
+.lot-side:hover,
+.lot-top:hover {
+    opacity: 0.75;
 }
 
 .lot-top {
@@ -171,7 +190,7 @@ span {
 }
 
 .first {
-    bottom: .3rem;
+    bottom: 0.3rem;
     left: 14.5rem;
     font-size: 1.5rem;
 }
@@ -207,37 +226,37 @@ span {
     }
 
     .lot-4 {
-        top: .8rem;
+        top: 0.8rem;
         left: 30.6rem;
     }
 
     .lot-5 {
-        top: .8rem;
+        top: 0.8rem;
         left: 32.8rem;
     }
 
     .lot-6 {
-        top: .8rem;
+        top: 0.8rem;
         left: 34.9rem;
     }
 
     .lot-7 {
-        top: .8rem;
+        top: 0.8rem;
         left: 37.2rem;
     }
 
     .lot-8 {
-        top: .8rem;
+        top: 0.8rem;
         left: 39.4rem;
     }
 
     .lot-9 {
-        top: .8rem;
+        top: 0.8rem;
         left: 41.6rem;
     }
 
     .lot-10 {
-        top: .8rem;
+        top: 0.8rem;
         left: 43.8rem;
     }
 
@@ -280,37 +299,37 @@ span {
     }
 
     .lot-4 {
-        top: .7rem;
+        top: 0.7rem;
         left: 23rem;
     }
 
     .lot-5 {
-        top: .7rem;
+        top: 0.7rem;
         left: 25.25rem;
     }
 
     .lot-6 {
-        top: .7rem;
+        top: 0.7rem;
         left: 27.5rem;
     }
 
     .lot-7 {
-        top: .7rem;
+        top: 0.7rem;
         left: 29.73rem;
     }
 
     .lot-8 {
-        top: .7rem;
+        top: 0.7rem;
         left: 31.9rem;
     }
 
     .lot-9 {
-        top: .7rem;
+        top: 0.7rem;
         left: 34.1rem;
     }
 
     .lot-10 {
-        top: .7rem;
+        top: 0.7rem;
         left: 36.3rem;
     }
 
@@ -372,37 +391,37 @@ span {
     }
 
     .lot-4 {
-        top: .5rem;
+        top: 0.5rem;
         left: 17.3rem;
     }
 
     .lot-5 {
-        top: .5rem;
+        top: 0.5rem;
         left: 18.95rem;
     }
 
     .lot-6 {
-        top: .5rem;
+        top: 0.5rem;
         left: 20.6rem;
     }
 
     .lot-7 {
-        top: .5rem;
+        top: 0.5rem;
         left: 22.2rem;
     }
 
     .lot-8 {
-        top: .5rem;
+        top: 0.5rem;
         left: 23.85rem;
     }
 
     .lot-9 {
-        top: .5rem;
+        top: 0.5rem;
         left: 25.45rem;
     }
 
     .lot-10 {
-        top: .5rem;
+        top: 0.5rem;
         left: 27.1rem;
     }
 
@@ -472,61 +491,60 @@ span {
     }
 
     .lot-4 {
-        top: .4rem;
+        top: 0.4rem;
         left: 13.25rem;
     }
 
     .lot-5 {
-        top: .4rem;
+        top: 0.4rem;
         left: 14.63rem;
     }
 
     .lot-6 {
-        top: .4rem;
+        top: 0.4rem;
         left: 15.95rem;
     }
 
     .lot-7 {
-        top: .4rem;
+        top: 0.4rem;
         left: 17.25rem;
     }
 
     .lot-8 {
-        top: .4rem;
+        top: 0.4rem;
         left: 18.6rem;
     }
 
     .lot-9 {
-        top: .4rem;
+        top: 0.4rem;
         left: 20rem;
     }
 
     .lot-10 {
-        top: .4rem;
+        top: 0.4rem;
         left: 21.3rem;
     }
 
     .smoking {
         top: 19rem;
         left: 8.75rem;
-        font-size: .6rem;
+        font-size: 0.6rem;
     }
 
     .first {
         left: 0.3rem;
-        font-size: .9rem;
-        bottom: .2rem;
+        font-size: 0.9rem;
+        bottom: 0.2rem;
     }
 
     .second {
         left: 4.8rem;
-        font-size: .9rem;
-        top: .5rem;
+        font-size: 0.9rem;
+        top: 0.5rem;
     }
 }
 
 @media (max-width: 401px) {
-
     img.layout {
         width: 24.9rem;
     }
@@ -571,37 +589,37 @@ span {
     }
 
     .lot-4 {
-        top: .4rem;
+        top: 0.4rem;
         left: 12.85rem;
     }
 
     .lot-5 {
-        top: .4rem;
+        top: 0.4rem;
         left: 14.154rem;
     }
 
     .lot-6 {
-        top: .4rem;
+        top: 0.4rem;
         left: 15.45rem;
     }
 
     .lot-7 {
-        top: .4rem;
+        top: 0.4rem;
         left: 16.75rem;
     }
 
     .lot-8 {
-        top: .4rem;
+        top: 0.4rem;
         left: 18.1rem;
     }
 
     .lot-9 {
-        top: .4rem;
+        top: 0.4rem;
         left: 19.4rem;
     }
 
     .lot-10 {
-        top: .4rem;
+        top: 0.4rem;
         left: 20.7rem;
     }
 
@@ -612,14 +630,14 @@ span {
 
     .first {
         left: 0.3rem;
-        font-size: .9rem;
-        bottom: .2rem;
+        font-size: 0.9rem;
+        bottom: 0.2rem;
     }
 
     .second {
         left: 4.5rem;
-        font-size: .9rem;
-        top: .5rem;
+        font-size: 0.9rem;
+        top: 0.5rem;
     }
 }
 
@@ -658,37 +676,37 @@ span {
     }
 
     .lot-4 {
-        top: .4rem;
+        top: 0.4rem;
         left: 12.65rem;
     }
 
     .lot-5 {
-        top: .4rem;
+        top: 0.4rem;
         left: 13.95rem;
     }
 
     .lot-6 {
-        top: .4rem;
+        top: 0.4rem;
         left: 15.25rem;
     }
 
     .lot-7 {
-        top: .4rem;
+        top: 0.4rem;
         left: 16.5rem;
     }
 
     .lot-8 {
-        top: .4rem;
+        top: 0.4rem;
         left: 17.82rem;
     }
 
     .lot-9 {
-        top: .4rem;
+        top: 0.4rem;
         left: 19.09rem;
     }
 
     .lot-10 {
-        top: .4rem;
+        top: 0.4rem;
         left: 20.38rem;
     }
 
@@ -699,8 +717,8 @@ span {
 
     .first {
         left: 0.1rem;
-        font-size: .9rem;
-        bottom: .2rem;
+        font-size: 0.9rem;
+        bottom: 0.2rem;
     }
 
     .second {
@@ -752,37 +770,37 @@ span {
     }
 
     .lot-4 {
-        top: .35rem;
+        top: 0.35rem;
         left: 13.25rem;
     }
 
     .lot-5 {
-        top: .35rem;
+        top: 0.35rem;
         left: 14.45rem;
     }
 
     .lot-6 {
-        top: .35rem;
+        top: 0.35rem;
         left: 15.69rem;
     }
 
     .lot-7 {
-        top: .35rem;
+        top: 0.35rem;
         left: 16.9rem;
     }
 
     .lot-8 {
-        top: .35rem;
+        top: 0.35rem;
         left: 18.1rem;
     }
 
     .lot-9 {
-        top: .35rem;
+        top: 0.35rem;
         left: 19.3rem;
     }
 
     .lot-10 {
-        top: .35rem;
+        top: 0.35rem;
         left: 20.5rem;
     }
 
@@ -793,8 +811,8 @@ span {
 
     .first {
         left: 0.2rem;
-        font-size: .9rem;
-        bottom: .4rem;
+        font-size: 0.9rem;
+        bottom: 0.4rem;
     }
 
     .second {
@@ -846,37 +864,37 @@ span {
     }
 
     .lot-4 {
-        top: .35rem;
+        top: 0.35rem;
         left: 11.5rem;
     }
 
     .lot-5 {
-        top: .35rem;
+        top: 0.35rem;
         left: 12.7rem;
     }
 
     .lot-6 {
-        top: .35rem;
+        top: 0.35rem;
         left: 13.85rem;
     }
 
     .lot-7 {
-        top: .35rem;
+        top: 0.35rem;
         left: 15.05rem;
     }
 
     .lot-8 {
-        top: .35rem;
+        top: 0.35rem;
         left: 16.25rem;
     }
 
     .lot-9 {
-        top: .35rem;
+        top: 0.35rem;
         left: 17.44rem;
     }
 
     .lot-10 {
-        top: .35rem;
+        top: 0.35rem;
         left: 18.65rem;
     }
 
@@ -887,18 +905,18 @@ span {
 
     .first {
         left: 0.1rem;
-        font-size: .85rem;
-        bottom: .1rem;
+        font-size: 0.85rem;
+        bottom: 0.1rem;
     }
 
     .second {
         left: 3.5rem;
-        top: .3rem;
+        top: 0.3rem;
     }
 
     span {
         font-size: 15px;
-        font-size: .85rem;
+        font-size: 0.85rem;
     }
 }
 
@@ -910,13 +928,3 @@ span {
     width: 100%;
     font-size: 2.5rem;
 }
-
-.message {
-    position: absolute;
-    z-index: 1000;
-    top: 11rem;
-    left: 0;
-    width: 100%;
-    font-size: 2.5rem;
-}
-

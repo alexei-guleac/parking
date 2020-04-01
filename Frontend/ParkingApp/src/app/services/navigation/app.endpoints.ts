@@ -7,33 +7,33 @@ export const api = {
     statistics: '/statistics',
 
     login: '/login',
+    social: '/social',
     auth: '/auth',
-    social: '/auth/social',
-    recaptcha: '/validate_captcha',
-    // gitOAuthCallback: '/github_oauth_callback',
-    gitOAuth: '/github_oauth',
+    authSocial: '/auth' + '/social',
+    gitOAuth: '/auth' + '/github_oauth',
 
-    registration: '/registration',
+    registration: '/register',
+    regSocial: '/register' + '/social',
+    recaptcha: '/validate_captcha',
     confirmReg: '/confirm_account',
 
     confirmReset: '/confirm_reset',
-    forgotPass: '/forgot-password',
-    resetPass: '/reset-password',
+    forgotPass: '/forgot_password',
+    resetPass: '/reset_password',
 
     reservation: '/reserve',
     cancelReservation: '/unreserve'
 };
 
-// tslint:disable-next-line:variable-name
 export const appRoutes = {
     main: '',
     account: 'account',
+    accountGit: '/account',
     accountConfirm: 'confirm_account',
     accountLogin: '/account?action=login',
     registration: 'registration',
     login: 'login',
     logout: 'logout',
-    gitOAuth: 'github_oauth_callback',
     reset: 'account_reset',
     accountConfirmReset: 'confirm_reset',
     statistics: 'statistics',
@@ -44,6 +44,7 @@ export const appRoutes = {
 
 export const actions = {
     login: 'login',
+    registration: 'registration',
     view: 'view',
     serverError: 'serverError',
     reset: 'reset'

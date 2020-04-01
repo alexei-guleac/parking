@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {routerTransition} from './components/animations/animations';
-import {actions} from "./services/navigation/app.endpoints";
+import {actions} from './services/navigation/app.endpoints';
 
 
 @Component({
@@ -11,7 +11,6 @@ import {actions} from "./services/navigation/app.endpoints";
     styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
     private action: string;
     actions = actions;
 
@@ -25,7 +24,7 @@ export class AppComponent implements OnInit {
     processUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
-            params => this.action = params['action']
+            params => (this.action = params['action'])
         );
     }
 

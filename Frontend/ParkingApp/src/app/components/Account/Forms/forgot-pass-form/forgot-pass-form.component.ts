@@ -1,10 +1,11 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormGroup} from '@angular/forms';
 import {AuthenticationService} from '../../../../services/account/auth.service';
 import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {DeviceInfoStorage} from '../../../../utils/device-fingerprint';
 import {isNonEmptyString} from '../../../../utils/string-utils';
-import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
+import {FormControlService} from '../../../../validation/form-control.service';
 
 
 @Component({
@@ -13,7 +14,6 @@ import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
     styleUrls: ['./forgot-pass-form.component.css']
 })
 export class ForgotPassFormComponent implements OnInit {
-
     private email: string;
 
     private forgotForm: FormGroup;
@@ -33,8 +33,11 @@ export class ForgotPassFormComponent implements OnInit {
 
     sendSuccess = false;
 
-    constructor(private authenticationService: AuthenticationService,
-                private navigation: NavigationService) {
+    constructor(
+        private authenticationService: AuthenticationService,
+        private navigation: NavigationService,
+        private formControlService: FormControlService
+    ) {
     }
 
     get mail() {
@@ -43,55 +46,62 @@ export class ForgotPassFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.forgotForm = new FormGroup({
-
-            email: new FormControl(this.email, [
-                Validators.required,
-                Validators.minLength(8),
-                Validators.maxLength(35),
-                Validators.email,
-
-                Validators.pattern(RegularExpressions.emailPattern)
-            ]),
-
+            email: this.formControlService.getEmailFormControl('')
         });
     }
 
-    onSubmit() {
+    onSubmit(valid: boolean) {
+
         this.submitted = true;
         if (this.forgotForm.hasError('invalid')) {
             this.submitted = false;
+            return;
         }
 
         if (isNonEmptyString(this.email)) {
             console.log(this.email);
+            console.log('TEST' + this.forgotForm.hasError('invalid'));
+            console.log('VALID' + valid);
+            if (!valid) {
+                return;
+            }
             this.handleForgotPass();
         }
     }
 
     private handleForgotPass() {
-        this.authenticationService.processForgotPasswordRequest(this.email).subscribe(
-            (response: any) => {
-
-                if (response.success) {
-                    this.requestSuccess = true;
-                    this.disableAfterDelay();
-                    this.requestFailed = false;
-                    this.confirmationMessage = 'Request to reset password received. ' +
-                        'Check your inbox for the reset link. ' +
-                        'You will be redirected to the main page in 5 seconds.';
-                    console.log(this.confirmationMessage);
-                    this.redirectToMainAfterDelay();
-                }
-            }, error => {
-                /*console.log('log ');
+        this.authenticationService
+            .processForgotPasswordRequest(
+                this.email,
+                DeviceInfoStorage.deviceInfo
+            )
+            .subscribe(
+                (response: any) => {
+                    if (response.success) {
+                        this.requestSuccess = true;
+                        this.disableAfterDelay();
+                        this.requestFailed = false;
+                        this.confirmationMessage =
+                            'Request to reset password received. ' +
+                            'Check your inbox for the reset link. ' +
+                            'You will be redirected to the main page in 5 seconds.';
+                        console.log(this.confirmationMessage);
+                        this.redirectToMainAfterDelay();
+                    }
+                },
+                error => {
+                    /*console.log('log ');
                 console.log(error);*/
-                this.requestSuccess = false;
-                this.requestFailed = true;
+                    this.requestSuccess = false;
+                    this.requestFailed = true;
 
-                if (error instanceof HttpErrorResponse) {
-                    this.errorMessage = error.error.message ? error.error.message : error.error;
+                    if (error instanceof HttpErrorResponse) {
+                        this.errorMessage = error.error.message
+                            ? error.error.message
+                            : error.error;
+                    }
                 }
-            });
+            );
     }
 
     private disableAfterDelay() {

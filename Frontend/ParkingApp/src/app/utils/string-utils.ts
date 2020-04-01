@@ -1,4 +1,3 @@
-
 type nonEmptyString = never; // Cannot be implicitly cast to
 
 export function isNonEmptyString(str: string): str is nonEmptyString {

@@ -1,10 +1,18 @@
 export class Statistics {
     id: number;
+
     lotNumber: number;
+
     updatedAt: Date;
+
     status: string;
 
-    constructor(id?: number, parkingLotNumber?: number, status?: string, updatedAt?: Date) {
+    constructor(
+        id?: number,
+        parkingLotNumber?: number,
+        status?: string,
+        updatedAt?: Date
+    ) {
         if (id) {
             this.id = id;
             this.lotNumber = parkingLotNumber;

@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OrSeparatorComponent} from './or-separator.component';
 
+
 describe('OrSeparatorComponent', () => {
     let component: OrSeparatorComponent;
     let fixture: ComponentFixture<OrSeparatorComponent>;
@@ -9,8 +10,7 @@ describe('OrSeparatorComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [OrSeparatorComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

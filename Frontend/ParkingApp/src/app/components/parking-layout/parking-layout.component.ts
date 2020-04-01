@@ -4,6 +4,7 @@ import {interval, Subscription} from 'rxjs';
 import {ParkingLot} from 'src/app/models/ParkingLot';
 import {DataService} from 'src/app/services/data/data.service';
 import {status} from '../../models/ParkingLotStatus';
+import {appRoutes} from "../../services/navigation/app.endpoints";
 import {NavigationService} from '../../services/navigation/navigation.service';
 
 
@@ -13,10 +14,20 @@ import {NavigationService} from '../../services/navigation/navigation.service';
     styleUrls: ['./parking-layout.component.css']
 })
 export class ParkingLayoutComponent implements OnInit, OnDestroy {
-
     parkingLotStatus = status;
 
-    private numberOfParkingLots: Array<number> = new Array<number>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    private numberOfParkingLots: Array<number> = new Array<number>(
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+    );
 
     parkingLots: Array<ParkingLot>;
 
@@ -36,22 +47,21 @@ export class ParkingLayoutComponent implements OnInit, OnDestroy {
 
     loadDataCounter = 0;
 
-
-    constructor(private dataService: DataService,
-                private route: ActivatedRoute,
-                private router: Router,
-                private navigation: NavigationService) {
+    constructor(
+        private dataService: DataService,
+        private route: ActivatedRoute,
+        private router: Router,
+        private navigation: NavigationService
+    ) {
     }
 
     ngOnInit() {
         this.loadData();
         this.subscribeOnUrlParams();
 
-        this.updateSubscription = interval(3000).subscribe(
-            () => {
-                this.loadData();
-            }
-        );
+        this.updateSubscription = interval(3000).subscribe(() => {
+            this.loadData();
+        });
     }
 
     ngOnDestroy() {
@@ -60,48 +70,61 @@ export class ParkingLayoutComponent implements OnInit, OnDestroy {
     }
 
     loadData() {
-        this.loadDataSubscription = this.dataService.getAllParkingLots().subscribe(
-            data => {
-                if (data.length !== 0) {
-                    this.parkingLots = data.sort((a, b) => (a.number > b.number) ? 1 : (a.number < b.number ? -1 : 0));
-                    this.dataLoaded = true;
-                    this.message = '';
-                    console.log('loadData');
+        this.loadDataSubscription = this.dataService
+            .getAllParkingLots()
+            .subscribe(
+                data => {
+                    if (data.length !== 0) {
+                        this.parkingLots = data.sort((a, b) =>
+                            a.number > b.number
+                                ? 1
+                                : a.number < b.number
+                                ? -1
+                                : 0
+                        );
+                        this.dataLoaded = true;
+                        this.message = '';
+                        console.log('loadData');
 
-                    if (this.parkingLots.length < 10) {
-                        for (let i = 1; i <= 10; i++) {
-                            const pl = new ParkingLot();
-                            if (!this.parkingLots.find(lot => lot.number === i)) {
-                                pl.number = pl.id = i;
-                                this.parkingLots.push(pl);
+                        if (this.parkingLots.length < 10) {
+                            for (let i = 1; i <= 10; i++) {
+                                const pl = new ParkingLot();
+                                if (
+                                    !this.parkingLots.find(
+                                        lot => lot.number === i
+                                    )
+                                ) {
+                                    pl.number = pl.id = i;
+                                    this.parkingLots.push(pl);
+                                }
                             }
                         }
-                    }
-                    this.loadDataCounter = 0;
-                } else {
-                    this.message = 'No data found, please contact support';
-                }
-            },
-            error => {
-                setTimeout(() => {
-                    if (++this.loadDataCounter <= 5) {
-                        this.message = 'Connection lost. Please wait...';
-                        console.log(this.loadDataCounter);
-                        this.loadData();
+                        this.loadDataCounter = 0;
                     } else {
-                        this.message = 'Can\'t connect to server. Please contact support';
-                        this.updateSubscription.unsubscribe();
-                        this.loadDataSubscription.unsubscribe();
+                        this.message = 'No data found, please contact support';
                     }
-                }, 7000);
-            }
-        );
+                },
+                error => {
+                    setTimeout(() => {
+                        if (++this.loadDataCounter <= 5) {
+                            this.message = 'Connection lost. Please wait...';
+                            console.log(this.loadDataCounter);
+                            this.loadData();
+                        } else {
+                            this.message =
+                                'Can\'t connect to server. Please contact support';
+                            this.updateSubscription.unsubscribe();
+                            this.loadDataSubscription.unsubscribe();
+                        }
+                    }, 7000);
+                }
+            );
     }
 
     private subscribeOnUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
-            params => this.action = params['action']
+            params => (this.action = params['action'])
         );
     }
 
@@ -111,7 +134,9 @@ export class ParkingLayoutComponent implements OnInit, OnDestroy {
     }
 
     private showDetails(id: number) {
-        this.router.navigate(['test2'], {queryParams: {id, action: 'view'}});
+        this.router.navigate([appRoutes.layout], {
+            queryParams: {id, action: 'view'}
+        });
         this.selectedParkingLot = this.parkingLots.find(pl => pl.id === id);
         this.subscribeOnUrlParams();
     }

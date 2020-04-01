@@ -4,8 +4,8 @@
 
 <!--<div class="display-4 text-light d-flex justify-content-center mb-2 title mt-3">ParKing</div>-->
 
-<app-parking-lot-detail *ngIf="action === 'view'" [parkingLot]="selectedParkingLot"
-                        (goBackEvent)="refresh()"></app-parking-lot-detail>
+<app-parking-lot-detail (goBackEvent)="refresh()" *ngIf="action === 'view'" [parkingLot]="selectedParkingLot">
+</app-parking-lot-detail>
 
 
 <div class="container row p-0 mx-auto" *ngIf="action !== 'view'">

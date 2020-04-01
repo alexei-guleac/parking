@@ -1,20 +1,26 @@
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse} from '@angular/common/http';
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from '@angular/router';
-import {BroadcastService, MsalService} from '@azure/msal-angular';
-import {AuthService, FacebookLoginProvider, GoogleLoginProvider, SocialUser} from 'angularx-social-login-vk';
+import {FormControl, FormGroup} from '@angular/forms';
+import {AuthService} from 'angularx-social-login-vk';
+import {Subscription} from 'rxjs';
+import {AuthenticationRequest} from '../../../../models/payload/AuthenticationRequest';
+import {
+    AmazonAuthRequest,
+    CommonSocialAuthRequest,
+    GithubAuthRequest,
+    MicrosoftAuthRequest,
+    SocialSignInRequest
+} from '../../../../models/payload/SocialSignInRequest';
 import {AuthenticationService} from '../../../../services/account/auth.service';
-import {GithubOauthService} from '../../../../services/account/github-oauth.service';
-import {providerNames, SocialAuthService} from '../../../../services/account/social-auth.service';
+import {providerNames, SocialAccountService} from '../../../../services/account/social/social-account.service';
+import {SocialUserService} from '../../../../services/account/social/social-user.service';
 import {LoggerService} from '../../../../services/helpers/logger.service';
+import {actions} from "../../../../services/navigation/app.endpoints";
+import {NavigationService} from '../../../../services/navigation/navigation.service';
+import {DeviceInfoStorage} from '../../../../utils/device-fingerprint';
 import {isNonEmptyString} from '../../../../utils/string-utils';
-import {credentials} from '../../../../validation/credentials';
-import {RegularExpressions} from '../../../../validation/reg-exp-patterns';
-import {regexpTestValidator} from '../../../../validation/regexp-name-validator';
+import {FormControlService} from '../../../../validation/form-control.service';
 
-
-const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
 
 @Component({
     selector: 'app-login-form',
@@ -22,7 +28,6 @@ const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
     styleUrls: ['./login-form.component.css']
 })
 export class LoginFormComponent implements OnInit {
-
     @Input() isLogFailed: boolean;
 
     @Input() errMessage: string;
@@ -36,8 +41,6 @@ export class LoginFormComponent implements OnInit {
 
     @Output()
     userForgotEvent: EventEmitter<any> = new EventEmitter<any>();
-
-    private user: SocialUser;
 
     private username: string;
 
@@ -53,37 +56,30 @@ export class LoginFormComponent implements OnInit {
 
     private fieldTextTypePass: boolean;
 
-    private loggedIn: boolean;
-
     private submitted = false;
 
     private rememberUser = false;
 
     private loginForm: FormGroup;
 
-    isIframe = false;
-
-    profile;
-
     private code: string;
+
+    private msAuthSubscription: Subscription;
+
+    private msLoginAllowed = false;
 
     private socialProviders = providerNames;
 
     constructor(
-        private route: ActivatedRoute,
-        private router: Router,
         private authenticationService: AuthenticationService,
         private OAuth: AuthService,
-        private githubAuthService: GithubOauthService,
-        private socialService: SocialAuthService,
-        private broadcastService: BroadcastService,
-        private msalAuthService: MsalService,
+        private navigationService: NavigationService,
+        private socialService: SocialAccountService,
+        private socialUserService: SocialUserService,
         private log: LoggerService,
-        private http: HttpClient) {
-    }
-
-    getProfile() {
-        return this.http.get(GRAPH_ENDPOINT);
+        /*private ngxLinkedinService: NgxLinkedinService,*/
+        private formControlService: FormControlService
+    ) {
     }
 
     get name() {
@@ -95,72 +91,45 @@ export class LoginFormComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.fullLogout();
+
         this.loginForm = new FormGroup({
-            username: new FormControl(this.username, [
-                Validators.required,
-                Validators.minLength(5),
-                Validators.maxLength(15),
-
-                // <-- Here's how you pass in the custom validator.
-                regexpTestValidator(RegularExpressions.usernamePattern)
-            ]),
-
-            password: new FormControl(this.password, [
-                Validators.required,
-                Validators.minLength(6),
-                Validators.maxLength(10),
-
-                Validators.pattern(RegularExpressions.passwordPatternStr)
-            ]),
+            username: this.formControlService.getUsernameFormControl(
+                this.username
+            ),
+            password: this.formControlService.getPasswordFormControl(
+                this.password
+            ),
             rememberMe: new FormControl()
         });
 
-        this.msalInit();
+        // this.initSocialLogin();
         this.processGithubOauthCallback();
-        this.initSocialLogin();
+        // this.processMSCallback();
+
         this.initMsgFromParent();
         this.log.logMethod('Hellloooo!!!');
-
-
-        this.getProfile().subscribe(
-            profile => {
-                this.profile = profile;
-                console.log(profile);
-            });
     }
 
-    msalCheckoutAccount() {
-        this.loggedIn = !!this.msalAuthService.getAccount();
-    }
+    onSubmit(valid: boolean) {
 
-    onSubmit() {
+        console.log('DEVICE in login' + JSON.stringify(DeviceInfoStorage.deviceInfo));
+
         this.submitted = true;
         if (this.loginForm.hasError('invalid')) {
             this.submitted = false;
+            return;
         }
 
         if (isNonEmptyString(this.username) && isNonEmptyString(this.password)) {
-
+            console.log(this.loginForm.hasError('invalid'));
             console.log(this.username + '  ' + this.password);
+            console.log('VALID' + valid);
+            if (!valid) {
+                return;
+            }
             this.handleLogin();
-
-            // for local login test
-            // this.localLoginTest();
         }
-    }
-
-    msalLogin() {
-        const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
-
-        if (isIE) {
-            this.msalAuthService.loginRedirect();
-        } else {
-            this.msalAuthService.loginPopup();
-        }
-    }
-
-    msalLogout() {
-        this.msalAuthService.logout();
     }
 
     // Switching method
@@ -169,168 +138,155 @@ export class LoginFormComponent implements OnInit {
     }
 
     private handleLogin() {
-        this.authenticationService.processAuthentification(this.username, this.password).subscribe(
-            (response: any) => {
+        this.authenticationService
+            .processAuthentification(
+                new AuthenticationRequest(this.username, this.password),
+                DeviceInfoStorage.deviceInfo
+            )
+            .subscribe(
+                (response: any) => {
+                    if (response.token) {
+                        this.isLoginFailed = false;
+                        this.isLoginSuccess = true;
+                        this.successMessage = 'Login Successful.';
+                        console.log(this.successMessage);
+                        // console.log(response.token);
 
-                if (response.token) {
-                    this.isLoginFailed = false;
-                    this.isLoginSuccess = true;
-                    this.successMessage = 'Login Successful.';
-                    console.log(this.successMessage);
-                    // console.log(response.token);
+                        this.authenticationService.registerSuccessfulAuth(
+                            this.username,
+                            response.token,
+                            this.rememberUser
+                        );
 
-                    this.authenticationService.registerSuccessfulAuth(this.username, response.token, this.rememberUser);
+                        this.socialUserService.cleanGitAuth();
+                        this.navigationService.navigateToMain();
 
-                    /*console.log(sessionStorage.getItem('authenticatedUser'));
-                    console.log(sessionStorage.getItem('token'));*/
-
-                    this.router.navigate(['']);
-                }
-            }, error => {
-                this.isLoginSuccess = false;
-                this.isLoginFailed = true;
-                /*console.log('log ');
+                    }
+                },
+                error => {
+                    this.isLoginSuccess = false;
+                    this.isLoginFailed = true;
+                    /*console.log('log ');
                 console.log(error);
                 console.log('Authentication failed.');*/
-                alert('Authentication failed.');
+                    alert('Authentication failed.');
 
-                if (error instanceof HttpErrorResponse) {
-                    this.errorMessage = error.error.message ? error.error.message : error.error;
+                    this.fullLogout();
+
+                    if (error instanceof HttpErrorResponse) {
+                        this.errorMessage = error.error.message
+                            ? error.error.message
+                            : error.error;
+                    }
                 }
-            });
+            );
+    }
+
+    private fullLogout() {
+        this.signOut();
+        this.authenticationService.processLogout();
+        /*if (this.msAuthSubscription && !this.msAuthSubscription.closed) {
+            this.msAuthSubscription.unsubscribe();
+        }*/
+        this.socialUserService.cleanGitAuth();
     }
 
     private socialSignIn(socialProvider: string): void {
-
-        let socialPlatformProvider: string;
-        let social: string;
-
-        if (socialProvider === this.socialProviders.facebook.name) {
-            socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;
-            social = this.socialProviders.facebook.short;
-        }
-        if (socialProvider === this.socialProviders.google.name) {
-            socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
-            social = this.socialProviders.google.short;
-        }
-
-        this.OAuth.signIn(socialPlatformProvider)
-            .then((socialUser) => {
-                console.log('then ', socialProvider, socialUser);
-
-                if (socialUser !== null) {
-                    console.log(this.user);
-                    console.log(socialUser.provider);
-                    console.log(this.OAuth.readyState);
-
-                    this.sendSocialLoginRequest(socialUser.id, social);
+        this.socialUserService.clearSocialUser();
+        this.socialUserService.socialUser.subscribe((socialUser: any) => {
+            if (socialUser != null) {
+                if (socialUser.id) {
+                    this.sendSocialLoginRequest(
+                        new CommonSocialAuthRequest(
+                            socialUser.id,
+                            providerNames[socialProvider]
+                        )
+                    );
                 }
-            });
+            }
+        });
+        this.socialService.socialSingIn(socialProvider);
     }
-
-    /*Savesresponse(socialusers: SocialUser) {
-
-        this.SocialloginService.Savesresponse(socialusers).subscribe((res: any) => {
-            debugger;
-            console.log(res);
-            this.socialusers=res;
-            this.response = res.userDetail;
-            localStorage.setItem('socialusers', JSON.stringify( this.socialusers));
-            console.log(localStorage.setItem('socialusers', JSON.stringify(this.socialusers)));
-            this.router.navigate([`/Dashboard`]);
-        })
-    }*/
 
     private socialSignInOther(socialProvider: string) {
+        if (socialProvider === this.socialProviders.git) {
+            this.socialUserService.setGitOauthAction(actions.login);
+            this.socialService.githubLogin();
+        }
+        if (socialProvider === this.socialProviders.ms) {
+            this.socialService.microsoftLogin();
+            this.msLoginAllowed = true;
+            this.processMSCallback();
+        }
+        if (socialProvider === this.socialProviders.a) {
+            this.socialUserService.clearSocialUser();
+            console.log('Amazon works ' + this.socialUserService.socialUser);
+            this.socialUserService.socialUser.subscribe((socialUser: any) => {
+                if (socialUser != null) {
+                    const user = this.socialUserService.createAmazonUser(socialUser);
 
-        if (socialProvider === this.socialProviders.github.name) {
-            const social = this.socialProviders.github.short;
-
-            this.githubAuthService.loginWithGithub();
+                    this.sendSocialLoginRequest(
+                        new AmazonAuthRequest(
+                            user.id,
+                        )
+                    );
+                }
+            });
         }
 
-        if (socialProvider === this.socialProviders.microsoft.name) {
-            const social = this.socialProviders.microsoft.short;
+        /*if (socialProvider === this.socialProviders.linkedin.name) {
+            const social = this.socialProviders.linkedin.short;
 
-            this.msalLogin();
-        }
+            this.linkedInLogin();
+        }*/
     }
 
-    private sendSocialLoginRequest(id: string, social: string) {
+    private sendSocialLoginRequest(socialRequest: SocialSignInRequest) {
         // console.log('Social login');
         // console.log('Login ' + id);
 
-        this.socialService.socialServiceLogin(id, social).subscribe(
-            (response: any) => {
+        this.socialService
+            .socialServiceLogin(socialRequest, DeviceInfoStorage.deviceInfo)
+            .subscribe(
+                (response: any) => {
+                    if (response.token) {
+                        this.isLoginFailed = false;
+                        this.isLoginSuccess = true;
+                        this.successMessage = 'Social Login Successful.';
+                        console.log(this.successMessage);
+                        // console.log(response.token);
 
-                if (response.token) {
-                    this.isLoginFailed = false;
-                    this.isLoginSuccess = true;
-                    this.successMessage = 'Social Login Successful.';
+                        this.authenticationService.registerSuccessfulAuth(
+                            response.username,
+                            response.token,
+                            this.rememberUser
+                        );
+
+                        this.socialUserService.cleanGitAuth();
+                        this.navigationService.navigateToMain();
+                    }
+                },
+                error => {
+                    this.isLoginSuccess = false;
+                    this.isLoginFailed = true;
+                    this.successMessage = 'Login failed.';
                     console.log(this.successMessage);
-                    // console.log(response.token);
+                    /*console.log('log ');
+                console.log(error);*/
+                    console.log('Authentication failed.');
+                    alert('Authentication failed.');
 
-                    this.authenticationService.registerSuccessfulAuth(response.username, response.token, this.rememberUser);
+                    this.socialUserService.cleanGitAuth();
+                    this.fullLogout();
 
-                    /*console.log(sessionStorage.getItem('authenticatedUser'));
-                    console.log(sessionStorage.getItem('token'));*/
-
-                    this.router.navigate(['']);
-                }
-            }, error => {
-                this.isLoginSuccess = false;
-                this.isLoginFailed = true;
-                this.successMessage = 'Login failed.';
-                console.log(this.successMessage);
-                /*console.log('log ');
-                console.log(error);
-                console.log('Authentication failed.');*/
-                alert('Authentication failed.');
-
-                if (error instanceof HttpErrorResponse) {
-                    console.log('this.HttpErrorResponse');
-                    console.log(error);
-                    if (isNonEmptyString(error.error.message)) {
-                        this.errorMessage = error.error.message;
-                    } else {
-                        this.errorMessage = error.error;
+                    if (error instanceof HttpErrorResponse) {
+                        this.errorMessage = error.error.message
+                            ? error.error.message
+                            : error.error;
                     }
                 }
-            });
+            );
     }
-
-    private localLoginTest() {
-        // only for testing purpose
-        if ((this.username === credentials.admin && this.password === credentials.adminPassword)
-            || (this.username === credentials.user && this.password === credentials.userPassword)
-        ) {
-            // credentials error handle
-            this.isLoginFailed = false;
-            this.isLoginSuccess = true;
-
-            this.authenticationService.registerSuccessfulLogin(this.username);
-            /*console.log(sessionStorage.getItem(storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME));*/
-
-            this.router.navigate(['']);
-            this.userLoginEvent.emit();
-        } else {
-            this.isLoginFailed = true;
-            this.isLoginSuccess = false;
-        }
-    }
-
-    private initSocialLogin() {
-        this.OAuth.authState.subscribe((user) => {
-            this.user = user;
-            this.loggedIn = (user != null);
-
-            if (user !== null) {
-                console.log(this.user);
-            }
-        });
-    }
-
-    // GITHUB
 
     private initMsgFromParent() {
         if (this.isConfirmSuccess) {
@@ -352,51 +308,46 @@ export class LoginFormComponent implements OnInit {
     }
 
     private processGithubOauthCallback() {
-        this.subscribeUrlParams();
+        const code = this.socialUserService.getGitOauthCode();
+        if (code != null) {
+            console.log('CODE ' + code);
+            this.socialService.handleGithubOauthRequest(code);
 
-        if (this.code != null) {
-            this.githubAuthService.handleGithubOauthRequest(this.code);
+            this.socialUserService.gitUser.subscribe((gitUser: any) => {
+                if (gitUser != null) {
+                    if (gitUser.id) {
+                        this.sendSocialLoginRequest(
+                            new GithubAuthRequest(gitUser.id)
+                        );
+                    }
+                }
+            });
         }
+    }
 
-        this.githubAuthService.gitUserChange.subscribe((socialUser: any) => {
-            if (socialUser.id) {
-                this.sendSocialLoginRequest(socialUser.id, 'git');
+    private processMSCallback() {
+        this.msAuthSubscription = this.socialService
+            .getMsProfile()
+            .subscribe((profile: any) => {
+                console.log('PROFILE ' + JSON.stringify(profile));
+
+                if (this.msLoginAllowed) {
+                    if (profile.id) {
+                        this.sendSocialLoginRequest(
+                            new MicrosoftAuthRequest(profile.id)
+                        );
+                    }
+                }
+            });
+    }
+
+    /*private linkedInLogin() {
+        this.ngxLinkedinService.signIn().subscribe((user: any) => {
+            console.log('signIn', user);
+
+            if (user.id) {
+                this.sendSocialLoginRequest(new LinkedInAuthRequest(user.id));
             }
         });
-    }
-
-    private subscribeUrlParams() {
-        console.log('Called Constructor');
-        this.route.queryParams.subscribe(params => {
-            this.code = params.code;
-        });
-        console.log('CODEEEEEEE' + this.code);
-    }
-
-    private msalInit() {
-        this.isIframe = window !== window.parent && !window.opener;
-
-        this.msalCheckoutAccount();
-
-        this.broadcastService.subscribe('msal:loginSuccess', (account) => {
-            this.msalCheckoutAccount();
-            console.log('ACCOUNT  ' + JSON.stringify(account));
-        });
-
-        this.msalAuthService.handleRedirectCallback((authError, response) => {
-            if (authError) {
-                console.error('Redirect Error: ', authError.errorMessage);
-                return;
-            }
-
-            console.log('Redirect Success: ', response.accessToken);
-        });
-
-        // this.msalAuthService.setLogger(new Logger((logLevel, message, piiEnabled) => {
-        //     console.log('MSAL Logging: ', message);
-        // }, {
-        //     correlationId: CryptoUtils.createNewGuid(),
-        //     piiLoggingEnabled: false
-        // }));
-    }
+    }*/
 }

@@ -1,4 +1,4 @@
-<form (ngSubmit)="onSubmit()" [formGroup]="regForm" class="form-group mx-auto text-center">
+<form #f="ngForm" (ngSubmit)="onSubmit(f.valid)" [formGroup]="regForm" class="form-group mx-auto text-center">
 
     <div *ngIf='invalidReg' class="alert alert-warning">{{errorMessage}}</div>
     <div *ngIf='regSuccess' class="alert alert-success">{{successMessage}}</div>
@@ -7,13 +7,11 @@
         <label for="username">User Name :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="fa fa-user"></i></span></div>
-            <input [(ngModel)]="username" class="form-control " formControlName="username"
-                   id="username"
+                <span class="input-group-text">
+                    <i class="fa fa-user"></i></span></div>
+            <input [(ngModel)]="this.username" class="form-control " formControlName="username" id="username"
                    minlength="5"
-                   name="username"
-                   placeholder="Enter User Name" required type="text">
+                   name="username" placeholder="Enter User Name" required type="text">
         </div>
         <div *ngIf="name.invalid && (name.dirty || name.pristine) && this.submitted"
              class="alert alert-danger font-error mx-auto text-center w-20rem">
@@ -36,13 +34,10 @@
         <label for="email">Email :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="fa fa-envelope"></i></span></div>
-            <input [(ngModel)]="email" class="form-control" formControlName="email"
-                   id="email"
-                   minlength="8"
-                   name="email"
-                   placeholder="example@mail.com" required type="email">
+                <span class="input-group-text">
+                    <i class="fa fa-envelope"></i></span></div>
+            <input [(ngModel)]="this.email" class="form-control" formControlName="email" id="email" minlength="8"
+                   name="email" placeholder="example@mail.com" required type="email">
         </div>
         <!--                    <autocomplete givenPlaceHolder="Your email address"-->
         <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
@@ -69,13 +64,11 @@
         <label for="firstname">First Name :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="fa fa-align-justify"></i></span></div>
-            <input [(ngModel)]="firstname" class="form-control" formControlName="firstname"
-                   id="firstname"
+                <span class="input-group-text">
+                    <i class="fa fa-align-justify"></i></span></div>
+            <input [(ngModel)]="this.firstname" class="form-control" formControlName="firstname" id="firstname"
                    minlength="3"
-                   name="firstname"
-                   placeholder="Enter First Name" required type="text">
+                   name="firstname" placeholder="Enter First Name" required type="text">
         </div>
         <div *ngIf="fname.invalid && (fname.dirty || fname.pristine) && this.submitted"
              class="alert alert-danger font-error mx-auto text-center w-20rem">
@@ -98,13 +91,11 @@
         <label for="lastname">Last Name :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="fa fa-align-justify"></i></span></div>
-            <input [(ngModel)]="lastname" class="form-control " formControlName="lastname"
-                   id="lastname"
+                <span class="input-group-text">
+                    <i class="fa fa-align-justify"></i></span></div>
+            <input [(ngModel)]="this.lastname" class="form-control " formControlName="lastname" id="lastname"
                    minlength="3"
-                   name="lastname"
-                   placeholder="Enter Last Name" required type="text">
+                   name="lastname" placeholder="Enter Last Name" required type="text">
         </div>
         <div *ngIf="lname.invalid && (lname.dirty || lname.pristine) && this.submitted"
              class="alert alert-danger font-error mx-auto text-center w-20rem">
@@ -127,26 +118,18 @@
         <label for="password">Password :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <!-- Change input type to be able to accept dynamic data -->
-            <input
-                [(ngModel)]="password" [type]="fieldTextTypePass ? 'text' : 'password'"
-                class="form-control full-width"
-                formControlName="password"
-                id="password"
-                minlength="6"
-                name="password"
-                placeholder="Enter password" required type="password">
+            <input [(ngModel)]="this.password" [type]="fieldTextTypePass ? 'text' : 'password'"
+                   class="form-control full-width" formControlName="password" id="password" minlength="6"
+                   name="password"
+                   placeholder="Enter password" required type="password">
 
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i
-                                  (click)="togglePassTextType()"
-                                  [ngClass]="{
+                <span class="input-group-text">
+                    <i (click)="togglePassTextType()" [ngClass]="{
                                   'fas fa-eye-slash': !fieldTextTypePass,
                                   'fas fa-eye': fieldTextTypePass
-                                }"
-                                  class="fa"
-                              ></i>
-                            </span>
+                                }" class="fa"></i>
+                </span>
             </div>
         </div>
         <div *ngIf="pass.invalid && (pass.dirty || pass.pristine) && this.submitted"
@@ -165,7 +148,7 @@
                 Password should contain<br/>
                 at least one uppercase letter, <br/>
                 one lowercase letter, one number <br/>
-                and one special character from @$!%*?&
+                and one special character from !"@#$%^&'*()_+,./
             </div>
         </div>
     </div>
@@ -173,25 +156,16 @@
         <label for="passConfirm">Repeat password :</label>
         <div class="input-group mx-auto text-center w-20rem">
             <!-- Change input type to be able to accept dynamic data -->
-            <input
-                [(ngModel)]="passConfirm"
-                [type]="fieldTextTypePassConfirm ? 'text' : 'password'" class="form-control"
-                formControlName="passConfirm"
-                id="passConfirm"
-                minlength="6"
-                name="passConfirm"
-                placeholder="Repeat password" required type="password" validateEqual="password">
+            <input [(ngModel)]="this.passConfirm" [type]="fieldTextTypePassConfirm ? 'text' : 'password'"
+                   class="form-control" formControlName="passConfirm" id="passConfirm" minlength="6" name="passConfirm"
+                   placeholder="Repeat password" required type="password">
             <div class="input-group-append">
-                            <span class="input-group-text">
-                              <i
-                                  (click)="togglePassConfirmTextType()"
-                                  [ngClass]="{
+                <span class="input-group-text">
+                    <i (click)="togglePassConfirmTextType()" [ngClass]="{
                                   'fas fa-eye-slash': !fieldTextTypePassConfirm,
                                   'fas fa-eye': fieldTextTypePassConfirm
-                                }"
-                                  class="fa"
-                              ></i>
-                            </span>
+                                }" class="fa"></i>
+                </span>
             </div>
         </div>
         <div *ngIf="passConf.invalid && (passConf.dirty || passConf.pristine) && this.submitted"
@@ -205,7 +179,10 @@
             <div *ngIf="passConf.errors.maxlength">
                 Password must be maximum <br/>10 characters long.
             </div>
-            <div *ngIf="passConf.errors.validateEqual">
+            <!--<div *ngIf="passConf.errors.validateEqual">
+                Password and ConfirmPassword didn't match.
+            </div>-->
+            <div *ngIf="passConf.errors.notEqual">
                 Password and ConfirmPassword didn't match.
             </div>
         </div>
@@ -219,7 +196,15 @@
       -->
     <app-or-separator></app-or-separator>
 
-    <app-social-buttons></app-social-buttons>
+    <app-social-buttons (amazonEvent)="this.socialSignUpOther(socialProviders.a)"
+                        (fbEvent)="this.socialSignUp(socialProviders.fb)"
+                        (gEvent)="this.socialSignUp(socialProviders.g)"
+                        (gitEvent)="this.socialSignUpOther(socialProviders.git)"
+
+                        (linEvent)="this.socialSignUpOther(socialProviders.lin)"
+                        (msEvent)="this.socialSignUpOther(socialProviders.ms)"
+                        (vkEvent)="this.socialSignUp(socialProviders.vk)">
+    </app-social-buttons>
 
     <div class="text-center">
         <div appNbRecaptcha class="g-recaptcha mt-3" formControlName="captcha"
@@ -228,18 +213,15 @@
 
     <div class="clearfix m-2 px-3 mt-4 info-box mx-auto">
         <span class="checkbox-inline">
-            <input type="checkbox" class="custom-checkbox" id="terms"
-                   name="terms"
-                   [(ngModel)]="acceptTerms"
+            <input [(ngModel)]="acceptTerms" class="custom-checkbox" id="terms" name="terms" type="checkbox"
                    formControlName="acceptTerms">
-            <label for="terms">  I agree to the </label></span>
+            <label for="terms"> I agree to the </label></span>
         <a class="" href="#"> Terms of service</a>
     </div>
 
     <div class="button-box mx-auto">
-        <button (click)="onSubmit()" [disabled]="regForm.invalid || !this.acceptTerms" appNoDblClick
-                class="btn btn-default full-width rounded-pill mt-4 submit-btn"
-                type="submit">Create account
+        <button (click)="onSubmit(this.regForm.valid)" [disabled]="regForm.invalid || !this.acceptTerms" appNoDblClick
+                class="btn btn-default full-width rounded-pill mt-4 submit-btn" type="submit">Create account
             <span class="fas fa-check"></span></button>
     </div>
 </form>

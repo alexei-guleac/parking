@@ -1,7 +1,8 @@
 export class ServerErrorMessage {
-
     message: string;
+
     code: number;
+
     detail: string;
 
     constructor(message?: string, code?: number, detail?: string) {

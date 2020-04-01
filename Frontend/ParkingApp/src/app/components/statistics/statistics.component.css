@@ -1,5 +1,6 @@
-h1, label {
-    color: #D1E7FA;
+h1,
+label {
+    color: #d1e7fa;
 }
 
 .btn {
@@ -16,9 +17,9 @@ h1, label {
 }
 
 .refresh:hover {
-    color: #0A8EFF;
-    background-color: #D1E7FA;
-    border-color: #D1E7FA;
+    color: #0a8eff;
+    background-color: #d1e7fa;
+    border-color: #d1e7fa;
 }
 
 .table {
@@ -38,14 +39,14 @@ h1, label {
 .table thead {
     background-color: #3a383a;
     color: white;
-
 }
 
 .table thead th {
     border-bottom: 0;
 }
 
-td, th {
+td,
+th {
     text-align: center;
     border-top: 0;
 }
@@ -112,8 +113,9 @@ span {
         vertical-align: middle;
     }
 
-    .table td, .table th {
-        padding: 0.5rem
+    .table td,
+    .table th {
+        padding: 0.5rem;
     }
 }
 

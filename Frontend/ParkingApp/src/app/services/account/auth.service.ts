@@ -1,11 +1,12 @@
-import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/empty';
 import {environment} from '../../../environments/environment';
-import {setAcceptJsonHeaders} from '../../config/http-config';
+import {AuthenticationRequest} from '../../models/payload/AuthenticationRequest';
+import {ResetPasswordRequest} from '../../models/payload/ResetPasswordRequest';
 import {User} from '../../models/User';
+import {HttpClientService} from '../helpers/http-client.service';
 import {api} from '../navigation/app.endpoints';
 import {AccountStorageTypeService, getUsername, roleAdmin, SessionStorageService} from './session-storage.service';
 
@@ -14,44 +15,40 @@ import {AccountStorageTypeService, getUsername, roleAdmin, SessionStorageService
     providedIn: 'root'
 })
 export class AuthenticationService {
-
     public username: string;
+
     public password: string;
 
-    constructor(private http: HttpClient,
-                private router: Router,
-                private sessionStorageService: SessionStorageService,
-                private storageType: AccountStorageTypeService) {
+    constructor(
+        private http: HttpClientService,
+        private router: Router,
+        private sessionStorageService: SessionStorageService,
+        private storageType: AccountStorageTypeService
+    ) {
     }
 
-    processAuthentification(username: string, password: string): Observable<any> {
+    processAuthentification(
+        credentials: AuthenticationRequest,
+        deviceInfo: any
+    ): Observable<any> {
         const url = environment.restUrl + api.auth;
         // console.log('Auth login');
         // console.log('Login ' + username + '  ' + password);
 
-        return this.http.post<any>(url, {
-            username,
-            password
-
-        }, {
-            headers: setAcceptJsonHeaders()
+        return this.http.postJsonRequest<any>(url, {
+            credentials,
+            deviceInfo
         });
     }
 
-    processRegistration(user: User): Observable<any> {
+    processRegistration(user: User, deviceInfo: any): Observable<any> {
         const url = environment.restUrl + api.registration;
         console.log('Registration');
         console.log('User goes to server ' + user.lastname);
 
-        return this.http.post<any>(url, {
-            username: user.username,
-            email: user.email,
-            fullname: user.fullname,
-            lastname: user.lastname,
-            password: user.password
-
-        }, {
-            headers: setAcceptJsonHeaders()
+        return this.http.postJsonRequest<any>(url, {
+            user,
+            deviceInfo
         });
     }
 
@@ -59,48 +56,49 @@ export class AuthenticationService {
         const url = environment.restUrl + api.confirmReg;
         console.log('confirm ' + confirmationToken);
 
-        return this.http.post<any>(url, {
+        return this.http.postJsonRequest<any>(url, {
             confirmationToken
-
-        }, {
-            headers: setAcceptJsonHeaders()
         });
     }
 
-    processForgotPasswordRequest(email: string): Observable<any> {
+    processForgotPasswordRequest(
+        email: string,
+        deviceInfo: any
+    ): Observable<any> {
         const url = environment.restUrl + api.forgotPass;
         console.log('forgot pass ' + email);
 
-        return this.http.post<any>(url, {
-            email
-
-        }, {
-            headers: setAcceptJsonHeaders()
+        return this.http.postJsonRequest<any>(url, {
+            email,
+            deviceInfo
         });
     }
 
-    processResetPasswordRequest(confirmationToken: string, password: string): Observable<any> {
+    processResetPasswordRequest(
+        resetRequest: ResetPasswordRequest,
+        deviceInfo: any
+    ): Observable<any> {
         const url = environment.restUrl + api.resetPass;
-        console.log('reset pass ' + password);
+        console.log('reset pass ' + resetRequest.password);
 
-        return this.http.post<any>(url, {
-            confirmationToken,
-            password
-
-        }, {
-            headers: setAcceptJsonHeaders()
+        return this.http.postJsonRequest<any>(url, {
+            resetRequest,
+            deviceInfo
         });
-    }
-
-    createBasicAuthToken(username: string, password: string) {
-        return 'Basic ' + window.btoa(username + ':' + password);
     }
 
     registerSuccessfulLogin(username: string) {
-        this.sessionStorageService.sessionStoreCredentials(username, this.password);
+        this.sessionStorageService.sessionStoreCredentials(
+            username,
+            this.password
+        );
     }
 
-    registerSuccessfulAuth(username: string, token: string, rememberUser: boolean) {
+    registerSuccessfulAuth(
+        username: string,
+        token: string,
+        rememberUser: boolean
+    ) {
         /*console.log(username);
         console.log(token);*/
 
@@ -113,24 +111,22 @@ export class AuthenticationService {
 
     processLogout() {
         this.sessionStorageService.clearAccountStorage();
+        this.sessionStorageService.clearCacheStorage();
 
         this.username = null;
         this.password = null;
     }
 
     isUserLoggedIn() {
-        /*console.log('isUserLoggedIn null ' + getUsername(this.storageType.getType()) !== null);
-        console.log('isUserLoggedIn undefined ' + getUsername(this.storageType.getType()) !== undefined);
-        console.log('storageType ' + this.storageType.getType());
-        console.log('isUserLoggedIn ' + getUsername(this.storageType.getType()));*/
         const user = getUsername(this.storageType.getType());
 
         return !(user === null || user === '' || user === undefined);
     }
 
     isAdminLoggedIn() {
-        // return this.isUserLoggedIn() && this.getLoggedInUserName() === credentials.admin;
-        return this.sessionStorageService.getUserRolesFromJwt().includes(roleAdmin);
+        return this.sessionStorageService
+            .getUserRolesFromJwt()
+            .includes(roleAdmin);
     }
 
     getLoggedInUserName() {

@@ -2,6 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {SocialButtonsComponent} from './social-buttons.component';
 
+
 describe('SocialButtonsComponent', () => {
     let component: SocialButtonsComponent;
     let fixture: ComponentFixture<SocialButtonsComponent>;
@@ -9,8 +10,7 @@ describe('SocialButtonsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [SocialButtonsComponent]
-        })
-            .compileComponents();
+        }).compileComponents();
     }));
 
     beforeEach(() => {

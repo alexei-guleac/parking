@@ -1,14 +1,12 @@
 import {Injectable} from '@angular/core';
-import {NavigationExtras, Router} from '@angular/router';
+import {ActivatedRoute, NavigationExtras, Router} from '@angular/router';
+import {containsString} from '../../utils/string-utils';
 import {actions, appRoutes} from './app.endpoints';
 
 
 @Injectable({providedIn: 'root'})
 export class NavigationService {
-
-    constructor(
-        private router: Router,
-    ) {
+    constructor(private router: Router, private route: ActivatedRoute) {
     }
 
     navigateToMain() {
@@ -24,7 +22,9 @@ export class NavigationService {
     }
 
     navigateToLogin() {
-        this.router.navigate([appRoutes.account], {queryParams: {action: actions.login}});
+        this.router.navigate([appRoutes.account], {
+            queryParams: {action: actions.login}
+        });
     }
 
     navigateToLoginWithExtras(navigationExtras: NavigationExtras) {
@@ -40,6 +40,25 @@ export class NavigationService {
     }
 
     navigateToServerNotRunning() {
-        this.router.navigate([appRoutes.main], {queryParams: {action: actions.serverError}});
+        this.router.navigate([appRoutes.main], {
+            queryParams: {action: actions.serverError}
+        });
+    }
+
+    subscribeUrlParams(queryParamsCallback: (args: any) => void) {
+        // console.log('Called subscribeUrlParams');
+        this.route.queryParams.subscribe(queryParamsCallback);
+    }
+
+    assertUrlPath(route: string) {
+        const urlPath = this.router.url;
+        console.log(this.router.url);
+
+        return containsString(urlPath, route);
+    }
+
+    getRouterState() {
+        const navigation = this.router.getCurrentNavigation();
+        return navigation.extras.state as any;
     }
 }

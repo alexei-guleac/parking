@@ -17,7 +17,6 @@ import {api} from '../../../services/navigation/app.endpoints';
     styleUrls: ['./parking-lot-detail.component.css']
 })
 export class ParkingLotDetailComponent implements OnInit {
-
     parkingLotStatus = status;
 
     @Input()
@@ -33,20 +32,20 @@ export class ParkingLotDetailComponent implements OnInit {
 
     private reservationSuccess = false;
 
-    constructor(private route: ActivatedRoute,
-                private authenticationService: AuthenticationService,
-                private  http: HttpClient) {
+    constructor(
+        private route: ActivatedRoute,
+        private authenticationService: AuthenticationService,
+        private http: HttpClient
+    ) {
     }
 
     ngOnInit() {
         // testing
         this.isAdminLoggedIn();
 
-        this.route.queryParams.subscribe(
-            params => {
-                this.action = params.action;
-            }
-        );
+        this.route.queryParams.subscribe(params => {
+            this.action = params.action;
+        });
     }
 
     goBack() {
@@ -57,42 +56,51 @@ export class ParkingLotDetailComponent implements OnInit {
     private handleReservation() {
         const parkingLotNumber = this.parkingLot.number;
         const parkingLotStatus = this.parkingLot.status;
-        console.log('handleReservation() parking lot #' + parkingLotNumber + ' ' + parkingLotStatus);
+        console.log(
+            'handleReservation() parking lot #' +
+            parkingLotNumber +
+            ' ' +
+            parkingLotStatus
+        );
 
         if (parkingLotStatus === status.FREE) {
-            this.reserveParkingLot(parkingLotNumber).subscribe(response => {
+            this.reserveParkingLot(parkingLotNumber).subscribe(
+                response => {
+                    if (response) {
+                        alert('Reservation success.');
 
-                if (response) {
-                    alert('Reservation success.');
-
-                    this.disableAfterDelay();
-                    this.bookingEvent.emit();
-                } else {
+                        this.disableAfterDelay();
+                        this.bookingEvent.emit();
+                    } else {
+                        alert('Reservation failed.');
+                    }
+                },
+                error => {
+                    console.log(error);
+                    this.reservationSuccess = false;
                     alert('Reservation failed.');
                 }
-            }, error => {
-                console.log(error);
-                this.reservationSuccess = false;
-                alert('Reservation failed.');
-            });
+            );
         }
 
         if (parkingLotStatus === status.RESERVED) {
-            this.unreserveParkingLot(parkingLotNumber).subscribe(response => {
+            this.unreserveParkingLot(parkingLotNumber).subscribe(
+                response => {
+                    if (response) {
+                        alert('Cancel reservation success.');
 
-                if (response) {
-                    alert('Cancel reservation success.');
-
-                    this.disableAfterDelay();
-                    this.bookingEvent.emit();
-                } else {
+                        this.disableAfterDelay();
+                        this.bookingEvent.emit();
+                    } else {
+                        alert('Cancel reservation failed.');
+                    }
+                },
+                error => {
+                    console.log(error);
+                    this.reservationSuccess = false;
                     alert('Cancel reservation failed.');
                 }
-            }, error => {
-                console.log(error);
-                this.reservationSuccess = false;
-                alert('Cancel reservation failed.');
-            });
+            );
         }
     }
 
@@ -103,7 +111,8 @@ export class ParkingLotDetailComponent implements OnInit {
     }
 
     private reserveParkingLot(parkingLotNumber: number): Observable<boolean> {
-        const url = environment.restUrl + api.reservation + '/1' + parkingLotNumber;
+        const url =
+            environment.restUrl + api.reservation + '/1' + parkingLotNumber;
         console.log('Reservation... parking lot #' + parkingLotNumber);
 
         return this.http.get<boolean>(url, {
@@ -112,7 +121,11 @@ export class ParkingLotDetailComponent implements OnInit {
     }
 
     private unreserveParkingLot(parkingLotNumber: number): Observable<boolean> {
-        const url = environment.restUrl + api.cancelReservation + '/1' + parkingLotNumber;
+        const url =
+            environment.restUrl +
+            api.cancelReservation +
+            '/1' +
+            parkingLotNumber;
         console.log('Cancel reservation... parking lot #' + parkingLotNumber);
 
         return this.http.get<boolean>(url, {
@@ -122,13 +135,5 @@ export class ParkingLotDetailComponent implements OnInit {
 
     private isAdminLoggedIn() {
         return this.authenticationService.isAdminLoggedIn();
-    }
-
-    private isUserLoggedIn() {
-        return this.authenticationService.isUserLoggedIn();
-    }
-
-    private refresh(): void {
-        window.location.reload();
     }
 }
