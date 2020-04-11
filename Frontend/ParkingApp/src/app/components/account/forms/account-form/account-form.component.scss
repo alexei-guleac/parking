@@ -1,0 +1,199 @@
+@import '../custom-checkbox.scss';
+@import '../form-inputs.scss';
+
+.card-body,
+.card,
+.btn-mater,
+.back-btn {
+    color: var(--text-color) !important;
+    background-color: var(--background) !important;
+}
+
+.card {
+    min-width: 25rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: var(--card-material-shadow);
+}
+
+.isd-logo {
+    content: var(--isd-account-logo);
+}
+
+form input.form-control {
+    color: var(--input-text-color);
+    background: var(--input-color);
+}
+
+.btn-default:not(:disabled):not(.disabled) {
+    &.active,
+    &:active {
+        color: var(--white);
+        border-color: var(--btn-border-color);
+        background-color: var(--btn-background-color);
+        box-shadow: none;
+    }
+}
+
+.show > .btn-default.dropdown-toggle {
+    color: var(--white);
+    border-color: var(--btn-border-color);
+    background-color: var(--btn-background-color);
+    box-shadow: none;
+}
+
+.btn {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* Form fields */
+
+.w-20rem {
+    width: 20rem;
+}
+
+.border-radius-m {
+    border-radius: 1.2rem;
+}
+
+.info-box {
+    max-width: 30rem;
+}
+
+.button-box {
+    max-width: 35rem;
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .card {
+        width: 25rem;
+    }
+
+    .card-body {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+}
+
+.submit-btn {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    display: inline-block;
+    padding: 13px 23px;
+    -webkit-transition: 0.2s all;
+    transition: 0.2s all;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    border-radius: 1.5rem;
+    background: var(--isd-red);
+    box-shadow: var(--material-shadow-thin);
+
+    &:hover:enabled {
+        box-shadow: var(--btn-material-shadow);
+    }
+}
+
+.info-icon {
+    position: absolute;
+    top: 2%;
+    right: 10%;
+    width: 2rem;
+    text-align: right;
+    color: var(--text-color);
+    background: var(--background);
+}
+
+.info-btn {
+    position: absolute;
+    top: 1%;
+    right: 2%;
+    width: 40px;
+    height: 40px;
+    margin-top: 10px;
+    margin-right: 8px;
+    padding-top: 8px;
+    padding-right: 12px;
+    text-align: center;
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    background: none;
+}
+
+.hint {
+    position: relative;
+    z-index: 100;
+    top: 5%;
+    right: -50%;
+    display: block;
+    width: 275px;
+    height: 200px;
+    margin: 20px 20px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    box-shadow: 0 0 6px #b2b2b2;
+
+    &::after {
+        position: relative;
+        top: -64px;
+        left: 30px;
+        display: block;
+        width: 20px;
+        height: 20px;
+        content: '\00a0';
+        -webkit-transform: rotate(45deg);
+        -moz-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        -o-transform: rotate(45deg);
+        transform: rotate(45deg);
+        background-color: #f2f2f2;
+        box-shadow: -2px -2px 2px 0 rgba(178, 178, 178, 0.4);
+    }
+}
+
+.pseudolink {
+    color: var(--pseudolink-color);
+
+    &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+        color: var(--pseudolink-color-hover);
+    }
+}
+
+.btn-mater {
+    border: none;
+    border-radius: 50px;
+
+    &:hover {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        color: var(--isd-red) !important;
+        box-shadow: var(--material-shadow-thin);
+    }
+}
+
+.back-btn {
+    position: absolute;
+    top: 1%;
+    left: 2%;
+    width: 40px;
+    height: 40px;
+    padding-top: 8px;
+    padding-right: 18px;
+    text-align: center;
+    border-radius: 50%;
+
+    &:hover {
+        color: var(--isd-red);
+    }
+}
+
+.text-light-muted {
+    color: var(--other-text-color);
+}

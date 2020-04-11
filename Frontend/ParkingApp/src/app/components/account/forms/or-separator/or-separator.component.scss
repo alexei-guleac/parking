@@ -1,0 +1,21 @@
+.or-seperator {
+    margin: 50px 0 1px;
+    text-align: center;
+    border-top: 1px solid var(--or-separator);
+
+    b {
+        font-size: 16px;
+        line-height: 36px;
+        position: relative;
+        z-index: 1;
+        top: -22px;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        padding: 0 10px;
+        text-align: center;
+        border: 1px solid var(--or-separator);
+        border-radius: 50%;
+        background: var(--background);
+    }
+}

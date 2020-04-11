@@ -1,0 +1,267 @@
+@import '../account/modals/ngbd-modal-confirm/ngbd-modal.component';
+
+.logo img {
+    width: 131px;
+    height: 131px;
+    content: var(--isd-account-logo);
+}
+
+@media (max-width: 525px) {
+    .logo img {
+        width: 75px;
+        height: 75px;
+    }
+}
+
+.fa-user {
+    font-size: 1rem;
+}
+
+.app-name {
+    text-align: center;
+}
+
+.user {
+    cursor: pointer;
+}
+
+a {
+    cursor: pointer;
+}
+
+//colors
+$black_50: rgba(0, 0, 0, 0.5);
+$black: black;
+$color_oslo_gray_approx: #919495;
+$color_nobel_approx: #b6b6b6;
+
+//fonts
+$font_0: 'Helvetica Neue';
+$font_1: 'Helvetica';
+$font_2: 'Arial';
+$font_3: 'sans-serif';
+
+@media (min-width: 992px) {
+    .dropdown-menu {
+        padding: 0;
+        border-radius: 0;
+        box-shadow: var(--box-shadow-navbar-menu);
+    }
+
+    .appname-logo {
+        position: relative;
+        left: 145%;
+    }
+
+    .user-logged {
+        left: 115%;
+    }
+
+    .username {
+        max-width: 10rem;
+    }
+
+    .dropdown:hover .dropdown-menu {
+        top: 95%;
+        display: block;
+        transition: 1s;
+    }
+}
+
+.dropdown-item {
+    transition: 1s;
+    color: var(--text-color);
+    background: var(--background-secondary);
+    border-radius: 5px;
+
+    &:hover {
+        color: $black !important;
+    }
+}
+
+.dropdown-menu {
+    border-radius: 6px;
+    transition: 1s;
+}
+
+.dropdown {
+    transition: 1s;
+}
+
+.dropdown-divider {
+    margin: 0;
+}
+
+.appname-logo {
+    width: 10rem;
+    content: var(--parking-logo);
+}
+
+@media (min-width: 1200px) {
+    .appname-logo {
+        position: relative;
+        left: 200%;
+    }
+}
+
+.isd-navbar {
+    font-family: $font_0, $font_1, $font_2, $font_3;
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--background) !important;
+
+    a {
+        transition: 0.4s;
+        color: $color_oslo_gray_approx !important;
+
+        &:hover {
+            color: var(--isd-red) !important;
+        }
+    }
+}
+
+@media (max-width: 992px) {
+    .dropdown-toggle {
+        display: none;
+    }
+    .dropdown-menu {
+        position: relative;
+        display: block;
+        margin: 0;
+        padding: 0;
+        border-width: 0;
+    }
+    .dropdown-item {
+        padding: 5px;
+        color: $black_50;
+    }
+}
+
+.icon-bar {
+    display: block;
+    width: 26px;
+    height: 2px;
+    margin-top: 5px;
+    transition: all 0.2s;
+    background-color: $color_nobel_approx;
+}
+
+.navbar-brand.abs:hover {
+    cursor: default;
+}
+
+#navbarNav > ul > li > div > a:hover {
+    padding-left: 30px;
+    color: var(--isd-red) !important;
+}
+
+/* Hamburger menu */
+
+.navbar-toggler {
+    border: none;
+    background: transparent !important;
+
+    .top-bar {
+        transform: rotate(45deg);
+        transform-origin: 10% 10%;
+    }
+
+    .middle-bar {
+        opacity: 0;
+    }
+
+    .bottom-bar {
+        transform: rotate(-45deg);
+        transform-origin: 10% 90%;
+    }
+
+    &.collapsed {
+        .top-bar {
+            transform: rotate(0);
+        }
+
+        .middle-bar {
+            opacity: 1;
+        }
+
+        .bottom-bar {
+            transform: rotate(0);
+        }
+    }
+}
+
+/* Custom toogle */
+
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-top: 2px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+@media (max-width: 992px) {
+    .switch {
+        margin-top: 1rem;
+        left: 27vw;
+    }
+}
+
+/* The slider */
+//colors
+$color_silver_approx: #ccc;
+
+.slider {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    cursor: pointer;
+    transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
+    background-color: $color_silver_approx;
+
+    &:before {
+        position: absolute;
+        bottom: 4px;
+        left: 4px;
+        width: 26px;
+        height: 26px;
+        content: '';
+        transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
+        color: var(--text-color);
+        background: var(--background) var(--button-icon) no-repeat;
+        color-interpolation-filters: var(--button-icon-filter);
+    }
+}
+
+input[name='theme-switch'] {
+    &:checked + .slider {
+        background-color: var(--isd-red);
+
+        &:before {
+            transform: translateX(26px);
+        }
+    }
+
+    &:focus + .slider {
+        box-shadow: 0 0 1px var(--isd-red);
+    }
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+
+    &:before {
+        border-radius: 50%;
+    }
+}

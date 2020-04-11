@@ -1,5 +1,5 @@
 export const app = {
-    frontURL: 'http://localhost:4200'
+    frontURL: 'http://localhost:4200',
 };
 
 export const api = {
@@ -21,12 +21,20 @@ export const api = {
     forgotPass: '/forgot_password',
     resetPass: '/reset_password',
 
+    profile: '/profile',
+    profileUpdate: '/profile' + '/update',
+    profileDelete: '/profile' + '/delete',
+    users: '/users',
+
     reservation: '/reserve',
-    cancelReservation: '/unreserve'
+    cancelReservation: '/unreserve',
 };
 
 export const appRoutes = {
     main: '',
+    statistics: 'statistics',
+    layout: 'layout',
+
     account: 'account',
     accountGit: '/account',
     accountConfirm: 'confirm_account',
@@ -36,16 +44,27 @@ export const appRoutes = {
     logout: 'logout',
     reset: 'account_reset',
     accountConfirmReset: 'confirm_reset',
-    statistics: 'statistics',
-    layout: 'layout',
-    notFound: '404',
-    serverError: '500'
+    profile: 'profile',
+
+    notFound: 'not-found',
+    serverError: 'server-error',
+    accessDenied: 'access-denied',
 };
 
 export const actions = {
     login: 'login',
     registration: 'registration',
+
     view: 'view',
-    serverError: 'serverError',
-    reset: 'reset'
+    show: 'show',
+    reset: 'reset',
+
+    serverError: 'server-error',
+    unauthorized: 'unauthorized',
+    forbidden: 'forbidden',
+};
+
+export const storageKeys = {
+    gitCode: 'git_oauth_code',
+    action: 'action',
 };

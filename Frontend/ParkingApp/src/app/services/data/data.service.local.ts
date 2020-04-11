@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Observable, of} from 'rxjs';
 import {ParkingLot} from '../../models/ParkingLot';
-import {status} from '../../models/ParkingLotStatus';
+import {parkingStatuses} from '../../models/ParkingLotStatus';
 import {Statistics} from '../../models/Statistics';
 import {User} from '../../models/User';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class DataService {
     private readonly parkingLots: Array<ParkingLot>;
@@ -33,10 +33,10 @@ export class DataService {
             parkingLot.number = i;
             parkingLot.status =
                 this.getRandomNum === 0
-                    ? status.FREE
+                    ? parkingStatuses.FREE
                     : this.getRandomNum === 1
-                    ? status.OCCUPIED
-                    : status.UNKNOWN;
+                    ? parkingStatuses.OCCUPIED
+                    : parkingStatuses.UNKNOWN;
             parkingLot.updatedAt = new Date();
 
             this.parkingLots.push(parkingLot);
@@ -61,10 +61,10 @@ export class DataService {
             this.date.setHours(this.date.getHours() + 10);
             const parkingLotStatus =
                 this.getRandomNum === 0
-                    ? status.FREE
+                    ? parkingStatuses.FREE
                     : this.getRandomNum === 1
-                    ? status.OCCUPIED
-                    : status.UNKNOWN;
+                    ? parkingStatuses.OCCUPIED
+                    : parkingStatuses.UNKNOWN;
 
             const stats = new Statistics(
                 i + 1,

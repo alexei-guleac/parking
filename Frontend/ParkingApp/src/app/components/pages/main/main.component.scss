@@ -1,0 +1,85 @@
+@import 'main';
+
+//colors
+$black_15: rgba(0, 0, 0, 0.15);
+$white: #fff;
+$color_azure_radiance_approx: #0a8eff;
+
+//@extend-elements
+//original selectors
+//.fas, .far
+%extend_1 {
+    font-size: 3rem;
+    margin-top: 1rem;
+    vertical-align: middle;
+}
+
+%extend_2 {
+    font-size: 1rem;
+    margin-top: -0.2rem;
+    padding: 0.8rem;
+    vertical-align: middle;
+}
+
+.lot {
+    min-width: 150px;
+    height: 100px;
+    margin-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: var(--card-material-shadow);
+
+    &:hover {
+        transition: 0.5s;
+        box-shadow: 0 0.5rem 1rem $black_15;
+    }
+}
+
+.fas,
+.far {
+    @extend %extend_1;
+}
+
+.elem {
+    text-align: center;
+}
+
+.lot-name {
+    font-size: 25px;
+    text-transform: uppercase;
+}
+
+.refresh {
+    width: 50%;
+    color: $white;
+    border-color: $white;
+    background-color: $color_azure_radiance_approx;
+
+    &:hover {
+        color: $color_azure_radiance_approx;
+        border-color: $white;
+        background-color: $white;
+    }
+}
+
+.border-radius-s {
+    border-radius: 0.8rem;
+}
+
+.map {
+    position: absolute;
+    top: 1%;
+    right: 1%;
+
+    .fas,
+    .far {
+        @extend %extend_2;
+
+        &:hover {
+            padding: 0.8rem;
+            border-radius: 0.8rem;
+            background: white;
+            box-shadow: var(--btn-material-shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+    }
+}

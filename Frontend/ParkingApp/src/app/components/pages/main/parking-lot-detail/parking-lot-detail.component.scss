@@ -1,0 +1,129 @@
+@import '../main';
+
+//colors
+$white: white;
+$black: black;
+
+//fonts
+$font_0: 'Montserrat';
+$font_1: 'sans-serif';
+
+.card-body {
+    background: var(--background);
+    border: none;
+}
+
+.card {
+    border: none;
+}
+
+.card {
+    border-radius: 0 0 1.1rem 1.1rem;
+}
+
+.card-body {
+    border-radius: 0 0 1rem 1rem;
+}
+
+.lot-name {
+    text-transform: uppercase;
+}
+
+.refresh {
+    color: $white;
+    border-color: $white;
+    background-color: var(--isd-red);
+    border-radius: 0.5rem;
+    padding: 0.5rem 2rem;
+    margin: 0.8rem;
+
+    &:hover {
+        color: var(--isd-red);
+        border-color: $white;
+        background-color: $white;
+    }
+}
+
+.btn.refresh {
+    min-width: 15rem;
+}
+
+.fas {
+    font-size: 3rem;
+}
+
+.far {
+    font-size: 3rem;
+}
+
+.lot {
+    cursor: unset;
+}
+
+span {
+    color: $black;
+}
+
+.fa-backspace {
+    font-size: 1rem;
+}
+
+.smthg-error {
+    position: relative;
+    z-index: -1;
+    height: 130px;
+    margin: 0 auto 10px;
+
+    .unable-to-connect h2 {
+        max-width: 720px;
+        font-family: $font_0, $font_1;
+        font-size: 28px;
+        font-weight: 400;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: inline-block;
+        margin: auto;
+        padding: 10px 5px;
+        text-transform: uppercase;
+        color: var(--not-found-color);
+        background: $white;
+    }
+}
+
+@media only screen and(max-width: 767px) {
+    .connection-message {
+        padding-top: 1rem;
+    }
+}
+
+@media (min-width: 520px) and(max-width: 620px) {
+    .smthg-error {
+        height: 110px;
+        margin: 0 auto 10px;
+    }
+}
+
+@media only screen and(max-width: 480px) {
+    .smthg-error {
+        height: 80px;
+        margin: 0 auto 10px;
+
+        .unable-to-connect h2 {
+            font-size: 16px;
+        }
+    }
+    .connection-message {
+        padding-top: 1rem;
+    }
+}
+
+.list-group li {
+    background: var(--background);
+}
+
+button i {
+    margin-right: 2rem !important;
+    margin-left: -3rem;
+}

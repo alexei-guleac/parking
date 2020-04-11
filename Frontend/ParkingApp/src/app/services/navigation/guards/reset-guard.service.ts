@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
+import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot,} from '@angular/router';
+import {api, appRoutes} from '@app/services/navigation/app.endpoints';
+import {containsString} from '@app/utils/string-utils';
 import {Observable} from 'rxjs';
-import {containsString} from '../../../utils/string-utils';
-import {api, appRoutes} from '../app.endpoints';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class ResetGuard implements CanActivate {
     constructor(private router: Router) {

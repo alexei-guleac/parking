@@ -1,0 +1,41 @@
+<div class="error col-12 mx-auto text-center align-content-center align-items-center">
+    <div class="forbidden mx-auto text-center align-content-center align-items-center">
+        <div class="forbidden-401-403 mt-3">
+            <div class="forbidden">
+                <h1 *ngIf="unauthorized">Unauthorized</h1>
+                <h1 *ngIf="forbidden">Access denied</h1>
+            </div>
+            <div class="access-denied">
+                <h2 *ngIf="unauthorized">
+                    401 - The request has not been applied because it lacks
+                    valid authentication credentials for the target resource.
+                </h2>
+                <h2 *ngIf="forbidden">
+                    403 - Access forbidden.
+                    You tried to access a page you did not have prior authorization for.
+                </h2>
+            </div>
+        </div>
+
+        <div class="message mx-auto text-center m-1 px-3">
+            Sorry, your access is refused due to security reasons of our
+            server and also our sensitive data.
+            <p *ngIf="unauthorized">Please login or register to continue browsing.</p>
+            <p *ngIf="forbidden">Please go back to the homepage to continue browsing.</p>
+        </div>
+
+        <div class="w-100">
+            <a class="m-4 mx-auto text-center align-content-center" href="/">
+                <span *ngIf="unauthorized">Login</span>
+                <span *ngIf="forbidden">Go To Homepage</span>
+            </a>
+        </div>
+
+        <img *ngIf="unauthorized" alt="unauthorized-image"
+             class="unauthorized-img mx-auto text-center align-content-center mt-2 mb-5"
+             src="../../../../assets/img/unauthorized.png">
+        <img *ngIf="forbidden" alt="forbidden-image"
+             class="forbidden-img mx-auto text-center align-content-center mt-2 mb-5"
+             src="../../../../assets/img/forbidden.png">
+    </div>
+</div>

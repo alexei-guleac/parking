@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
+import {User} from '@app/models/User';
+import {storageKeys} from '@app/services/navigation/app.endpoints';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {User} from '../../../models/User';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SocialUserService {
-
     socialUser: Subject<any> = new BehaviorSubject<any>(null);
 
     gitUser: Subject<any> = new BehaviorSubject<any>(null);
@@ -23,7 +23,7 @@ export class SocialUserService {
         const user = new User();
         user.id = socialUser.id;
         user.email = socialUser.email;
-        user.fullname = socialUser.name;
+        user.firstname = this.getFirstname(socialUser.name);
         user.lastname = socialUser.lastName;
         return user;
     }
@@ -32,7 +32,7 @@ export class SocialUserService {
         const user = new User();
         user.id = socialUser.id;
         user.email = socialUser.email;
-        user.fullname = socialUser.name;
+        user.firstname = this.getFirstname(socialUser.name);
         user.lastname = socialUser.lastName;
         return user;
     }
@@ -40,7 +40,7 @@ export class SocialUserService {
     createVkUser(socialUser: any): User {
         const user = new User();
         user.id = socialUser.id;
-        user.fullname = socialUser.name;
+        user.firstname = this.getFirstname(socialUser.name);
         user.lastname = socialUser.lastName;
         return user;
     }
@@ -50,7 +50,7 @@ export class SocialUserService {
         user.id = socialUser.id;
         user.username = socialUser.login;
         user.email = socialUser.email;
-        user.fullname = socialUser.name;
+        user.firstname = this.getFirstname(socialUser.name);
         return user;
     }
 
@@ -58,7 +58,7 @@ export class SocialUserService {
         const user = new User();
         user.id = socialUser.id;
         user.email = socialUser.userPrincipalName;
-        user.fullname = socialUser.displayName;
+        user.firstname = this.getFirstname(socialUser.displayName);
         user.lastname = socialUser.surname;
         return user;
     }
@@ -67,28 +67,32 @@ export class SocialUserService {
         const user = new User();
         user.id = socialUser.CustomerId;
         user.email = socialUser.PrimaryEmail;
-        user.fullname = socialUser.Name;
+        user.firstname = this.getFirstname(socialUser.Name);
         return user;
     }
 
     cleanGitAuth() {
-        sessionStorage.removeItem('git_oauth_code');
-        sessionStorage.removeItem('action');
+        sessionStorage.removeItem(storageKeys.gitCode);
+        sessionStorage.removeItem(storageKeys.action);
     }
 
     setGitOauthCode(code: string) {
-        sessionStorage.setItem('git_oauth_code', code)
+        sessionStorage.setItem(storageKeys.gitCode, code);
     }
 
     getGitOauthCode() {
-        return sessionStorage.getItem('git_oauth_code')
+        return sessionStorage.getItem(storageKeys.gitCode);
     }
 
     setGitOauthAction(action: string) {
-        sessionStorage.setItem('action', action)
+        sessionStorage.setItem(storageKeys.action, action);
     }
 
     getGitOauthAction() {
-        return sessionStorage.getItem('action')
+        return sessionStorage.getItem(storageKeys.action);
+    }
+
+    private getFirstname(fullname: string) {
+        return fullname.split(' ')[0];
     }
 }

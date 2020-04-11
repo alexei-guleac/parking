@@ -8,7 +8,7 @@ import {actions} from './services/navigation/app.endpoints';
     selector: 'app-root',
     animations: [routerTransition],
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.css']
+    styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
     private action: string;
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     processUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
-            params => (this.action = params['action'])
+            (params) => (this.action = params['action'])
         );
     }
 

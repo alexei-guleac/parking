@@ -1,0 +1,65 @@
+@import '../account-form/account-form.component.scss';
+@import 'https://fonts.googleapis.com/css?family=Inconsolata:400,700';
+
+/*.fade-in {
+
+}*/
+/*@media (min-width: 487px) and ( max-width: 992px) {
+    .text-social {
+        margin: 0 auto;
+    }
+}*/
+
+.reg-form {
+    width: 30rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    background-color: white;
+
+    .btn {
+        font-weight: bold;
+        line-height: 26px;
+        text-align: center;
+    }
+}
+
+.g-recaptcha {
+    display: inline-block;
+}
+
+h1 {
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    color: #393739;
+}
+
+.font-error {
+    font-size: 0.95rem;
+}
+
+.fa-eye-slash {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.fa-eye {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.form-control {
+    outline: none !important;
+}
+
+.btn {
+    outline: none !important;
+}
+
+.input-group-addon {
+    .fa {
+        font-size: 18px;
+    }
+}

@@ -1,0 +1,27 @@
+@import '../../forms/form-inputs.scss';
+
+.btn-round {
+    display: block;
+    border-radius: 50px;
+    font-weight: normal;
+    font-size: 1.1rem;
+    border: none;
+    text-align: center;
+    max-width: 25rem;
+    padding: 0.6rem;
+    width: 35%;
+    min-width: 30%;
+    box-shadow: none;
+}
+
+.save-btn {
+    color: #112020;
+    background-color: #0f9d58;
+
+    &:hover:enabled {
+        cursor: pointer;
+        color: white !important;
+        box-shadow: var(--btn-material-shadow-medium);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+}

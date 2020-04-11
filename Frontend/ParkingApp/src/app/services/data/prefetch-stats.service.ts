@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {Resolve} from '@angular/router';
+import {Statistics} from '@app/models/Statistics';
 import {Observable} from 'rxjs';
-import {Statistics} from '../../models/Statistics';
 import {DataService} from './data.service';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class PrefetchStatsService
     implements Resolve<Observable<Array<Statistics>>> {

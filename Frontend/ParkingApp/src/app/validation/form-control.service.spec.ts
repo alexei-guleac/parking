@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {FormControlService} from './form-control.service';
+import {FormControlService} from '../services/account/form-control.service';
 
 
 describe('FormControlService', () => {

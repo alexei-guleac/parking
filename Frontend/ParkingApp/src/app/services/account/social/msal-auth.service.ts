@@ -1,13 +1,13 @@
 import {Injectable} from '@angular/core';
+import {HttpClientService} from '@app/services/helpers/http-client.service';
 import {BroadcastService, MsalService} from '@azure/msal-angular';
 import {Subscription} from 'rxjs';
-import {HttpClientService} from '../../helpers/http-client.service';
 
 
 const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class MsalAuthService {
     isIframe = false;
@@ -58,7 +58,7 @@ export class MsalAuthService {
 
         this.socialAuthSubscription = this.broadcastService.subscribe(
             'msal:loginSuccess',
-            accessToken => {
+            (accessToken) => {
                 this.msalCheckoutAccount();
                 // console.log('ACCOUNT  ' + JSON.stringify(accessToken));
             }

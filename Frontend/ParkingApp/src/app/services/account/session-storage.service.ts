@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
+import {JWTToken} from '@app/models/payload/JWTToken';
 import {JwtHelperService} from '@auth0/angular-jwt';
-import {JWTToken} from '../../models/payload/JWTToken';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
-export class AccountStorageTypeService {
+export class AccountStorageService {
     private storeType: string = storageType.local;
 
     public getType(): string {
@@ -20,23 +20,23 @@ export class AccountStorageTypeService {
 
 export const storageKeys = {
     USER_NAME_SESSION_ATTRIBUTE_NAME: 'authenticatedUser',
-    TOKEN_NAME: 'token'
+    TOKEN_NAME: 'token',
 };
 
 export const storageType = {
     local: 'local',
-    session: 'session'
+    session: 'session',
 };
 
 export const roleAdmin = 'ROLE_ADMIN';
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SessionStorageService {
     constructor(
         private jwtHelper: JwtHelperService,
-        private accountStorageTypeService: AccountStorageTypeService
+        private accountStorageTypeService: AccountStorageService
     ) {
     }
 
@@ -103,9 +103,9 @@ export class SessionStorageService {
     }
 
     clearCacheStorage() {
-        window.caches.keys().then(keyList =>
+        window.caches.keys().then((keyList) =>
             Promise.all(
-                keyList.map(key => {
+                keyList.map((key) => {
                     return caches.delete(key);
                 })
             )
@@ -164,6 +164,21 @@ export function getUsername(storeType: string) {
     if (storeType === storageType.session) {
         return sessionStorage.getItem(
             storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME
+        );
+    }
+}
+
+export function setUsername(newUsername: string, storeType: string) {
+    if (storeType === storageType.local) {
+        return localStorage.setItem(
+            storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME,
+            newUsername
+        );
+    }
+    if (storeType === storageType.session) {
+        return sessionStorage.setItem(
+            storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME,
+            newUsername
         );
     }
 }

@@ -1,0 +1,77 @@
+<h2 class="m-3 my-4 text-left">Parking lot details</h2>
+<div class="card mx-auto shadow" style="width: 20rem;">
+    <div *ngIf="parkingLot != null">
+        <div
+            [ngClass]="parkingLot.status.toLowerCase()"
+            class="btn lot col-sm-12 p-3"
+        >
+            <i
+                [ngClass]="{
+                    'fa-car': parkingLot.status === parkingLotStatus.OCCUPIED,
+                    'fa-parking': parkingLot.status === parkingLotStatus.FREE,
+                    'fa-ban': parkingLot.status === parkingLotStatus.UNKNOWN,
+                    'fa-clipboard-check':
+                        parkingLot.status === parkingLotStatus.RESERVED
+                }"
+                class="fas"
+            ></i>
+        </div>
+
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-left">
+                    <b>Name: </b>{{ 'LOT ' + parkingLot.number }}
+                </li>
+                <li class="list-group-item text-left">
+                    <b>Status: </b>{{ parkingLot.status }}
+                </li>
+                <li class="list-group-item text-left">
+                    Since {{ parkingLot.updatedAt | date: 'HH:mm dd-MMM-yyyy' }}
+                </li>
+            </ul>
+
+            <button
+                (click)="goBack()"
+                appNoDblClick
+                class="btn col refresh text-center mx-auto mt-4"
+            >
+                <i class="fas fa-backspace fa-sm mr-3"></i>Back
+            </button>
+            <button
+                (click)="showReservationModal()"
+                *ngIf="this.isAdminLoggedIn()"
+                [disabled]="reservationSuccess"
+                appNoDblClick
+                class="btn col refresh text-center mx-auto"
+            >
+                <i class="fa fa-bell"></i>
+                {{
+                (parkingLot.status === parkingLotStatus.RESERVED
+                    ? 'Reset'
+                    : 'Make') + ' reservation'
+                }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<div [hidden]="parkingLot != null">
+    <div class="smthg-error mt-3 mx-auto text-center">
+        <div class="unable-to-connect mx-auto text-center">
+            <h2>Something went wrong.</h2>
+        </div>
+    </div>
+    <div class="message mx-auto text-center m-1 px-3">
+        Please click on Back button.
+    </div>
+
+    <div class="container">
+        <div class="row my-5">
+            <div class="col text-center">
+                <button (click)="goBack()" appNoDblClick class="btn refresh">
+                    <i class="fas fa-backspace fa-sm mr-3"></i>Back
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

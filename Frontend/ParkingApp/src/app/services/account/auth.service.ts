@@ -1,18 +1,24 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
+import {AuthenticationRequest} from '@app/models/payload/AuthenticationRequest';
+import {ResetPasswordRequest} from '@app/models/payload/ResetPasswordRequest';
+import {User} from '@app/models/User';
+import {
+    AccountStorageService,
+    getUsername,
+    roleAdmin,
+    SessionStorageService,
+    setUsername,
+} from '@app/services/account/session-storage.service';
+import {HttpClientService} from '@app/services/helpers/http-client.service';
+import {api} from '@app/services/navigation/app.endpoints';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/empty';
 import {environment} from '../../../environments/environment';
-import {AuthenticationRequest} from '../../models/payload/AuthenticationRequest';
-import {ResetPasswordRequest} from '../../models/payload/ResetPasswordRequest';
-import {User} from '../../models/User';
-import {HttpClientService} from '../helpers/http-client.service';
-import {api} from '../navigation/app.endpoints';
-import {AccountStorageTypeService, getUsername, roleAdmin, SessionStorageService} from './session-storage.service';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class AuthenticationService {
     public username: string;
@@ -23,7 +29,7 @@ export class AuthenticationService {
         private http: HttpClientService,
         private router: Router,
         private sessionStorageService: SessionStorageService,
-        private storageType: AccountStorageTypeService
+        private storageType: AccountStorageService
     ) {
     }
 
@@ -37,27 +43,27 @@ export class AuthenticationService {
 
         return this.http.postJsonRequest<any>(url, {
             credentials,
-            deviceInfo
+            deviceInfo,
         });
     }
 
     processRegistration(user: User, deviceInfo: any): Observable<any> {
         const url = environment.restUrl + api.registration;
-        console.log('Registration');
-        console.log('User goes to server ' + user.lastname);
+        // console.log('Registration');
+        // console.log('User goes to server ' + user.lastname);
 
         return this.http.postJsonRequest<any>(url, {
             user,
-            deviceInfo
+            deviceInfo,
         });
     }
 
     processUserConfirmation(confirmationToken: string): Observable<any> {
         const url = environment.restUrl + api.confirmReg;
-        console.log('confirm ' + confirmationToken);
+        // console.log('confirm ' + confirmationToken);
 
         return this.http.postJsonRequest<any>(url, {
-            confirmationToken
+            confirmationToken,
         });
     }
 
@@ -66,11 +72,11 @@ export class AuthenticationService {
         deviceInfo: any
     ): Observable<any> {
         const url = environment.restUrl + api.forgotPass;
-        console.log('forgot pass ' + email);
+        // console.log('forgot pass ' + email);
 
         return this.http.postJsonRequest<any>(url, {
             email,
-            deviceInfo
+            deviceInfo,
         });
     }
 
@@ -79,11 +85,11 @@ export class AuthenticationService {
         deviceInfo: any
     ): Observable<any> {
         const url = environment.restUrl + api.resetPass;
-        console.log('reset pass ' + resetRequest.password);
+        // console.log('reset pass ' + resetRequest.password);
 
         return this.http.postJsonRequest<any>(url, {
             resetRequest,
-            deviceInfo
+            deviceInfo,
         });
     }
 
@@ -135,5 +141,9 @@ export class AuthenticationService {
             return '';
         }
         return user;
+    }
+
+    setLoggedInUserName(newUsername: string) {
+        setUsername(newUsername, this.storageType.getType());
     }
 }

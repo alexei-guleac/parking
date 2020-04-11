@@ -1,0 +1,114 @@
+//colors
+$white: #fff;
+
+//fonts
+$font_0: 'Montserrat';
+$font_1: 'sans-serif';
+$font_2: 'Montserrat';
+$font_3: 'sans-serif';
+$font_4: 'Montserrat';
+$font_5: 'sans-serif';
+
+#notfound {
+    position: relative;
+    height: 70vh;
+
+    .notfound {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.notfound {
+    line-height: 1.4;
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+
+    .notfound-404 {
+        position: relative;
+        z-index: -1;
+        height: 200px;
+        margin: 0 auto 20px;
+
+        h1 {
+            font-family: $font_0, $font_1;
+            font-size: 236px;
+            font-weight: 200;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: 0;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            color: var(--not-found-color);
+        }
+
+        h2 {
+            font-family: $font_2, $font_3;
+            font-size: 28px;
+            font-weight: 400;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: inline-block;
+            margin: auto;
+            padding: 10px 5px;
+            text-transform: uppercase;
+            color: var(--not-found-color);
+            background: $white;
+        }
+    }
+
+    a {
+        font-family: $font_4, $font_5;
+        font-size: 18px;
+        font-weight: 700;
+        display: inline-block;
+        padding: 13px 23px;
+        transition: 0.2s all;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: $white;
+        border-radius: 1.5rem;
+        background: var(--isd-red);
+        box-shadow: var(--material-shadow-thin);
+
+        &:hover {
+            color: var(--isd-red);
+            background: var(--not-found-color);
+            box-shadow: var(--btn-material-shadow);
+        }
+    }
+}
+
+@media only screen and(max-width: 767px) {
+    .notfound .notfound-404 h1 {
+        font-size: 148px;
+    }
+}
+
+@media only screen and(max-width: 480px) {
+    .notfound {
+        .notfound-404 {
+            height: 148px;
+            margin: 0 auto 10px;
+
+            h1 {
+                font-size: 86px;
+            }
+
+            h2 {
+                font-size: 16px;
+            }
+        }
+
+        a {
+            font-size: 14px;
+            padding: 7px 15px;
+        }
+    }
+}

@@ -1,6 +1,6 @@
-export const status = {
+export const parkingStatuses = {
     FREE: 'FREE',
     OCCUPIED: 'OCCUPIED',
     UNKNOWN: 'UNKNOWN',
-    RESERVED: 'RESERVED'
+    RESERVED: 'RESERVED',
 };

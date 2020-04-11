@@ -139,5 +139,10 @@
             }
         }
     },
-    "defaultProject": "ParkingApp"
+    "defaultProject": "ParkingApp",
+    "schematics": {
+        "@schematics/angular:component": {
+            "styleext": "scss"
+        }
+    }
 }

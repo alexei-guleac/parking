@@ -1,14 +1,14 @@
 import {HttpErrorResponse} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {SocialUserService} from '@app/services/account/social/social-user.service';
+import {HttpClientService} from '@app/services/helpers/http-client.service';
+import {api, app, appRoutes} from '@app/services/navigation/app.endpoints';
+import {environment} from '@env';
 import {Observable} from 'rxjs';
-import {environment} from '../../../../environments/environment';
-import {HttpClientService} from '../../helpers/http-client.service';
-import {api, app, appRoutes} from '../../navigation/app.endpoints';
-import {SocialUserService} from './social-user.service';
 
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class GithubOauthService {
     private AUTHORIZE_URL = 'https://github.com/login/oauth/authorize';
@@ -32,30 +32,13 @@ export class GithubOauthService {
     }
 
     handleGithubOauthRequest(code: string): any {
-        this.processGithubOauthRequest(code).subscribe(
-            (response: any) => {
-                console.log('processGithubOauthRequest' + response);
-                if (response.access_token) {
-                    console.log(response.access_token);
-                }
+        this.processGithubOauthRequest(code).subscribe((response: any) => {
+            // console.log('processGithubOauthRequest' + response);
+            if (response.access_token) {
+                // console.log(response.access_token);
                 this.getGitUserData(response.access_token);
-            },
-            error => {
-                console.log(error);
-
-                if (error instanceof HttpErrorResponse) {
-                    console.log('this.HttpErrorResponse');
-                    console.log(
-                        error
-                    ); /*
-                if (isNonEmptyString(error.error.message)) {
-                    this.errorMessage = error.error.message;
-                } else {
-                    this.errorMessage = error.error;
-                }*/
-                }
             }
-        );
+        }, this.handleError);
     }
 
     getGitUserData(accessToken: string): any {
@@ -67,33 +50,37 @@ export class GithubOauthService {
                     this.socialUserService.gitUser.next(response);
                 }
             },
-            error => {
-                console.log(error);
-
-                if (error instanceof HttpErrorResponse) {
-                    console.log('this.HttpErrorResponse');
-                    console.log(
-                        error
-                    ); /*
-                if (isNonEmptyString(error.error.message)) {
-                    this.errorMessage = error.error.message;
-                } else {
-                    this.errorMessage = error.error;
-                }*/
-                }
-            }
+            this.handleError
         );
     }
-
-    // https://andreybleme.com/2018-02-24/oauth-github-web-flow-cors-problem/
 
     processGithubOauthRequest(code: string): Observable<any> {
         const url = environment.restUrl + api.gitOAuth;
         console.log('code ' + code);
 
         return this.http.postJsonRequest<any>(url, {
-            code
+            code,
         });
+    }
+
+    // https://andreybleme.com/2018-02-24/oauth-github-web-flow-cors-problem/
+
+    private handleError() {
+        return (error) => {
+            console.log(error);
+
+            if (error instanceof HttpErrorResponse) {
+                console.log('this.HttpErrorResponse');
+                console.log(
+                    error
+                ); /*
+                if (isNonEmptyString(error.error.message)) {
+                    this.errorMessage = error.error.message;
+                } else {
+                    this.errorMessage = error.error;
+                }*/
+            }
+        };
     }
 
     processGithubUserDataRequest(accessToken: string): Observable<any> {

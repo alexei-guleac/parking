@@ -1,4 +1,12 @@
 import {Injectable} from '@angular/core';
+import {SocialSignInRequest, SocialSignUpRequest,} from '@app/models/payload/SocialSignInRequest';
+import {User} from '@app/models/User';
+import {GithubOauthService} from '@app/services/account/social/github-oauth.service';
+import {MsalAuthService} from '@app/services/account/social/msal-auth.service';
+import {SocialUserService} from '@app/services/account/social/social-user.service';
+import {HttpClientService} from '@app/services/helpers/http-client.service';
+import {api} from '@app/services/navigation/app.endpoints';
+import {environment} from '@env';
 import {
     AuthService,
     AuthServiceConfig,
@@ -6,50 +14,42 @@ import {
     GoogleLoginProvider,
     LinkedInLoginProvider,
     LoginOpt,
-    VKLoginProvider
+    VKLoginProvider,
 } from 'angularx-social-login-vk';
 import {Observable} from 'rxjs';
-import {environment} from '../../../../environments/environment';
-import {SocialSignInRequest, SocialSignUpRequest} from '../../../models/payload/SocialSignInRequest';
-import {User} from '../../../models/User';
-import {HttpClientService} from '../../helpers/http-client.service';
-import {api} from '../../navigation/app.endpoints';
-import {GithubOauthService} from './github-oauth.service';
-import {MsalAuthService} from './msal-auth.service';
-import {SocialUserService} from './social-user.service';
 
 
 const fbLoginOptions: LoginOpt = {
     scope:
         'pages_messaging,pages_messaging_subscriptions,email,pages_show_list,manage_pages',
     return_scopes: true,
-    enable_profile_selector: true
+    enable_profile_selector: true,
 }; // https://developers.facebook.com/docs/reference/javascript/FB.login/v2.11
 
 const googleLoginOptions: LoginOpt = {
-    scope: 'profile email'
+    scope: 'profile email',
 }; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
 
 export function provideConfig() {
     return new AuthServiceConfig([
         {
             id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider('509861456396823') // nata.nemuza
+            provider: new FacebookLoginProvider('509861456396823'), // nata.nemuza
         },
         {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
                 '878973947322-drnv3qvmpvs3kaie7s699g99t2odi4fq.apps.googleusercontent.com'
-            ) // aleks7900
+            ), // aleks7900
         },
         {
             id: VKLoginProvider.PROVIDER_ID,
-            provider: new VKLoginProvider('7373880') // AG
+            provider: new VKLoginProvider('7373880'), // AG
         },
         {
             id: LinkedInLoginProvider.PROVIDER_ID,
-            provider: new LinkedInLoginProvider('771wdzxnwaaund') // private profile
-        }
+            provider: new LinkedInLoginProvider('771wdzxnwaaund'), // private profile
+        },
     ]);
 }
 
@@ -72,11 +72,11 @@ export const providerNames = {
     microsoft: 'ms',
     amazon: 'a',
     twitter: 't',
-    instagram: 'in'
+    instagram: 'in',
 };
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class SocialAccountService {
     constructor(
@@ -99,7 +99,7 @@ export class SocialAccountService {
         return this.http.postJsonRequest<any>(url, {
             id: socialRequest.id,
             socialProvider: socialRequest.socialProvider,
-            deviceInfo
+            deviceInfo,
         });
     }
 
@@ -115,7 +115,7 @@ export class SocialAccountService {
             id: socialRequest.id,
             user: socialRequest.user,
             socialProvider: socialRequest.socialProvider,
-            deviceInfo
+            deviceInfo,
         });
     }
 
@@ -140,7 +140,7 @@ export class SocialAccountService {
             social = providerNames.linkedin.short;
         }*/
 
-        this.OAuth.signIn(socialPlatformProvider).then(socialUser => {
+        this.OAuth.signIn(socialPlatformProvider).then((socialUser) => {
             console.log('then ', socialProvider, socialUser);
 
             if (socialUser !== null) {

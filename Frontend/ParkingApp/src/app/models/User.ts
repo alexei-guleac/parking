@@ -7,7 +7,7 @@ export class User {
 
     password: string;
 
-    fullname: string;
+    firstname: string;
 
     lastname: string;
 
@@ -16,7 +16,7 @@ export class User {
         name?: string,
         email?: string,
         password?: string,
-        fullname?: string,
+        firstname?: string,
         lastname?: string
     ) {
         console.log(
@@ -28,16 +28,25 @@ export class User {
             ' ' +
             password +
             ' ' +
-            fullname +
+            firstname +
             ' ' +
             lastname
         );
-
         this.id = id;
         this.username = name;
         this.email = email;
         this.password = password;
-        this.fullname = fullname;
+        this.firstname = firstname;
         this.lastname = lastname;
+    }
+
+    static fromHttp(user: any) {
+        return new User(
+            user.id,
+            user.username,
+            user.email,
+            null,
+            user.fullname
+        );
     }
 }

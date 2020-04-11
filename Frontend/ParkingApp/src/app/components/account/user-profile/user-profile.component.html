@@ -1,0 +1,70 @@
+<div class="wrapper">
+    <div class="container mx-auto text-center align-content-center">
+        <div *ngIf="isActionFailed" class="alert alert-warning">
+            {{ errorMessage }}
+        </div>
+        <div *ngIf="isActionSuccess" class="alert alert-success">
+            {{ successMessage }}
+        </div>
+
+        <div *ngIf="user != null" class="profile">
+            <div class="card-body avatar">
+                <a class="navbar-brand abs">
+                    <!--      ParKing-->
+                    <!-- <img (click)="chooseFile()" [ngClass]="
+                    this.isUserLoggedIn() ? 'user-logged' : ''" alt="parking_logo" class="appname-logo "
+
+                    [src]="imageSrc || 'images/default.png'"/> -->
+                </a>
+            </div>
+            <div class="card-body details">
+                <div>
+                    <h2 class="username mb-4">
+                        {{ this.capitalize(this.user.username) }}
+                    </h2>
+                </div>
+
+                <div class="m-3 w-50 mx-auto text-center">
+                    <hr class="border"/>
+                </div>
+
+                <p *ngIf="this.user.email" class="">
+                    <b>email: </b>
+                    <span class="email">{{ this.user.email }}</span>
+                </p>
+                <p *ngIf="this.status" class="">
+                    <b>status: </b>
+                    <span class="status">{{ this.status }}</span>
+                </p>
+                <p *ngIf="this.user.firstname" class="">
+                    <b>firstname: </b>
+                    <span class="firstname">{{ this.user.firstname }}</span>
+                </p>
+                <p *ngIf="this.user.lastname" class="">
+                    <b>lastname: </b>
+                    <span class="lastname">{{ this.user.lastname }}</span>
+                </p>
+
+                <p><b>socials: </b><span class="appname">....</span></p>
+                <div class="socials">
+                    social more toogle...
+                </div>
+
+                <div class="row mt-4">
+                    <span
+                        (click)="this.editUserInfo()"
+                        class="edit-btn mx-auto m-1 col-5 btn-round"
+                    >
+                        Edit <i class="fas fa-user-edit ml-4"></i>
+                    </span>
+                    <span
+                        (click)="this.showDeleteUserModal()"
+                        class="delete-btn mx-auto m-1 col-5 btn-round"
+                    >
+                        Delete <i class="far fa-trash-alt ml-4"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
