@@ -2,9 +2,9 @@ package com.isd.parking.storage.util;
 
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.models.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotDBService;
-import com.isd.parking.service.ParkingLotLocalService;
 import com.isd.parking.service.ParkingLotService;
+import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
+import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,17 @@ public class DataLoader  {
     @Value("${parking.lots.number}")
     private String totalParkingLotsNumber;
 
-    private final ParkingLotDBService parkingLotDBService;
+    private final ParkingLotDBServiceImpl parkingLotDBService;
 
-    private final ParkingLotLocalService parkingLotLocalService;
+    private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
     private final ColorConsoleOutput console;
 
     public boolean flag = true;
 
     @Autowired
-    public DataLoader(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, ColorConsoleOutput console) {
+    public DataLoader(ParkingLotDBServiceImpl parkingLotDBService,
+                      ParkingLotLocalServiceImpl parkingLotLocalService, ColorConsoleOutput console) {
         this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
         this.console = console;
@@ -62,9 +63,6 @@ public class DataLoader  {
             for (int i = 1; i <= totalParkingLotsNumber; i++) {
                 //initial saving parking lots to local Java memory
                 parkingLotLocalService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.FREE));
-
-                //initial saving parking lots to Database
-                //parkingLotDBService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.UNKNOWN));
             }
         } else {
             for (ParkingLot parkingLot : parkingLotDBService.findAll()) {

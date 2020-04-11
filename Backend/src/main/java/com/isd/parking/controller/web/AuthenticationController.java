@@ -5,9 +5,9 @@ import com.google.common.base.Splitter;
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.security.model.payload.auth.*;
-import com.isd.parking.service.ConfirmationTokenService;
-import com.isd.parking.service.EmailSenderService;
 import com.isd.parking.service.RestService;
+import com.isd.parking.service.implementations.ConfirmationTokenServiceImpl;
+import com.isd.parking.service.implementations.EmailSenderServiceImpl;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.AppFileUtils;
 import com.isd.parking.utils.ColorConsoleOutput;
@@ -50,9 +50,9 @@ public class AuthenticationController {
 
     private final RestService restService;
 
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceImpl confirmationTokenService;
 
-    private final EmailSenderService emailSenderService;
+    private final EmailSenderServiceImpl emailSenderService;
 
     private final ColorConsoleOutput console;
 
@@ -63,12 +63,13 @@ public class AuthenticationController {
     @Value("${spring.ldap.base}")
     private String ldapSearchBase;
 
-    // private final int expirationInMinutes = 24 * 60;
-    private final int expirationInMinutes = 10;
+    private final int expirationInMinutes = 72 * 60;
 
     @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, UserLdapClient userLdapClient,
-                                    RestService restService, ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService, ColorConsoleOutput console) {
+    public AuthenticationController(AuthenticationManager authenticationManager,
+                                    UserLdapClient userLdapClient,
+                                    RestService restService, ConfirmationTokenServiceImpl confirmationTokenService,
+                                    EmailSenderServiceImpl emailSenderService, ColorConsoleOutput console) {
         this.authenticationManager = authenticationManager;
         this.userLdapClient = userLdapClient;
         this.restService = restService;
@@ -100,7 +101,6 @@ public class AuthenticationController {
             }
 
             final String token = generateSignedJWTToken(username, authentication);
-
             //log.info(console.classMsg("LDAP enabled: ") + Boolean.parseBoolean(ldapEnabled));
             //String test = userService.getUserDetail(username);
 

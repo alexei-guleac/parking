@@ -6,6 +6,7 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Enumeration;
 
+
 /**
  * Distributed Sequence Generator.
  * Inspired by Twitter snowflake: https://github.com/twitter/snowflake/tree/snowflake-2010
@@ -14,12 +15,17 @@ import java.util.Enumeration;
  * Make sure that you create and reuse a Single instance of SequenceGenerator per machine in your distributed system cluster.
  */
 public class SequenceGenerator {
+
     private static final int TOTAL_BITS = 64;
+
     private static final int EPOCH_BITS = 42;
+
     private static final int MACHINE_ID_BITS = 10;
+
     private static final int SEQUENCE_BITS = 12;
 
     private static final int maxMachineId = (int) (Math.pow(2, MACHINE_ID_BITS) - 1);
+
     private static final int maxSequence = (int) (Math.pow(2, SEQUENCE_BITS) - 1);
 
     // Custom Epoch (January 1, 2015 Midnight UTC = 2015-01-01T00:00:00Z)
@@ -28,6 +34,7 @@ public class SequenceGenerator {
     private final int machineId;
 
     private long lastTimestamp = -1L;
+
     private long sequence = 0L;
 
     // Create Snowflake with a machineId

@@ -1,6 +1,5 @@
 package com.isd.parking;
 
-import com.isd.parking.models.Group;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.repository.GroupRepository;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
@@ -186,7 +185,7 @@ public class SpringLdapIntegrationTest {
         assertThat(connection.getConnectedPort()).isEqualTo(this.context.getEnvironment().getPropertyValue("local.ldap.port", Integer.class));
     }*/
 
-    @Test
+    /*@Test
     public void testLdapRepositories()  {
         log.info("Spring LDAP CRUD Operations Binding and Unbinding Example");
         log.info("- - - - - - Managing persons");
@@ -220,5 +219,5 @@ public class SpringLdapIntegrationTest {
 
         groups = groupRepository.findAll();
         log.info("groups: " + groups);
-    }
+    }*/
 }

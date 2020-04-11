@@ -1,6 +1,7 @@
 package com.isd.parking.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 
 @Data
+@NoArgsConstructor
 public class EmailDto {
 
     @NotNull(message = "From email address cannot be null")
@@ -53,11 +55,6 @@ public class EmailDto {
     private Map<String, Object> staticResourceMap = new HashMap<>();
 
     private String emailedMessage;
-
-
-    public EmailDto() {
-
-    }
 
     public EmailDto(String from, String toList, String subject, String message) {
         this();

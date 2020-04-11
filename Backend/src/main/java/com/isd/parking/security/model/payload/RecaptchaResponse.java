@@ -31,14 +31,17 @@ public class RecaptchaResponse extends ActionSuccessResponse {
     private String message;
 
     @Builder
-    public RecaptchaResponse(@NotBlank @NonNull Date challenge_ts, @NotBlank @NonNull String hostname, String message) {
+    public RecaptchaResponse(@NotBlank @NonNull Date challenge_ts,
+                             @NotBlank @NonNull String hostname, String message) {
         this.challenge_ts = challenge_ts;
         this.hostname = hostname;
         this.message = message;
     }
 
     @Builder
-    public RecaptchaResponse(@NotBlank @NonNull boolean success, @NotBlank @NonNull Date challenge_ts, @NotBlank @NonNull String hostname, String message) {
+    public RecaptchaResponse(@NotBlank @NonNull boolean success,
+                             @NotBlank @NonNull Date challenge_ts,
+                             @NotBlank @NonNull String hostname, String message) {
         super(success);
         this.challenge_ts = challenge_ts;
         this.hostname = hostname;

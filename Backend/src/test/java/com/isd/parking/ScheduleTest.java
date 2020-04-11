@@ -1,6 +1,6 @@
 package com.isd.parking;
 
-import com.isd.parking.service.StatisticsService;
+import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ScheduleTest {
     @Test
     @Scheduled(fixedDelay = 5000)
     public void scheduleFixedDelayTask() {
-        StatisticsService statisticsService = mock(StatisticsService.class);
+        StatisticsServiceImpl statisticsService = mock(StatisticsServiceImpl.class);
 
         log.info("Fixed delay task executing - " + System.currentTimeMillis() / 1000);
 

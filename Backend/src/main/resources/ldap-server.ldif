@@ -328,17 +328,18 @@ updatedAt: 2020-03-31T17:38:54.565860900
 passwordUpdatedAt: 2020-03-31T17:38:54.565860900
 vkid: 70434057
 
-dn: uid=social-b7b7150b,ou=people,dc=isd,dc=com
+dn: uid=amazonUser,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
 objectClass: inetOrgPerson
-uid: social-b7b7150b
+uid: amazonUser
 accountState: ENABLED
-cn: Alexei
+cn: Alexei Test
 email: aleks7900@gmail.com
 creationDate: 2020-04-01T16:44:41.922696
-updatedAt: 2020-04-01T16:47:27.863193300
+updatedAt: 2020-04-11T17:04:57.699062800
 passwordUpdatedAt: 2020-04-01T16:44:41.922696
 aid: amzn1.account.AGYY3GUIQYVMPSQ6WWMODJ4QDF5Q
+sn: Test
 

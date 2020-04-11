@@ -65,7 +65,9 @@ public class UserLdapClient {
     private String ldapPasswordAttribute;
 
     @Autowired
-    public UserLdapClient(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate, LdapContextSource ldapContextSource, UserLdapFileRepository userLdapFileRepository, CustomBcryptPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
+    public UserLdapClient(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate,
+                          LdapContextSource ldapContextSource, UserLdapFileRepository userLdapFileRepository,
+                          CustomBcryptPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
         this.ldapTemplate = ldapTemplate;
         this.ldapContextSource = ldapContextSource;
         this.userLdapFileRepository = userLdapFileRepository;
@@ -85,30 +87,24 @@ public class UserLdapClient {
     public Boolean authenticate(String uid, String password) {
         log.info(methodMsgStatic(""));
         AndFilter filter = new AndFilter();
-        filter.and(new EqualsFilter("uid", uid));
+        filter.and(new EqualsFilter(USER_UID_ATTRIBUTE, uid));
 
         log.info(methodMsgStatic("" + findById(uid)));
 
         return ldapTemplate.authenticate(ldapSearchBase, filter.encode(), passwordEncoder.encode(password));
     }
 
-    /*private static javax.naming.Name bindDN(String uid) {
-        @SuppressWarnings("deprecation")
-        javax.naming.Name name = new DistinguishedName("uid=" + uid + ",ou=people");
-        return name;
-    }*/
-
     private Name buildDn(UserLdap user) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
-            .add("uid", user.getUid())
+            .add(USER_UID_ATTRIBUTE, user.getUid())
             .build();
     }
 
     private Name bindDnByUid(String uid) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
-            .add("uid", uid)
+            .add(USER_UID_ATTRIBUTE, uid)
             .build();
     }
 
@@ -136,27 +132,6 @@ public class UserLdapClient {
         return true;
     }
 
-    /*private Attributes mapUserAttributes(UserLdap user) {
-        Attribute objectClass = new BasicAttribute("objectClass");
-        {
-            for (String objClass : personObjectClasses) {
-                objectClass.add(objClass);
-            }
-        }
-        Attributes userAttributes = new BasicAttributes();
-        userAttributes.put(objectClass);
-        userAttributes.put("uid", user.getUid());
-        userAttributes.put("cn", user.getCn());
-        userAttributes.put("sn", user.getSn());
-        userAttributes.put("email", user.getEmail());
-        userAttributes.put("accountState", user.getAccountState().toString());
-        userAttributes.put("userPassword", user.getUserPassword().getBytes());
-
-        log.info(methodMsgStatic(" mapUserAttributes QQQQQQQQQQ" + userAttributes));
-
-        return userAttributes;
-    }*/
-
     public boolean updateUser(UserLdap user) {
         log.info(methodMsgStatic(""));
         // upd in in-memory server
@@ -175,6 +150,15 @@ public class UserLdapClient {
         ldapTemplate.modifyAttributes(bindDnByUid(uid), new ModificationItem[]{item});
         // update in .ldif file
         userLdapFileRepository.update(uid, attributeName, attributeValue);
+
+        return true;
+    }
+
+    public boolean updateUsername(String username, String newUsername) {
+        // upd in in-memory server
+        ldapTemplate.rename(bindDnByUid(username), bindDnByUid(newUsername));
+        // update in .ldif file
+        userLdapFileRepository.update(username, USER_UID_ATTRIBUTE, newUsername);
 
         return true;
     }
@@ -221,14 +205,18 @@ public class UserLdapClient {
 
         return true;
     }
-
     /*
      * (non-Javadoc)
      * @see ldap.advance.example.UserRepositoryIntf#remove(java.lang.String)
      */
-    public boolean deleteById(String uid) {
+
+    public boolean deleteUserById(String uid) {
         log.info(methodMsgStatic(""));
+        // del from in-memory server
         ldapTemplate.unbind(bindDnByUid(uid));
+        // delete from .ldif file
+        deleteEntryFromLdifFile(uid);
+
         return true;
     }
 
@@ -247,7 +235,7 @@ public class UserLdapClient {
     public String getAuthoritiesMembershipById(final String uid) {
         log.info(methodMsgStatic(""));
         List<String> rolesList = ldapTemplate.search(
-            ldapSearchBase, "uid=" + uid, new AuthoritiesAttributesMapper());
+            ldapSearchBase, USER_UID_ATTRIBUTE + "=" + uid, new AuthoritiesAttributesMapper());
         if (rolesList != null && !rolesList.isEmpty()) {
             return rolesList.get(0);
         }
@@ -296,40 +284,40 @@ public class UserLdapClient {
         controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         return ldapTemplate.search(DistinguishedName.EMPTY_PATH, "(objectclass=person)", controls, new UserAttributesMapper());
     }
-
     /*
      * (non-Javadoc)
      *
      * @see ldap.advance.example.UserRepositoryIntf#getUserDetails(java.lang.String)
      */
+
     public UserLdap getUserDetails(String uid) {
         log.info(methodMsgStatic(""));
-        List<UserLdap> list = ldapTemplate.search(query().base(ldapSearchBase).where("uid").is(uid), new UserAttributesMapper());
+        List<UserLdap> list = ldapTemplate.search(query().base(ldapSearchBase).where(USER_UID_ATTRIBUTE).is(uid), new UserAttributesMapper());
         if (list != null && !list.isEmpty()) {
             return list.get(0);
         }
         return null;
     }
-
     /*
      * (non-Javadoc)
      *
      * @see ldap.advance.example.UserRepositoryIntf#getUserDetail(java.lang.String)
      */
+
     public String getUserDetail(String uid) {
         log.info(methodMsgStatic(""));
-        List<String> results = ldapTemplate.search(query().base(ldapSearchBase).where("uid").is(uid), new MultipleAttributesMapper());
+        List<String> results = ldapTemplate.search(query().base(ldapSearchBase).where(USER_UID_ATTRIBUTE).is(uid), new MultipleAttributesMapper());
         if (results != null && !results.isEmpty()) {
             return results.get(0);
         }
         return " UserDetails for " + uid + " not found .";
     }
-
     /*
      * (non-Javadoc)
      *
      * @see ldap.advance.example.UserRepositoryIntf#getAllUserNames()
      */
+
     public List<String> getAllUserNames() {
         log.info(methodMsgStatic(""));
         LdapQuery query = query().base(ldapSearchBase);
@@ -382,7 +370,7 @@ public class UserLdapClient {
             // .base(ldapSearchBase)
             .where(OBJECT_CLASS).is("person")
             .and(social + "id").like(id)
-            .and("uid").isPresent();
+            .and(USER_UID_ATTRIBUTE).isPresent();
         log.info(methodMsgStatic("Query " + query));
         return query;
     }
@@ -399,7 +387,7 @@ public class UserLdapClient {
             .attributes("cn")
             .where(OBJECT_CLASS).is("person")
             .and("sn").like(lastName)
-            .and("uid").isPresent();
+            .and(USER_UID_ATTRIBUTE).isPresent();
 
         return ldapTemplate.search(query, new UserAttributesMapperShort());
     }
@@ -409,7 +397,7 @@ public class UserLdapClient {
         LdapQuery query = getBaseLdapQuery()
             .where(OBJECT_CLASS).is("person")
             .and("email").like(email)
-            .and("uid").isPresent();
+            .and(USER_UID_ATTRIBUTE).isPresent();
 
         return ldapTemplate.search(query, new UserAttributesMapper());
     }
@@ -448,7 +436,7 @@ public class UserLdapClient {
         log.info(methodMsgStatic(""));
         return ldapTemplate.search(
             ldapSearchBase,
-            "uid=" + uid,
+            USER_UID_ATTRIBUTE + "=" + uid,
             (AttributesMapper<String>) attrs -> (String) attrs
                 .get(attributeName)
                 .get());

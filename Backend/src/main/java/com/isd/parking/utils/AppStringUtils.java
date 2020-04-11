@@ -18,12 +18,16 @@ import static org.apache.commons.lang.StringUtils.strip;
 @Slf4j
 public class AppStringUtils {
 
-    // public String collectionToString(Collection e) {
-    //     return Arrays.toString(e.toArray()).replace("[", "").replace("]", "");
-    // }
-
     public String collectionToString(Collection e) {
         return strip(strip(Arrays.toString(e.toArray()), "["), "]");
+    }
+
+    public static String convertArrayToString(String[] strArray, String separator) {
+        return String.join(separator, strArray);
+    }
+
+    public static String convertArrayToCommaSeparatedString(String[] strArray) {
+        return String.join(",", strArray);
     }
 
     public static String generateCommonLangPassword() {

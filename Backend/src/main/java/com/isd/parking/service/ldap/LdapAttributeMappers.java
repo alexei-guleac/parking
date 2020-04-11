@@ -24,15 +24,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.isd.parking.models.users.UserLdap.*;
 import static com.isd.parking.service.ldap.LdapConstants.*;
 import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 
 
 @Slf4j
 public class LdapAttributeMappers {
-
-    private final static ArrayList<String> userLdapClassAttributesList =
-        (ArrayList<String>) new ReflectionMethods().getFieldsNames(UserLdap.class);
 
     static Attributes buildAttributes(UserLdap user) {
         Attribute objectClass = new BasicAttribute("objectClass");
@@ -102,22 +100,6 @@ public class LdapAttributeMappers {
         return userEntry;
     }
 
-    private static void setUserLdapProperty(UserLdap user, String name, Object value) {
-        ReflectionMethods.setPropertyValue(user, name, value);
-    }
-
-    private static void setUserLdapProperty(UserLdap user, String name, Attributes values) throws NamingException {
-        log.info(methodMsgStatic("set value " + values.get(name).get()));
-        ReflectionMethods.setPropertyValue(user, name, values.get(name).get().toString());
-    }
-
-    private static Object getUserLdapProperty(UserLdap user, String name) {
-        return ReflectionMethods.getPropertyValue(user, name);
-    }
-
-    private static String getUserLdapStringProperty(UserLdap user, String name) {
-        return ReflectionMethods.getStringPropertyValue(user, name);
-    }
 
     /**
      * Custom user attributes mapper, maps the attributes to the person POJO

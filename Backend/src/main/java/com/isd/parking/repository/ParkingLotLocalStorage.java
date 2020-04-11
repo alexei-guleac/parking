@@ -23,13 +23,14 @@ public class ParkingLotLocalStorage {
     @Value("${parking.lots.number}")
     private String totalParkingLotsNumber;
 
-    @Autowired
-    private ColorConsoleOutput console;
+    private final ColorConsoleOutput console;
 
     //Local in-memory storage of parking lots
     private final HashMap<Long, ParkingLot> parkingMap = new HashMap<>();
 
-    public ParkingLotLocalStorage() {
+    @Autowired
+    public ParkingLotLocalStorage(ColorConsoleOutput console) {
+        this.console = console;
     }
 
     /**

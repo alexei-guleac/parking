@@ -1,7 +1,7 @@
 package com.isd.parking.controller.web;
 
 import com.isd.parking.models.StatisticsRecord;
-import com.isd.parking.service.StatisticsService;
+import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,10 +20,10 @@ import static com.isd.parking.controller.ApiEndpoints.statistics;
 @Slf4j
 public class StatisticsController {
 
-    private final StatisticsService statisticsService;
+    private final StatisticsServiceImpl statisticsService;
 
     @Autowired
-    public StatisticsController(StatisticsService statisticsService) {
+    public StatisticsController(StatisticsServiceImpl statisticsService) {
         this.statisticsService = statisticsService;
     }
 

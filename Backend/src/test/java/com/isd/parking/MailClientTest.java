@@ -3,7 +3,7 @@ package com.isd.parking;
 
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.isd.parking.service.EmailSenderService;
+import com.isd.parking.service.implementations.EmailSenderServiceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class MailClientTest {
     private GreenMail smtpServer;
 
     @Autowired
-    private EmailSenderService mailClient;
+    private EmailSenderServiceImpl mailClient;
 
     @Before
     public void setUp() throws Exception {

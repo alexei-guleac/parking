@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.isd.parking.service.ldap.LdapConstants.LDIF_FILE_PATH;
-import static com.isd.parking.service.ldap.LdapConstants.USER_PASSWORD_ATTRIBUTE;
+import static com.isd.parking.service.ldap.LdapConstants.*;
+import static com.isd.parking.utils.AppStringUtils.convertArrayToCommaSeparatedString;
 import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 import static org.apache.commons.lang.StringUtils.stripEnd;
 
@@ -59,8 +59,8 @@ public class LdapFileUtils {
 
     public static void updateEntryInLdifFile(String uid, @Nullable String attributeName, @Nullable String attributeValue) {
         log.info(methodMsgStatic("uid searching in " + uid));
-        List<Entry> entries = getEntriesFromLdifFile();
-        log.info(methodMsgStatic("entries " + entries));
+        List<Entry> entries = readEntriesFromLdifFile();
+        // log.info(methodMsgStatic("entries " + entries));
 
         EntryContainer foundEntry = foundEntryByUid(uid, entries);
         int found = foundEntry.getIndex();
@@ -75,13 +75,21 @@ public class LdapFileUtils {
                 boolean retrievePassword = true;
                 if (attributeName != null && attributeValue != null) {
                     entry.setAttribute(attributeName, attributeValue);
+
+                    if (attributeName.equals(USER_UID_ATTRIBUTE)) {
+                        String[] entryDN = entry.getDN().split(",");
+                        entryDN[0] = USER_UID_ATTRIBUTE + "=" + attributeValue;
+                        entry.setDN(convertArrayToCommaSeparatedString(entryDN));
+                        log.info(methodMsgStatic("ENTRY test " + entry.getDN()));
+                    }
+
                     if (attributeName.equals(USER_PASSWORD_ATTRIBUTE)) {
                         retrievePassword = false;
                     }
                 }
                 if (retrievePassword) {
                     // rebind original password
-                    log.info(methodMsgStatic("PASS get"));
+                    // log.info(methodMsgStatic("PASS get"));
                     String pass = getUserPassFromAttribute(entries, found);
                     if (pass != null) {
                         entry.setAttribute(USER_PASSWORD_ATTRIBUTE, pass);
@@ -90,7 +98,7 @@ public class LdapFileUtils {
                     setPasswordUpdatedNow(entry);
                 }
                 setUpdatedNow(entry);
-                log.info(methodMsgStatic("ENTRY after map " + entry));
+                // log.info(methodMsgStatic("ENTRY after map " + entry));
                 entries.set(found, entry);
             }
         }
@@ -119,7 +127,7 @@ public class LdapFileUtils {
 
     private static String getUserPassFromAttribute(List<Entry> entries, int found) {
         String pass = null;
-        log.info(methodMsgStatic("PASS get pass"));
+        // log.info(methodMsgStatic("PASS get pass"));
         Attribute passAttr = entries.get(found).getAttribute(USER_PASSWORD_ATTRIBUTE);
         if (passAttr != null) {
             pass = passAttr.toString();
@@ -137,7 +145,7 @@ public class LdapFileUtils {
             //if (entries.get(i).hasAttribute(new Attribute(attrName))) {
             String attrValue = entries.get(i).getAttributeValue(attrName);
             if (attrValue != null) {
-                log.info(methodMsgStatic("ENTRY attttrr " + attrValue));
+                // log.info(methodMsgStatic("ENTRY attttrr " + attrValue));
                 if (attrValue.equals(userAttributeValue)) {
                     found = i;
                     break;
@@ -156,7 +164,7 @@ public class LdapFileUtils {
         return foundEntry("email", userAttributeValue, entries);
     }
 
-    private static List<Entry> getEntriesFromLdifFile() {
+    private static List<Entry> readEntriesFromLdifFile() {
         List<Entry> entries = null;
         try {
             entries = LDIFReader.readEntries(LDIF_FILE_PATH);
@@ -166,11 +174,29 @@ public class LdapFileUtils {
         return entries;
     }
 
+    static void deleteEntryFromLdifFile(String uid) {
+        log.info(methodMsgStatic("uid searching in " + uid));
+
+        List<Entry> entries = readEntriesFromLdifFile();
+        log.info(methodMsgStatic("entries " + entries));
+        EntryContainer foundEntry = foundEntryByUid(uid, entries);
+        log.info(methodMsgStatic("foundEntry " + foundEntry));
+        if (foundEntry.getIndex() != -1) {
+            log.info(methodMsgStatic("foundEntry.getIndex() " + foundEntry.getIndex()));
+            entries.remove(foundEntry.getIndex());
+        }
+        try {
+            writeEntriesToLdifFile(entries);
+        } catch (LdapMappingException e) {
+            e.printStackTrace();
+        }
+    }
+
     static void deleteEntryFromLdifFile(UserLdap user) {
         String email = user.getEmail();
         log.info(methodMsgStatic("email searching in " + email));
 
-        List<Entry> entries = getEntriesFromLdifFile();
+        List<Entry> entries = readEntriesFromLdifFile();
         log.info(methodMsgStatic("entries " + entries));
         EntryContainer foundEntry = foundEntryByEmail(email, entries);
         log.info(methodMsgStatic("foundEntry " + foundEntry));

@@ -33,10 +33,12 @@ import java.util.Date;
 import static com.isd.parking.security.JwtUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+
 @Slf4j
 public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
     private RequestMatcher requestMatcher;
+
     private String secretKey;
 
     public JwtTokenAuthenticationFilter(String path, String secretKey) {
@@ -84,7 +86,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             chain.doFilter(request, response);
 
         } catch (JwtExpirationException ex) {
-            throw new AccountExpiredException("Account authorization JWT token is not valid anymore. Log in again");
+            throw new AccountExpiredException("Account authorization JWT token is not valid anymore ");
         } catch (JwtBadSignatureException | ParseException | JOSEException ex) {
             throw new MalformedJwtException("Authorization JWT token is malformed");
         }

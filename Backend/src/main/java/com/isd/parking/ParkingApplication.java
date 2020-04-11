@@ -18,6 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.isd.parking.*"})
 @Profile("default")
@@ -33,6 +34,7 @@ public class ParkingApplication {
     private final LdapContextSource contextSource;
 
     private final UserLdapClient userRepository;
+
     private final GroupRepository groupRepository;
 
     private final DataSaver shutdownHandler;
@@ -40,7 +42,9 @@ public class ParkingApplication {
     private final ColorConsoleOutput console;
 
     @Autowired
-    public ParkingApplication(LdapContextSource contextSource, UserLdapClient userRepository, GroupRepository groupRepository, DataSaver shutdownHandler, ColorConsoleOutput console) {
+    public ParkingApplication(LdapContextSource contextSource, UserLdapClient userRepository,
+                              GroupRepository groupRepository, DataSaver shutdownHandler,
+                              ColorConsoleOutput console) {
         this.contextSource = contextSource;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;

@@ -1,6 +1,6 @@
 package com.isd.parking.scheduler;
 
-import com.isd.parking.service.StatisticsService;
+import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,13 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Slf4j
 public class ScheduleStatisticsDeleter {
 
-    private final StatisticsService statisticsService;
+    private final StatisticsServiceImpl statisticsService;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public ScheduleStatisticsDeleter(StatisticsService statisticsService, ColorConsoleOutput console) {
+    public ScheduleStatisticsDeleter(StatisticsServiceImpl statisticsService,
+                                     ColorConsoleOutput console) {
         this.statisticsService = statisticsService;
         this.console = console;
     }

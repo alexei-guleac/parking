@@ -56,7 +56,7 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     private ITemplateResolver textTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(1));
+        templateResolver.setOrder(1);
         templateResolver.setResolvablePatterns(Collections.singleton("text/*"));
         templateResolver.setPrefix("classpath:/templates/");
         templateResolver.setSuffix(".txt");
@@ -69,7 +69,7 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     private ITemplateResolver htmlTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(2));
+        templateResolver.setOrder(2);
         templateResolver.setResolvablePatterns(Collections.singleton("html/*"));
         templateResolver.setPrefix("classpath:/templates/");
         templateResolver.setSuffix(".html");
@@ -82,7 +82,7 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     private ITemplateResolver stringTemplateResolver() {
         final StringTemplateResolver templateResolver = new StringTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(3));
+        templateResolver.setOrder(3);
         // No resolvable pattern, will simply process as a String template everything not previously matched
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setCacheable(false);
@@ -91,9 +91,9 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     private ITemplateResolver fileTemplateResolver() {
         FileTemplateResolver templateResolver = new FileTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(4));
+        templateResolver.setOrder(4);
         templateResolver.setResolvablePatterns(Collections.singleton("files/*"));
-        templateResolver.setPrefix("classpath:/templates/"); //Change based on your environment
+        templateResolver.setPrefix("classpath:/templates/");            //Change based on your environment
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
@@ -101,29 +101,6 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateResolver.setCacheable(false);
         return templateResolver;
     }
-
-    /*@Bean
-    @Description("Thymeleaf Template Resolver")
-    public SpringResourceTemplateResolver templateResolver() {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setOrder(Integer.valueOf(5));
-        templateResolver.setPrefix("/web/views/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode("HTML5");
-
-        return templateResolver;
-    }
-
-    @Bean
-    public ThymeleafViewResolver viewResolver() {
-        ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setOrder(Integer.valueOf(6));
-        viewResolver.setTemplateEngine((ISpringTemplateEngine) templateEngine());
-        // NOTE 'order' and 'viewNames' are optional
-        viewResolver.setOrder(1);
-        viewResolver.setViewNames(new String[]{".html", ".xhtml"});
-        return viewResolver;
-    }*/
 
     /* ******************************************************************* */
     /*  GENERAL CONFIGURATION ARTIFACTS                                    */
@@ -174,14 +151,16 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
         @Override
         @Nonnull
-        public Date parse(@Nonnull final String text, @Nonnull final Locale locale) throws ParseException {
+        public Date parse(@Nonnull final String text,
+                          @Nonnull final Locale locale) throws ParseException {
             final SimpleDateFormat dateFormat = createDateFormat(locale);
             return dateFormat.parse(text);
         }
 
         @Override
         @Nonnull
-        public String print(@Nonnull final Date object, @Nonnull final Locale locale) {
+        public String print(@Nonnull final Date object,
+                            @Nonnull final Locale locale) {
             final SimpleDateFormat dateFormat = createDateFormat(locale);
             return dateFormat.format(object);
         }

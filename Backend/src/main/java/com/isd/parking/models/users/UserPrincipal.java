@@ -28,7 +28,8 @@ public class UserPrincipal implements UserDetails {
 
     private Map<String, Object> attributes;
 
-    public UserPrincipal(String username, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(String username, String email, String password,
+                         Collection<? extends GrantedAuthority> authorities) {
         this.username = username;
         this.email = email;
         this.password = password;

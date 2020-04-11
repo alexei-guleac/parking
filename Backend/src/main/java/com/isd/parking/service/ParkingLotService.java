@@ -7,6 +7,7 @@ import java.util.Optional;
 
 
 public interface ParkingLotService {
+
     List<ParkingLot> findAll();
 
     Optional<ParkingLot> findById(Long parkingLotId);

@@ -1,8 +1,8 @@
 package com.isd.parking.storage.util;
 
 import com.isd.parking.models.ParkingLot;
-import com.isd.parking.service.ParkingLotDBService;
-import com.isd.parking.service.ParkingLotLocalService;
+import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
+import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,15 @@ import javax.annotation.PreDestroy;
 @Slf4j
 public class DataSaver {
 
-    private final ParkingLotLocalService parkingLotLocalService;
+    private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
-    private final ParkingLotDBService parkingLotDBService;
+    private final ParkingLotDBServiceImpl parkingLotDBService;
 
     private final ColorConsoleOutput console;
 
     @Autowired
-    public DataSaver(ParkingLotLocalService parkingLotLocalService, ParkingLotDBService parkingLotDBService, ColorConsoleOutput console){
+    public DataSaver(ParkingLotLocalServiceImpl parkingLotLocalService,
+                     ParkingLotDBServiceImpl parkingLotDBService, ColorConsoleOutput console) {
         this.parkingLotLocalService = parkingLotLocalService;
         this.parkingLotDBService = parkingLotDBService;
         this.console = console;

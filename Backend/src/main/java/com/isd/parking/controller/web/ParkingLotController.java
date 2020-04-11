@@ -3,8 +3,8 @@ package com.isd.parking.controller.web;
 import com.isd.parking.exceptions.ResourceNotFoundException;
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.models.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotLocalService;
-import com.isd.parking.service.StatisticsService;
+import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import com.isd.parking.storage.util.DataLoader;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +35,9 @@ public class ParkingLotController {
 
     /*private final ParkingLotDBService parkingLotDBService;*/
 
-    private final ParkingLotLocalService parkingLotLocalService;
+    private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
-    private final StatisticsService statisticsService;
+    private final StatisticsServiceImpl statisticsService;
 
     private final LdapContextSource contextSource;
 
@@ -46,7 +46,9 @@ public class ParkingLotController {
     private final DataLoader loader;
 
     @Autowired
-    public ParkingLotController(ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService, LdapContextSource contextSource, ColorConsoleOutput console, DataLoader loader) {
+    public ParkingLotController(ParkingLotLocalServiceImpl parkingLotLocalService,
+                                StatisticsServiceImpl statisticsService,
+                                LdapContextSource contextSource, ColorConsoleOutput console, DataLoader loader) {
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
         this.contextSource = contextSource;
@@ -154,6 +156,6 @@ public class ParkingLotController {
         //saving in local Java memory
         parkingLotLocalService.save(parkingLot);
         //save new statistics record to database
-        statisticsService.addStatisticsRecord(parkingLot);
+        statisticsService.save(parkingLot);
     }
 }

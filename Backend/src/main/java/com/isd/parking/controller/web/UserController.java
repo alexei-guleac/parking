@@ -3,17 +3,15 @@ package com.isd.parking.controller.web;
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.models.users.User;
 import com.isd.parking.models.users.UserLdap;
+import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.security.AccountConfirmationPeriods;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import com.isd.parking.security.model.AccountOperation;
 import com.isd.parking.security.model.ConfirmationToken;
-import com.isd.parking.security.model.payload.ActionSuccessResponse;
-import com.isd.parking.security.model.payload.ForgotPassRequest;
-import com.isd.parking.security.model.payload.RecaptchaResponse;
-import com.isd.parking.security.model.payload.ResetPasswordRequest;
-import com.isd.parking.service.ConfirmationTokenService;
-import com.isd.parking.service.EmailSenderService;
+import com.isd.parking.security.model.payload.*;
 import com.isd.parking.service.RestService;
+import com.isd.parking.service.implementations.ConfirmationTokenServiceImpl;
+import com.isd.parking.service.implementations.EmailSenderServiceImpl;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.AppDateUtils;
 import com.isd.parking.utils.ColorConsoleOutput;
@@ -32,7 +30,10 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.isd.parking.controller.ApiEndpoints.*;
-import static com.isd.parking.utils.AppDateUtils.isBeforeNow;
+import static com.isd.parking.models.users.UserLdap.getUserLdapProperty;
+import static com.isd.parking.models.users.UserLdap.userLdapClassAttributesList;
+import static com.isd.parking.service.ldap.LdapConstants.USER_UID_ATTRIBUTE;
+import static com.isd.parking.utils.AppDateUtils.isDateBeforeNow;
 import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -51,9 +52,11 @@ public class UserController {
 
     private final RestService restService;
 
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceImpl confirmationTokenService;
 
-    private final EmailSenderService emailSenderService;
+    private final EmailSenderServiceImpl emailSenderService;
+
+    private final UserMapper userMapper;
 
     private final ColorConsoleOutput console;
 
@@ -65,12 +68,14 @@ public class UserController {
 
     @Autowired
     public UserController(UserLdapClient userLdapClient,
-                          RestService restService, ConfirmationTokenService confirmationTokenService, EmailSenderService emailSenderService,
-                          ColorConsoleOutput console) {
+                          RestService restService, ConfirmationTokenServiceImpl confirmationTokenService,
+                          EmailSenderServiceImpl emailSenderService,
+                          UserMapper userMapper, ColorConsoleOutput console) {
         this.userLdapClient = userLdapClient;
         this.restService = restService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
+        this.userMapper = userMapper;
         this.console = console;
     }
 
@@ -166,7 +171,8 @@ public class UserController {
 
     // Receive the address and send an email
     @RequestMapping(value = forgotPassword, method = POST)
-    public ResponseEntity<?> forgotUserPassword(@RequestBody ForgotPassRequest request) throws IOException, MessagingException {
+    public ResponseEntity<?> forgotUserPassword(@RequestBody ForgotPassRequest request)
+        throws IOException, MessagingException {
 
         final String userEmail = request.getEmail();
         UserLdap existingUser = userLdapClient.getUserByEmail(userEmail);
@@ -257,7 +263,76 @@ public class UserController {
 
     private boolean assertPassValidForChange(LocalDateTime passwordUpdatedAt) {
         log.info("expires " + passwordUpdatedAt.plusDays(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS));
-        return isBeforeNow(passwordUpdatedAt.plusDays(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS), AccountConfirmationPeriods.MAX_CLOCK_SKEW_MINUTES);
+        return isDateBeforeNow(passwordUpdatedAt.plusDays(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS),
+            AccountConfirmationPeriods.MAX_CLOCK_SKEW_MINUTES);
+    }
+
+    @ResponseBody
+    @PostMapping("/" + profile)
+    public User getUserByUsername(@RequestBody String username) {
+        UserLdap userFound = userLdapClient.findById(username);
+        log.info("profile " + username);
+        return userMapper.userLdapToUser(userFound);
+    }
+
+    @ResponseBody
+    @PostMapping("/" + profileUpdate)
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
+
+        final User user = updateUserRequest.getUser();
+        String username = updateUserRequest.getUsername();
+
+        log.info("username " + username);
+        log.info("profile " + user);
+        UserLdap userFound = userLdapClient.findById(updateUserRequest.getUsername());
+
+        if (userFound != null) {
+            log.info(console.classMsg(getClass().getSimpleName(), " User exists: ") + blTxt(String.valueOf(userFound)));
+
+            UserLdap userForUpdate = userMapper.userToUserLdap(user);
+            log.info("userForUpdate " + userForUpdate);
+            log.info("fields " + userLdapClassAttributesList);
+            for (String field : userLdapClassAttributesList) {
+                Object propertyValue = getUserLdapProperty(userForUpdate, field);
+                if (propertyValue != null) {
+                    log.info("field updated  " + propertyValue);
+                    if (field.equals(USER_UID_ATTRIBUTE)) {
+                        userLdapClient.updateUsername(username, String.valueOf(propertyValue));
+                        username = String.valueOf(propertyValue);
+                    } else {
+                        userLdapClient.updateUser(username, field, String.valueOf(propertyValue));
+                    }
+                }
+            }
+            return ResponseEntity.ok(new ActionSuccessResponse(true));
+
+        } else {
+            log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(String.valueOf(userFound)));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("User doesn't exists on the server");
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/" + profileDelete)
+    public ResponseEntity<?> deleteUser(@RequestBody String uid) {
+
+        // final String uid = new JSONObject(username).getString("username");
+        log.info("username " + uid);
+        UserLdap userFound = userLdapClient.findById(uid);
+
+        if (userFound != null) {
+            log.info(console.classMsg(getClass().getSimpleName(), " User exists: ") + blTxt(String.valueOf(userFound)));
+
+            userLdapClient.deleteUserById(uid);
+
+            return ResponseEntity.ok(new ActionSuccessResponse(true));
+
+        } else {
+            log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(String.valueOf(userFound)));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("User doesn't exists on the server");
+        }
     }
 
     @ResponseBody

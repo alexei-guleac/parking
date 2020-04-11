@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 
+
 @Configuration
 public class PasswordEncoding {
 

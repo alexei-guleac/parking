@@ -9,8 +9,8 @@ import com.isd.parking.security.model.payload.RegistrationSuccessResponse;
 import com.isd.parking.security.model.payload.register.DeviceInfo;
 import com.isd.parking.security.model.payload.register.RegistrationRequest;
 import com.isd.parking.security.model.payload.register.SocialRegisterRequest;
-import com.isd.parking.service.ConfirmationTokenService;
-import com.isd.parking.service.EmailSenderService;
+import com.isd.parking.service.implementations.ConfirmationTokenServiceImpl;
+import com.isd.parking.service.implementations.EmailSenderServiceImpl;
 import com.isd.parking.service.ldap.UserLdapClient;
 import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
@@ -40,9 +40,9 @@ public class RegistrationController {
 
     private final UserLdapClient userLdapClient;
 
-    private final ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenServiceImpl confirmationTokenService;
 
-    private final EmailSenderService emailSenderService;
+    private final EmailSenderServiceImpl emailSenderService;
 
     private final ColorConsoleOutput console;
 
@@ -53,8 +53,8 @@ public class RegistrationController {
 
     @Autowired
     public RegistrationController(UserLdapClient userLdapClient,
-                                  ConfirmationTokenService confirmationTokenService,
-                                  EmailSenderService emailSenderService,
+                                  ConfirmationTokenServiceImpl confirmationTokenService,
+                                  EmailSenderServiceImpl emailSenderService,
                                   ColorConsoleOutput console, UserMapper userMapper) {
         this.userLdapClient = userLdapClient;
         this.confirmationTokenService = confirmationTokenService;

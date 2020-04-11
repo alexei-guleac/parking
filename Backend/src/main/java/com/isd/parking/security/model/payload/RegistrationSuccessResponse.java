@@ -19,7 +19,8 @@ public class RegistrationSuccessResponse extends ActionSuccessResponse {
     @NonNull
     private boolean confirmationSent;
 
-    public RegistrationSuccessResponse(@NotBlank @NonNull boolean success, @NotBlank @NonNull boolean confirmationSent) {
+    public RegistrationSuccessResponse(@NotBlank @NonNull boolean success,
+                                       @NotBlank @NonNull boolean confirmationSent) {
         super(success);
         this.confirmationSent = confirmationSent;
     }

@@ -10,6 +10,12 @@ public class ApiEndpoints {
 
     public static final String arduinoWS = "/demo";
 
+    public static final String profile = "/profile";
+
+    public static final String profileUpdate = "/profile" + "/update";
+
+    public static final String profileDelete = "/profile" + "/delete";
+
     public static final String users = "/users";
 
     public static final String parking = "/parking";

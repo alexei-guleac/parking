@@ -12,8 +12,13 @@ public
 class LdapConstants {
 
     static String LDAP_BASE_DN;
+
     static String LDIF_FILE_PATH;
+
+    public static String USER_UID_ATTRIBUTE = "uid";
+
     static String USER_PASSWORD_ATTRIBUTE = "userPassword";
+
     private static String LDIF_FILE_NAME;
 
     @Value("${spring.ldap.embedded.ldif}")

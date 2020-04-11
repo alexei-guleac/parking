@@ -17,6 +17,7 @@ import static java.util.Collections.singletonMap;
 import static org.apache.commons.httpclient.HttpStatus.SC_FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+
 /**
  * The RestAccessDeniedHandler is called by the ExceptionTranslationFilter to handle all AccessDeniedExceptions.
  * These exceptions are thrown when the authentication is valid but access is not authorized.

@@ -2,9 +2,9 @@ package com.isd.parking.controller.arduino;
 
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.models.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotDBService;
-import com.isd.parking.service.ParkingLotLocalService;
-import com.isd.parking.service.StatisticsService;
+import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
+import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +28,19 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
 @Component
 public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
-    private final ParkingLotDBService parkingLotDBService;
+    private final ParkingLotDBServiceImpl parkingLotDBService;
 
-    private final ParkingLotLocalService parkingLotLocalService;
+    private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
-    private final StatisticsService statisticsService;
+    private final StatisticsServiceImpl statisticsService;
 
     /* security token to verify Arduino board connection */
     private final String securityToken = "4a0a8679643673d083b23f52c21f27cac2b03fa2";           //{SHA1}arduino
 
     @Autowired
-    public ArduinoWebSocketHandler(ParkingLotDBService parkingLotDBService, ParkingLotLocalService parkingLotLocalService, StatisticsService statisticsService) {
+    public ArduinoWebSocketHandler(ParkingLotDBServiceImpl parkingLotDBService,
+                                   ParkingLotLocalServiceImpl parkingLotLocalService,
+                                   StatisticsServiceImpl statisticsService) {
         this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
@@ -76,12 +78,10 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
         String arduinoToken = msgObject.getString("secure_key");
 
         if (arduinoToken.equals(securityToken)) {
-
             String lotId = msgObject.getString("id");
             String parkingLotStatus = msgObject.getString("status");
 
             Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(Long.valueOf(lotId));
-
             parkingLotOptional.ifPresent(parkingLot -> {
 
                 if (!parkingLotStatus.equals(String.valueOf(parkingLot.getStatus()))) {
@@ -103,7 +103,8 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      * @param status  - session status received
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession session,
+                                      CloseStatus status) {
         log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt( " changed status to " + status));
     }
 }

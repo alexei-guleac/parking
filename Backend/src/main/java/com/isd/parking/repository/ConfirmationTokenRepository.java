@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, String> {
+
     ConfirmationToken findByConfirmationToken(String confirmationToken);
 
     ConfirmationToken findFirstByUidOrderByCreatedAtDesc(String username);

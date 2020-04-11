@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AppDateUtils {
 
-    public static boolean isBeforeNow(LocalDateTime subjectDate, int clockSkewMinutes) {
+    public static boolean isDateBeforeNow(LocalDateTime subjectDate, int clockSkewMinutes) {
         // log.info(methodMsgStatic("subjectDate " + subjectDate));
         // log.info(methodMsgStatic("LocalDateTime.now().minusMinutes(clockSkewMinutes)" + LocalDateTime.now().minusMinutes(clockSkewMinutes)));
         return subjectDate.isBefore(LocalDateTime.now().minusMinutes(clockSkewMinutes));
     }
 
-    public static boolean isAfterNow(LocalDateTime subjectDate, int clockSkewMinutes) {
+    public static boolean isDateAfterNow(LocalDateTime subjectDate, int clockSkewMinutes) {
         return subjectDate.isAfter(LocalDateTime.now().plusMinutes(clockSkewMinutes));
     }
 

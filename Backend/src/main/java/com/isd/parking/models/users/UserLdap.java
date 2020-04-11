@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.security.AccountConfirmationPeriods;
+import com.isd.parking.utils.ReflectionMethods;
 import lombok.Data;
 import org.springframework.ldap.odm.annotations.Attribute;
 import org.springframework.ldap.odm.annotations.DnAttribute;
@@ -12,13 +13,16 @@ import org.springframework.ldap.odm.annotations.Entry;
 import org.springframework.ldap.odm.annotations.Id;
 
 import javax.naming.Name;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
-import static com.isd.parking.utils.AppDateUtils.isAfterNow;
-import static com.isd.parking.utils.AppDateUtils.isBeforeNow;
+import static com.isd.parking.utils.AppDateUtils.isDateAfterNow;
+import static com.isd.parking.utils.AppDateUtils.isDateBeforeNow;
 import static com.isd.parking.utils.AppStringUtils.isCyrillicString;
 import static com.isd.parking.utils.AppStringUtils.transliterateCyrillicToLatin;
 import static com.isd.parking.utils.ReflectionMethods.setPropertyValue;
@@ -87,15 +91,18 @@ public class UserLdap {
     private @Attribute(name = "gid")
     String gid;
 
-    @JsonProperty()
-    @JsonAlias({"twid"})
-    private @Attribute(name = "twid")
-    String twid;
+    public final static ArrayList<String> userLdapClassAttributesList =
+        (ArrayList<String>) new ReflectionMethods().getFieldsNames(UserLdap.class);
 
     @JsonProperty()
     @JsonAlias({"msid"})
     private @Attribute(name = "msid")
     String msid;
+
+    /*@JsonProperty()
+    @JsonAlias({"twid"})
+    private @Attribute(name = "twid")
+    String twid;*/
 
     @JsonProperty()
     @JsonAlias({"gitid"})
@@ -103,24 +110,19 @@ public class UserLdap {
     String gitid;
 
     @JsonProperty()
-    @JsonAlias({"instid"})
-    private @Attribute(name = "instid")
-    String instid;
-
-    @JsonProperty()
     @JsonAlias({"aid"})
     private @Attribute(name = "aid")
     String aid;
+
+    /*@JsonProperty()
+    @JsonAlias({"linkid"})
+    private @Attribute(name = "linkid")
+    String linkid;*/
 
     @JsonProperty()
     @JsonAlias({"vkid"})
     private @Attribute(name = "vkid")
     String vkid;
-
-    @JsonProperty()
-    @JsonAlias({"linkid"})
-    private @Attribute(name = "linkid")
-    String linkid;
 
     public UserLdap() {
     }
@@ -157,6 +159,10 @@ public class UserLdap {
         setCreatedNow();
     }
 
+    public static void setUserLdapProperty(UserLdap user, String name, Object value) {
+        ReflectionMethods.setPropertyValue(user, name, value);
+    }
+
     private void setCreatedNow() {
         LocalDateTime now = LocalDateTime.now();
         this.creationDate = now;
@@ -188,14 +194,13 @@ public class UserLdap {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public boolean accountConfirmationIsExpired() {
-        return this.accountState == AccountState.WAITING_CONFIRMATION
-            && isBeforeNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
+    public static void setUserLdapProperty(UserLdap user, String name, Attributes values) throws NamingException {
+        // log.info(methodMsgStatic("set value " + values.get(name).get()));
+        ReflectionMethods.setPropertyValue(user, name, values.get(name).get().toString());
     }
 
-    public boolean accountConfirmationValid() {
-        return getAccountState() == AccountState.WAITING_CONFIRMATION
-            && isAfterNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
+    public static Object getUserLdapProperty(UserLdap user, String name) {
+        return ReflectionMethods.getPropertyValue(user, name);
     }
 
     private void checkCyrillicName() {
@@ -224,4 +229,26 @@ public class UserLdap {
         checkCyrillicName();
         System.out.println("prepareSocialUser");
     }
+
+    public static String getUserLdapStringProperty(UserLdap user, String name) {
+        return ReflectionMethods.getStringPropertyValue(user, name);
+    }
+
+    public String getFirstname() {
+        if (this.cn != null) {
+            return this.cn.split(" ")[0];
+        } else return null;
+    }
+
+    public boolean accountConfirmationIsExpired() {
+        return this.accountState == AccountState.WAITING_CONFIRMATION
+            && isDateBeforeNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
+    }
+
+    public boolean accountConfirmationValid() {
+        return getAccountState() == AccountState.WAITING_CONFIRMATION
+            && isDateAfterNow(getCreationDate().plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES), 0);
+    }
+
+
 }
