@@ -3,6 +3,9 @@ package com.isd.parking.controller;
 import org.springframework.stereotype.Component;
 
 
+/**
+ * Backend application API endpoints
+ */
 @Component
 public class ApiEndpoints {
 

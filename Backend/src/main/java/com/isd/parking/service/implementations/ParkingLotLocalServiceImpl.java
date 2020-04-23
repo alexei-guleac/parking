@@ -3,7 +3,6 @@ package com.isd.parking.service.implementations;
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.repository.ParkingLotLocalStorage;
 import com.isd.parking.service.ParkingLotService;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +10,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
+
 
 /**
  * Parking Lot Local Service class for local Java memory repository
  * Contains methods for
- * getting all parking lots,
- * get parking lot by id,
- * saving (in this case updating) parking lot
+ * - getting all parking lots,
+ * - get parking lot by id,
+ * - saving (in this case updating) parking lot
  */
 @Service
 @Slf4j
@@ -25,12 +26,9 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
 
     private final ParkingLotLocalStorage parkingLotLocalStorage;
 
-    private final ColorConsoleOutput console;
-
     @Autowired
-    public ParkingLotLocalServiceImpl(ParkingLotLocalStorage parkingLotLocalStorage, ColorConsoleOutput console) {
+    public ParkingLotLocalServiceImpl(ParkingLotLocalStorage parkingLotLocalStorage) {
         this.parkingLotLocalStorage = parkingLotLocalStorage;
-        this.console = console;
     }
 
     /**
@@ -40,7 +38,7 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
      */
     @Override
     public List<ParkingLot> findAll() {
-        log.info(console.classMsg(getClass().getSimpleName(),"get all parking lots list executed..."));
+        log.info(methodMsg("get all parking lots list executed..."));
         return parkingLotLocalStorage.findAll();
     }
 
@@ -51,7 +49,7 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
      */
     @Override
     public Optional<ParkingLot> findById(Long parkingLotId) {
-        log.info(console.classMsg(getClass().getSimpleName(),"get parking lot by id executed..."));
+        log.info(methodMsg("get parking lot by id executed..."));
         return parkingLotLocalStorage.findById(parkingLotId);
     }
 
@@ -63,13 +61,18 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
      */
     @Override
     public ParkingLot save(ParkingLot parkingLot) {
-        log.info(console.classMsg(getClass().getSimpleName(),"save parking lot executed..."));
+        log.info(methodMsg("save parking lot executed..."));
         return parkingLotLocalStorage.save(parkingLot);
     }
 
+    /**
+     * Count parking lots in local repository
+     *
+     * @return - parking lots total count
+     */
     @Override
     public long countAll() {
-        log.info(console.classMsg(getClass().getSimpleName(),"count parking lots..."));
+        log.info(methodMsg("count parking lots..."));
         return parkingLotLocalStorage.count();
     }
 }

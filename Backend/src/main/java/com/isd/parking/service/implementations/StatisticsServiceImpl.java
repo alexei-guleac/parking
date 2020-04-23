@@ -4,7 +4,6 @@ import com.isd.parking.models.ParkingLot;
 import com.isd.parking.models.StatisticsRecord;
 import com.isd.parking.repository.StatisticsRepository;
 import com.isd.parking.service.StatisticsService;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
 
 
 /**
@@ -27,22 +28,19 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private final StatisticsRepository statisticsRepository;
 
-    private final ColorConsoleOutput console;
-
     @Autowired
-    public StatisticsServiceImpl(StatisticsRepository statisticsRepository, ColorConsoleOutput console) {
+    public StatisticsServiceImpl(StatisticsRepository statisticsRepository) {
         this.statisticsRepository = statisticsRepository;
-        this.console = console;
     }
 
     /**
      * Get all statistics records from database method
      *
-     * @return - Statistics records list
+     * @return - statistics records list
      */
     @Override
     public List<StatisticsRecord> listAll() {
-        log.info(console.classMsg(getClass().getSimpleName(), "get statistics list executed..."));
+        log.info(methodMsg("get statistics list executed..."));
         return statisticsRepository.findAll();
     }
 
@@ -51,26 +49,23 @@ public class StatisticsServiceImpl implements StatisticsService {
      */
     @Transactional
     public void deleteStatsOlderThanWeek() {
-
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -7);
         java.sql.Date oneWeek = new java.sql.Date(cal.getTimeInMillis());
-
-        log.info(console.classMsg(getClass().getSimpleName(), "delete statistics older than one week executed..."));
+        log.info(methodMsg("delete statistics older than one week executed..."));
 
         statisticsRepository.removeOlderThan(oneWeek);
-
     }
 
     /**
      * Save statistics record in database method
      *
-     * @return - StatisticsRecord which was saved in database
+     * @return - statistics record which was saved in database
      */
     @Transactional
     @Override
     public StatisticsRecord save(StatisticsRecord statisticsRecord) {
-        log.info(console.classMsg(getClass().getSimpleName(), "Service save statistics event executed..."));
+        log.info(methodMsg("Service save statistics event executed..."));
         return statisticsRepository.save(statisticsRecord);
     }
 
@@ -78,12 +73,12 @@ public class StatisticsServiceImpl implements StatisticsService {
      * Save statistics record in database method
      *
      * @param parkingLot - parking lot need to be saved in statistics record
-     * @return - StatisticsRecord which was saved in database
+     * @return - statistics record which was saved in database
      */
     @Transactional
     @Override
     public StatisticsRecord save(ParkingLot parkingLot) {
-        log.info(console.classMsg(getClass().getSimpleName(), "Service save statistics event executed..."));
+        log.info(methodMsg("Service save statistics event executed..."));
 
         StatisticsRecord statisticsRecord = StatisticsRecord.builder()
             .lotNumber(parkingLot.getNumber())

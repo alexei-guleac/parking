@@ -3,7 +3,6 @@ package com.isd.parking.service.implementations;
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.repository.ParkingLotRepository;
 import com.isd.parking.service.ParkingLotService;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,13 +11,15 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
+
 
 /**
  * Parking Lot Service class for database repository
  * Contains methods for
- * getting all parking lots,
- * get parking lot by id,
- * saving (in this case updating) parking lot
+ * - getting all parking lots,
+ * - get parking lot by id,
+ * - saving (in this case updating) parking lot
  */
 @Service
 @Slf4j
@@ -26,12 +27,9 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
 
     private final ParkingLotRepository parkingLotRepository;
 
-    private final ColorConsoleOutput console;
-
     @Autowired
-    public ParkingLotDBServiceImpl(ParkingLotRepository parkingLotRepository, ColorConsoleOutput console) {
+    public ParkingLotDBServiceImpl(ParkingLotRepository parkingLotRepository) {
         this.parkingLotRepository = parkingLotRepository;
-        this.console = console;
     }
 
     /**
@@ -42,7 +40,7 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
     @Transactional
     @Override
     public List<ParkingLot> findAll() {
-        log.info(console.classMsg(getClass().getSimpleName(),"get all parking lots list executed..."));
+        log.info(methodMsg("get all parking lots list executed..."));
         return parkingLotRepository.findAll();
     }
 
@@ -54,7 +52,7 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
     @Transactional
     @Override
     public Optional<ParkingLot> findById(Long parkingLotId) {
-        log.info(console.classMsg(getClass().getSimpleName(),"get parking lot by id executed..."));
+        log.info(methodMsg("get parking lot by id executed..."));
         return parkingLotRepository.findById(parkingLotId);
     }
 
@@ -67,14 +65,19 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
     @Transactional
     @Override
     public ParkingLot save(ParkingLot parkingLot) {
-        log.info(console.classMsg(getClass().getSimpleName(),"save parking lot in database executed..."));
+        log.info(methodMsg("save parking lot in database executed..."));
         return parkingLotRepository.save(parkingLot);
     }
 
+    /**
+     * Count parking lots in SQL database
+     *
+     * @return - parking lots total count
+     */
     @Transactional
     @Override
     public long countAll() {
-        log.info(console.classMsg(getClass().getSimpleName(),"count parking lots..."));
+        log.info(methodMsg("count parking lots..."));
         return parkingLotRepository.count();
     }
 }

@@ -1,13 +1,17 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.security.model.ConfirmationToken;
+import com.isd.parking.security.model.ConfirmationRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+
+/**
+ * User account confirmation token database repository
+ */
 @Repository
-public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationToken, String> {
+public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationRecord, String> {
 
-    ConfirmationToken findByConfirmationToken(String confirmationToken);
+    ConfirmationRecord findByConfirmationToken(String confirmationToken);
 
-    ConfirmationToken findFirstByUidOrderByCreatedAtDesc(String username);
+    ConfirmationRecord findFirstByUidOrderByCreatedAtDesc(String username);
 }

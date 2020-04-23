@@ -9,6 +9,10 @@ import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
+
+/**
+ * For HTTP error wrapping (if multiple errors in response)
+ */
 @Data
 @JsonInclude(NON_NULL)
 @AllArgsConstructor

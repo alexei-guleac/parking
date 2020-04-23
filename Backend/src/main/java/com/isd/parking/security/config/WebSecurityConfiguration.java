@@ -37,6 +37,9 @@ import static com.isd.parking.controller.ApiEndpoints.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
+/**
+ * Configures Spring security (CORS, HTTP, endpoints access, LDAP, user authentication and authorization)
+ */
 @Configuration
 @Slf4j
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -106,6 +109,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.ldapAuthoritiesPopulator = ldapAuthoritiesPopulator;
     }
 
+    /**
+     * Configures HTTP security
+     * (CORS filter, CSRF, Same-site origin, JWT token authentication filter, cookie filter,
+     * exception handling, session policy, authentication entry points access)
+     *
+     * @param http Spring built-in HttpSecurity object
+     * @throws Exception
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -157,12 +168,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .anyRequest().fullyAuthenticated();
     }
 
-    // ----------  LDAP auth --------------
 
     /**
-     * Configure AuthenticationManagerBuilder to use the specified DetailsService.
+     * Configures AuthenticationManagerBuilder to use the specified DetailsService.
      *
-     * @param auth the {@link AuthenticationManagerBuilder} à utiliser
+     * @param auth the {@link AuthenticationManagerBuilder}
      * @throws Exception
      */
     @Override
@@ -173,6 +183,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             We need to delegate the creation of the contextSource out of the builder-configuration.
         */
 
+        // ----------  LDAP auth --------------
         if (ldapEnabled) {
             auth
                 .ldapAuthentication()
@@ -235,7 +246,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .password(adminPasswordInMemory).roles("ADMIN").build();
 
         InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
-
         userDetailsManager.createUser(theUser);
         userDetailsManager.createUser(theManager);
 
@@ -245,7 +255,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     /**
      * CORS requests are managed only if headers Origin and Access-Control-Request-Method are available on OPTIONS requests
      * (this filter is simply ignored in other cases).
-     * <p>
      * This filter can be used as a replacement for the @Cors annotation.
      **/
     @Component

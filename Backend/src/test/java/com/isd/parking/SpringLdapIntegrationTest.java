@@ -1,10 +1,8 @@
 package com.isd.parking;
 
 import com.isd.parking.models.users.UserLdap;
-import com.isd.parking.repository.GroupRepository;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
-import com.isd.parking.service.ldap.UserLdapClient;
-import com.isd.parking.utils.ColorConsoleOutput;
+import com.isd.parking.storage.ldap.UserLdapClient;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,25 +39,23 @@ public class SpringLdapIntegrationTest {
 
     private final UserLdapClient userRepository;
 
-    private final GroupRepository groupRepository;
-
-    private final ColorConsoleOutput console;
+    // private final GroupRepository groupRepository;
 
     @Value("${ldap.partitionSuffix}")
     private String ldapPartitionSuffix;
 
     @Autowired
-    public SpringLdapIntegrationTest(UserLdapClient userLdapService, LdapContextSource contextSource, UserLdapClient userRepository, GroupRepository groupRepository, ColorConsoleOutput console) {
+    public SpringLdapIntegrationTest(UserLdapClient userLdapService,
+                                     LdapContextSource contextSource,
+                                     UserLdapClient userRepository) {
         this.userLdapService = userLdapService;
         this.contextSource = contextSource;
         this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
-        this.console = console;
     }
 
     @Test
     public void testGetAllUsers() {
-        List<UserLdap> users = userLdapService.getAllUsers();
+        List<UserLdap> users = userLdapService.findAll();
         assertNotNull(users);
 
         log.info("Users found:" + users);
@@ -176,48 +172,4 @@ public class SpringLdapIntegrationTest {
         }
     }
 
-    /*@Test
-    public void testRandomPortWithValueAnnotation() throws LDAPException {
-        EnvironmentTestUtils.addEnvironment(this.context, "spring.ldap.embedded.base-dn:dc=spring,dc=org");
-        this.context.register(EmbeddedLdapAutoConfiguration.class, LdapClientConfiguration.class, PropertyPlaceholderAutoConfiguration.class);
-        this.context.refresh();
-        LDAPConnection connection = this.context.getBean(LDAPConnection.class);
-        assertThat(connection.getConnectedPort()).isEqualTo(this.context.getEnvironment().getPropertyValue("local.ldap.port", Integer.class));
-    }*/
-
-    /*@Test
-    public void testLdapRepositories()  {
-        log.info("Spring LDAP CRUD Operations Binding and Unbinding Example");
-        log.info("- - - - - - Managing persons");
-
-        List<UserLdap> persons = userRepository.findAll();
-        log.info("persons: " + persons);
-
-        UserLdap john = userRepository.findById("john");
-        john.setSn("custom last name");
-        userRepository.updateLastName(john);
-
-        UserLdap jahn = userRepository.findById("jahn");
-        jahn.setSn("custom last name");
-        userRepository.updateUser(jahn);
-
-        UserLdap user = new UserLdap("uid", "user");
-        userRepository.createUser(user);
-
-        UserLdap jihn = userRepository.findById("jihn");
-        userRepository.deleteUser(jihn);
-
-        persons = userRepository.findAll();
-        log.info("persons: " + persons);
-        log.info("- - - - - - Managing groups");
-
-        List<Group> groups = groupRepository.findAll();
-        log.info("groups: " + groups);
-
-        groupRepository.removeMemberFromGroup("developers", jihn);
-        groupRepository.addMemberToGroup("managers", jihn);
-
-        groups = groupRepository.findAll();
-        log.info("groups: " + groups);
-    }*/
 }

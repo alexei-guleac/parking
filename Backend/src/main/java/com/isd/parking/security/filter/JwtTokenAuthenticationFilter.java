@@ -34,18 +34,30 @@ import static com.isd.parking.security.JwtUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 
+/**
+ * Jwt Token Authentication Filter for filter authentication requests
+ */
 @Slf4j
 public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
-    private RequestMatcher requestMatcher;
+    private final RequestMatcher requestMatcher;
 
-    private String secretKey;
+    private final String secretKey;
 
     public JwtTokenAuthenticationFilter(String path, String secretKey) {
         this.requestMatcher = new AntPathRequestMatcher(path);
         this.secretKey = secretKey;
     }
 
+    /**
+     * Method filters HTTP request to get authorization information and set access to specified resources
+     *
+     * @param req   - HTTP Java Servlet request
+     * @param res   - HTTP Java Servlet response
+     * @param chain - built-in Spring Framework HTTP filter chain
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
@@ -78,7 +90,6 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             (like if authorizations are incorrect).
             */
             SignedJWT jwt = extractAndDecodeJwt(request);
-            log.info(String.valueOf(jwt));
             checkAuthenticationAndValidity(jwt);
             Authentication auth = buildAuthenticationFromJwt(jwt, request);
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -99,18 +110,40 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
         return requestMatcher.matches(request);
     }
 
-
+    /**
+     * Extracts token from HTTP request headers
+     *
+     * @param request - target request
+     * @return signed JWT token
+     * @throws ParseException
+     */
     private SignedJWT extractAndDecodeJwt(HttpServletRequest request) throws ParseException {
         String authHeader = request.getHeader(AUTHORIZATION);
         String token = authHeader.substring("Bearer ".length());
+
         return parse(token);
     }
 
+    /**
+     * Check that JWT token is not expired and signature secret key conforms stored
+     *
+     * @param jwt - specified JWT
+     * @throws ParseException
+     * @throws JOSEException
+     */
     private void checkAuthenticationAndValidity(SignedJWT jwt) throws ParseException, JOSEException {
         assertNotExpired(jwt);
         assertValidSignature(jwt, secretKey);
     }
 
+    /**
+     * Method build Spring Authentication object based on JWT token
+     *
+     * @param jwt     - specified signed JWT token
+     * @param request - target HTTP request
+     * @return Authentication object result
+     * @throws ParseException
+     */
     private Authentication buildAuthenticationFromJwt(SignedJWT jwt, HttpServletRequest request) throws ParseException {
 
         String username = getUsername(jwt);
@@ -120,6 +153,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
         return authentication;
     }
 }

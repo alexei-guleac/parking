@@ -3,13 +3,17 @@ package com.isd.parking.storage.util;
 import com.isd.parking.models.ParkingLot;
 import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
 import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
 
+
+/**
+ * Utility class
+ * Saves all parking lots states to the database from local Java memory storage
+ */
 @Service
 @Slf4j
 public class DataSaver {
@@ -18,21 +22,20 @@ public class DataSaver {
 
     private final ParkingLotDBServiceImpl parkingLotDBService;
 
-    private final ColorConsoleOutput console;
-
     @Autowired
     public DataSaver(ParkingLotLocalServiceImpl parkingLotLocalService,
-                     ParkingLotDBServiceImpl parkingLotDBService, ColorConsoleOutput console) {
+                     ParkingLotDBServiceImpl parkingLotDBService) {
         this.parkingLotLocalService = parkingLotLocalService;
         this.parkingLotDBService = parkingLotDBService;
-        this.console = console;
     }
 
+    /**
+     * Saves all parking lots to SQL database from local Java memory storage
+     */
     @PreDestroy
     public void fromLocalToDatabaseTransfer() {
-        log.info(console.methodMsg(""));
         for (ParkingLot parkingLot : parkingLotLocalService.findAll()) {
-            //saving parking lots state to Database  from local Java memory
+            //saving parking lots state to Database from local Java memory
             parkingLotDBService.save(parkingLot);
         }
     }

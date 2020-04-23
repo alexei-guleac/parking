@@ -1,4 +1,4 @@
-package com.isd.parking.controller.web;
+package com.isd.parking.controller.web.account;
 
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.models.users.User;
@@ -7,14 +7,13 @@ import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.security.AccountConfirmationPeriods;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import com.isd.parking.security.model.AccountOperation;
-import com.isd.parking.security.model.ConfirmationToken;
+import com.isd.parking.security.model.ConfirmationRecord;
 import com.isd.parking.security.model.payload.*;
 import com.isd.parking.service.RestService;
-import com.isd.parking.service.implementations.ConfirmationTokenServiceImpl;
+import com.isd.parking.service.implementations.ConfirmationServiceImpl;
 import com.isd.parking.service.implementations.EmailSenderServiceImpl;
-import com.isd.parking.service.ldap.UserLdapClient;
+import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.utils.AppDateUtils;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,34 +30,33 @@ import java.util.Optional;
 
 import static com.isd.parking.controller.ApiEndpoints.*;
 import static com.isd.parking.models.users.UserLdap.getUserLdapProperty;
-import static com.isd.parking.models.users.UserLdap.userLdapClassAttributesList;
-import static com.isd.parking.service.ldap.LdapConstants.USER_UID_ATTRIBUTE;
+import static com.isd.parking.models.users.UserLdap.userLdapClassFieldsList;
+import static com.isd.parking.storage.ldap.LdapConstants.USER_UID_ATTRIBUTE;
 import static com.isd.parking.utils.AppDateUtils.isDateBeforeNow;
-import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
 /**
- * User controller
- * Provides methods for login, registration of user,
- * reservation and cancel reservation parking lot by user
+ * Provides methods for
+ * - Google captcha processing,
+ * - user account confirmation
+ * - forgot and reset password handle
+ * - parking lot reservation and parking lot cancel reservation by administrator
  */
 @RestController
 @CrossOrigin(origins = "*")
 @Slf4j
 public class UserController {
 
-    private final UserLdapClient userLdapClient;
+    private final UserServiceImpl userService;
 
     private final RestService restService;
 
-    private final ConfirmationTokenServiceImpl confirmationTokenService;
+    private final ConfirmationServiceImpl confirmationTokenService;
 
     private final EmailSenderServiceImpl emailSenderService;
 
     private final UserMapper userMapper;
-
-    private final ColorConsoleOutput console;
 
     @Value("${spring.ldap.base}")
     private String ldapSearchBase;
@@ -67,48 +65,36 @@ public class UserController {
     private String from;
 
     @Autowired
-    public UserController(UserLdapClient userLdapClient,
-                          RestService restService, ConfirmationTokenServiceImpl confirmationTokenService,
+    public UserController(UserServiceImpl userService,
+                          RestService restService,
+                          ConfirmationServiceImpl confirmationTokenService,
                           EmailSenderServiceImpl emailSenderService,
-                          UserMapper userMapper, ColorConsoleOutput console) {
-        this.userLdapClient = userLdapClient;
+                          UserMapper userMapper) {
+        this.userService = userService;
         this.restService = restService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
         this.userMapper = userMapper;
-        this.console = console;
     }
 
     /**
-     * Users login controller
-     * Used to authentificate user and login in system
+     * Handles Google re-captcha flow
      *
-     * @return - success status of provided login
+     * @param grecaptcha - captcha data from client web application
+     * @return HTTP response with user validation error or success details
+     * sample message
+     * {
+     * "success": true,
+     * "challenge_ts": "2020-03-07T13:40:25Z",
+     * "hostname": "localhost"
+     * }
      */
-    @RequestMapping(login)
-    public boolean login(@RequestBody User user) {
-        final String username = user.getUsername();
-        final String password = user.getPassword();
-
-        // log.info(console.classMsg("LDAP enabled: ") + Boolean.parseBoolean(ldapEnabled));
-        // String test = userService.getUserDetail(username);
-        // log.info(console.classMsg("Get: ") + test);
-
-        // LDAP
-        log.info(console.classMsg(getClass().getSimpleName(), " Request body: ") + blTxt(String.valueOf(user)));
-        log.info(console.classMsg(getClass().getSimpleName(), " login request body: ") + blTxt(username + " " + password));
-        //log.info(String.valueOf(userService.authenticate(username, password)));
-        return userLdapClient.authenticate(username, password);
-    }
-
-
     @ResponseBody
     @RequestMapping(validateCaptcha)
-    public ResponseEntity grecaptcha(@RequestBody String grecaptcha) {
+    public ResponseEntity<?> grecaptcha(@RequestBody String grecaptcha) {
         final String grecaptchaToken = new JSONObject(grecaptcha).getJSONObject("grecaptcha").getString("token");
 
         if (grecaptchaToken == null || grecaptchaToken.equals("")) {
-
             return ResponseEntity.ok(RecaptchaResponse.builder()
                 .success(false)
                 .challenge_ts(new Date(System.currentTimeMillis()))
@@ -117,39 +103,37 @@ public class UserController {
         } else {
             String secretKey = RecaptchaResponse.GoogleRecaptchaConstants.SECRET_KEY;
             String url = String.format(RecaptchaResponse.GoogleRecaptchaConstants.GRECAPTCHA_API_URL, secretKey, grecaptchaToken);
-
+            // send captcha data to Google service for validation
             String response = restService.getPlainJSON(url);
-            log.info(response);
-
-            //sample message
-            /*{
-                "success": true,
-                "challenge_ts": "2020-03-07T13:40:25Z",
-                "hostname": "localhost"
-            }*/
 
             return ResponseEntity.ok(response);
         }
     }
 
-    // Endpoint to confirm the token
+
+    /**
+     * User account confirmation handler
+     *
+     * @param confirmRequest - user account confirmation token
+     * @return HTTP response with user validation error or success details
+     */
     @RequestMapping(value = confirmAction, method = POST)
-    public ResponseEntity<?> confirmUserAccount(@RequestBody String body) {
-        log.info("body " + body);
-        final String confirmationToken = new JSONObject(body).getString("confirmationToken");
-        Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
-        log.info("token " + optionalConfirmationToken);
+    public ResponseEntity<?> confirmUserAccount(@RequestBody String confirmRequest) {
 
+        final String confirmationToken = new JSONObject(confirmRequest).getString("confirmationToken");
+        Optional<ConfirmationRecord> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
+
+        // if this confirmation token exists in database
         if (optionalConfirmationToken.isPresent()) {
-            ConfirmationToken token = optionalConfirmationToken.get();
+            ConfirmationRecord token = optionalConfirmationToken.get();
 
+            // if token was not expired
             if (confirmationTokenService.assertNotExpired(token)) {
+                // if token was not used
                 if (!token.isClaimed()) {
-                    UserLdap user = userLdapClient.findById(optionalConfirmationToken.get().getUid());
-                    log.info(console.classMsg(getClass().getSimpleName(), " Created user found: ") + blTxt(String.valueOf(user)));
-
+                    UserLdap user = userService.findById(optionalConfirmationToken.get().getUid());
                     if (token.getOperationType() == AccountOperation.ACCOUNT_CONFIRMATION) {
-                        userLdapClient.updateUser(user.getUid(), "accountState", String.valueOf(AccountState.ENABLED));
+                        userService.updateUser(user.getUid(), "accountState", String.valueOf(AccountState.ENABLED));
                     }
                     token.setClaimed(true);
                     confirmationTokenService.save(token);
@@ -169,85 +153,91 @@ public class UserController {
         }
     }
 
-    // Receive the address and send an email
+    /**
+     * User forgot password handler receives the user address and send an reset password email
+     *
+     * @param request - forgot password initial request contains user email and device data for set email language
+     * @return HTTP response with user forgot password initial processing error or success email send details
+     * @throws IOException
+     * @throws MessagingException
+     */
     @RequestMapping(value = forgotPassword, method = POST)
     public ResponseEntity<?> forgotUserPassword(@RequestBody ForgotPassRequest request)
         throws IOException, MessagingException {
 
         final String userEmail = request.getEmail();
-        UserLdap existingUser = userLdapClient.getUserByEmail(userEmail);
+        UserLdap existingUser = userService.getUserByEmail(userEmail);
 
         if (existingUser != null) {
-            log.info(console.classMsg(getClass().getSimpleName(), " User exists: ") + blTxt(String.valueOf(existingUser)));
-
-            Optional<ConfirmationToken> lastConfirmationToken = confirmationTokenService.findLastByUsername(existingUser.getUid());
-            log.info("past token " + lastConfirmationToken);
+            Optional<ConfirmationRecord> lastConfirmationToken = confirmationTokenService.findLastByUsername(existingUser.getUid());
 
             if (lastConfirmationToken.isPresent()) {
-                ConfirmationToken token = lastConfirmationToken.get();
+                ConfirmationRecord token = lastConfirmationToken.get();
 
+                // check if user password reset is allowed
                 if (!confirmationTokenService.assertValidForRepeat(token)) {
-                    log.info(console.classMsg(getClass().getSimpleName(), " Password reset not allowed: ") + blTxt(String.valueOf(existingUser)));
                     String periodEnding = AppDateUtils.getPeriodEnding(AccountConfirmationPeriods.REQUEST_CONFIRMATION_TOKEN_PERIOD_IN_DAYS);
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Password reset request is allowed only " + periodEnding);
                 }
             }
             // Create token
-            ConfirmationToken confirmationToken = new ConfirmationToken(existingUser.getUid(), AccountOperation.PASSWORD_RESET);
+            ConfirmationRecord confirmationRecord = new ConfirmationRecord(existingUser.getUid(), AccountOperation.PASSWORD_RESET);
             // Save it
-            confirmationTokenService.save(confirmationToken);
+            confirmationTokenService.save(confirmationRecord);
             // Send email
-            emailSenderService.sendPassResetMail(existingUser, confirmationToken, request.getDeviceInfo());
+            emailSenderService.sendPassResetMail(existingUser, confirmationRecord, request.getDeviceInfo());
 
             return ResponseEntity.ok(new ActionSuccessResponse(true));
 
         } else {
-            log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(String.valueOf(existingUser)));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("User with this email doesn't exists on the server");
         }
     }
 
-    // Endpoint to update a user's password
+
+    /**
+     * Endpoint to update a user's password
+     *
+     * @param resetPasswordRequest - request contains all necessary user data - confirmation token
+     *                             for retrieve user uid and check validation period,
+     *                             new password and device information
+     * @return HTTP response with user password reset processing error or success details
+     */
     @RequestMapping(value = resetPassword, method = POST)
     public ResponseEntity<?> resetUserPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
 
         final String confirmationToken = resetPasswordRequest.getResetDetails().getConfirmationToken();
         final String password = resetPasswordRequest.getResetDetails().getPassword();
 
-        Optional<ConfirmationToken> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
-        log.info("token reset-password" + optionalConfirmationToken);
+        Optional<ConfirmationRecord> optionalConfirmationToken = confirmationTokenService.findByConfirmationToken(confirmationToken);
 
         if (optionalConfirmationToken.isPresent()) {
-            ConfirmationToken token = optionalConfirmationToken.get();
+            ConfirmationRecord token = optionalConfirmationToken.get();
 
             if (confirmationTokenService.assertNotExpired(token)) {
                 final String username = token.getUid();
                 if (username != null) {
                     // Use username to find user
-                    UserLdap user = userLdapClient.findById(username);
-                    log.info(String.valueOf(user));
-
+                    UserLdap user = userService.findById(username);
                     if (user != null) {
-                        LocalDateTime passwordUpdatedAt = userLdapClient.getPasswordUpdateAt(user.getUid());
+                        LocalDateTime passwordUpdatedAt = userService.getPasswordUpdateAt(user.getUid());
+                        // check if password change is allowed
                         if (assertPassValidForChange(passwordUpdatedAt)) {
+                            userService.updateUserPassword(user, new CustomBcryptPasswordEncoder().encode(password));
 
-                            userLdapClient.updateUserPassword(user, new CustomBcryptPasswordEncoder().encode(password));
                             return ResponseEntity.ok(new ActionSuccessResponse(true));
                         } else {
-                            log.info(console.classMsg(getClass().getSimpleName(), " Password reset not allowed: ") + blTxt(String.valueOf(user)));
                             String periodEnding = AppDateUtils.getPeriodEnding(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS);
                             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body("Password change is allowed only " + periodEnding);
                         }
                     } else {
-                        log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(username));
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body("User with this username doesn't exists on the server");
                     }
                 } else {
-                    log.info(console.classMsg(getClass().getSimpleName(), " Username empty: ") + blTxt(String.valueOf(username)));
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Confirmation token with username empty parameter");
                 }
@@ -261,83 +251,98 @@ public class UserController {
         }
     }
 
+    /**
+     * Checks if password is allowed for changing conform password reset period in days
+     *
+     * @param passwordUpdatedAt - password lats updated date
+     * @return operation result
+     */
     private boolean assertPassValidForChange(LocalDateTime passwordUpdatedAt) {
-        log.info("expires " + passwordUpdatedAt.plusDays(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS));
         return isDateBeforeNow(passwordUpdatedAt.plusDays(AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS),
             AccountConfirmationPeriods.MAX_CLOCK_SKEW_MINUTES);
     }
 
+    /**
+     * Endpoint to retrieve user profile from LDAP database
+     *
+     * @param username - target username
+     * @return target user
+     */
     @ResponseBody
     @PostMapping("/" + profile)
     public User getUserByUsername(@RequestBody String username) {
-        UserLdap userFound = userLdapClient.findById(username);
-        log.info("profile " + username);
+        UserLdap userFound = userService.findById(username);
+
         return userMapper.userLdapToUser(userFound);
     }
 
+    /**
+     * Endpoint to modifiyng user profile in LDAP database
+     *
+     * @param updateUserRequest - request with user information for modifying
+     * @return HTTP response with user password reset processing error or success details
+     */
     @ResponseBody
     @PostMapping("/" + profileUpdate)
     public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
 
         final User user = updateUserRequest.getUser();
         String username = updateUserRequest.getUsername();
-
-        log.info("username " + username);
-        log.info("profile " + user);
-        UserLdap userFound = userLdapClient.findById(updateUserRequest.getUsername());
+        UserLdap userFound = userService.findById(updateUserRequest.getUsername());
 
         if (userFound != null) {
-            log.info(console.classMsg(getClass().getSimpleName(), " User exists: ") + blTxt(String.valueOf(userFound)));
-
+            // map API input user to LDAP user
             UserLdap userForUpdate = userMapper.userToUserLdap(user);
-            log.info("userForUpdate " + userForUpdate);
-            log.info("fields " + userLdapClassAttributesList);
-            for (String field : userLdapClassAttributesList) {
+
+            // update user attribute based on its availability in the user modifying request
+            for (String field : userLdapClassFieldsList) {
                 Object propertyValue = getUserLdapProperty(userForUpdate, field);
+                // if this field is present user modifying request update it
                 if (propertyValue != null) {
-                    log.info("field updated  " + propertyValue);
                     if (field.equals(USER_UID_ATTRIBUTE)) {
-                        userLdapClient.updateUsername(username, String.valueOf(propertyValue));
+                        userService.updateUsername(username, String.valueOf(propertyValue));
                         username = String.valueOf(propertyValue);
                     } else {
-                        userLdapClient.updateUser(username, field, String.valueOf(propertyValue));
+                        userService.updateUser(username, field, String.valueOf(propertyValue));
                     }
                 }
             }
             return ResponseEntity.ok(new ActionSuccessResponse(true));
 
         } else {
-            log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(String.valueOf(userFound)));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("User doesn't exists on the server");
         }
     }
 
+    /**
+     * Endpoint to delete user profile from LDAP database
+     *
+     * @param uid - target uid
+     * @return HTTP response with user deleting error or success details
+     */
     @ResponseBody
     @PostMapping("/" + profileDelete)
     public ResponseEntity<?> deleteUser(@RequestBody String uid) {
 
-        // final String uid = new JSONObject(username).getString("username");
-        log.info("username " + uid);
-        UserLdap userFound = userLdapClient.findById(uid);
-
+        UserLdap userFound = userService.findById(uid);
         if (userFound != null) {
-            log.info(console.classMsg(getClass().getSimpleName(), " User exists: ") + blTxt(String.valueOf(userFound)));
-
-            userLdapClient.deleteUserById(uid);
-
+            userService.deleteUserById(uid);
             return ResponseEntity.ok(new ActionSuccessResponse(true));
-
         } else {
-            log.info(console.classMsg(getClass().getSimpleName(), " User not exists: ") + blTxt(String.valueOf(userFound)));
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("User doesn't exists on the server");
         }
     }
 
+    /**
+     * Endpoint to retrieve all users from LDAP database
+     *
+     * @return users list
+     */
     @ResponseBody
     @GetMapping("/" + users)
     public Iterable<UserLdap> getAllUsers() {
-        return userLdapClient.findAll();
+        return userService.findAll();
     }
 }

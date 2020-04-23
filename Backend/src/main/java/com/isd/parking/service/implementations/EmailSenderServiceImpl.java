@@ -5,10 +5,9 @@ import com.isd.parking.models.EmailDto;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.security.AccountConfirmationPeriods;
 import com.isd.parking.security.model.AccountOperation;
-import com.isd.parking.security.model.ConfirmationToken;
+import com.isd.parking.security.model.ConfirmationRecord;
 import com.isd.parking.security.model.payload.register.DeviceInfo;
 import com.isd.parking.service.EmailSenderService;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,6 @@ import java.util.*;
 
 import static com.isd.parking.controller.ApiEndpoints.confirmAction;
 import static com.isd.parking.controller.ApiEndpoints.confirmReset;
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 
 
 @Service("emailSenderService")
@@ -45,8 +43,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final TemplateEngine templateEngine;
 
-    private final ColorConsoleOutput console;
-
     @Value("${spring.mail.from.email}")
     private String from;
 
@@ -55,54 +51,84 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Autowired
     public EmailSenderServiceImpl(@Qualifier("gmail") JavaMailSender mailSender,
-                                  ColorConsoleOutput console,
                                   @Qualifier("templateEngine") TemplateEngine templateEngine) {
         this.mailSender = mailSender;
-        this.console = console;
         this.templateEngine = templateEngine;
     }
 
+    /**
+     * Send user registration confirmation e-mail
+     *
+     * @param emailUser          - target user
+     * @param confirmationRecord - correspond confirmation record
+     * @param deviceInfo         - target user device info (for setting region purpose)
+     * @throws IOException
+     * @throws MessagingException
+     */
     @Async
     @Override
     public void sendRegistrationConfirmMail(@NotBlank @NonNull UserLdap emailUser,
-                                            @NotBlank @NonNull ConfirmationToken confirmationToken,
+                                            @NotBlank @NonNull ConfirmationRecord confirmationRecord,
                                             @NotBlank @NonNull DeviceInfo deviceInfo) throws IOException, MessagingException {
-
         final String subject = "Complete Registration!";
         final String templateName = "confirm_account_mail.html";
-
-        // https://github.com/dotSwapna/dotEmail.github.io/blob/master/src/main/java/dot/demo/email/EmailerService.java
-        EmailDto emailDto = createHtmlEmail(emailUser, confirmationToken, deviceInfo, subject, templateName);
-
+        EmailDto emailDto = createHtmlEmailData(emailUser, confirmationRecord, deviceInfo, subject, templateName);
         sendHtmlEmail(emailDto);
     }
 
+    /**
+     * Send user password reset confirmation e-mail
+     *
+     * @param emailUser          - target user
+     * @param confirmationRecord - correspond confirmation record
+     * @param deviceInfo         - target user device info (for setting region purpose)
+     * @throws IOException
+     * @throws MessagingException
+     */
     @Async
     @Override
     public void sendPassResetMail(@NotBlank @NonNull UserLdap emailUser,
-                                  @NotBlank @NonNull ConfirmationToken confirmationToken,
+                                  @NotBlank @NonNull ConfirmationRecord confirmationRecord,
                                   @NotBlank @NonNull DeviceInfo deviceInfo) throws IOException, MessagingException {
-
         final String subject = "Complete Password Reset!";
         final String templateName = "reset_password_mail.html";
-
-        EmailDto emailDto = createHtmlEmail(emailUser, confirmationToken, deviceInfo, subject, templateName);
+        EmailDto emailDto = createHtmlEmailData(emailUser, confirmationRecord, deviceInfo, subject, templateName);
 
         sendHtmlEmail(emailDto);
     }
 
-    private EmailDto createHtmlEmail(@NotBlank @NonNull UserLdap emailUser,
-                                     @NotBlank @NonNull ConfirmationToken confirmationToken,
-                                     @NotBlank @NonNull DeviceInfo deviceInfo, String subject, String templateName) {
+    /**
+     * Prepare intermediate email data transfer object from all necessary data
+     *
+     * @param emailUser          - target user
+     * @param confirmationRecord - correspond confirmation record
+     * @param deviceInfo         - user device info
+     * @param subject            - email subject
+     * @param templateName       - email template name
+     * @return email data transfer object
+     */
+    private EmailDto createHtmlEmailData(@NotBlank @NonNull UserLdap emailUser,
+                                         @NotBlank @NonNull ConfirmationRecord confirmationRecord,
+                                         @NotBlank @NonNull DeviceInfo deviceInfo,
+                                         @NotBlank @NonNull String subject,
+                                         @NotBlank @NonNull String templateName) {
         EmailDto emailDto = createEmailDtoFromUserLdap(emailUser, subject, templateName);
-        HashMap<String, Object> parametersMap = createTemplateParametersMap(emailUser, confirmationToken, deviceInfo);
+        HashMap<String, Object> parametersMap = createTemplateParametersMap(emailUser, confirmationRecord, deviceInfo);
         emailDto.setParameterMap(parametersMap);
-        log.info(methodMsgStatic(" EmailDto: " + emailDto));
+
         return emailDto;
     }
 
+    /**
+     * Prepare template parameters map from user data
+     *
+     * @param emailUser          - target user
+     * @param confirmationRecord - correspond confirmation record
+     * @param deviceInfo         - user device info
+     * @return template parameters map
+     */
     private HashMap<String, Object> createTemplateParametersMap(@NotBlank @NonNull UserLdap emailUser,
-                                                                @NotBlank @NonNull ConfirmationToken confirmationToken,
+                                                                @NotBlank @NonNull ConfirmationRecord confirmationRecord,
                                                                 @NotBlank @NonNull DeviceInfo deviceInfo) {
         ObjectMapper oMapper = new ObjectMapper();
         HashMap<String, Object> deviceInfoMap = (HashMap<String, Object>) oMapper.convertValue(deviceInfo, Map.class);
@@ -111,15 +137,24 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         String username = emailUser.getUid().substring(0, 1).toUpperCase() + emailUser.getUid().substring(1);
         parametersMap.put("username", username);
 
-        String path = confirmationToken.getOperationType() == AccountOperation.ACCOUNT_CONFIRMATION ? confirmAction : confirmReset;
+        String path = confirmationRecord.getOperationType() == AccountOperation.ACCOUNT_CONFIRMATION ? confirmAction : confirmReset;
         String confirmLink = frontUrl + path + "?confirmation_token="
-            + confirmationToken.getConfirmationToken();
+            + confirmationRecord.getConfirmationToken();
         parametersMap.put("confirmation_link", confirmLink);
         parametersMap.put("confirmation_token_valid_period", AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES);
         parametersMap.put("email", emailUser.getEmail());
+
         return parametersMap;
     }
 
+    /**
+     * Creates email data transfer object from LDAP user
+     *
+     * @param emailUser    - target user
+     * @param subject      - email subject
+     * @param templateName - email template name
+     * @return intermediate email data transfer object
+     */
     private EmailDto createEmailDtoFromUserLdap(@NotBlank @NonNull UserLdap emailUser,
                                                 String subject,
                                                 String templateName) {
@@ -130,16 +165,29 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         emailDto.setSubject(subject);
         emailDto.setHtml(true);
         emailDto.setTemplateName(templateName);
+
         return emailDto;
     }
 
-    private SimpleMailMessage createSimpleMailMessage(UserLdap emailUser, String subject) {
+    /**
+     * Creates simple email message
+     *
+     * @param emailUser - target user
+     * @return simple email message object
+     */
+    private SimpleMailMessage createSimpleMailMessage(UserLdap emailUser) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(emailUser.getEmail());
         mailMessage.setFrom(from);
+
         return mailMessage;
     }
 
+    /**
+     * Send simple mail message
+     *
+     * @param email - target email message for send
+     */
     @Async
     @Override
     public void sendEmail(SimpleMailMessage email) {
@@ -148,47 +196,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     /**
-     * Send emails using templates in web/templates/email/ directory
-     *
-     * @param emailDto
-     * @return EmailDto
-     * @throws MessagingException
-     * @throws IOException
-     */
-    @Override
-    public EmailDto sendEmail(EmailDto emailDto) throws MessagingException, IOException {
-
-        // Prepare the evaluation context
-        Context ctx = prepareContext(emailDto);
-
-        // Prepare message using a Spring helper
-        MimeMessage mimeMessage = this.mailSender.createMimeMessage();
-        // Prepare message using a Spring helper
-        MimeMessageHelper message = prepareMessage(mimeMessage, emailDto);
-
-        // Create the HTML body using Thymeleaf
-        String htmlContent = this.templateEngine.process(emailDto.getTemplateName(), ctx);
-        message.setText(htmlContent, true /* isHtml */);
-        emailDto.setEmailedMessage(htmlContent);
-
-        log.info("Processing email request: " + emailDto.toString());
-
-        message = prepareStaticResources(message, emailDto);
-
-        // Send mail
-        this.mailSender.send(mimeMessage);
-
-        this.templateEngine.clearTemplateCache();
-
-        return emailDto;
-
-    }
-
-    /**
      * Send email using Text template
      *
-     * @param emailDto
-     * @return EmailDto
+     * @param emailDto - email data transfer object
+     * @return EmailDto of send email
      * @throws IOException
      * @throws MessagingException
      */
@@ -198,37 +209,33 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
         // Prepare email context
         Context ctx = prepareContext(emailDto);
-
         // Prepare message
         MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         // Prepare message using a Spring helper
         MimeMessageHelper message = prepareMessage(mimeMessage, emailDto);
         // Create email message using TEXT template
         String textContent = this.templateEngine.process(emailDto.getTemplateName(), ctx); // text/email-text\"
-
         emailDto.setEmailedMessage(textContent);
         message.setText(textContent);
 
         // Send email
         this.mailSender.send(mimeMessage);
-
         return emailDto;
-
     }
 
     /**
      * Send email with html template found in classpath resource
      *
-     * @param emailDto
-     * @return EmailDto
+     * @param emailDto - email data transfer object
+     * @return EmailDto of send email
      * @throws MessagingException
      * @throws IOException
      */
     @Override
     public EmailDto sendHtmlEmail(EmailDto emailDto) throws MessagingException, IOException {
+
         // Prepare the evaluation context
         Context ctx = prepareContext(emailDto);
-
         // Prepare message using a Spring helper
         MimeMessage mimeMessage = this.mailSender.createMimeMessage();
         MimeMessageHelper message = prepareMessage(mimeMessage, emailDto);
@@ -237,26 +244,20 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         String htmlContent = this.templateEngine.process(emailDto.getTemplateName(), ctx);
         message.setText(htmlContent, true /* isHtml */);
         emailDto.setEmailedMessage(htmlContent);
-
-        log.info("Processing html email request: " + emailDto.toString());
-
         message = prepareStaticResources(message, emailDto);
 
         // Send mail
         this.mailSender.send(mimeMessage);
-
         this.templateEngine.clearTemplateCache();
-
         return emailDto;
-
     }
 
 
     /**
-     * Send multiple emails using templates in web/templates/email/ directory
+     * Send multiple emails using templates in templates directory
      *
-     * @param emailDtos
-     * @return
+     * @param emailDtos - email data transfer object
+     * @return list of send emails data transfer objects
      * @throws MessagingException
      * @throws IOException
      */
@@ -267,21 +268,15 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         MimeMessage mimeMessage;
 
         for (EmailDto emailDto : emailDtos) {
-
             // Prepare the evaluation context
             final Context ctx = prepareContext(emailDto);
-
             // Prepare message using a Spring helper
             mimeMessage = this.mailSender.createMimeMessage();
             MimeMessageHelper message = prepareMessage(mimeMessage, emailDto);
-
             // Create the HTML body using Thymeleaf
             String htmlContent = this.templateEngine.process(emailDto.getTemplateName(), ctx);
             message.setText(htmlContent, true /* isHtml */);
             emailDto.setEmailedMessage(htmlContent);
-
-            log.info("Processing emails request: " + emailDto.toString());
-
             message = prepareStaticResources(message, emailDto);
 
             mimeMessages.add(mimeMessage);
@@ -289,13 +284,20 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
         // Send mail
         this.mailSender.send(mimeMessages.toArray(new MimeMessage[0]));
-
         this.templateEngine.clearTemplateCache();
 
         return emailDtos;
-
     }
 
+    /**
+     * Prepare email message using a Spring helper
+     *
+     * @param mimeMessage - Spring built-in message
+     * @param emailDto    - target email DTO
+     * @return prepared Spring email message helper
+     * @throws MessagingException
+     * @throws IOException
+     */
     private MimeMessageHelper prepareMessage(MimeMessage mimeMessage, EmailDto emailDto)
         throws MessagingException, IOException {
 
@@ -309,11 +311,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         if (emailDto.getCc() != null && emailDto.getCc().length != 0) {
             message.setCc(emailDto.getCc());
         }
-
         if (emailDto.getBcc() != null && emailDto.getBcc().length != 0) {
             message.setBcc(emailDto.getBcc());
         }
-
         if (emailDto.isHasAttachment()) {
             List<File> attachments = loadResources(
                 emailDto.getPathToAttachment() + "/*" + emailDto.getAttachmentName() + "*.*");
@@ -323,11 +323,18 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
 
         return message;
-
     }
 
+    /**
+     * Load all attachment files from classpath resource directory
+     *
+     * @param fileNamePattern - resource file name
+     * @return list of attachment files
+     * @throws IOException
+     */
     private List<File> loadResources(String fileNamePattern) throws IOException {
         PathMatchingResourcePatternResolver fileResolver = new PathMatchingResourcePatternResolver();
+
         Resource[] resources = null;
 
         try {
@@ -343,9 +350,14 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         }
 
         return attachFiles;
-
     }
 
+    /**
+     * Prepares Spring evaluation context (load parameters in context for using in email template)
+     *
+     * @param emailDto - target email DTO
+     * @return prepared Spring context
+     */
     private Context prepareContext(EmailDto emailDto) {
         // Prepare the evaluation context
         Context ctx = new Context();
@@ -353,36 +365,35 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         final Map<String, Object> parameterMap = emailDto.getParameterMap();
         if (parameterMap != null) {
             Set<String> keySet = parameterMap.keySet();
-            log.info(methodMsgStatic(" keySet: " + keySet));
             if (!keySet.isEmpty()) {
                 keySet.forEach(s -> ctx.setVariable(s, parameterMap.get(s)));
             }
         }
-
-        log.info(methodMsgStatic(" resKeySet: "));
         Set<String> resKeySet = emailDto.getStaticResourceMap().keySet();
         if (!resKeySet.isEmpty()) {
-            resKeySet.forEach(s -> {
-                ctx.setVariable(s, emailDto.getStaticResourceMap().get(s));
-            });
+            resKeySet.forEach(s -> ctx.setVariable(s, emailDto.getStaticResourceMap().get(s)));
         }
-
-        log.info(methodMsgStatic(" Context: " + ctx));
 
         return ctx;
     }
 
+    /**
+     * Prepare all static files (images) for email from classpath resource directory
+     *
+     * @param message  - Spring email message helper
+     * @param emailDto - target email DTO
+     * @return Spring email message helper
+     * @throws MessagingException
+     */
     private MimeMessageHelper prepareStaticResources(MimeMessageHelper message,
                                                      EmailDto emailDto) throws MessagingException {
         Map<String, Object> staticResources = emailDto.getStaticResourceMap();
 
         for (Map.Entry<String, Object> entry : staticResources.entrySet()) {
-
             ClassPathResource imageSource =
                 new ClassPathResource("static/" + entry.getValue());
             message.addInline(entry.getKey(), imageSource, "image/png");
             message.addInline((String) entry.getValue(), imageSource, "image/png");
-
         }
 
         return message;

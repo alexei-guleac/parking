@@ -8,6 +8,7 @@ import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -28,6 +29,7 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
 @Component
 public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
+    // This dependency may need to record data directly to SQL database
     private final ParkingLotDBServiceImpl parkingLotDBService;
 
     private final ParkingLotLocalServiceImpl parkingLotLocalService;
@@ -48,7 +50,6 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
     /**
      * Invoked after WebSocket negotiation has succeeded and the WebSocket connection is opened and ready for use.
-     *
      * @param session - WebSocketSession
      */
     @Override
@@ -63,32 +64,27 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      *
      * @param session - WebSocketSession
      * @param message - text message from Arduino
-     *                <p>
-     *                Message sample:
-     *                <p>
-     *                {"mBody":"Arduino data", "id":"1", "status":"FREE", "token":"4a0a8679643673d083b23f52c21f27cac2b03fa2"};
+     *
+     * Message sample:
+     * {"mBody":"Arduino data", "id":"1", "status":"FREE", "token":"4a0a8679643673d083b23f52c21f27cac2b03fa2"};
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
 
         log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt(", message body ") + blTxt(message.toString()));
-        System.out.println(message.getPayload());
 
-        JSONObject msgObject = new JSONObject(message.getPayload());
-        String arduinoToken = msgObject.getString("secure_key");
-
+        JSONObject arduinoMsgPayload = new JSONObject(message.getPayload());
+        String arduinoToken = new JSONObject(message.getPayload()).getString("secure_key");
         if (arduinoToken.equals(securityToken)) {
-            String lotId = msgObject.getString("id");
-            String parkingLotStatus = msgObject.getString("status");
+            String lotId = arduinoMsgPayload.getString("id");
+            String parkingLotStatus = arduinoMsgPayload.getString("status");
 
             Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(Long.valueOf(lotId));
             parkingLotOptional.ifPresent(parkingLot -> {
-
                 if (!parkingLotStatus.equals(String.valueOf(parkingLot.getStatus()))) {
                     parkingLot.setStatus(ParkingLotStatus.valueOf(parkingLotStatus));
                     parkingLot.setUpdatedNow();
 
-                    //parkingLotDBService.save(parkingLot);
                     parkingLotLocalService.save(parkingLot);
                     statisticsService.save(parkingLot);
                 }
@@ -104,7 +100,7 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session,
-                                      CloseStatus status) {
-        log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt( " changed status to " + status));
+                                      @NonNull CloseStatus status) {
+        log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt(" changed status to " + status));
     }
 }

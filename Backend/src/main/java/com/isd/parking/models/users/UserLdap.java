@@ -29,6 +29,9 @@ import static com.isd.parking.utils.ReflectionMethods.setPropertyValue;
 import static org.apache.commons.lang.StringUtils.strip;
 
 
+/**
+ * LDAP database user representation
+ */
 @Entry(base = "ou=people",
     objectClasses = {"top", "person", "organizationalPerson", "inetOrgPerson"})
 @Data
@@ -91,7 +94,7 @@ public class UserLdap {
     private @Attribute(name = "gid")
     String gid;
 
-    public final static ArrayList<String> userLdapClassAttributesList =
+    public final static ArrayList<String> userLdapClassFieldsList =
         (ArrayList<String>) new ReflectionMethods().getFieldsNames(UserLdap.class);
 
     @JsonProperty()
@@ -113,11 +116,6 @@ public class UserLdap {
     @JsonAlias({"aid"})
     private @Attribute(name = "aid")
     String aid;
-
-    /*@JsonProperty()
-    @JsonAlias({"linkid"})
-    private @Attribute(name = "linkid")
-    String linkid;*/
 
     @JsonProperty()
     @JsonAlias({"vkid"})
@@ -173,7 +171,6 @@ public class UserLdap {
     public void setUserRegistered() {
         if (this.userPassword != null) {
             this.userPassword = new CustomBcryptPasswordEncoder().encode(this.userPassword);
-            System.out.println(" password QWERTY" + new CustomBcryptPasswordEncoder().encode(this.userPassword));
         }
         setCreatedNow();
         if (this.email != null) {
@@ -195,7 +192,6 @@ public class UserLdap {
     }
 
     public static void setUserLdapProperty(UserLdap user, String name, Attributes values) throws NamingException {
-        // log.info(methodMsgStatic("set value " + values.get(name).get()));
         ReflectionMethods.setPropertyValue(user, name, values.get(name).get().toString());
     }
 
@@ -203,6 +199,9 @@ public class UserLdap {
         return ReflectionMethods.getPropertyValue(user, name);
     }
 
+    /**
+     * Check user name if is in Cyrillic symbols and transliterate it to Latin representation
+     */
     private void checkCyrillicName() {
         if (this.cn != null) {
             if (isCyrillicString(strip(this.cn))) {
@@ -219,15 +218,18 @@ public class UserLdap {
     private void setSocialId(String id, String provider) {
         String social = provider + "id";
         setPropertyValue(this, social, id);
-        // log.info(methodMsgStatic("getPropertyValue: " + getPropertyValue(this, social)));
     }
 
+    /**
+     * Creates random social user UID and check user name necessity to transliterate
+     *
+     * @param id       - social service ID
+     * @param provider - social provider
+     */
     public void prepareSocialUser(String id, String provider) {
         setUid("social-" + UUID.randomUUID().toString().split("-")[0]);
         setSocialId(id, provider);
-        System.out.println();
         checkCyrillicName();
-        System.out.println("prepareSocialUser");
     }
 
     public static String getUserLdapStringProperty(UserLdap user, String name) {

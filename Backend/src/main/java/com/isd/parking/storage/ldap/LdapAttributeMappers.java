@@ -1,4 +1,4 @@
-package com.isd.parking.service.ldap;
+package com.isd.parking.storage.ldap;
 
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.models.users.UserLdap;
@@ -25,13 +25,22 @@ import java.util.List;
 import java.util.Map;
 
 import static com.isd.parking.models.users.UserLdap.*;
-import static com.isd.parking.service.ldap.LdapConstants.*;
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
+import static com.isd.parking.storage.ldap.LdapConstants.*;
 
 
+/**
+ * Different attributes mappers for LDAP users objects and entities
+ */
 @Slf4j
-public class LdapAttributeMappers {
+class LdapAttributeMappers {
 
+    /**
+     * Builds LDAP attributes object from specified LDAP user entry
+     * Used for user binding in LDAP template (create, update)
+     *
+     * @param user - specified LDAP user
+     * @return LDAP attributes
+     */
     static Attributes buildAttributes(UserLdap user) {
         Attribute objectClass = new BasicAttribute("objectClass");
         {
@@ -42,38 +51,40 @@ public class LdapAttributeMappers {
         Attributes userAttributes = new BasicAttributes();
         userAttributes.put(objectClass);
 
-        log.info("fields " + userLdapClassAttributesList);
-        for (String attribute : userLdapClassAttributesList) {
-            if (attribute.equals("userPassword")) {
+        for (String field : userLdapClassFieldsList) {
+            // write password in bytes (required by Spring LDAP)
+            if (field.equals("userPassword")) {
                 if (user.getUserPassword() != null) {
                     userAttributes.put("userPassword", user.getUserPassword().getBytes());
                 }
             }
-            String propertyValue = getUserLdapStringProperty(user, attribute);
-
-            log.info(methodMsgStatic("propertyValue " + propertyValue));
+            String propertyValue = getUserLdapStringProperty(user, field);
             if (propertyValue != null) {
-                userAttributes.put(attribute, propertyValue);
+                userAttributes.put(field, propertyValue);
             }
         }
-        log.info("userAttributes " + userAttributes);
 
         return userAttributes;
     }
 
-    private static LinkedHashMap<String, Object> buildAttributesMap(UserLdap user) {
+    /**
+     * Builds user fields map from user
+     * Used for map user to LDAP file entry
+     *
+     * @param user - specified LDAP user
+     * @return map of user fields
+     */
+    private static LinkedHashMap<String, Object> buildFieldsMap(UserLdap user) {
         return new LinkedHashMap<>() {
             {
-                log.info("fields " + userLdapClassAttributesList);
-                for (String attribute : userLdapClassAttributesList) {
-                    Object propertyValue = getUserLdapProperty(user, attribute);
+                for (String field : userLdapClassFieldsList) {
+                    Object propertyValue = getUserLdapProperty(user, field);
                     if (propertyValue != null) {
-                        if (attribute.equals("userPassword")) {
+                        if (field.equals("userPassword")) {
                             String pass = user.getUserPassword();
-                            log.info(methodMsgStatic("userPassword buildAttributesMap VVVVV " + pass));
-                            put(attribute, pass);
+                            put(field, pass);
                         } else {
-                            put(attribute, propertyValue);
+                            put(field, propertyValue);
                         }
                     }
                 }
@@ -81,28 +92,31 @@ public class LdapAttributeMappers {
         };
     }
 
+    /**
+     * Converts LDAP user to LDAP file entry
+     *
+     * @param user - target user
+     * @return - LDAP file entry
+     */
     public static Entry mapUserToEntry(UserLdap user) {
         Entry userEntry = null;
-        log.info(methodMsgStatic("ENTRRRRRRRRRy "));
+
         try {
             userEntry = new Entry(new DN("uid=" + user.getUid() + ",ou=people," + LDAP_BASE_DN));
             userEntry.addAttribute(OBJECT_CLASS, personObjectClasses);
-
             // bind attributes
-            log.info(methodMsgStatic("mapped " + buildAttributesMap(user).entrySet()));
-            for (Map.Entry<String, Object> entry : buildAttributesMap(user).entrySet()) {
+            for (Map.Entry<String, Object> entry : buildFieldsMap(user).entrySet()) {
                 userEntry.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
             }
         } catch (LDAPException e) {
             e.printStackTrace();
         }
-        log.info(methodMsgStatic("ENTRRRRRRRRRy " + userEntry));
         return userEntry;
     }
 
 
     /**
-     * Custom user attributes mapper, maps the attributes to the person POJO
+     * Custom user attributes mapper, maps the attributes to the user POJO, map only user CN and SN
      */
     static class UserAttributesMapperShort implements AttributesMapper<UserLdap> {
         @Override
@@ -122,9 +136,7 @@ public class LdapAttributeMappers {
     }
 
     /**
-     * This class is responsible to prepare UserLdap object after ldap search.
-     *
-     * @author
+     * This class is responsible to prepare UserLdap object after LDAP search.
      */
     static class UserAttributesMapper implements AttributesMapper<UserLdap> {
 
@@ -135,16 +147,15 @@ public class LdapAttributeMappers {
                 return null;
             }
             user = new UserLdap();
-            log.info(methodMsgStatic("mapFromAttributes " + attributes));
-            for (String attributeName : userLdapClassAttributesList) {
-                if (attributes.get(attributeName) != null) {
-                    if (attributeName.equals("accountState")) {
-                        log.info(methodMsgStatic("acc state value " + attributes.get(attributeName).get()));
-                        setUserLdapProperty(user, attributeName, AccountState.valueOf(getAttributeStringValue(attributes, attributeName)));
-                    } else if (ReflectionMethods.getPropertyType(user, attributeName) == LocalDateTime.class) {
-                        setUserLdapProperty(user, attributeName, LocalDateTime.parse(getAttributeStringValue(attributes, attributeName)));
+
+            for (String field : userLdapClassFieldsList) {
+                if (attributes.get(field) != null) {
+                    if (field.equals("accountState")) {
+                        setUserLdapProperty(user, field, AccountState.valueOf(getAttributeStringValue(attributes, field)));
+                    } else if (ReflectionMethods.getPropertyType(user, field) == LocalDateTime.class) {
+                        setUserLdapProperty(user, field, LocalDateTime.parse(getAttributeStringValue(attributes, field)));
                     } else {
-                        setUserLdapProperty(user, attributeName, attributes);
+                        setUserLdapProperty(user, field, attributes);
                     }
                 }
             }
@@ -152,11 +163,22 @@ public class LdapAttributeMappers {
             return user;
         }
 
+        /**
+         * Returns String representation of lDAP attribute
+         *
+         * @param attributes    - user LDAP attributes
+         * @param attributeName - target attribute name
+         * @return String representation of lDAP attribute
+         * @throws NamingException
+         */
         private String getAttributeStringValue(Attributes attributes, String attributeName) throws NamingException {
             return (String) attributes.get(attributeName).get();
         }
     }
 
+    /**
+     * Maps user from context
+     */
     static class UserContextMapper extends AbstractContextMapper<UserLdap> {
         public UserLdap doMapFromContext(DirContextOperations context) {
             UserLdap user = new UserLdap();
@@ -169,9 +191,7 @@ public class LdapAttributeMappers {
     }
 
     /**
-     * This class is responsible to print only cn .
-     *
-     * @author
+     * This class is responsible to print only cn.
      */
     static class SingleAttributesMapper implements AttributesMapper<String> {
 
@@ -183,9 +203,7 @@ public class LdapAttributeMappers {
     }
 
     /**
-     * This class is responsible to print all the content in string format.
-     *
-     * @author
+     * This class is responsible to print all user LDAP attributes in string format.
      */
     static class MultipleAttributesMapper implements AttributesMapper<String> {
 
@@ -204,6 +222,10 @@ public class LdapAttributeMappers {
         }
     }
 
+    /**
+     * Maps LDAP user groups membership to string roles representation
+     * Used to retrieve user roles from LDAP server file to include it in JWT
+     */
     static class AuthoritiesAttributesMapper implements AttributesMapper<String> {
 
         @Override

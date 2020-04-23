@@ -5,19 +5,40 @@ import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 
 
+/**
+ * Date utilities
+ */
 @Slf4j
 public class AppDateUtils {
 
+    /**
+     * Assert that specified date is before present date
+     *
+     * @param subjectDate      - target date
+     * @param clockSkewMinutes - guarantee clock skew in minutes
+     * @return operation result
+     */
     public static boolean isDateBeforeNow(LocalDateTime subjectDate, int clockSkewMinutes) {
-        // log.info(methodMsgStatic("subjectDate " + subjectDate));
-        // log.info(methodMsgStatic("LocalDateTime.now().minusMinutes(clockSkewMinutes)" + LocalDateTime.now().minusMinutes(clockSkewMinutes)));
         return subjectDate.isBefore(LocalDateTime.now().minusMinutes(clockSkewMinutes));
     }
 
+    /**
+     * Assert that specified date is after present date
+     *
+     * @param subjectDate      - target date
+     * @param clockSkewMinutes - guarantee clock skew in minutes
+     * @return operation result
+     */
     public static boolean isDateAfterNow(LocalDateTime subjectDate, int clockSkewMinutes) {
         return subjectDate.isAfter(LocalDateTime.now().plusMinutes(clockSkewMinutes));
     }
 
+    /**
+     * Get string date ending word based on days count
+     *
+     * @param days - target days count
+     * @return specified date ending
+     */
     public static String getPeriodEnding(int days) {
         String once = "once";
         int day = 1;

@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
+/**
+ * Intermediate object needed to form a email message fro user information
+ */
 @Data
 @NoArgsConstructor
 public class EmailDto {
@@ -86,8 +89,6 @@ public class EmailDto {
         this.to = splitByComma(toList);
         this.cc = splitByComma(ccList);
     }
-
-    // getters and setters not mentioned for brevity
 
     private String[] splitByComma(String toMultiple) {
         return toMultiple.split(",");

@@ -13,6 +13,9 @@ import javax.mail.Session;
 import java.util.Properties;
 
 
+/**
+ * Configures connection to the mail host
+ */
 @Configuration
 @PropertySource("classpath:email-config.properties")
 public class EmailConfig {
@@ -43,6 +46,7 @@ public class EmailConfig {
 
     @Value("${mail.smtp.debug}")
     private String debug;
+
 
     @Bean("gmail")
     public JavaMailSender gmailMailSender() {

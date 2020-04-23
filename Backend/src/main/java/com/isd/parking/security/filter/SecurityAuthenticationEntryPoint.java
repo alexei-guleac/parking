@@ -7,7 +7,6 @@ import com.isd.parking.security.model.RestErrorList;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -22,7 +21,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * SecurityAuthenticationEntryPoint is called by ExceptionTranslationFilter to handle all AuthenticationException.
  * These exceptions are thrown when authentication failed : wrong login/password, authentication unavailable, invalid token
  * authentication expired, etc.
- * <p>
  * For problems related to access (roles), see RestAccessDeniedHandler.
  */
 public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -30,10 +28,12 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
-                         AuthenticationException authException) throws IOException, ServletException {
+                         AuthenticationException authException) throws IOException {
 
-        RestErrorList errorList = new RestErrorList(SC_UNAUTHORIZED, new ErrorMessage(authException.getMessage()));
-        ResponseWrapper responseWrapper = new ResponseWrapper(null, singletonMap("status", SC_UNAUTHORIZED), errorList);
+        RestErrorList errorList = new RestErrorList(
+            SC_UNAUTHORIZED, new ErrorMessage(authException.getMessage()));
+        ResponseWrapper responseWrapper = new ResponseWrapper(
+            null, singletonMap("status", SC_UNAUTHORIZED), errorList);
         ObjectMapper objMapper = new ObjectMapper();
 
         HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper(response);

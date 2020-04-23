@@ -1,18 +1,13 @@
-package com.isd.parking.service.ldap;
+package com.isd.parking.storage.ldap;
 
 import com.isd.parking.models.users.UserLdap;
-import com.isd.parking.repository.UserLdapFileRepository;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.AttributesMapper;
-import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.query.LdapQuery;
@@ -24,25 +19,27 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import javax.naming.Name;
-import javax.naming.directory.*;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.isd.parking.service.ldap.LdapAttributeMappers.*;
-import static com.isd.parking.service.ldap.LdapConstants.*;
-import static com.isd.parking.service.ldap.LdapFileUtils.deleteEntryFromLdifFile;
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
+import static com.isd.parking.storage.ldap.LdapAttributeMappers.*;
+import static com.isd.parking.storage.ldap.LdapConstants.*;
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 
 /**
  * UserLdap Service class for ldap storage repository
  * Contains methods for
- * authenticate user,
- * searchUser user by uid,
- * create new user entry in ldap repository,
- * modify existed user,
- * get all users from ldap storage
+ * - authenticate user,
+ * - search user by uid and other attributes
+ * - create new user entry in ldap repository,
+ * - modify existed user attributes,
+ * - delete user,
+ * - get all users from ldap storage etc.
  */
 @Service
 @Slf4j
@@ -50,13 +47,7 @@ public class UserLdapClient {
 
     private final LdapTemplate ldapTemplate;
 
-    private final LdapContextSource ldapContextSource;
-
-    private final UserLdapFileRepository userLdapFileRepository;
-
     private final CustomBcryptPasswordEncoder passwordEncoder;
-
-    private final ColorConsoleOutput console;
 
     @Value("${spring.ldap.base}")
     private String ldapSearchBase;
@@ -66,34 +57,32 @@ public class UserLdapClient {
 
     @Autowired
     public UserLdapClient(@Qualifier(value = "ldapTemplate") LdapTemplate ldapTemplate,
-                          LdapContextSource ldapContextSource, UserLdapFileRepository userLdapFileRepository,
-                          CustomBcryptPasswordEncoder passwordEncoder, ColorConsoleOutput console) {
+                          CustomBcryptPasswordEncoder passwordEncoder) {
         this.ldapTemplate = ldapTemplate;
-        this.ldapContextSource = ldapContextSource;
-        this.userLdapFileRepository = userLdapFileRepository;
         this.passwordEncoder = passwordEncoder;
-        this.console = console;
     }
-
-    // --------- LDAp in memory template methods ---------
 
     /**
      * Method authenticates user with given credentials
      *
      * @param uid      - user name
-     * @param password - user pass
-     * @return - success or denied boolean status of user authentication
+     * @param password - user password
+     * @return - success or denied status of user authentication
      */
     public Boolean authenticate(String uid, String password) {
-        log.info(methodMsgStatic(""));
         AndFilter filter = new AndFilter();
         filter.and(new EqualsFilter(USER_UID_ATTRIBUTE, uid));
-
-        log.info(methodMsgStatic("" + findById(uid)));
 
         return ldapTemplate.authenticate(ldapSearchBase, filter.encode(), passwordEncoder.encode(password));
     }
 
+    /**
+     * Build user LDAP server domain name
+     * Used for bind user to LDAP server (using file access template or remote server)
+     *
+     * @param user - target user
+     * @return LDAP server user domain name
+     */
     private Name buildDn(UserLdap user) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
@@ -101,6 +90,13 @@ public class UserLdapClient {
             .build();
     }
 
+    /**
+     * Build user LDAP server domain name by user id
+     * Used for bind user to LDAP server (using file access template or remote server)
+     *
+     * @param uid - target user id
+     * @return LDAP server user domain name
+     */
     private Name bindDnByUid(String uid) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
@@ -108,132 +104,112 @@ public class UserLdapClient {
             .build();
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Create new user in LDAP server
      *
-     * @see
-     * ldap.advance.example.UserRepositoryIntf#createUser(ldap.advance.example.UserLdap)
+     * @param user - target user for creating
+     * @return operation result
      */
     public boolean createUser(UserLdap user) {
-        log.info(methodMsgStatic(""));
-        user.setUserRegistered();
-        log.info(methodMsgStatic("" + user));
-
-        // save in-memory server
-        log.info(methodMsgStatic("ldapTemplate.bind start " + user));
         ldapTemplate.bind(buildDn(user), null, buildAttributes(user));
-
-        log.info(methodMsgStatic("ldapTemplate.bind end " + user));
-        log.info(methodMsgStatic(" before write" + user));
-
-        // save to .ldif file
-        userLdapFileRepository.save(user);
-
         return true;
     }
 
+    /**
+     * Update user in LDAP server
+     *
+     * @param user - target user for updating
+     * @return operation result
+     */
     public boolean updateUser(UserLdap user) {
-        log.info(methodMsgStatic(""));
-        // upd in in-memory server
         ldapTemplate.rebind(buildDn(user), null, buildAttributes(user));
-        // update in .ldif file
-        userLdapFileRepository.update(user);
-
         return true;
     }
 
-    public boolean updateUser(String uid, @Nullable String attributeName, @Nullable String attributeValue) {
-        log.info(methodMsgStatic(""));
-        // upd in in-memory server
+    /**
+     * Modify LDAP user attribute value
+     *
+     * @param uid            - target user id
+     * @param attributeName  - specified attribute name
+     * @param attributeValue - specified attribute value
+     * @return operation result
+     */
+    public boolean updateUser(String uid,
+                              @Nullable String attributeName,
+                              @Nullable String attributeValue) {
         Attribute attr = new BasicAttribute(attributeName, attributeValue);
         ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
         ldapTemplate.modifyAttributes(bindDnByUid(uid), new ModificationItem[]{item});
-        // update in .ldif file
-        userLdapFileRepository.update(uid, attributeName, attributeValue);
-
-        return true;
-    }
-
-    public boolean updateUsername(String username, String newUsername) {
-        // upd in in-memory server
-        ldapTemplate.rename(bindDnByUid(username), bindDnByUid(newUsername));
-        // update in .ldif file
-        userLdapFileRepository.update(username, USER_UID_ATTRIBUTE, newUsername);
-
-        return true;
-    }
-
-    public void updateLastName(UserLdap user) {
-        log.info(methodMsgStatic(""));
-        Attribute attr = new BasicAttribute("sn", user.getSn());
-        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
-        ldapTemplate.modifyAttributes(buildDn(user), new ModificationItem[]{item});
-    }
-
-    public boolean updateUserPassword(UserLdap user, String password) {
-        log.info(methodMsgStatic(""));
-        // upd in in-memory server
-        Attribute attr = new BasicAttribute(USER_PASSWORD_ATTRIBUTE, password);
-        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
-        ldapTemplate.modifyAttributes(buildDn(user), new ModificationItem[]{item});
-
-        // update in .ldif file
-        userLdapFileRepository.updatePassword(user.getUid(), password);
-
-        return true;
-    }
-
-
-    public void modify(final String uid, final String password) {
-        log.info(methodMsgStatic(""));
-        DirContextOperations context = ldapTemplate.lookupContext(bindDnByUid(uid));
-
-        context.setAttributeValues(OBJECT_CLASS, personObjectClasses);
-        context.setAttributeValue("cn", uid);
-        context.setAttributeValue("sn", uid);
-        context.setAttributeValue(ldapPasswordAttribute, passwordEncoder.encode(password));
-
-        ldapTemplate.modifyAttributes(context);
-    }
-
-    public boolean deleteUser(UserLdap user) {
-        log.info(methodMsgStatic(""));
-        // del from in-memory server
-        ldapTemplate.unbind(buildDn(user));
-        // delete from .ldif file
-        deleteEntryFromLdifFile(user);
-
-        return true;
-    }
-    /*
-     * (non-Javadoc)
-     * @see ldap.advance.example.UserRepositoryIntf#remove(java.lang.String)
-     */
-
-    public boolean deleteUserById(String uid) {
-        log.info(methodMsgStatic(""));
-        // del from in-memory server
-        ldapTemplate.unbind(bindDnByUid(uid));
-        // delete from .ldif file
-        deleteEntryFromLdifFile(uid);
 
         return true;
     }
 
     /**
-     * Method search user by given uid
+     * Modify LDAP user name (in this case uid)
+     *
+     * @param username    - target user unique username
+     * @param newUsername - user new uid
+     * @return operation result
+     */
+    public boolean updateUsername(String username, String newUsername) {
+        ldapTemplate.rename(bindDnByUid(username), bindDnByUid(newUsername));
+        return true;
+    }
+
+    /**
+     * Modify LDAP user password
+     *
+     * @param user     - target LDAP user
+     * @param password - target user password
+     * @return operation result
+     */
+    public boolean updateUserPassword(UserLdap user, String password) {
+        Attribute attr = new BasicAttribute(USER_PASSWORD_ATTRIBUTE, password);
+        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
+        ldapTemplate.modifyAttributes(buildDn(user), new ModificationItem[]{item});
+        return true;
+    }
+
+    /**
+     * Delete user from LDAP server
+     *
+     * @param user - target user
+     * @return operation result
+     */
+    public boolean deleteUser(UserLdap user) {
+        ldapTemplate.unbind(buildDn(user));
+        return true;
+    }
+
+    /**
+     * Delete user by id from LDAP server
+     *
+     * @param uid - target user id
+     * @return operation result
+     */
+    public boolean deleteUserById(String uid) {
+        ldapTemplate.unbind(bindDnByUid(uid));
+        return true;
+    }
+
+    /**
+     * Method get user names list by given uid
      *
      * @param uid - user name
      * @return - List of user names equals with given
      */
-
     public List<String> getUserNameById(final String uid) {
-        log.info(methodMsgStatic(""));
         return getAttributes(uid, "cn");
     }
 
+    /**
+     * Retrieve user membership authorities by user id
+     * Used for setting JWT
+     *
+     * @param uid - target user id
+     * @return string representation of user membership authorities
+     */
     public String getAuthoritiesMembershipById(final String uid) {
-        log.info(methodMsgStatic(""));
         List<String> rolesList = ldapTemplate.search(
             ldapSearchBase, USER_UID_ATTRIBUTE + "=" + uid, new AuthoritiesAttributesMapper());
         if (rolesList != null && !rolesList.isEmpty()) {
@@ -242,31 +218,43 @@ public class UserLdapClient {
         return null;
     }
 
+    /**
+     * Search user by id (make sure it is available on server)
+     *
+     * @param uid - target user id
+     * @return operation result
+     */
     public boolean searchUser(final String uid) {
-        log.info(methodMsgStatic(""));
-        log.info(String.valueOf(getUserNameById(uid)));
         return !getUserNameById(uid).isEmpty();
     }
 
+    /**
+     * Get user by id
+     *
+     * @param uid - target user id
+     * @return user found
+     */
     public UserLdap findById(String uid) {
-        log.info(methodMsgStatic(""));
-        UserLdap user = null;
+        UserLdap user;
         try {
             user = ldapTemplate.lookup(bindDnByUid(uid), new UserAttributesMapper());
         } catch (org.springframework.ldap.NameNotFoundException e) {
-            // e.printStackTrace();
             return null;
         }
         return user;
     }
 
+    /**
+     * Get user by domain name
+     *
+     * @param dn - target user domain name
+     * @return user found
+     */
     public UserLdap findByDn(String dn) {
-        log.info(methodMsgStatic(""));
-        UserLdap user = null;
+        UserLdap user;
         try {
             user = ldapTemplate.lookup(dn, new UserAttributesMapper());
         } catch (org.springframework.ldap.NameNotFoundException e) {
-            // e.printStackTrace();
             return null;
         }
         return user;
@@ -277,121 +265,129 @@ public class UserLdapClient {
      *
      * @return - list of all users
      */
-    @SuppressWarnings("deprecation")
     public List<UserLdap> findAll() {
-        log.info(methodMsgStatic(""));
-        SearchControls controls = new SearchControls();
-        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        return ldapTemplate.search(DistinguishedName.EMPTY_PATH, "(objectclass=person)", controls, new UserAttributesMapper());
+        return ldapTemplate.search(query()
+            .where(OBJECT_CLASS).is("person"), new UserAttributesMapper());
     }
-    /*
-     * (non-Javadoc)
-     *
-     * @see ldap.advance.example.UserRepositoryIntf#getUserDetails(java.lang.String)
-     */
 
-    public UserLdap getUserDetails(String uid) {
-        log.info(methodMsgStatic(""));
-        List<UserLdap> list = ldapTemplate.search(query().base(ldapSearchBase).where(USER_UID_ATTRIBUTE).is(uid), new UserAttributesMapper());
+    /**
+     * Gets string representation of all LDAP server users
+     *
+     * @return string representation of all LDAP server users
+     */
+    public List<String> getAllUsersDetails() {
+        List<String> list = ldapTemplate.list(
+            query().base());
         if (list != null && !list.isEmpty()) {
-            return list.get(0);
+            return list;
         }
         return null;
     }
-    /*
-     * (non-Javadoc)
-     *
-     * @see ldap.advance.example.UserRepositoryIntf#getUserDetail(java.lang.String)
-     */
 
-    public String getUserDetail(String uid) {
-        log.info(methodMsgStatic(""));
-        List<String> results = ldapTemplate.search(query().base(ldapSearchBase).where(USER_UID_ATTRIBUTE).is(uid), new MultipleAttributesMapper());
+    /**
+     * Gets string representation of specified LDAP server user by it's id
+     *
+     * @param uid - target user id
+     * @return string representation of specified LDAP server user by it's id
+     */
+    public String getUserDetails(String uid) {
+        List<String> results = ldapTemplate.search(
+            query().base(ldapSearchBase)
+                .where(USER_UID_ATTRIBUTE).is(uid), new MultipleAttributesMapper());
         if (results != null && !results.isEmpty()) {
             return results.get(0);
         }
         return " UserDetails for " + uid + " not found .";
     }
-    /*
-     * (non-Javadoc)
+
+    /**
+     * Get all LDAP server users names
      *
-     * @see ldap.advance.example.UserRepositoryIntf#getAllUserNames()
+     * @return list of existing users names
      */
-
     public List<String> getAllUserNames() {
-        log.info(methodMsgStatic(""));
-        LdapQuery query = query().base(ldapSearchBase);
-        List<String> list = ldapTemplate.list(query.base());
-        log.info("Users -> " + list);
-        return ldapTemplate.search(query().base(ldapSearchBase).where(OBJECT_CLASS).is("person"), new SingleAttributesMapper());
-    }
-
-    public List<UserLdap> getAllUsers() {
-        log.info(methodMsgStatic(""));
-        return ldapTemplate.search(query()
-            .where(OBJECT_CLASS).is("person"), new UserAttributesMapper());
+        return ldapTemplate.search(
+            query().base(ldapSearchBase).where(OBJECT_CLASS).is("person"), new SingleAttributesMapper());
     }
 
     /* Custom search */
 
+    /**
+     * Search user by social id (make sure it is available on server)
+     *
+     * @param id     - target usr social id
+     * @param social - social service provider
+     * @return operation result
+     */
     public boolean searchUsersBySocialId(final String id, String social) {
-        log.info(methodMsgStatic("Id " + id + " social " + social));
-        log.info(String.valueOf(getUsersBySocialId(id, social)));
-
         return !getUsersBySocialId(id, social).isEmpty();
     }
 
+    /**
+     * Search user by email (make sure it is available on server)
+     *
+     * @param email - target user's email
+     * @return operation result
+     */
     public boolean searchUsersByEmail(final String email) {
-        log.info(methodMsgStatic("Email " + email));
-        log.info(String.valueOf(getUsersByEmail(email)));
-
         return !getUsersByEmail(email).isEmpty();
     }
 
+    /**
+     * Get all users by social provider id
+     * (In this application case not used, LDAP specification allows multiple identical secondary attributes)
+     *
+     * @param id     - target usr social id
+     * @param social - social service provider
+     * @return list of users found
+     */
     public List<UserLdap> getUsersBySocialId(String id, String social) {
         LdapQuery query = getUserBySocialIdLdapQuery(id, social);
 
         return ldapTemplate.search(query, new UserAttributesMapper());
     }
 
+    /**
+     * Get user by given social provider id
+     *
+     * @param id     - target user social id
+     * @param social - social service provider
+     * @return user found
+     */
     public UserLdap getUserBySocialId(String id, String social) {
         LdapQuery query = getUserBySocialIdLdapQuery(id, social);
         List<UserLdap> results = ldapTemplate.search(query, new UserAttributesMapper());
-        log.info(methodMsgStatic("results " + results));
+
         if (results != null && !results.isEmpty()) {
             return results.get(0);
         }
         return null;
     }
 
-    private LdapQuery getUserBySocialIdLdapQuery(String id, String social) {
-        LdapQuery query = getBaseLdapQuery()
-            //.attributes("cn")
-            // .base(ldapSearchBase)
-            .where(OBJECT_CLASS).is("person")
-            .and(social + "id").like(id)
-            .and(USER_UID_ATTRIBUTE).isPresent();
-        log.info(methodMsgStatic("Query " + query));
-        return query;
+    /**
+     * Get user with specified email
+     *
+     * @param email - target user email
+     * @return user found
+     */
+    public UserLdap getUserByEmail(String email) {
+        List<UserLdap> users = getUsersByEmail(email);
+
+        if (users != null && !users.isEmpty()) {
+            return users.get(0);
+        } else {
+            return null;
+        }
     }
 
-    public List<UserLdap> getFullnameBySocialId(String id, String social) {
-        LdapQuery query = getUserBySocialIdLdapQuery(id, social);
-
-        return ldapTemplate.search(query, new UserAttributesMapperShort());
-    }
-
-    public List<UserLdap> getPersonNamesByLastName(String lastName) {
-
-        LdapQuery query = getBaseLdapQuery()
-            .attributes("cn")
-            .where(OBJECT_CLASS).is("person")
-            .and("sn").like(lastName)
-            .and(USER_UID_ATTRIBUTE).isPresent();
-
-        return ldapTemplate.search(query, new UserAttributesMapperShort());
-    }
-
+    /**
+     * Get all users with specified email
+     * (in this application not allowed multiple users with same email,
+     * but this method implemented for check reasons)
+     *
+     * @param email - target user email
+     * @return list of found users
+     */
     public List<UserLdap> getUsersByEmail(String email) {
 
         LdapQuery query = getBaseLdapQuery()
@@ -402,6 +398,55 @@ public class UserLdapClient {
         return ldapTemplate.search(query, new UserAttributesMapper());
     }
 
+    /**
+     * Forms social user get by id and social service provider LDAP query
+     *
+     * @param id     - target user social id
+     * @param social - social service provider
+     * @return social search query
+     */
+    private LdapQuery getUserBySocialIdLdapQuery(String id, String social) {
+        return getBaseLdapQuery()
+            .where(OBJECT_CLASS).is("person")
+            .and(social + "id").like(id)
+            .and(USER_UID_ATTRIBUTE).isPresent();
+    }
+
+    /**
+     * Retrieve all LDAP server user full names
+     *
+     * @param id     - target user social id
+     * @param social - social service provider
+     * @return list of found user with full names
+     */
+    public List<UserLdap> getFullnameBySocialId(String id, String social) {
+        LdapQuery query = getUserBySocialIdLdapQuery(id, social);
+
+        return ldapTemplate.search(query, new UserAttributesMapperShort());
+    }
+
+    /**
+     * Retrieve all LDAP server user names
+     *
+     * @param lastName - target user lastname
+     * @return list of found users with names
+     */
+    public List<UserLdap> getUserNamesByLastName(String lastName) {
+
+        LdapQuery query = getBaseLdapQuery()
+            .attributes("cn")
+            .where(OBJECT_CLASS).is("person")
+            .and("sn").like(lastName)
+            .and(USER_UID_ATTRIBUTE).isPresent();
+
+        return ldapTemplate.search(query, new UserAttributesMapperShort());
+    }
+
+    /**
+     * Forms standard base LDAP query
+     *
+     * @return standard base LDAp query
+     */
     private LdapQueryBuilder getBaseLdapQuery() {
         return query()
             .searchScope(SearchScope.SUBTREE)
@@ -410,30 +455,32 @@ public class UserLdapClient {
             .base(LdapUtils.emptyLdapName());
     }
 
-    public UserLdap getUserByEmail(String email) {
-        List<UserLdap> users = getUsersByEmail(email);
-        log.info(methodMsgStatic("users " + users));
-        if (users != null && !users.isEmpty()) {
-            return users.get(0);
-        } else {
-            return null;
-        }
-    }
-
+    /**
+     * Get passwordUpdatedAt user LDAp entry attribute value
+     *
+     * @param uid - target user id
+     * @return password updated at date
+     */
     public LocalDateTime getPasswordUpdateAt(String uid) {
-        log.info(methodMsgStatic(""));
+
         List<String> attributes = getAttributes(uid, "passwordUpdatedAt");
-        log.info(methodMsgStatic(String.valueOf(attributes)));
+
         if (!attributes.isEmpty()) {
-            log.info(methodMsgStatic("" + LocalDateTime.parse(attributes.get(0))));
             return LocalDateTime.parse(attributes.get(0));
         } else {
             return null;
         }
     }
 
+    /**
+     * Get specified LDAP user attribute value by user id
+     *
+     * @param uid           - target user id
+     * @param attributeName - target attribute name
+     * @return list of found users correspond attribute values
+     */
     private List<String> getAttributes(String uid, String attributeName) {
-        log.info(methodMsgStatic(""));
+
         return ldapTemplate.search(
             ldapSearchBase,
             USER_UID_ATTRIBUTE + "=" + uid,

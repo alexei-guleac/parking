@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
      * Method handles internal errors for non existing pages.
      *
      * @param ex      - ResourceNotFoundException, indicates a resource was not found.
-     * @param request - request provided
-     * @return - ResponseEntity
+     * @param request - HTTP request provided
+     * @return - HTTP response with error details
      */
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<?> resourceNotFoundException(
@@ -35,8 +35,8 @@ public class GlobalExceptionHandler {
      * Method handles common internal errors.
      *
      * @param ex      - exception
-     * @param request - request provided
-     * @return - ResponseEntity
+     * @param request - HTTP request provided
+     * @return - HTTP response with error details
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {

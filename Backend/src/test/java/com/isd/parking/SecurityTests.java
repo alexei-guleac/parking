@@ -15,7 +15,6 @@
  */
 package com.isd.parking;
 
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,15 +35,11 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 @Slf4j
 public class SecurityTests {
 
-
     private final MockMvc mockMvc;
 
-    private final ColorConsoleOutput console;
-
     @Autowired
-    public SecurityTests(MockMvc mockMvc, ColorConsoleOutput console) {
+    public SecurityTests(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
-        this.console = console;
     }
 
     @Test
@@ -52,9 +47,7 @@ public class SecurityTests {
         FormLoginRequestBuilder login = formLogin()
                 .user("admin")
                 .password("sYst3m@");
-
         log.info("Performing login with valid user test...");
-
         mockMvc.perform(login)
                 .andExpect(authenticated().withUsername("ben"));
     }
@@ -64,9 +57,7 @@ public class SecurityTests {
         FormLoginRequestBuilder login = formLogin()
                 .user("someuser")
                 .password("wrongpassword");
-
         log.info("Performing login with invalid user test...");
-
         mockMvc.perform(login)
                 .andExpect(unauthenticated());
     }

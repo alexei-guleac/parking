@@ -53,6 +53,11 @@ public class ParkingLot {
             " }";
     }
 
+    /**
+     * Auxiliary method for console color output of parking lot status
+     *
+     * @return colored status string
+     */
     private String getStatusColor() {
         return status == ParkingLotStatus.UNKNOWN ? whTxt(String.valueOf(status)) :
             status == ParkingLotStatus.FREE ? grBrTxt(String.valueOf(status)) :

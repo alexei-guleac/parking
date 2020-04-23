@@ -9,10 +9,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 
+/**
+ * Entity to store user registration or password reset action in database
+ */
 @Entity(name = "confirmation_tokens")
 @Data
 @RequiredArgsConstructor
-public class ConfirmationToken {
+public class ConfirmationRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,7 +40,7 @@ public class ConfirmationToken {
     @Column(name = "claimed")
     private boolean claimed;
 
-    public ConfirmationToken(String uid, AccountOperation operationType) {
+    public ConfirmationRecord(String uid, AccountOperation operationType) {
         this.uid = uid;
         createdAt = LocalDateTime.now();
         expirationDate = createdAt.plusMinutes(AccountConfirmationPeriods.CONFIRM_TOKEN_EXP_IN_MINUTES);

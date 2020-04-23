@@ -5,7 +5,6 @@ import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.service.ParkingLotService;
 import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
 import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ import static com.isd.parking.utils.ColorConsoleOutput.*;
 
 /**
  * Utility class
- * Fills the database and local Java memory storage with initial data
+ * Fills the database and local Java memory storage with initial parking lots data
  */
 @Component
 @Slf4j
@@ -33,16 +32,11 @@ public class DataLoader  {
 
     private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
-    private final ColorConsoleOutput console;
-
-    public boolean flag = true;
-
     @Autowired
     public DataLoader(ParkingLotDBServiceImpl parkingLotDBService,
-                      ParkingLotLocalServiceImpl parkingLotLocalService, ColorConsoleOutput console) {
+                      ParkingLotLocalServiceImpl parkingLotLocalService) {
         this.parkingLotDBService = parkingLotDBService;
         this.parkingLotLocalService = parkingLotLocalService;
-        this.console = console;
     }
 
     /**
@@ -77,11 +71,17 @@ public class DataLoader  {
         fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
     }
 
+    /**
+     * Get and show to console all parking lots from specified storage (in-memory or database)
+     *
+     * @param parkingLotService - target parking lot service
+     * @param from              - target source console indicator
+     */
     public void fetchParkingLots(ParkingLotService parkingLotService, String from) {
         printSeparator();
-        log.info(console.classMsg(getClass().getSimpleName(), "ParkingLot's found with ") + puBrTxt("findAll()") + grTxt(from));
+        log.info(methodMsg("ParkingLot's found with ") + puBrTxt("findAll()") + grTxt(from));
         long numberOfParkLotsInStorage = parkingLotService.countAll();
-        log.info(console.classMsg(getClass().getSimpleName(), "Total number: ") + puBrTxt("" + numberOfParkLotsInStorage));
+        log.info(methodMsg("Total number: " + puBrTxt("" + numberOfParkLotsInStorage)));
         for (ParkingLot parkingLot : parkingLotService.findAll()) {
             log.info(parkingLot.toString());
         }

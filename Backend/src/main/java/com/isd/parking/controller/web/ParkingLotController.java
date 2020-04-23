@@ -6,11 +6,9 @@ import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
 import com.isd.parking.service.implementations.StatisticsServiceImpl;
 import com.isd.parking.storage.util.DataLoader;
-import com.isd.parking.utils.ColorConsoleOutput;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,65 +19,53 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.isd.parking.controller.ApiEndpoints.*;
-import static com.isd.parking.utils.ColorConsoleOutput.blTxt;
-import static com.isd.parking.utils.ColorConsoleOutput.redTxt;
+import static com.isd.parking.utils.ColorConsoleOutput.*;
 
 
 /**
- * Parking lots controller
- * Provides methods for getting all parking lots stored in local Java memory and database
+ * Provides methods for getting all parking lots stored in local Java memory
+ * (optionally can be extended to get data from SQL database)
  */
 @RestController
 @Slf4j
 public class ParkingLotController {
 
-    /*private final ParkingLotDBService parkingLotDBService;*/
-
     private final ParkingLotLocalServiceImpl parkingLotLocalService;
 
     private final StatisticsServiceImpl statisticsService;
-
-    private final LdapContextSource contextSource;
-
-    private final ColorConsoleOutput console;
 
     private final DataLoader loader;
 
     @Autowired
     public ParkingLotController(ParkingLotLocalServiceImpl parkingLotLocalService,
                                 StatisticsServiceImpl statisticsService,
-                                LdapContextSource contextSource, ColorConsoleOutput console, DataLoader loader) {
+                                DataLoader loader) {
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
-        this.contextSource = contextSource;
-        this.console = console;
         this.loader = loader;
     }
 
     /**
-     * Parking lots get controller
-     * Used to get all parking lots from the local Java memory
+     * Used to get all parking lots from parking lots storage
      *
      * @return Parking lots list
      */
     @GetMapping(parking)
     public List<ParkingLot> getAllParkingLots() {
-        log.info(console.classMsg(getClass().getSimpleName(), "get all parking lots"));
-
+        log.info(methodMsg("get all parking lots"));
         return parkingLotLocalService.findAll();
     }
 
     /**
-     * Parking lots get by id controller
-     * Used to get parking lot by its id from the local Java memory
+     * Used to get parking lot by its id from parking lots storage
      *
-     * @return ResponseEntity.OK with body of Parking lot if exists in storage else
-     * @throw ResourceNotFoundException
+     * @return HTTP response with body of Parking lot if exists in storage else
+     * @throws ResourceNotFoundException
      */
     @GetMapping(parking + "/{id}")
     public ResponseEntity<ParkingLot> getParkingLotById(@PathVariable("id") Long parkingLotId)
         throws ResourceNotFoundException {
-        log.info(console.classMsg(getClass().getSimpleName(), "get parking lot by id"));
+        log.info(methodMsg("get parking lot by id"));
 
         ParkingLot parkingLot = parkingLotLocalService.findById(parkingLotId)
             .orElseThrow(() -> new ResourceNotFoundException("Parking Lot not found for this id :: " + parkingLotId));
@@ -88,70 +74,70 @@ public class ParkingLotController {
     }
 
     /**
-     * Parking lot reservation controller
-     * Used to reservate parking lot
+     * Used to reserve parking lot
      *
-     * @param parkingLotId - id of parking lot
-     * @return - success status of parking lot reservation
+     * @param parkingLotId - id of target parking lot
+     * @return - status of parking lot reservation
      */
     @RequestMapping(reserve + "/{id}")
     public boolean reservation(@PathVariable("id") Long parkingLotId) {
-        log.info(console.classMsg(getClass().getSimpleName(), "Parking lot number in reservation request: ") + blTxt(String.valueOf(parkingLotId)));
+        log.info(methodMsg("Parking lot number in reservation request: " + blTxt(String.valueOf(parkingLotId))));
 
         Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(parkingLotId);
         AtomicBoolean hasErrors = new AtomicBoolean(false);
 
-        //if lot with this number exists in database
+        // if lot with this number exists in database
         parkingLotOptional.ifPresent(parkingLot -> {
-            log.info(console.classMsg(getClass().getSimpleName(), "Parking lot found in database: ") + blTxt(String.valueOf(parkingLot)));
-
             // if parking lot is already reserved
             if (parkingLot.getStatus() == ParkingLotStatus.RESERVED) {
                 hasErrors.set(true);
             } else {
-                switchStatus(hasErrors, parkingLot, ParkingLotStatus.RESERVED);
+                switchStatus(parkingLot, ParkingLotStatus.RESERVED);
             }
         });
 
-        // show all parking lots from local Java memory
+        // show all parking lots from local Java memory to verify change
         loader.fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
 
         return !hasErrors.get();
     }
 
     /**
-     * Parking lot reset reservation controller
      * Used to cancel reservation status of parking lot
      *
      * @param parkingLotId - id of parking lot
-     * @return - success status of parking lot reservation
+     * @return - status of parking lot reservation
      */
     @RequestMapping(unreserve + "/{id}")
     public boolean cancelReservation(@PathVariable("id") Long parkingLotId) {
 
-        log.info(console.classMsg(getClass().getSimpleName(), "Parking lot number in cancel reservation request: ") + blTxt(String.valueOf(parkingLotId)));
+        log.info(methodMsg("Parking lot number in cancel reservation request: " + blTxt(String.valueOf(parkingLotId))));
         Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(parkingLotId);
         AtomicBoolean hasErrors = new AtomicBoolean(false);
 
         //if lot with this number exists in database
         parkingLotOptional.ifPresent(parkingLot -> {
-            log.info(console.classMsg(getClass().getSimpleName(), "Parking lot found in database: ") + blTxt(String.valueOf(parkingLot)));
-
             if (parkingLot.getStatus() != ParkingLotStatus.RESERVED) {
                 hasErrors.set(true);
             } else {
                 // if parking lot is not reserved
-                switchStatus(hasErrors, parkingLot, ParkingLotStatus.FREE);
+                switchStatus(parkingLot, ParkingLotStatus.FREE);
             }
         });
 
         return !hasErrors.get();
     }
 
-    private void switchStatus(AtomicBoolean hasErrors, ParkingLot parkingLot, ParkingLotStatus newStatus) {
+    /**
+     * Set status of parking lot
+     *
+     * @param parkingLot - target parking lot
+     * @param newStatus  - target status
+     */
+    private void switchStatus(ParkingLot parkingLot, ParkingLotStatus newStatus) {
         parkingLot.setStatus(newStatus);       //get enum value from string
         parkingLot.setUpdatedNow();
-        log.info(console.classMsg(getClass().getSimpleName(), "updated parking lot: ") + blTxt(String.valueOf(parkingLot)));
+        log.info(methodMsg("updated parking lot: " + blTxt(String.valueOf(parkingLot))));
 
         //saving in local Java memory
         parkingLotLocalService.save(parkingLot);

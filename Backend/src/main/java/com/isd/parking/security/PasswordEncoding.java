@@ -1,6 +1,5 @@
 package com.isd.parking.security;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -17,17 +16,28 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsgStatic;
 
-
+/**
+ * Contains password encoding methods and beans
+ */
 @Configuration
 public class PasswordEncoding {
 
+    /**
+     * Standard Spring BCrypt password encoder bean
+     *
+     * @return BCrypt password encoder
+     */
     @Bean
     public static BCryptPasswordEncoder bcryptEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Custom Spring BCrypt password encoder bean with encoding type mark
+     *
+     * @return BCrypt password encoder with mark
+     */
     @Bean
     public static BCryptPasswordEncoder passwordEncoderBc() {
         final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
@@ -45,12 +55,44 @@ public class PasswordEncoding {
         };
     }
 
+    /**
+     * Generates SHA encrypted string from users password
+     *
+     * @param password - user password to be encrypted
+     * @return SHA encrypted string from users password
+     */
+    public static String digestSHA(final String password) {
+        String base64;
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA");
+            digest.update(password.getBytes());
+            base64 = Base64.getEncoder()
+                .encodeToString(digest.digest());
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        return "{SHA}" + base64;
+    }
+
+    /**
+     * Gets default application password encoder
+     *
+     * @return default password encoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return DefaultPasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     static class DefaultPasswordEncoderFactories {
+
+        /**
+         * Creates collection of different types of password encoders for further selection with setted default encoder
+         *
+         * @return default password encoder
+         */
         static PasswordEncoder createDelegatingPasswordEncoder() {
             String encodingId = "bcrypt";
             Map<String, PasswordEncoder> encoders = new HashMap<>();
@@ -73,42 +115,23 @@ public class PasswordEncoding {
         }
     }
 
+    /**
+     * Custom Spring BCrypt password encoder bean with encoding type mark and fixed salt
+     *
+     * @return BCrypt password encoder with mark and fixed salt
+     */
     @Component
-    @Slf4j
     public static class CustomBcryptPasswordEncoder implements PasswordEncoder {
 
         private final String salt = "$2a$12$lIGeCCVi1fkIYIZA9ly6ge";
 
-        /**
-         * Generates SHA encrypted string from users password
-         *
-         * @param password - user password to be encrypted
-         * @return SHA encrypted string from users password
-         */
-        public static String digestSHA(final String password) {
-            String base64;
-
-            try {
-                MessageDigest digest = MessageDigest.getInstance("SHA");
-                digest.update(password.getBytes());
-                base64 = Base64.getEncoder()
-                    .encodeToString(digest.digest());
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
-            }
-
-            return "{SHA}" + base64;
-        }
-
         @Override
         public String encode(CharSequence rawPassword) {
-            log.info(methodMsgStatic("in custom bc encoder raw " + rawPassword));
             return "{customBC}" + BCrypt.hashpw(rawPassword.toString(), salt);
         }
 
         @Override
         public boolean matches(CharSequence rawPassword, String encodedPassword) {
-            log.info(methodMsgStatic("in custom bc encoder raw " + rawPassword + " encoded " + encodedPassword));
             return BCrypt.checkpw(rawPassword.toString(), encodedPassword.substring(10));
         }
 

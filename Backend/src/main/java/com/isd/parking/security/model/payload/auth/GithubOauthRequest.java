@@ -38,14 +38,13 @@ public class GithubOauthRequest {
     }
 
     public static class GithubOauthConstants {
-
-        public static final String CLIENT_ID = "9454ba3084a75c484cbe";         // al.guleac
-
-        public static final String CLIENT_SECRET = "5783f0a98aadd4260ed061fa9b6a019f91e70f9f";
-
         // ===========================================
-        // CREATE CONSTANTS NECESSARY FOR OAUTH IN SERVER
+        // Constants necessary for Oauth 2.0 in Github server
         // ===========================================
+        static final String CLIENT_ID = "9454ba3084a75c484cbe";         // al.guleac
+
+        static final String CLIENT_SECRET = "5783f0a98aadd4260ed061fa9b6a019f91e70f9f";
+
         public static final String TOKEN_URL = "https://github.com/login/oauth/access_token";
     }
 }

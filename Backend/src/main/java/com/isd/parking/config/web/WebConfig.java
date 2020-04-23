@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -31,6 +32,9 @@ import java.util.Date;
 import java.util.Locale;
 
 
+/**
+ * Spring MVC configuration
+ */
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.isd.parking")
@@ -38,6 +42,11 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
 
     private static final String EMAIL_TEMPLATE_ENCODING = "UTF8";
 
+    /**
+     * Configures Thymeleaf Template Engine with specified view resolvers for different data types
+     *
+     * @return necessary engine
+     */
     @Bean
     @Description("Thymeleaf Template Engine")
     public TemplateEngine templateEngine() {
@@ -51,9 +60,15 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateEngine.setTemplateResolver(fileTemplateResolver());
         // Message source, internationalization specific to emails
         templateEngine.setTemplateEngineMessageSource(emailMessageSource());
+
         return templateEngine;
     }
 
+    /**
+     * Configures text template resolver
+     *
+     * @return text template resolver
+     */
     private ITemplateResolver textTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setOrder(1);
@@ -64,9 +79,15 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setCheckExistence(true);
         templateResolver.setCacheable(false);
+
         return templateResolver;
     }
 
+    /**
+     * Configures .html template resolver
+     *
+     * @return .html template resolver
+     */
     private ITemplateResolver htmlTemplateResolver() {
         ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setOrder(2);
@@ -77,18 +98,30 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setCheckExistence(true);
         templateResolver.setCacheable(false);
+
         return templateResolver;
     }
 
+    /**
+     * Configures String template resolver
+     *
+     * @return String template resolver
+     */
     private ITemplateResolver stringTemplateResolver() {
         final StringTemplateResolver templateResolver = new StringTemplateResolver();
         templateResolver.setOrder(3);
         // No resolvable pattern, will simply process as a String template everything not previously matched
         templateResolver.setTemplateMode("HTML5");
         templateResolver.setCacheable(false);
+
         return templateResolver;
     }
 
+    /**
+     * Configures file template resolver
+     *
+     * @return String template resolver
+     */
     private ITemplateResolver fileTemplateResolver() {
         FileTemplateResolver templateResolver = new FileTemplateResolver();
         templateResolver.setOrder(4);
@@ -99,33 +132,49 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
         templateResolver.setCharacterEncoding(EMAIL_TEMPLATE_ENCODING);
         templateResolver.setCheckExistence(true);
         templateResolver.setCacheable(false);
+
         return templateResolver;
     }
 
-    /* ******************************************************************* */
-    /*  GENERAL CONFIGURATION ARTIFACTS                                    */
-    /*  Static Resources, i18n Messages, Formatters (Conversion Service)   */
-    /* ******************************************************************* */
+    /* *******************************************************************
+        GENERAL CONFIGURATION ARTIFACTS
+        Static Resources, i18n Messages, Formatters (Conversion Service)
+       ******************************************************************* */
 
+    /**
+     * Add resource handlers for static files classpath directories for serves it
+     *
+     * @param registry - standard built-in Spring ResourceHandlerRegistry
+     */
     @Override
-    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
         WebMvcConfigurer.super.addResourceHandlers(registry);
         registry.addResourceHandler("/images/**").addResourceLocations("/images/");
         registry.addResourceHandler("/css/**").addResourceLocations("/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/js/");
     }
 
-    // to display values from property files
+    /**
+     * Configures messages source to display values from property files
+     *
+     * @return configured ResourceBundleMessageSource
+     */
     @Bean
     @Description("Spring Message Resolver")
     public ResourceBundleMessageSource emailMessageSource() {
         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("mail/MailMessages");
+
         return messageSource;
     }
 
+    /**
+     * Adds necessary formatters for messages from message source
+     *
+     * @param registry configured
+     */
     @Override
-    public void addFormatters(final FormatterRegistry registry) {
+    public void addFormatters(@NonNull final FormatterRegistry registry) {
         WebMvcConfigurer.super.addFormatters(registry);
         registry.addFormatter(dateFormatter());
     }
@@ -136,9 +185,9 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
     }
+
 
     public static class DateFormatter implements Formatter<Date> {
 
@@ -165,10 +214,17 @@ public class WebConfig implements ApplicationContextAware, WebMvcConfigurer {
             return dateFormat.format(object);
         }
 
+        /**
+         * Creates a date format depending on the specified locale
+         *
+         * @param locale - necessary locale
+         * @return formatted SimpleDateFormat
+         */
         private SimpleDateFormat createDateFormat(final Locale locale) {
             final String format = this.messageSource.getMessage("date.format", null, locale);
             final SimpleDateFormat dateFormat = new SimpleDateFormat(format);
             dateFormat.setLenient(false);
+
             return dateFormat;
         }
     }

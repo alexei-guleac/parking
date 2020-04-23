@@ -11,6 +11,10 @@ import javax.validation.constraints.Email;
 import java.util.ArrayList;
 
 
+/**
+ * User model class
+ * is used for map client web application request
+ */
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class User {
@@ -74,7 +78,7 @@ public class User {
         return ReflectionMethods.getPropertyValue(user, name);
     }
 
-    public String getFullname() {
+    String getFullname() {
         if (this.firstname != null && this.lastname != null) {
             return this.firstname + " " + this.lastname;
         } else return null;

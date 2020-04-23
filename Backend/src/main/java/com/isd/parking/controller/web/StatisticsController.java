@@ -13,7 +13,6 @@ import static com.isd.parking.controller.ApiEndpoints.statistics;
 
 
 /**
- * Statistics controller
  * Provides methods for getting all statistics records stored in database
  */
 @RestController
@@ -28,7 +27,6 @@ public class StatisticsController {
     }
 
     /**
-     * Statistics records get controller
      * Used to get all statistics records from database
      *
      * @return Statistics records list

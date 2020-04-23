@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
+/**
+ * Custom cookie filter for fix CORS same site issue
+ */
 @Component
 public class CookieFilter extends GenericFilterBean {
 
@@ -19,9 +22,7 @@ public class CookieFilter extends GenericFilterBean {
         throws IOException, ServletException {
 
         HttpServletResponse resp = (HttpServletResponse) response;
-
         resp.setHeader("Set-Cookie", "locale=de; HttpOnly; SameSite=strict");
-
         chain.doFilter(request, response);
     }
 }

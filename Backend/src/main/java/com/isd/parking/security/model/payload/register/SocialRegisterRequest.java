@@ -9,8 +9,8 @@ import lombok.*;
 import javax.validation.constraints.NotBlank;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class SocialRegisterRequest extends SocialAuthRequest {

@@ -10,6 +10,9 @@ import lombok.NonNull;
 import javax.validation.constraints.NotBlank;
 
 
+/**
+ * Client web application user device information (for language and region targeting purpose)
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
