@@ -1,15 +1,18 @@
-import {Injectable} from '@angular/core';
-import {Observable, of} from 'rxjs';
-import {ParkingLot} from '../../models/ParkingLot';
-import {parkingStatuses} from '../../models/ParkingLotStatus';
-import {Statistics} from '../../models/Statistics';
-import {User} from '../../models/User';
+import { Injectable } from "@angular/core";
+import { ParkingLot } from "@app/models/ParkingLot";
+import { parkingStatuses } from "@app/models/ParkingLotStatus";
+import { Statistics } from "@app/models/Statistics";
+import { User } from "@app/models/User";
 
 
+/**
+ * Mockup service for retrieving parking lots from memory without backend
+ */
 @Injectable({
     providedIn: 'root',
 })
 export class DataService {
+
     private readonly parkingLots: Array<ParkingLot>;
 
     private readonly statistics: Array<Statistics>;
@@ -74,13 +77,5 @@ export class DataService {
             );
             this.statistics.push(stats);
         }
-    }
-
-    getAllParkingLots(): Observable<Array<ParkingLot>> {
-        return of(this.parkingLots);
-    }
-
-    getAllStats(): Observable<Array<Statistics>> {
-        return of(this.statistics);
     }
 }

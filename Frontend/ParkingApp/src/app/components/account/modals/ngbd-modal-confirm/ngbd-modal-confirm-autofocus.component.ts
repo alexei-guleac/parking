@@ -1,8 +1,13 @@
-import {Component, Input, Type} from '@angular/core';
-import {AccountEditModalFormComponent} from '@app/components/account/modals/account-edit-modal-content/account-edit-modal-form.component';
-import {NgbActiveModal} from '@ng-bootstrap/ng-bootstrap';
+import { Component, Input, Type } from "@angular/core";
+import { FormFieldsHintComponent } from "@app/components/account/forms/account-form/form-fields-hint/form-fields-hint.component";
+import { AccountEditModalFormComponent } from "@app/components/account/modals/account-edit-modal-content/account-edit-modal-form.component";
+import { SocialConnectionModalComponent } from "@app/components/account/modals/social-connection-modal/social-connection-modal.component";
+import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 
 
+/**
+ * Confirm modal windows ng-bootstrap templates (optionally with button autofocus)
+ */
 @Component({
     selector: 'app-ngbd-modal-confirm',
     template: `
@@ -110,48 +115,27 @@ export class NgbdModalConfirmAutofocusComponent {
     }
 }
 
+/**
+ * Modal window types components-handlers
+ */
 export const MODALS: { [name: string]: Type<any> } = {
     focusFirst: NgbdModalConfirmComponent,
     autofocus: NgbdModalConfirmAutofocusComponent,
     accountEditForm: AccountEditModalFormComponent,
     usernameEditForm: AccountEditModalFormComponent,
+    socialConnect: SocialConnectionModalComponent,
+    formFieldsHint: FormFieldsHintComponent
 };
 
+/**
+ * Modal window types
+ */
 export const MODAL_TYPE = {
     focusFirst: 'focusFirst',
     autofocus: 'autofocus',
     accountEditForm: 'accountEditForm',
     usernameEditForm: 'usernameEditForm',
-};
+    socialConnect: "socialConnect",
+    formFieldsHint: "formFieldsHint"
 
-/*@Component({
-    selector: 'app-ngbd-modal-confirm-autofocus',
-    template: `
-        <div class="modal-header">
-            <h4 class="modal-title" id="modal-title">Profile deletion</h4>
-            <button type="button" class="close" aria-label="Close button" aria-describedby="modal-title"
-                    (click)="modal.dismiss('Cross click')">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <p><strong>Are you sure you want to delete <span class="text-primary">"John Doe"</span>
-                profile?</strong>
-            </p>
-            <p>All information associated to this user profile will be permanently deleted.
-                <span class="text-danger">This operation can not be undone.</span>
-            </p>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">
-                Cancel
-            </button>
-            <button type="button" ngbAutofocus appNoDblClick class="btn btn-danger" (click)="modal.close('Ok click')">Ok
-            </button>
-        </div>
-    `
-})
-export class NgbdModa {
-    constructor(public modal: NgbActiveModal) {
-    }
-}*/
+};

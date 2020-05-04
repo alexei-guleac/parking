@@ -1,15 +1,18 @@
-import {Component, EventEmitter, OnDestroy, OnInit, Output,} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {ComponentWithErrorMsg} from '@app/components/account/forms/account-form/account-form.component';
-import {AuthenticationService} from '@app/services/account/auth.service';
-import {FormControlService} from '@app/services/account/form-control.service';
-import {handleHttpErrorResponse} from '@app/services/helpers/global-http-interceptor-service.service';
-import {NavigationService} from '@app/services/navigation/navigation.service';
-import {DeviceInfoStorage} from '@app/utils/device-fingerprint';
-import {isNonEmptyString} from '@app/utils/string-utils';
-import {Subscription} from 'rxjs';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
+import { AuthenticationService } from "@app/services/account/auth.service";
+import { FormControlService } from "@app/services/account/form-control.service";
+import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
+import { NavigationService } from "@app/services/navigation/navigation.service";
+import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
+import { isNonEmptyString } from "@app/utils/string-utils";
+import { Subscription } from "rxjs";
 
 
+/**
+ * Forgot password form component
+ */
 @Component({
     selector: 'app-forgot-pass-form',
     templateUrl: './forgot-pass-form.component.html',
@@ -17,6 +20,7 @@ import {Subscription} from 'rxjs';
 })
 export class ForgotPassFormComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
+
     errorMessage: string;
 
     @Output()
@@ -24,7 +28,7 @@ export class ForgotPassFormComponent
 
     sendSuccess = false;
 
-    private forgotPassSubscription: Subscription;
+    private forgotPassServerReqSubscription: Subscription;
 
     private email: string;
 
@@ -49,19 +53,34 @@ export class ForgotPassFormComponent
         return this.forgotForm.get('email');
     }
 
+    /**
+     * Initialize the directive/component after Angular first displays the data-bound properties
+     * and sets the directive/component's input properties.
+     * Called once, after the first ngOnChanges()
+     */
     ngOnInit(): void {
         this.createForm();
     }
 
+    /**
+     * Cleanup just before Angular destroys the directive/component.
+     * Unsubscribe Observables and detach event handlers to avoid memory leaks.
+     * Called just before Angular destroys the directive/component
+     */
     ngOnDestroy(): void {
+        // close forgot password server request subscription
         if (
-            this.forgotPassSubscription &&
-            !this.forgotPassSubscription.closed
+            this.forgotPassServerReqSubscription &&
+            !this.forgotPassServerReqSubscription.closed
         ) {
-            this.forgotPassSubscription.unsubscribe();
+            this.forgotPassServerReqSubscription.unsubscribe();
         }
     }
 
+    /**
+     * Submit form handler
+     * @param valid - form validation state
+     */
     onSubmit(valid: boolean) {
         this.submitted = true;
         if (this.forgotForm.hasError('invalid')) {
@@ -70,9 +89,6 @@ export class ForgotPassFormComponent
         }
 
         if (isNonEmptyString(this.email)) {
-            /*console.log(this.email);
-            console.log('TEST' + this.forgotForm.hasError('invalid'));
-            console.log('VALID' + valid);*/
             if (!valid) {
                 return;
             }
@@ -80,14 +96,20 @@ export class ForgotPassFormComponent
         }
     }
 
+    /**
+     * Initiate forgot password form group with validation
+     */
     private createForm() {
         this.forgotForm = new FormGroup({
             email: this.formControlService.getEmailFormControl(''),
         });
     }
 
+    /**
+     * Handle user profile forgot password request
+     */
     private handleForgotPass() {
-        this.forgotPassSubscription = this.authenticationService
+        this.forgotPassServerReqSubscription = this.authenticationService
             .processForgotPasswordRequest(
                 this.email,
                 DeviceInfoStorage.deviceInfo
@@ -95,6 +117,9 @@ export class ForgotPassFormComponent
             .subscribe(this.handleForgotPasswordResponse(), this.handleError());
     }
 
+    /**
+     * Handle forgot password server response
+     */
     private handleForgotPasswordResponse() {
         return (response: any) => {
             if (response.success) {
@@ -105,12 +130,14 @@ export class ForgotPassFormComponent
                     'Request to reset password received. ' +
                     'Check your inbox for the reset link. ' +
                     'You will be redirected to the main page in 5 seconds.';
-                console.log(this.confirmationMessage);
                 this.redirectToMainAfterDelay();
             }
         };
     }
 
+    /**
+     * Handle server response error
+     */
     private handleError() {
         return (error) => {
             this.requestSuccess = false;
@@ -120,12 +147,18 @@ export class ForgotPassFormComponent
         };
     }
 
+    /**
+     * Disable submit button due to prevention of abuse
+     */
     private disableButtonAfterDelay() {
         setTimeout(() => {
             this.sendSuccess = true;
         }, 1050);
     }
 
+    /**
+     * navigate to main navigation page after 5 seconds delay
+     */
     private redirectToMainAfterDelay() {
         setTimeout(() => {
             this.navigation.navigateToMain();

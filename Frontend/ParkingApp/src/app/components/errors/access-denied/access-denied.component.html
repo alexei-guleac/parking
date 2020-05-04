@@ -26,16 +26,16 @@
 
         <div class="w-100">
             <a class="m-4 mx-auto text-center align-content-center" href="/">
-                <span *ngIf="unauthorized">Login</span>
-                <span *ngIf="forbidden">Go To Homepage</span>
+                <ng-container *ngIf="unauthorized">Login</ng-container>
+                <ng-container *ngIf="forbidden">Go To Homepage</ng-container>
             </a>
         </div>
 
         <img *ngIf="unauthorized" alt="unauthorized-image"
              class="unauthorized-img mx-auto text-center align-content-center mt-2 mb-5"
-             src="../../../../assets/img/unauthorized.png">
+             src="../../../../assets/img/error-pages/unauthorized.png">
         <img *ngIf="forbidden" alt="forbidden-image"
              class="forbidden-img mx-auto text-center align-content-center mt-2 mb-5"
-             src="../../../../assets/img/forbidden.png">
+             src="../../../../assets/img/error-pages/forbidden.png">
     </div>
 </div>

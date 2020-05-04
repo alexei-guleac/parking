@@ -1,3 +1,6 @@
+/**
+ * User reset password request
+ */
 export class ResetPasswordRequest {
 
     confirmationToken: string;

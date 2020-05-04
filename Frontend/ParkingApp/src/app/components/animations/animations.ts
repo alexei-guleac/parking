@@ -1,5 +1,9 @@
-import {animate, animateChild, group, query as q, sequence, style, transition, trigger} from '@angular/animations';
+import { animate, animateChild, group, query as q, sequence, style, transition, trigger } from "@angular/animations";
 
+
+/*
+* Application components animations
+* */
 
 const query = (s, a, o = {optional: true}) => q(s, a, o);
 

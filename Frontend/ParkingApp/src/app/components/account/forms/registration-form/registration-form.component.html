@@ -1,204 +1,213 @@
 <form
-    #f="ngForm"
-    (ngSubmit)="onSubmit(f.valid)"
-    [formGroup]="regForm"
-    class="form-group mx-auto text-center"
+  #f="ngForm"
+  (ngSubmit)="onSubmit(f.valid)"
+  [formGroup]="regForm"
+  class="form-group mx-auto text-center"
 >
     <div *ngIf="invalidReg" class="alert alert-warning">{{ errorMessage }}</div>
     <div *ngIf="regSuccess" class="alert alert-success">
         {{ successMessage }}
     </div>
 
-    <div class="form-group mx-auto text-center">
-        <label for="username">User Name :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <div class="input-group-append">
+    <button
+        (click)="showForm()"
+        *ngIf="!showRegForm"
+        class="btn-show-form mt-4 mx-auto text-center"
+    >
+        <span class="mx-auto text-center align-items-center align-content-center">
+            Register with <strong>e-mail</strong></span>
+    </button>
+    <ng-container *ngIf="showRegForm">
+        <div class="form-group mx-auto text-center">
+            <label for="username">User Name :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i class="fa fa-user"></i
                     ></span>
+                </div>
+                <input
+                    [(ngModel)]="this.username"
+                    class="form-control"
+                    formControlName="username"
+                    id="username"
+                    minlength="5"
+                    name="username"
+                    placeholder="Enter User Name"
+                    required
+                    type="text"
+                />
             </div>
-            <input
-                [(ngModel)]="this.username"
-                class="form-control"
-                formControlName="username"
-                id="username"
-                minlength="5"
-                name="username"
-                placeholder="Enter User Name"
-                required
-                type="text"
-            />
-        </div>
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 name.invalid && (name.dirty || name.pristine) && this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="name.errors.required">
-                Name is required.
-            </div>
-            <div *ngIf="name.errors.minlength">
-                Name must be at least 5 characters long.
-            </div>
-            <div *ngIf="name.errors.maxlength">
-                Name must be maximum 15 characters long.
-            </div>
-            <div *ngIf="name.errors.forbiddenName">
-                Name should contain only<br/>
-                A-Z, a-z, 0-9 symbols and "_" or ".".
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="name.errors.required">
+                    Username is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.minlength">
+                    At least 5 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.maxlength">
+                    Maximum 15 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.forbiddenName">
+                    Should contain only<br/>
+                    A-Z, a-z, 0-9 symbols and "_" or ".".
+                </ng-container>
             </div>
         </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="email">Email :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <div class="input-group-append">
+        <div class="form-group mx-auto text-center">
+            <label for="email">Email :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i class="fa fa-envelope"></i
                     ></span>
+                </div>
+                <input
+                    [(ngModel)]="this.email"
+                    class="form-control"
+                    formControlName="email"
+                    id="email"
+                    minlength="8"
+                    name="email"
+                    placeholder="example@mail.com"
+                    required
+                    type="email"
+                />
             </div>
-            <input
-                [(ngModel)]="this.email"
-                class="form-control"
-                formControlName="email"
-                id="email"
-                minlength="8"
-                name="email"
-                placeholder="example@mail.com"
-                required
-                type="email"
-            />
-        </div>
-        <!--                    <autocomplete givenPlaceHolder="Your email address"-->
-        <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
+            <!--                    <autocomplete givenPlaceHolder="Your email address"-->
+            <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
 
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 mail.invalid && (mail.dirty || mail.pristine) && this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="mail.errors.required">
-                Email is required.
-            </div>
-            <div *ngIf="mail.errors.minlength">
-                Email must be at least 8 characters long.
-            </div>
-            <div *ngIf="mail.errors.maxlength">
-                Email must be maximum 35 characters long.
-            </div>
-            <!--                        <div *ngIf="mail.errors.forbiddenName">-->
-            <div *ngIf="mail.errors.pattern">
-                Email should contain @<br/>
-                A-Z, a-z, 0-9 symbols and "_", ".".
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="mail.errors.required">
+                    Email is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="mail.errors.minlength">
+                    At least 8 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="mail.errors.maxlength">
+                    Maximum 35 characters long.<br/>
+                </ng-container>
+                <!--                        <div *ngIf="mail.errors.forbiddenName">-->
+                <ng-container *ngIf="mail.errors.pattern">
+                    Should contain @<br/>
+                    A-Z, a-z, 0-9 symbols and "_", ".".
+                </ng-container>
             </div>
         </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="firstname">First Name :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <div class="input-group-append">
+        <div class="form-group mx-auto text-center">
+            <label for="firstname">First Name :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i class="fa fa-align-justify"></i
                     ></span>
+                </div>
+                <input
+                    [(ngModel)]="this.firstname"
+                    class="form-control"
+                    formControlName="firstname"
+                    id="firstname"
+                    minlength="3"
+                    name="firstname"
+                    placeholder="Enter First Name"
+                    required
+                    type="text"
+                />
             </div>
-            <input
-                [(ngModel)]="this.firstname"
-                class="form-control"
-                formControlName="firstname"
-                id="firstname"
-                minlength="3"
-                name="firstname"
-                placeholder="Enter First Name"
-                required
-                type="text"
-            />
-        </div>
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 fname.invalid &&
                 (fname.dirty || fname.pristine) &&
                 this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="fname.errors.required">
-                First Name is required.
-            </div>
-            <div *ngIf="fname.errors.minlength">
-                First Name must be at least 3 characters long.
-            </div>
-            <div *ngIf="fname.errors.maxlength">
-                First Name must be maximum 15 characters long.
-            </div>
-            <div *ngIf="fname.errors.forbiddenName">
-                First Name should contain only<br/>
-                A-Z, a-z and symbols "_", "-".
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="fname.errors.required">
+                    Firstname is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="fname.errors.minlength">
+                    At least 3 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="fname.errors.maxlength">
+                    Maximum 15 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="fname.errors.forbiddenName">
+                    Should contain only<br/>
+                    A-Z, a-z and symbols "_", "-".
+                </ng-container>
             </div>
         </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="lastname">Last Name :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <div class="input-group-append">
+        <div class="form-group mx-auto text-center">
+            <label for="lastname">Last Name :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i class="fa fa-align-justify"></i
                     ></span>
+                </div>
+                <input
+                    [(ngModel)]="this.lastname"
+                    class="form-control"
+                    formControlName="lastname"
+                    id="lastname"
+                    minlength="3"
+                    name="lastname"
+                    placeholder="Enter Last Name"
+                    required
+                    type="text"
+                />
             </div>
-            <input
-                [(ngModel)]="this.lastname"
-                class="form-control"
-                formControlName="lastname"
-                id="lastname"
-                minlength="3"
-                name="lastname"
-                placeholder="Enter Last Name"
-                required
-                type="text"
-            />
-        </div>
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 lname.invalid &&
                 (lname.dirty || lname.pristine) &&
                 this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="lname.errors.required">
-                Last Name is required.
-            </div>
-            <div *ngIf="lname.errors.minlength">
-                Last Name must be at least 3 characters long.
-            </div>
-            <div *ngIf="lname.errors.maxlength">
-                Last Name must be maximum 15 characters long.
-            </div>
-            <div *ngIf="lname.errors.forbiddenName">
-                Last Name should contain only<br/>
-                A-Z, a-z, 0-9 and symbols "_", "-".
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="lname.errors.required">
+                    Lastname is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="lname.errors.minlength">
+                    At least 3 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="lname.errors.maxlength">
+                    Maximum 15 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="lname.errors.forbiddenName">
+                    Should contain only<br/>
+                    A-Z, a-z, 0-9 and symbols "_", "-".
+                </ng-container>
             </div>
         </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="password">Password :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <!-- Change input type to be able to accept dynamic data -->
-            <input
-                [(ngModel)]="this.password"
-                [type]="fieldTextTypePass ? 'text' : 'password'"
-                class="form-control full-width"
-                formControlName="password"
-                id="password"
-                minlength="6"
-                name="password"
-                placeholder="Enter password"
-                required
-                type="password"
-            />
+        <div class="form-group mx-auto text-center">
+            <label for="password">Password :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <!-- Change input type to be able to accept dynamic data -->
+                <input
+                    [(ngModel)]="this.password"
+                    [type]="fieldTextTypePass ? 'text' : 'password'"
+                    class="form-control full-width"
+                    formControlName="password"
+                    id="password"
+                    minlength="6"
+                    name="password"
+                    placeholder="Enter password"
+                    required
+                    type="password"
+                />
 
-            <div class="input-group-append">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i
                         (click)="togglePassVisible(this)"
@@ -209,49 +218,48 @@
                         class="fa"
                     ></i>
                 </span>
+                </div>
             </div>
-        </div>
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 pass.invalid && (pass.dirty || pass.pristine) && this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="pass.errors.required">
-                Password is required.
-            </div>
-            <div *ngIf="pass.errors.minlength">
-                Password must be <br/>
-                at least 6 characters long.
-            </div>
-            <div *ngIf="pass.errors.maxlength">
-                Password must be maximum <br/>10 characters long.
-            </div>
-            <div *ngIf="pass.errors.pattern">
-                Password should contain<br/>
-                at least one uppercase letter, <br/>
-                one lowercase letter, one number <br/>
-                and one special character from !"@#$%^&'*()_+,./
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="pass.errors.required">
+                    Password is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.minlength">
+                    At least 6 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.maxlength">
+                    Maximum 10 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.pattern">
+                    Should contain<br/>
+                    at least one uppercase letter, <br/>
+                    one lowercase letter, one number <br/>
+                    and one special character from <strong>!"@#$%^&'*()_+,./</strong>
+                </ng-container>
             </div>
         </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="passConfirm">Repeat password :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <!-- Change input type to be able to accept dynamic data -->
-            <input
-                [(ngModel)]="this.passConfirm"
-                [type]="fieldTextTypePassConfirm ? 'text' : 'password'"
-                class="form-control"
-                formControlName="passConfirm"
-                id="passConfirm"
-                minlength="6"
-                name="passConfirm"
-                placeholder="Repeat password"
-                required
-                type="password"
-            />
-            <div class="input-group-append">
+        <div class="form-group mx-auto text-center">
+            <label for="passConfirm">Repeat password :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <!-- Change input type to be able to accept dynamic data -->
+                <input
+                    [(ngModel)]="this.passConfirm"
+                    [type]="fieldTextTypePassConfirm ? 'text' : 'password'"
+                    class="form-control"
+                    formControlName="passConfirm"
+                    id="passConfirm"
+                    minlength="6"
+                    name="passConfirm"
+                    placeholder="Repeat password"
+                    required
+                    type="password"
+                />
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i
                         (click)="togglePassConfirmVisible(this)"
@@ -262,63 +270,54 @@
                         class="fa"
                     ></i>
                 </span>
+                </div>
             </div>
-        </div>
-        <div
-            *ngIf="
+            <div
+                *ngIf="
                 passConf.invalid &&
                 (passConf.dirty || passConf.pristine) &&
                 this.submitted
             "
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="passConf.errors.required">
-                Password confirmation is required.
-            </div>
-            <div *ngIf="passConf.errors.minlength">
-                Password must be at least 6 characters long.
-            </div>
-            <div *ngIf="passConf.errors.maxlength">
-                Password must be maximum <br/>10 characters long.
-            </div>
-            <!--<div *ngIf="passConf.errors.validateEqual">
-                Password and ConfirmPassword didn't match.
-            </div>-->
-            <div *ngIf="passConf.errors.notEqual">
-                Password and ConfirmPassword didn't match.
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="passConf.errors.required">
+                    Password confirmation is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="passConf.errors.minlength">
+                    At least 6 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="passConf.errors.maxlength">
+                    Maximum 10 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="passConf.errors.notEqual">
+                    Passwords didn't match.
+                </ng-container>
             </div>
         </div>
-    </div>
+    </ng-container>
 
-    <!--                Recaptcha v3 -->
-    <!--  <script src="https://www.google.com/recaptcha/api.js?render=6LcFPt8UAAAAAEf1LLL2nGpZm-I-DcugWAVKHBHL"></script>-->
-    <!--
-        the SITE_KEY is the sitekey from your admin console.
-        use form control for validation
-      -->
     <app-or-separator></app-or-separator>
 
     <app-social-buttons
-        (amazonEvent)="this.socialSignUpOther(socialProviders.a)"
+        (amazonEvent)="this.socialSignUp(socialProviders.a)"
         (fbEvent)="this.socialSignUp(socialProviders.fb)"
         (gEvent)="this.socialSignUp(socialProviders.g)"
-        (gitEvent)="this.socialSignUpOther(socialProviders.git)"
-        (linEvent)="this.socialSignUpOther(socialProviders.lin)"
-        (msEvent)="this.socialSignUpOther(socialProviders.ms)"
+        (gitEvent)="this.socialSignUp(socialProviders.git)"
+        (msEvent)="this.socialSignUp(socialProviders.ms)"
         (vkEvent)="this.socialSignUp(socialProviders.vk)"
     >
     </app-social-buttons>
+    <ng-container *ngIf="showRegForm">
+        <div class="text-center">
+            <div
+                appNbRecaptcha
+                class="g-recaptcha mt-3"
+                formControlName="captcha"
+                key="6Lcngd8UAAAAAPaKwd9CzEpiM8a8hGnRnBumf9RK"
+            ></div>
+        </div>
 
-    <div class="text-center">
-        <div
-            appNbRecaptcha
-            class="g-recaptcha mt-3"
-            formControlName="captcha"
-            key="6Lcngd8UAAAAAPaKwd9CzEpiM8a8hGnRnBumf9RK"
-        ></div>
-    </div>
-
-    <div class="clearfix m-2 px-3 mt-4 info-box mx-auto">
+        <div class="clearfix m-2 px-3 mt-4 info-box mx-auto">
         <span class="checkbox-inline">
             <input
                 [(ngModel)]="acceptTerms"
@@ -330,22 +329,23 @@
             />
             <label for="terms"> I agree to the &ensp;</label>
         </span>
-        <a (click)="openTermsOfService(termsOfService)" class="pseudolink"
-        >&ensp;Terms of service</a
-        >
-    </div>
+            <a (click)="openTermsOfService(termsOfService)" class="pseudolink"
+            >&ensp;Terms of service</a
+            >
+        </div>
 
-    <div class="button-box mx-auto">
-        <button
-            (click)="onSubmit(this.regForm.valid)"
-            [disabled]="regForm.invalid || !this.acceptTerms"
-            appNoDblClick
-            class="btn btn-default full-width rounded-pill mt-4 submit-btn"
-            type="submit"
-        >
-            Create account <span class="fas fa-check"></span>
-        </button>
-    </div>
+        <div class="button-box mx-auto">
+            <button
+                (click)="onSubmit(this.regForm.valid)"
+                [disabled]="regForm.invalid || !this.acceptTerms"
+                appNoDblClick
+                class="btn btn-default full-width rounded-pill mt-4 submit-btn"
+                type="submit"
+            >
+                Create account <span class="fas fa-check"></span>
+            </button>
+        </div>
+    </ng-container>
 </form>
 
 <ng-template #termsOfService let-modal>
@@ -361,96 +361,161 @@
         </button>
     </div>
     <div class="modal-body">
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
-        <p>
-            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
-            ac consectetur ac, vestibulum at eros.
-        </p>
-        <p>
-            Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-            Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor
-            auctor.
-        </p>
-        <p>
-            Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-            cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-            dui. Donec ullamcorper nulla non metus auctor fringilla.
-        </p>
+        <div class="web-terms">
+
+            <h2>Terms and Conditions for ISD</h2>
+
+            <h3>Introduction</h3>
+
+            <p>These Website Standard Terms and Conditions written on this webpage shall manage your use of our website,
+                ParkingApp accessible at parking-app.com.</p>
+
+            <p>These Terms will be applied fully and affect to your use of this Website. By using this Website, you
+                agreed to accept all terms and conditions written in here. You must not use this Website if you disagree
+                with any of these Website Standard Terms and Conditions. These Terms and Conditions have been generated
+                with the help of the <a href="https://www.termsandcondiitionssample.com">Terms And Conditions
+                    Template</a> and the <a href="https://www.terms-conditions-generator.com">Terms and Conditions
+                    Generator</a>.</p>
+
+            <h3>Intellectual Property Rights</h3>
+
+            <p>Other than the content you own, under these Terms, ISD and/or its licensors own all the intellectual
+                property rights and materials contained in this Website.</p>
+
+            <p>You are granted limited license only for purposes of viewing the material contained on this Website.</p>
+
+            <h3>Restrictions</h3>
+
+            <p>You are specifically restricted from all of the following:</p>
+
+            <ul>
+                <li>publishing any Website material in any other media;</li>
+                <li>selling, sublicensing and/or otherwise commercializing any Website material;</li>
+                <li>publicly performing and/or showing any Website material;</li>
+                <li>using this Website in any way that is or may be damaging to this Website;</li>
+                <li>using this Website in any way that impacts user access to this Website;</li>
+                <li>using this Website contrary to applicable laws and regulations, or in any way may cause harm to the
+                    Website, or to any person or business entity;
+                </li>
+                <li>engaging in any data mining, data harvesting, data extracting or any other similar activity in
+                    relation to this Website;
+                </li>
+                <li>using this Website to engage in any advertising or marketing.</li>
+            </ul>
+
+            <p>Certain areas of this Website are restricted from being access by you and ISD may further restrict access
+                by you to any areas of this Website, at any time, in absolute discretion. Any user ID and password you
+                may have for this Website are confidential and you must maintain confidentiality as well.</p>
+
+            <h3>Your Content</h3>
+
+            <p>In these Website Standard Terms and Conditions, "Your Content" shall mean any audio, video text, images
+                or other material you choose to display on this Website. By displaying Your Content, you grant ISD a
+                non-exclusive, worldwide irrevocable, sub licensable license to use, reproduce, adapt, publish,
+                translate and distribute it in any and all media.</p>
+
+            <p>Your Content must be your own and must not be invading any third-party’s rights. ISD reserves the right
+                to remove any of Your Content from this Website at any time without notice.</p>
+
+            <h3>Your Privacy</h3>
+
+            <p>Please read Privacy Policy.</p>
+
+            <h3>No warranties</h3>
+
+            <p>This Website is provided "as is," with all faults, and ISD express no representations or warranties, of
+                any kind related to this Website or the materials contained on this Website. Also, nothing contained on
+                this Website shall be interpreted as advising you.</p>
+
+            <h3>Limitation of liability</h3>
+
+            <p>In no event shall ISD, nor any of its officers, directors and employees, shall be held liable for
+                anything arising out of or in any way connected with your use of this Website whether such liability is
+                under contract.  ISD, including its officers, directors and employees shall not be held liable for any
+                indirect, consequential or special liability arising out of or in any way related to your use of this
+                Website.</p>
+
+            <h3>Indemnification</h3>
+
+            <p>You hereby indemnify to the fullest extent ISD from and against any and/or all liabilities, costs,
+                demands, causes of action, damages and expenses arising in any way related to your breach of any of the
+                provisions of these Terms.</p>
+
+            <h3>Severability</h3>
+
+            <p>If any provision of these Terms is found to be invalid under any applicable law, such provisions shall be
+                deleted without affecting the remaining provisions herein.</p>
+
+            <h3>Variation of Terms</h3>
+
+            <p>ISD is permitted to revise these Terms at any time as it sees fit, and by using this Website you are
+                expected to review these Terms on a regular basis.</p>
+
+            <h3>Assignment</h3>
+
+            <p>The ISD is allowed to assign, transfer, and subcontract its rights and/or obligations under these Terms
+                without any notification. However, you are not allowed to assign, transfer, or subcontract any of your
+                rights and/or obligations under these Terms.</p>
+
+            <h3>Entire Agreement</h3>
+
+            <p>These Terms constitute the entire agreement between ISD and you in relation to your use of this Website,
+                and supersede all prior agreements and understandings.</p>
+
+            <h3>Governing Law & Jurisdiction</h3>
+
+            <p>These Terms will be governed by and interpreted in accordance with the laws of the State of md, and you
+                submit to the non-exclusive jurisdiction of the state and federal courts located in md for the
+                resolution of any disputes.</p>
+
+
+            <h4>Terms of Web Service</h4>
+            <p>Please read these terms of service ("terms", "terms of service") carefully before using [website] website
+                (the "service") operated by [name] ("us", 'we", "our").</p>
+            <p><strong>Conditions of Use</strong></p>
+            <p>We will provide their services to you, which are subject to the conditions stated below in this document.
+                Every time you visit this website, use its services or make a purchase, you accept the following
+                conditions. This is why we urge you to read them carefully.</p>
+            <p><strong>Privacy Policy</strong></p>
+            <p>Before you continue using our website we advise you to read our privacy policy [link to privacy policy]
+                regarding our user data collection. It will help you better understand our practices.</p>
+            <p><strong>Copyright</strong></p>
+            <p>Content published on this website (digital downloads, images, texts, graphics, logos) is the property of
+                [name] and/or its content creators and protected by international copyright laws. The entire compilation
+                of the content found on this website is the exclusive property of [name], with copyright authorship for
+                this compilation by [name].</p>
+            <p><strong>Communications</strong></p>
+            <p>The entire communication with us is electronic. Every time you send us an email or visit our website, you
+                are going to be communicating with us. You hereby consent to receive communications from us. If you
+                subscribe to the news on our website, you are going to receive regular emails from us. We will continue
+                to communicate with you by posting news and notices on our website and by sending you emails. You also
+                agree that all notices, disclosures, agreements and other communications we provide to you
+                electronically meet the legal requirements that such communications be in writing.</p>
+            <p><strong>Applicable Law</strong></p>
+            <p>By visiting this website, you agree that the laws of the [your location], without regard to principles of
+                conflict laws, will govern these terms of service, or any dispute of any sort that might come between
+                [name] and you, or its business partners and associates.</p>
+            <p><strong>Disputes</strong></p>
+            <p>Any dispute related in any way to your visit to this website or to products you purchase from us shall be
+                arbitrated by state or federal court [your location] and you consent to exclusive jurisdiction and venue
+                of such courts.</p>
+            <p><strong>Comments, Reviews, and Emails</strong></p>
+            <p>Visitors may post content as long as it is not obscene, illegal, defamatory, threatening, infringing of
+                intellectual property rights, invasive of privacy or injurious in any other way to third parties.
+                Content has to be free of software viruses, political campaign, and commercial solicitation.</p>
+            <p>We reserve all rights (but not the obligation) to remove and/or edit such content. When you post your
+                content, you grant [name] non-exclusive, royalty-free and irrevocable right to use, reproduce, publish,
+                modify such content throughout the world in any media.</p>
+            <p><strong>License and Site Access</strong></p>
+            <p>We grant you a limited license to access and make personal use of this website. You are not allowed to
+                download or modify it. This may be done only with written consent from us.</p>
+            <p><strong>User Account</strong></p>
+            <p>If you are an owner of an account on this website, you are solely responsible for maintaining the
+                confidentiality of your private user details (username and password). You are responsible for all
+                activities that occur under your account or password.</p>
+            <p>We reserve all rights to terminate accounts, edit or remove content and cancel orders in their sole
+                discretion.</p>
+        </div>
     </div>
     <div class="modal-footer">
         <button

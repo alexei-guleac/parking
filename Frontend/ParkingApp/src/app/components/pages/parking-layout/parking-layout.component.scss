@@ -7,16 +7,16 @@ $font_0: 'Allerta Stencil';
 $font_1: 'serif';
 
 //urls
-$url_0: url('../../../../assets/img/car-side.png');
-$url_1: url('../../../../assets/img/car-top.png');
-$url_2: url('../../../../assets/img/car-side-lost.png');
-$url_3: url('../../../../assets/img/car-top-lost.png');
-$url_4: url('../../../../assets/img/car-side-free-border.png');
-$url_5: url('../../../../assets/img/car-top-free-border.png');
-$url_6: url('../../../../assets/img/car-side-reserved.png');
-$url_7: url('../../../../assets/img/car-top-reserved.png');
+$url_0: url('../../../../assets/img/cars/car-side.png');
+$url_1: url('../../../../assets/img/cars/car-top.png');
+$url_2: url('../../../../assets/img/cars/car-side-lost.png');
+$url_3: url('../../../../assets/img/cars/car-top-lost.png');
+$url_4: url('../../../../assets/img/cars/car-side-free-border.png');
+$url_5: url('../../../../assets/img/cars/car-top-free-border.png');
+$url_6: url('../../../../assets/img/cars/car-side-reserved.png');
+$url_7: url('../../../../assets/img/cars/car-top-reserved.png');
 
-.refresh {
+.reset-btn {
     color: $color_tropical_blue_approx;
     border-color: $color_tropical_blue_approx;
     background-color: $color_azure_radiance_approx;
@@ -61,7 +61,7 @@ span {
 
 .car-highlight {
     transform: scale(2);
-    transition: 1s;
+    transition: all 1s;
     box-shadow: var(--btn-material-shadow);
 }
 

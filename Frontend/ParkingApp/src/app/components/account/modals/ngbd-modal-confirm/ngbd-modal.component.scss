@@ -25,7 +25,7 @@ $color_malibu_approx: #5cb3fd;
 }
 
 /* modal animation */
-.modal-holder {
+.modal-holder:not(.dropdown-menu) {
     animation-name: modal-fade;
     animation-duration: 0.3s;
 }
@@ -73,3 +73,5 @@ $color_malibu_approx: #5cb3fd;
 .modal-body {
     border-color: 5px solid var(--modal-body-border) !important;
 }
+
+

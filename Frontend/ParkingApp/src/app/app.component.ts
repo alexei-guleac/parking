@@ -1,9 +1,12 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {routerTransition} from './components/animations/animations';
-import {actions} from './services/navigation/app.endpoints';
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { routerTransition } from "./components/animations/animations";
+import { actions } from "./services/navigation/app.endpoints";
 
 
+/**
+ * Main application component
+ */
 @Component({
     selector: 'app-root',
     animations: [routerTransition],
@@ -12,6 +15,7 @@ import {actions} from './services/navigation/app.endpoints';
 })
 export class AppComponent implements OnInit {
     private action: string;
+
     actions = actions;
 
     constructor(private route: ActivatedRoute) {

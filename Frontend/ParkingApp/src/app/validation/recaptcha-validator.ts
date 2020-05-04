@@ -1,4 +1,4 @@
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from "@angular/common/http";
 import {
     AfterViewInit,
     Directive,
@@ -13,7 +13,7 @@ import {
     NgZone,
     OnInit,
     Output
-} from '@angular/core';
+} from "@angular/core";
 
 import {
     AbstractControl,
@@ -22,9 +22,9 @@ import {
     NG_VALUE_ACCESSOR,
     NgControl,
     Validators
-} from '@angular/forms';
+} from "@angular/forms";
 
-import 'rxjs/add/operator/map';
+import "rxjs/add/operator/map";
 
 
 declare const grecaptcha: any;
@@ -38,12 +38,18 @@ declare global {
 
 export const RECAPTCHA_URL = new InjectionToken('RECAPTCHA_URL');
 
-/* tslint:disable */
+/**
+ * Google recaptcha async validator
+ */
 @Injectable()
 class ReCaptchaAsyncValidator {
     constructor(private http: HttpClient, @Inject(RECAPTCHA_URL) private url) {
     }
 
+    /**
+     * Validates recaptcha token
+     * @param token - recaptcha token
+     */
     validateToken(token: string) {
         return (_: AbstractControl) => {
             console.log("validateToken");
@@ -67,6 +73,9 @@ export interface ReCaptchaConfig {
     tabindex?: number;
 }
 
+/**
+ * Google recaptcha directive
+ */
 @Directive({
     // tslint:disable-next-line:directive-selector
     selector: "[appNbRecaptcha]",
@@ -82,6 +91,7 @@ export interface ReCaptchaConfig {
 })
 export class ReCaptchaDirective
     implements OnInit, AfterViewInit, ControlValueAccessor {
+
     @Input() key: string;
 
     @Input() config: ReCaptchaConfig = {};
@@ -170,7 +180,7 @@ export class ReCaptchaDirective
     }
 
     /**
-     *
+     * onSuccess
      * @param response
      */
     onSuccess(token: string) {
@@ -183,8 +193,8 @@ export class ReCaptchaDirective
     }
 
     /**
-     *
-     * @param token
+     * Verify recaptcha token
+     * @param token - recaptcha token
      */
     verifyToken(token: string) {
         this.control.setAsyncValidators(
@@ -229,9 +239,9 @@ export class ReCaptchaDirective
      */
     addScript() {
         const script = document.createElement("script");
-        //for other languages
-        //const lang = this.lang ? '&hl=' + this.lang : '';
-        //script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;
+        // for other languages
+        // const lang = this.lang ? '&hl=' + this.lang : '';
+        // script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;
         script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit&hl=en`;
         script.async = true;
         script.defer = true;

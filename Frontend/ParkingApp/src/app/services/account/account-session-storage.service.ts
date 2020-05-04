@@ -1,8 +1,11 @@
-import {Injectable} from '@angular/core';
-import {JWTToken} from '@app/models/payload/JWTToken';
-import {JwtHelperService} from '@auth0/angular-jwt';
+import { Injectable } from "@angular/core";
+import { JWTToken } from "@app/models/payload/JWTToken";
+import { JwtHelperService } from "@auth0/angular-jwt";
 
 
+/**
+ * User auth information storage type
+ */
 @Injectable({
     providedIn: 'root',
 })
@@ -18,11 +21,17 @@ export class AccountStorageService {
     }
 }
 
+/**
+ * Browser storage user auth related keys
+ */
 export const storageKeys = {
     USER_NAME_SESSION_ATTRIBUTE_NAME: 'authenticatedUser',
     TOKEN_NAME: 'token',
 };
 
+/**
+ * Browser storage user auth related type
+ */
 export const storageType = {
     local: 'local',
     session: 'session',
@@ -30,42 +39,24 @@ export const storageType = {
 
 export const roleAdmin = 'ROLE_ADMIN';
 
+/**
+ * Service for interacting with browser storage in due to logged user information processing
+ */
 @Injectable({
     providedIn: 'root',
 })
-export class SessionStorageService {
+export class AccountSessionStorageService {
     constructor(
         private jwtHelper: JwtHelperService,
         private accountStorageTypeService: AccountStorageService
     ) {
     }
 
-    localStoreCredentials(username: string, password: string) {
-        this.clearLocalStorage();
-        localStorage.setItem(
-            storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME,
-            username
-        );
-        localStorage.setItem(
-            storageKeys.TOKEN_NAME,
-            btoa(username + ':' + password)
-        );
-        this.setLocalStorageType();
-    }
-
-    sessionStoreCredentials(username: string, password: string) {
-        this.clearSessionStorage();
-        sessionStorage.setItem(
-            storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME,
-            username
-        );
-        sessionStorage.setItem(
-            storageKeys.TOKEN_NAME,
-            btoa(username + ':' + password)
-        );
-        this.setSessionStorageType();
-    }
-
+    /**
+     * Save user login information in local browser storage
+     * @param username - user username
+     * @param token - JWT from server with related user data
+     */
     localStoreToken(username, token) {
         this.clearLocalStorage();
         localStorage.setItem(
@@ -76,6 +67,11 @@ export class SessionStorageService {
         this.setLocalStorageType();
     }
 
+    /**
+     * Save user login information in session browser storage
+     * @param username - user username
+     * @param token - JWT from server with related user data
+     */
     sessionStoreToken(username, token) {
         this.clearSessionStorage();
         sessionStorage.setItem(
@@ -86,22 +82,34 @@ export class SessionStorageService {
         this.setSessionStorageType();
     }
 
+    /**
+     * Clear all user login related data
+     */
     clearAccountStorage() {
         this.clearSessionStorage();
         this.clearLocalStorage();
     }
 
+    /**
+     * Clear all user login related data from local storage
+     */
     clearLocalStorage() {
         localStorage.removeItem(storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME);
         localStorage.removeItem(storageKeys.TOKEN_NAME);
     }
 
+    /**
+     * Clear all user login related data from session storage
+     */
     clearSessionStorage() {
         sessionStorage.removeItem(storageKeys.USER_NAME_SESSION_ATTRIBUTE_NAME);
         sessionStorage.removeItem(storageKeys.TOKEN_NAME);
         window.sessionStorage.clear();
     }
 
+    /**
+     * Clear browser cache storage
+     */
     clearCacheStorage() {
         window.caches.keys().then((keyList) =>
             Promise.all(
@@ -112,34 +120,36 @@ export class SessionStorageService {
         );
     }
 
+    /**
+     * Set user account storage type to local
+     */
     setLocalStorageType() {
         this.accountStorageTypeService.setType(storageType.local);
     }
 
+    /**
+     * Set user account storage type to session
+     */
     setSessionStorageType() {
         this.accountStorageTypeService.setType(storageType.session);
     }
 
+    /**
+     * Check if JWT is expired
+     */
     isJwtTokenExpired() {
         const token = getJwtToken();
-
-        const decodedToken = this.jwtHelper.decodeToken(token);
-        console.log(`decodedToken ` + JSON.stringify(decodedToken));
-        const expirationDate = this.jwtHelper.getTokenExpirationDate(token);
-        console.log(`expirationDate ${expirationDate}`);
-        const isExpired = this.jwtHelper.isTokenExpired(token);
-        console.log(`isExpired ${isExpired}`);
-
-        return isExpired;
+        return this.jwtHelper.isTokenExpired(token);
     }
 
+    /**
+     * Retrieve user roles from JWT
+     */
     getUserRolesFromJwt() {
         const token = getJwtToken();
 
         if (token) {
             const decodedToken = this.jwtHelper.decodeToken(token) as JWTToken;
-            // console.log(`decodedToken ` + JSON.stringify(decodedToken));
-
             return decodedToken.roles;
         } else {
             return '';
@@ -147,6 +157,9 @@ export class SessionStorageService {
     }
 }
 
+/**
+ * Get JWT from browser storage
+ */
 export function getJwtToken() {
     return (
         localStorage.getItem(storageKeys.TOKEN_NAME) ||
@@ -155,6 +168,10 @@ export function getJwtToken() {
     );
 }
 
+/**
+ * Get logged in username from browser storage
+ * @param storeType - browser taget storage type
+ */
 export function getUsername(storeType: string) {
     if (storeType === storageType.local) {
         return localStorage.getItem(
@@ -168,6 +185,11 @@ export function getUsername(storeType: string) {
     }
 }
 
+/**
+ * Set logged in username in browser storage
+ * @param newUsername - new user username
+ * @param storeType - browser target storage type
+ */
 export function setUsername(newUsername: string, storeType: string) {
     if (storeType === storageType.local) {
         return localStorage.setItem(

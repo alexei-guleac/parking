@@ -1,9 +1,12 @@
-import {Injectable} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RegularExpressions} from '@app/validation/reg-exp-patterns';
-import {regexpTestValidator} from '@app/validation/regexp-name-validator';
+import { Injectable } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { RegularExpressions } from "@app/validation/reg-exp-patterns";
+import { regexpTestValidator } from "@app/validation/regexp-name-validator";
 
 
+/**
+ * Provides Angular form controls for form inputs
+ */
 @Injectable({
     providedIn: 'root',
 })
@@ -11,6 +14,10 @@ export class FormControlService {
     constructor() {
     }
 
+    /**
+     * Get form control for username
+     * @param username - user username
+     */
     getUsernameFormControl(username: string) {
         return new FormControl(username, [
             Validators.required,
@@ -20,6 +27,10 @@ export class FormControlService {
         ]);
     }
 
+    /**
+     * Get form control for email
+     * @param email - user email
+     */
     getEmailFormControl(email: string) {
         return new FormControl(email, [
             Validators.required,
@@ -30,6 +41,10 @@ export class FormControlService {
         ]);
     }
 
+    /**
+     * Get form control for password
+     * @param password - user password
+     */
     getPasswordFormControl(password: string) {
         return new FormControl(password, [
             Validators.required,
@@ -39,8 +54,12 @@ export class FormControlService {
         ]);
     }
 
-    getConfirmPasswordFormControl(email: string) {
-        return new FormControl(email, [
+    /**
+     * Get form control for password confirmation
+     * @param password - user password confirmation
+     */
+    getConfirmPasswordFormControl(password: string) {
+        return new FormControl(password, [
             Validators.required,
             Validators.minLength(8),
             Validators.maxLength(35),
@@ -49,6 +68,10 @@ export class FormControlService {
         ]);
     }
 
+    /**
+     * Get form control for firstname
+     * @param firstname - user firstname
+     */
     getFirstnameFormControl(firstname: string) {
         return new FormControl(firstname, [
             Validators.required,
@@ -58,6 +81,10 @@ export class FormControlService {
         ]);
     }
 
+    /**
+     * Get form control for lastname
+     * @param lastname - user lastname
+     */
     getLastnameFormControl(lastname: string) {
         return new FormControl(lastname, [
             Validators.required,
@@ -67,17 +94,15 @@ export class FormControlService {
         ]);
     }
 
+    /**
+     * Check if password and password confirmation equals
+     * @param key - target field value for comparison
+     * @param confirmationKey - confirmation field
+     */
     checkPasswordConfirm(key: string, confirmationKey: string) {
         return (group: FormGroup) => {
             const input = group.controls[key];
             const confirmationInput = group.controls[confirmationKey];
-
-            // console.log('Pass ' + input);
-            // console.log('confirmPass ' + confirmationInput);
-
-            // tslint:disable-next-line:triple-equals
-            // @ts-ignore
-            // console.log('confirmPass  equal ' + confirmationInput === input);
 
             return confirmationInput.setErrors(
                 input.value !== confirmationInput.value
@@ -88,11 +113,18 @@ export class FormControlService {
     }
 }
 
-// Switching method
+/**
+ * Toggle password field type for get visibility
+ * @param component - component with field to be switched
+ */
 export const togglePassTextType = (component) => {
     component.fieldTextTypePass = !component.fieldTextTypePass;
 };
 
+/**
+ * Toggle password confirmation field type for get visibility
+ * @param component - component with field to be switched
+ */
 export const togglePassConfirmTextType = (component) => {
     component.fieldTextTypePassConfirm = !component.fieldTextTypePassConfirm;
 };

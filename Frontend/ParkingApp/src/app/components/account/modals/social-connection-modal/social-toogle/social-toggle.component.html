@@ -1,0 +1,18 @@
+<div class="row mx-auto text-center align-content-center align-items-center">
+    <div class="col-2">
+        <img alt="{{socialName}}"
+             class="social-img mx-auto p-2"
+             src="{{socialImgSrc}}">
+    </div>
+    <div class="col-6 mx-auto text-center align-content-center align-items-center">
+        {{socialName}}</div>
+    <div class="col-2 mx-auto text-center align-content-center align-items-center">
+        <label (click)="signIn()"
+               class="social-switch mx-auto text-center align-content-center align-items-center">
+            <input
+                [checked]="checked"
+                [disabled]="!enabled"
+                type="checkbox">
+            <span class="slider round social-slider-round"></span>
+        </label></div>
+</div>

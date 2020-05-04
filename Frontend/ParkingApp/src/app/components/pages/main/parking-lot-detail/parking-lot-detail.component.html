@@ -1,6 +1,6 @@
 <h2 class="m-3 my-4 text-left">Parking lot details</h2>
 <div class="card mx-auto shadow" style="width: 20rem;">
-    <div *ngIf="parkingLot != null">
+    <ng-container *ngIf="parkingLot != null">
         <div
             [ngClass]="parkingLot.status.toLowerCase()"
             class="btn lot col-sm-12 p-3"
@@ -46,13 +46,13 @@
             >
                 <i class="fa fa-bell"></i>
                 {{
-                (parkingLot.status === parkingLotStatus.RESERVED
-                    ? 'Reset'
-                    : 'Make') + ' reservation'
+              (parkingLot.status === parkingLotStatus.RESERVED
+                ? 'Reset'
+                : 'Make') + ' reservation'
                 }}
             </button>
         </div>
-    </div>
+    </ng-container>
 </div>
 
 <div [hidden]="parkingLot != null">
@@ -74,4 +74,65 @@
             </div>
         </div>
     </div>
+</div>
+
+<h2 class="m-3 my-4 text-left">Usage statistics</h2>
+
+<ng-container *ngIf="filteredStatistics && filteredStatistics.length != 0">
+    <div class="mt-5">
+        <div class="col-12">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        <span class="parking-lot">Parking Lot
+                        </span>
+                    </th>
+                    <th>Status</th>
+                    <th (click)="sortStatisticsTableByTime()">
+                        <span class="time">Time
+                            <i *ngIf="timeSortedAsc" class="fas fa-sort-up"></i>
+                            <i *ngIf="timeSortedDesc" class="fas fa-sort-down"></i>
+                        </span>
+                    </th>
+                    <th (click)="sortStatisticsTableByDate()">
+                        <span class="date">Date
+                            <i *ngIf="dateSortedAsc" class="fas fa-sort-up"></i>
+                            <i *ngIf="dateSortedDesc" class="fas fa-sort-down"></i>
+                        </span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let stat of filteredStatistics
+                            | paginate: { itemsPerPage: 10, currentPage: p };
+                        let i = index"
+                    [ngStyle]="{ background: getColor(stat.status) }">
+                    <!--//here you can set the number of rows to display on one page-->
+                    <td>{{ 'LOT ' + stat.lotNumber }}</td>
+                    <td>{{ stat.status }}</td>
+                    <td>{{ stat.updatedAt | date: 'HH:mm:ss' }}</td>
+                    <td>{{ stat.updatedAt | date: 'dd.MM.yy' }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>
+        </div>
+    </div>
+</ng-container>
+
+<div *ngIf="filteredStatistics && filteredStatistics.length == 0"
+     class="container mx-auto text-center align-content-center mt-2 w-75">
+    <div class="smthg-error mt-3 mx-auto text-center">
+        <div class="unable-to-connect mx-auto text-center">
+            <h2>No results found.</h2>
+        </div>
+    </div>
+    <div class="message mx-auto text-center m-1 px-3">
+        This parking lot has not been used yet for this week.
+    </div>
+    <img alt="no_statistics"
+         class="w-100 mx-auto text-center align-content-center h-auto"
+         src="../../../../../assets/img/no-results-found.png"
+    />
 </div>

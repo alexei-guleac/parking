@@ -1,24 +1,29 @@
-import {Injectable} from '@angular/core';
-import {Router} from '@angular/router';
-import {AuthenticationRequest} from '@app/models/payload/AuthenticationRequest';
-import {ResetPasswordRequest} from '@app/models/payload/ResetPasswordRequest';
-import {User} from '@app/models/User';
+import { Injectable } from "@angular/core";
+import { Router } from "@angular/router";
+import { AuthenticationRequest } from "@app/models/payload/AuthenticationRequest";
+import { ResetPasswordRequest } from "@app/models/payload/ResetPasswordRequest";
+import { User } from "@app/models/User";
 import {
+    AccountSessionStorageService,
     AccountStorageService,
     getUsername,
     roleAdmin,
-    SessionStorageService,
-    setUsername,
-} from '@app/services/account/session-storage.service';
-import {HttpClientService} from '@app/services/helpers/http-client.service';
-import {api} from '@app/services/navigation/app.endpoints';
-import {Observable} from 'rxjs';
-import 'rxjs/add/observable/empty';
-import {environment} from '../../../environments/environment';
+    setUsername
+} from "@app/services/account/account-session-storage.service";
+import { SocialUserStorageService } from "@app/services/account/social/social-user-storage.service";
+import { HttpClientService } from "@app/services/helpers/http-client.service";
+import { api } from "@app/services/navigation/app.endpoints";
+import { environment } from "@env";
+import { AuthService } from "angularx-social-login-vk";
+import { Observable } from "rxjs";
+import "rxjs/add/observable/empty";
 
 
+/**
+ * Provides methods for server API requests performing
+ */
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root"
 })
 export class AuthenticationService {
     public username: string;
@@ -28,85 +33,101 @@ export class AuthenticationService {
     constructor(
         private http: HttpClientService,
         private router: Router,
-        private sessionStorageService: SessionStorageService,
-        private storageType: AccountStorageService
+        private sessionStorageService: AccountSessionStorageService,
+        private storageType: AccountStorageService,
+        private OAuthService: AuthService,
+        private socialUserService: SocialUserStorageService
     ) {
     }
 
+    /**
+     * Send server user login request
+     * @param credentials - username and password
+     * @param deviceInfo - user device common information
+     */
     processAuthentification(
         credentials: AuthenticationRequest,
         deviceInfo: any
     ): Observable<any> {
         const url = environment.restUrl + api.auth;
-        // console.log('Auth login');
-        // console.log('Login ' + username + '  ' + password);
 
         return this.http.postJsonRequest<any>(url, {
             credentials,
-            deviceInfo,
+            deviceInfo
         });
     }
 
+    /**
+     * Send server user registration request
+     * @param user - being registered user
+     * @param deviceInfo - user device common information
+     */
     processRegistration(user: User, deviceInfo: any): Observable<any> {
         const url = environment.restUrl + api.registration;
-        // console.log('Registration');
-        // console.log('User goes to server ' + user.lastname);
 
         return this.http.postJsonRequest<any>(url, {
             user,
-            deviceInfo,
+            deviceInfo
         });
     }
 
+    /**
+     * Send server user confirmation request
+     * @param confirmationToken - target confirmation token
+     */
     processUserConfirmation(confirmationToken: string): Observable<any> {
         const url = environment.restUrl + api.confirmReg;
-        // console.log('confirm ' + confirmationToken);
 
         return this.http.postJsonRequest<any>(url, {
-            confirmationToken,
+            confirmationToken
         });
     }
 
+    /**
+     * Send server forgot password request
+     * @param email - user email
+     * @param deviceInfo - user device common information
+     */
     processForgotPasswordRequest(
         email: string,
         deviceInfo: any
     ): Observable<any> {
         const url = environment.restUrl + api.forgotPass;
-        // console.log('forgot pass ' + email);
 
         return this.http.postJsonRequest<any>(url, {
             email,
-            deviceInfo,
+            deviceInfo
         });
     }
 
+    /**
+     * Send server reset password request
+     * @param resetRequest - reset password request
+     * @param deviceInfo - user device common information
+     */
     processResetPasswordRequest(
         resetRequest: ResetPasswordRequest,
         deviceInfo: any
     ): Observable<any> {
         const url = environment.restUrl + api.resetPass;
-        // console.log('reset pass ' + resetRequest.password);
 
         return this.http.postJsonRequest<any>(url, {
             resetRequest,
-            deviceInfo,
+            deviceInfo
         });
     }
 
-    registerSuccessfulLogin(username: string) {
-        this.sessionStorageService.sessionStoreCredentials(
-            username,
-            this.password
-        );
-    }
-
+    /**
+     * Save user login information in corresponding storage depends on 'remember me' checkbox
+     * @param username - target user name
+     * @param token - received JWT from server
+     * @param rememberUser - remember user action
+     */
     registerSuccessfulAuth(
         username: string,
         token: string,
         rememberUser: boolean
     ) {
-        /*console.log(username);
-        console.log(token);*/
 
         if (rememberUser) {
             this.sessionStorageService.localStoreToken(username, token);
@@ -115,6 +136,9 @@ export class AuthenticationService {
         }
     }
 
+    /**
+     * Logout user by cleaning user information from browser storage
+     */
     processLogout() {
         this.sessionStorageService.clearAccountStorage();
         this.sessionStorageService.clearCacheStorage();
@@ -123,18 +147,27 @@ export class AuthenticationService {
         this.password = null;
     }
 
+    /**
+     * Vhecl if user logged in by get username from current browser storage
+     */
     isUserLoggedIn() {
         const user = getUsername(this.storageType.getType());
 
         return !(user === null || user === '' || user === undefined);
     }
 
+    /**
+     * Assert that logged in user have ADMIN role
+     */
     isAdminLoggedIn() {
         return this.sessionStorageService
             .getUserRolesFromJwt()
             .includes(roleAdmin);
     }
 
+    /**
+     * Get logged in user name
+     */
     getLoggedInUserName() {
         const user = getUsername(this.storageType.getType());
         if (user === null) {
@@ -143,7 +176,20 @@ export class AuthenticationService {
         return user;
     }
 
+    /**
+     * Set logged in user name
+     * @param newUsername - new logged in user name
+     */
     setLoggedInUserName(newUsername: string) {
         setUsername(newUsername, this.storageType.getType());
+    }
+
+    /**
+     * Full logout from all profiles and services with cleaning all additional login information
+     */
+    fullLogout() {
+        this.processLogout();
+        this.OAuthService.signOut();
+        this.socialUserService.cleanGitAuth();
     }
 }

@@ -193,7 +193,7 @@ $font_3: 'sans-serif';
 /* Custom toogle */
 
 /* The switch - the box around the slider */
-.switch {
+.theme-switch {
     position: relative;
     display: inline-block;
     width: 60px;
@@ -202,14 +202,14 @@ $font_3: 'sans-serif';
 }
 
 /* Hide default HTML checkbox */
-.switch input {
+.theme-switch input {
     width: 0;
     height: 0;
     opacity: 0;
 }
 
 @media (max-width: 992px) {
-    .switch {
+    .theme-switch {
         margin-top: 1rem;
         left: 27vw;
     }
@@ -219,7 +219,7 @@ $font_3: 'sans-serif';
 //colors
 $color_silver_approx: #ccc;
 
-.slider {
+.slider:not(.social-slider-round) {
     position: absolute;
     top: 0;
     right: 0;

@@ -1,20 +1,37 @@
-import {formatDate} from '@angular/common';
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {ParkingLot} from '@app/models/ParkingLot';
-import {parkingStatuses} from '@app/models/ParkingLotStatus';
-import {Statistics} from '@app/models/Statistics';
-import {DataService} from '@app/services/data/data.service';
-import {appRoutes} from '@app/services/navigation/app.endpoints';
+import { formatDate } from "@angular/common";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { parkingStatuses } from "@app/models/ParkingLotStatus";
+import {
+    ascendingStatisticsSortByTime,
+    descendingStatisticsSortByTime,
+    filterStatisticsByDatePeriod,
+    filterStatisticsByNumber,
+    getStatisticsByUpdatedAtAscSortComparator,
+    Statistics
+} from "@app/models/Statistics";
+import { DataService } from "@app/services/data/data.service";
+import { ObjectsSortService } from "@app/services/data/objects-sort.service";
+import { appRoutes } from "@app/services/navigation/app.endpoints";
 
 
+/**
+ * Parking lots usage statistics page
+ */
 @Component({
     selector: 'app-statistics',
     templateUrl: './statistics.component.html',
     styleUrls: ['./statistics.component.scss'],
 })
 export class StatisticsComponent implements OnInit {
-    private p = 1; // declaration of page index used for pagination
+
+    private statistics: Array<Statistics>;
+
+    private filteredStatistics: Array<Statistics>;
+
+    private lotNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    private p = 1;              // declaration of page index used for pagination
 
     // set the table row color depending on status
     private colors = [
@@ -23,14 +40,6 @@ export class StatisticsComponent implements OnInit {
         {status: parkingStatuses.UNKNOWN, background: 'gray'},
         {status: parkingStatuses.RESERVED, background: '#ffbf0f'},
     ];
-
-    private statistics: Array<Statistics>;
-
-    private filteredStatistics: Array<Statistics>;
-
-    private parkingLots: Array<ParkingLot>;
-
-    private lotNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     private selectedLotNumber: string = null;
 
@@ -52,23 +61,30 @@ export class StatisticsComponent implements OnInit {
 
     constructor(
         private dataService: DataService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private objectsSortService: ObjectsSortService
     ) {
     }
 
+    /**
+     * Initialize the directive/component after Angular first displays the data-bound properties
+     * and sets the directive/component's input properties.
+     * Called once, after the first ngOnChanges()
+     */
     ngOnInit() {
         this.loadData();
     }
 
+    /**
+     * Load parking lots statistics data
+     */
     private loadData() {
-        // tslint:disable: no-string-literal
-        // this.parkingLots = this.route.snapshot.data['parkingLots'];
-        // this.parkingLots.sort((a, b) => (a.number > b.number) ? 1 : (a.number < b.number ? -1 : 0));
-
         this.statistics = this.route.snapshot.data[appRoutes.statistics];
-        this.statistics.sort((a, b) =>
-            a.updatedAt > b.updatedAt ? 1 : a.updatedAt < b.updatedAt ? -1 : 0
-        );
+
+        // preliminarily sort statistics by date parking lot status updated in ascending order
+        this.statistics.sort(getStatisticsByUpdatedAtAscSortComparator());
+        // reset other fields sort order by default
+        this.resetFieldsSort();
 
         this.filteredStatistics = this.statistics;
         this.selectedLotNumber = undefined;
@@ -81,39 +97,51 @@ export class StatisticsComponent implements OnInit {
         this.filterData();
     }
 
+    /**
+     * Filter statistics data by parameters selected by user
+     */
     private filterData() {
         let tempStats = new Array<Statistics>();
 
+        console.log("new Date(this.startDate).getDate()" + (new Date(this.startDate).setHours(0, 0, 0)));
+        console.log("new Date(this.endDate).getDate()" + new Date(this.endDate));
+
+        // if all selected
         if (this.selectedLotNumber === 'All') {
             this.selectedLotNumber = null;
         }
 
+        // if start date is greater than end date
         if (
-            new Date(this.startDate).getDate() >
-            new Date(this.endDate).getDate()
+            new Date(this.startDate) >
+            new Date(this.endDate)
         ) {
             alert('The start date you entered is higher that the end date');
         } else if (this.startDate != null && this.endDate != null) {
             tempStats = this.statistics.filter(
-                (st) =>
-                    st.updatedAt.getDate() >=
-                    new Date(this.startDate).getDate() &&
-                    st.updatedAt.getDate() <= new Date(this.endDate).getDate()
+                filterStatisticsByDatePeriod(this.startDate, this.endDate)
             );
 
             if (this.selectedLotNumber != null) {
                 tempStats = tempStats.filter(
-                    (st) => st.lotNumber === +this.selectedLotNumber
+                    filterStatisticsByNumber(this.selectedLotNumber)
                 );
             }
         }
         this.filteredStatistics = tempStats;
+        console.log("this.filteredStatistics");
+        console.log(this.filteredStatistics);
+        console.log(tempStats);
     }
 
-    private sortTableByLotNumber() {
-        this.sortTable(
-            this.lotSortedAsc,
-            this.lotSortedDesc,
+    /**
+     * Sort statistics data by parking lot number
+     */
+    private sortStatisticsTableByLotNumber() {
+        this.objectsSortService.sortTable(
+            this,
+            "lotSortedAsc",
+            "lotSortedDesc",
             this.filteredStatistics,
             'lotNumber',
             (this.dateSortedAsc = false),
@@ -123,10 +151,14 @@ export class StatisticsComponent implements OnInit {
         );
     }
 
-    private sortTableByDate() {
-        this.sortTable(
-            this.dateSortedAsc,
-            this.dateSortedDesc,
+    /**
+     * Sort statistics data by parking lot updated date
+     */
+    private sortStatisticsTableByDate() {
+        this.objectsSortService.sortTable(
+            this,
+            "dateSortedAsc",
+            "dateSortedDesc",
             this.filteredStatistics,
             'updatedAt',
             (this.lotSortedAsc = false),
@@ -136,91 +168,32 @@ export class StatisticsComponent implements OnInit {
         );
     }
 
-    private sortTable(
-        targetSortedAsc: boolean,
-        targetSortedDesc: boolean,
-        statistics: Array<Statistics>,
-        sortByField: string,
-        ...otherFields: boolean[]
-    ) {
-        targetSortedAsc = true;
-        targetSortedDesc = true;
-
-        for (let i = 0; i < statistics.length - 1; i++) {
-            if (statistics[i][sortByField] > statistics[i + 1][sortByField]) {
-                targetSortedAsc = false;
-            }
-            if (statistics[i][sortByField] < statistics[i + 1][sortByField]) {
-                targetSortedDesc = false;
-            }
-        }
-
-        if (targetSortedAsc) {
-            statistics.sort((a, b) =>
-                a[sortByField] < b[sortByField]
-                    ? 1
-                    : a[sortByField] > b[sortByField]
-                    ? -1
-                    : 0
-            );
-            targetSortedAsc = false;
-            targetSortedDesc = true;
-        } else {
-            statistics.sort((a, b) =>
-                a[sortByField] > b[sortByField]
-                    ? 1
-                    : a[sortByField] < b[sortByField]
-                    ? -1
-                    : 0
-            );
-            targetSortedDesc = false;
-            targetSortedAsc = true;
-        }
-
-        for (let i = 0; i < otherFields.length; i++) {
-            otherFields[i] = false;
-        }
-    }
-
-    private sortTableByTime() {
-        this.timeSortedDesc = true;
-        this.timeSortedAsc = true;
+    /**
+     * Sort statistics data by parking lot updated time
+     */
+    private sortStatisticsTableByTime() {
 
         for (let i = 0; i < this.filteredStatistics.length - 1; i++) {
-            if (
-                this.filteredStatistics[i].updatedAt.getTime() >
-                this.filteredStatistics[i + 1].updatedAt.getTime()
-            ) {
+            if (this.filteredStatistics[i].updatedAt.getTime() >
+                this.filteredStatistics[i + 1].updatedAt.getTime()) {
+                this.timeSortedDesc = true;
                 this.timeSortedAsc = false;
             }
 
-            if (
-                this.filteredStatistics[i].updatedAt.getTime() <
-                this.filteredStatistics[i + 1].updatedAt.getTime()
-            ) {
+            if (this.filteredStatistics[i].updatedAt.getTime() <
+                this.filteredStatistics[i + 1].updatedAt.getTime()) {
+                this.timeSortedAsc = true;
                 this.timeSortedDesc = false;
             }
         }
 
         if (this.timeSortedAsc) {
-            this.filteredStatistics.sort((a, b) =>
-                a.updatedAt.getTime() < b.updatedAt.getTime()
-                    ? 1
-                    : a.updatedAt.getTime() > b.updatedAt.getTime()
-                    ? -1
-                    : 0
-            );
+            this.filteredStatistics.sort(descendingStatisticsSortByTime());
 
             this.timeSortedAsc = false;
             this.timeSortedDesc = true;
         } else {
-            this.filteredStatistics.sort((a, b) =>
-                a.updatedAt.getTime() > b.updatedAt.getTime()
-                    ? 1
-                    : a.updatedAt.getTime() < b.updatedAt.getTime()
-                    ? -1
-                    : 0
-            );
+            this.filteredStatistics.sort(ascendingStatisticsSortByTime());
 
             this.timeSortedDesc = false;
             this.timeSortedAsc = true;
@@ -233,8 +206,24 @@ export class StatisticsComponent implements OnInit {
         this.dateSortedAsc = false;
     }
 
+    /**
+     * Define statistics table row color based on parking lot status
+     * @param parkingLotStatus - target parking lot status
+     */
     private getColor(parkingLotStatus: string) {
         return this.colors.filter((item) => item.status === parkingLotStatus)[0]
             .background;
+    }
+
+    private resetFieldsSort() {
+
+        this.dateSortedAsc = true;
+        this.dateSortedDesc = false;
+
+        this.lotSortedAsc = false;
+        this.lotSortedDesc = false;
+
+        this.timeSortedAsc = false;
+        this.timeSortedDesc = false;
     }
 }

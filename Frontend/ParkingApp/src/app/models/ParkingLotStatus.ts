@@ -1,3 +1,6 @@
+/**
+ * Parking lot statuses
+ */
 export const parkingStatuses = {
     FREE: 'FREE',
     OCCUPIED: 'OCCUPIED',

@@ -31,7 +31,6 @@
                 "app/shared/*"
             ]
         },
-
         "outDir": "./dist/out-tsc",
         "sourceMap": true,
         "declaration": false,
@@ -42,7 +41,8 @@
         "importHelpers": true,
         "target": "es2015",
         "typeRoots": [
-            "node_modules/@types"
+            "node_modules/@types",
+            "node_modules/@types/jquery"
         ],
         "lib": [
             "es2018",

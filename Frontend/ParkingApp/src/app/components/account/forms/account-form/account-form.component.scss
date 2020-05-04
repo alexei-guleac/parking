@@ -17,6 +17,8 @@
 
 .isd-logo {
     content: var(--isd-account-logo);
+    width: 9rem;
+    height: 9rem;
 }
 
 form input.form-control {
@@ -126,6 +128,7 @@ form input.form-control {
     background: none;
 }
 
+/*
 .hint {
     position: relative;
     z-index: 100;
@@ -155,7 +158,7 @@ form input.form-control {
         background-color: #f2f2f2;
         box-shadow: -2px -2px 2px 0 rgba(178, 178, 178, 0.4);
     }
-}
+}*/
 
 .pseudolink {
     color: var(--pseudolink-color);
@@ -196,4 +199,45 @@ form input.form-control {
 
 .text-light-muted {
     color: var(--other-text-color);
+}
+
+.btn-show-form {
+    padding: 0.8rem;
+    background: var(--background-secondary);
+    font-size: 15px;
+    font-weight: normal;
+    display: inline-flex;
+    width: 45%;
+    margin: 10px 10px;
+    text-align: center !important;
+    color: var(--text-color);
+    border: none;
+    border-radius: 50px;
+    box-shadow: var(--material-shadow-thin);
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    i {
+        font-size: 20px;
+        position: relative;
+        top: 2px;
+        min-width: 25px;
+        margin-right: -20px;
+    }
+}
+
+@media (max-width: 488px) {
+    .btn-show-form {
+        width: 100%;
+        margin: 10px 0;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .btn-show-form {
+        width: 100%;
+        margin: 10px 0;
+    }
 }

@@ -1,10 +1,14 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 
 
+/**
+ * Application theme service
+ */
 @Injectable({
     providedIn: 'root',
 })
 export class ThemeService {
+
     themeToogleChecked = false;
 
     private modeStatusElement: string;
@@ -14,15 +18,15 @@ export class ThemeService {
     constructor() {
     }
 
+    /**
+     * Initiates theme toggle
+     */
     initThemeToogle() {
         document.documentElement.classList.remove('no-js');
 
         const STORAGE_KEY = 'user-color-scheme';
         const COLOR_MODE_KEY = '--color-mode';
-
-        // const modeToggleButton = document.querySelector('.js-mode-toggle');
         const modeToggleButton = document.querySelector('.slider');
-        console.log('mdtb ' + modeToggleButton);
 
         /**
          * Pass in an element and its CSS Custom Property that you want the value of.
@@ -31,7 +35,6 @@ export class ThemeService {
          * @param {String} propKey
          * @param {HTMLElement} element=document.documentElement
          * @param {String} castAs='string'
-         * @returns {*}
          */
         const getCSSCustomProp = (
             propKey,
@@ -67,7 +70,6 @@ export class ThemeService {
          * controlled by the media query
          */
         const applySetting = (passedSetting) => {
-            // console.log('test const applySetting');
             const currentSetting =
                 passedSetting || localStorage.getItem(STORAGE_KEY);
 
@@ -83,7 +85,6 @@ export class ThemeService {
         };
 
         const initSettings = () => {
-            // console.log('test const initSetting');
             const currentSetting = localStorage.getItem(STORAGE_KEY);
 
             if (currentSetting) {

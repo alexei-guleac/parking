@@ -1,22 +1,25 @@
-import {Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {FormGroup} from '@angular/forms';
-import {ActivatedRoute, NavigationExtras} from '@angular/router';
-import {ComponentWithErrorMsg} from '@app/components/account/forms/account-form/account-form.component';
-import {ResetPasswordRequest} from '@app/models/payload/ResetPasswordRequest';
-import {AuthenticationService} from '@app/services/account/auth.service';
+import { Component, Input, OnDestroy, OnInit } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { ActivatedRoute, NavigationExtras } from "@angular/router";
+import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
+import { ResetPasswordRequest } from "@app/models/payload/ResetPasswordRequest";
+import { AuthenticationService } from "@app/services/account/auth.service";
 import {
     FormControlService,
     togglePassConfirmTextType,
-    togglePassTextType,
-} from '@app/services/account/form-control.service';
-import {handleHttpErrorResponse} from '@app/services/helpers/global-http-interceptor-service.service';
-import {actions} from '@app/services/navigation/app.endpoints';
-import {NavigationService} from '@app/services/navigation/navigation.service';
-import {DeviceInfoStorage} from '@app/utils/device-fingerprint';
-import {isNonEmptyStrings} from '@app/utils/string-utils';
-import {Subscription} from 'rxjs';
+    togglePassTextType
+} from "@app/services/account/form-control.service";
+import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
+import { actions } from "@app/services/navigation/app.endpoints";
+import { NavigationService } from "@app/services/navigation/navigation.service";
+import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
+import { isNonEmptyStrings } from "@app/utils/string-utils";
+import { Subscription } from "rxjs";
 
 
+/**
+ * Reset password form
+ */
 @Component({
     selector: 'app-reset-password-form',
     templateUrl: './reset-password.component.html',
@@ -24,16 +27,8 @@ import {Subscription} from 'rxjs';
 })
 export class ResetPasswordComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
+
     @Input() confirmationToken: string;
-
-    errorMessage: string;
-
-    private resetPasswordSubscription: Subscription;
-
-    // Switching method
-    private togglePassVisible = togglePassTextType;
-
-    private togglePassConfirmVisible = togglePassConfirmTextType;
 
     private password: string;
 
@@ -42,6 +37,15 @@ export class ResetPasswordComponent
     private invalidReset = false;
 
     private resetSuccess = false;
+
+    errorMessage: string;
+
+    private resetPasswordServerReqSubscription: Subscription;
+
+    // Switching method
+    private togglePassVisible = togglePassTextType;
+
+    private togglePassConfirmVisible = togglePassConfirmTextType;
 
     private fieldTextTypePass: boolean;
 
@@ -69,19 +73,33 @@ export class ResetPasswordComponent
         return this.resetForm.get('passConfirm');
     }
 
+    /**
+     * Initialize the directive/component after Angular first displays the data-bound properties
+     * and sets the directive/component's input properties.
+     * Called once, after the first ngOnChanges()
+     */
     ngOnInit(): void {
         this.createForm();
     }
 
+    /**
+     * Cleanup just before Angular destroys the directive/component.
+     * Unsubscribe Observables and detach event handlers to avoid memory leaks.
+     * Called just before Angular destroys the directive/component
+     */
     ngOnDestroy(): void {
         if (
-            this.resetPasswordSubscription &&
-            !this.resetPasswordSubscription.closed
+            this.resetPasswordServerReqSubscription &&
+            !this.resetPasswordServerReqSubscription.closed
         ) {
-            this.resetPasswordSubscription.unsubscribe();
+            this.resetPasswordServerReqSubscription.unsubscribe();
         }
     }
 
+    /**
+     * Submit form handler
+     * @param valid - form validation state
+     */
     onSubmit(valid: boolean) {
         this.submitted = true;
         if (this.resetForm.hasError('invalid')) {
@@ -89,7 +107,6 @@ export class ResetPasswordComponent
         }
 
         if (isNonEmptyStrings(this.password, this.passConfirm)) {
-            // console.log(this.password);
             if (!valid) {
                 return;
             }
@@ -97,15 +114,14 @@ export class ResetPasswordComponent
         }
     }
 
+    /**
+     * Initiate reset password form group with validation
+     */
     private createForm() {
         this.resetForm = new FormGroup(
             {
-                password: this.formControlService.getPasswordFormControl(
-                    this.password
-                ),
-                passConfirm: this.formControlService.getConfirmPasswordFormControl(
-                    this.passConfirm
-                ),
+                password: this.formControlService.getPasswordFormControl(this.password),
+                passConfirm: this.formControlService.getConfirmPasswordFormControl(this.passConfirm)
             },
             this.formControlService
                 .checkPasswordConfirm('password', 'passConfirm')
@@ -113,8 +129,11 @@ export class ResetPasswordComponent
         );
     }
 
+    /**
+     * Handle user reset password request
+     */
     private handlePassReset() {
-        this.resetPasswordSubscription = this.authenticationService
+        this.resetPasswordServerReqSubscription = this.authenticationService
             .processResetPasswordRequest(
                 new ResetPasswordRequest(this.confirmationToken, this.password),
                 DeviceInfoStorage.deviceInfo
@@ -125,6 +144,9 @@ export class ResetPasswordComponent
             );
     }
 
+    /**
+     * Handle reset password server response
+     */
     private handleResetPasswordResponse() {
         return (response: any) => {
             if (response.success) {
@@ -140,18 +162,22 @@ export class ResetPasswordComponent
         };
     }
 
+    /**
+     * Handle server response error
+     */
     private handleResetPasswordError() {
         return (error) => {
             this.invalidReset = true;
             this.resetSuccess = false;
-            // console.log(error);
             alert('Reset failed.');
-            // console.log('Reset failed.');
 
             handleHttpErrorResponse(error, this);
         };
     }
 
+    /**
+     * Navigate to login component layout after successful password reset
+     */
     private navigateToLogin() {
         const navigationExtras: NavigationExtras = {
             state: {message: this.confirmationMessage},

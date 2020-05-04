@@ -1,54 +1,61 @@
-import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,} from '@angular/common/http';
-import {Injectable, NgZone} from '@angular/core';
-import {NavigationExtras, Router} from '@angular/router';
-import {AuthService} from 'angularx-social-login-vk';
-import {Observable, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
-import {AuthenticationService} from '../account/auth.service';
-import {SessionStorageService} from '../account/session-storage.service';
-import {SocialUserService} from '../account/social/social-user.service';
-import {actions} from '../navigation/app.endpoints';
-import {NavigationService} from '../navigation/navigation.service';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Injectable, NgZone } from "@angular/core";
+import { NavigationExtras, Router } from "@angular/router";
+import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
+import { trimChars } from "@app/utils/string-utils";
+import { Observable, throwError } from "rxjs";
+import { catchError } from "rxjs/operators";
+import { AccountSessionStorageService } from "../account/account-session-storage.service";
+import { AuthenticationService } from "../account/auth.service";
+import { actions } from "../navigation/app.endpoints";
+import { NavigationService } from "../navigation/navigation.service";
 
 
+/**
+ * Global server error handler
+ */
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root"
 })
 export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
+
     constructor(
         public router: Router,
         private authService: AuthenticationService,
-        private sessionService: SessionStorageService,
-        private OAuthService: AuthService,
+        private sessionService: AccountSessionStorageService,
         private navigationService: NavigationService,
-        private socialUserService: SocialUserService,
         public zone: NgZone
     ) {
     }
 
+    /**
+     * Intercepts server errors
+     * @param req - request
+     * @param next - next handler
+     */
     intercept(
         req: HttpRequest<any>,
         next: HttpHandler
     ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError((errorResponse) => {
-                console.log('error is intercept');
-                console.error(errorResponse);
                 // handle the error
                 this.handleError(errorResponse);
-                console.log('error intercept finish');
 
                 // ...optionally return a default fallback value so app can continue (pick one)
                 // which could be a default value
                 // return Observable.of<any>({my: "default value..."});
                 // or simply an empty observable
                 // return EMPTY;
-
                 return throwError(errorResponse);
             })
         );
     }
 
+    /**
+     * Handle HTTP server error
+     * @param errorResponse - HTTP server error respnse
+     */
     private handleError(errorResponse: any) {
         if (errorResponse instanceof HttpErrorResponse) {
             // A client-side or network error occurred. Handle it accordingly.
@@ -62,18 +69,15 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
             console.log(`Error status : ${errorStatus} ${errorStatusText}`);
 
             const navigationExtras: NavigationExtras = {
-                state: {errors: errors ? errors : error, from: 'globalError'},
-                queryParams: {action: actions.login},
+                state: { errors: errors ? errors : error, from: "globalError" },
+                queryParams: { action: actions.login }
             };
-
             console.log('Error navigationExtras:', navigationExtras);
 
             switch (errorStatus) {
                 case 401: // login, unauthorized
-                    if (
-                        this.authService.isUserLoggedIn() ||
-                        this.sessionService.isJwtTokenExpired()
-                    ) {
+                    if (this.authService.isUserLoggedIn() ||
+                        this.sessionService.isJwtTokenExpired()) {
                         this.fullLogout();
                     }
 
@@ -116,43 +120,63 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
         }
     }
 
+    /**
+     * Full user logout
+     */
     private fullLogout() {
-        this.authService.processLogout();
-        this.OAuthService.signOut();
-        this.socialUserService.cleanGitAuth();
+        this.authService.fullLogout();
     }
 
+    /**
+     * Navigate to login page
+     * @param navigationExtras - addiritional information
+     */
     private navigateToLogin(navigationExtras: NavigationExtras) {
         this.zone.run(() =>
             this.navigationService.navigateToLoginWithExtras(navigationExtras)
         );
-        // this.router.navigateByUrl('/login');
         console.log(`redirect to login`);
-        // handled = true;
     }
 }
 
-export function handleHttpErrorResponse(error, component, nextCallback?) {
-    /*console.log('log ');
-    console.log(error);*/
+/**
+ * Parse error from LDAP HTTP server response
+ * @param ldapError - LDAP HTTP server response
+ */
+function parseLdapError(ldapError: string) {
+    if (ldapError.toLowerCase().includes("ldap")) {
+        return trimChars("[.,:;]", ldapError
+            .split(";")[0]
+            .split(":")[1]
+            .split("-")[1]);
+    } else {
+        return ldapError;
+    }
+}
+
+/**
+ * Handle HTTP server error response conform error object received
+ * with provided next callback step
+ */
+export function handleHttpErrorResponse(error, component: ComponentWithErrorMsg, nextCallback?) {
     if (error instanceof HttpErrorResponse) {
-        component.errorMessage = error.error.message
+
+        let tmpMsg = error.error.message
             ? error.error.message
             : error.error;
+        tmpMsg = parseLdapError(tmpMsg);
+        component.errorMessage = tmpMsg;
+
         if (nextCallback) nextCallback();
     }
 }
 
-export function handleErrorResponse(component, nextCallback?) {
+/**
+ * Handle HTTP server error response conform error object received
+ * with provided next callback step
+ */
+export function handleErrorResponse(component: ComponentWithErrorMsg, nextCallback?) {
     return (error) => {
-        console.log('log ');
-        console.log(error);
-        if (error instanceof HttpErrorResponse) {
-            component.errorMessage = error.error.message
-                ? error.error.message
-                : error.error;
-
-            nextCallback();
-        }
+        handleHttpErrorResponse(error, component, nextCallback);
     };
 }

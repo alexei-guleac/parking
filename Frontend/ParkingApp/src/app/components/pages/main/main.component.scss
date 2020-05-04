@@ -21,7 +21,7 @@ $color_azure_radiance_approx: #0a8eff;
     vertical-align: middle;
 }
 
-.lot {
+.parking-lot {
     min-width: 150px;
     height: 100px;
     margin-bottom: 20px;
@@ -43,12 +43,12 @@ $color_azure_radiance_approx: #0a8eff;
     text-align: center;
 }
 
-.lot-name {
+.parking-lot-name {
     font-size: 25px;
     text-transform: uppercase;
 }
 
-.refresh {
+.reset-btn {
     width: 50%;
     color: $white;
     border-color: $white;
@@ -65,7 +65,7 @@ $color_azure_radiance_approx: #0a8eff;
     border-radius: 0.8rem;
 }
 
-.map {
+.parking-map {
     position: absolute;
     top: 1%;
     right: 1%;

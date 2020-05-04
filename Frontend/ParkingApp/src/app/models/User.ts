@@ -1,4 +1,8 @@
+/**
+ * User model
+ */
 export class User {
+
     id: string;
 
     username: string;
@@ -11,6 +15,8 @@ export class User {
 
     lastname: string;
 
+    socialIds: any;
+
     constructor(
         id?: string,
         name?: string,
@@ -19,19 +25,6 @@ export class User {
         firstname?: string,
         lastname?: string
     ) {
-        console.log(
-            id +
-            ' ' +
-            name +
-            ' ' +
-            email +
-            ' ' +
-            password +
-            ' ' +
-            firstname +
-            ' ' +
-            lastname
-        );
         this.id = id;
         this.username = name;
         this.email = email;
@@ -40,6 +33,10 @@ export class User {
         this.lastname = lastname;
     }
 
+    /**
+     * Forms user object from HTTP response
+     * @param user - HTTP response user
+     */
     static fromHttp(user: any) {
         return new User(
             user.id,

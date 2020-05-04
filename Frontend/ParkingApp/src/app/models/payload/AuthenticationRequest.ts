@@ -1,3 +1,6 @@
+/**
+ * User authentication request
+ */
 export class AuthenticationRequest {
 
     username: string;

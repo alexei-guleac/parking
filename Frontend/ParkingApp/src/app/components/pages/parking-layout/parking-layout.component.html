@@ -19,7 +19,7 @@
     >
     </app-parking-lot-detail>
 
-    <!-- legend -->
+    <!-- parking layout legend -->
     <div
         *ngIf="action !== 'view'"
         class="legend-group mx-auto align-content-center text-center mb-2"
@@ -28,7 +28,7 @@
             <img
                 alt="car_side_free"
                 class="legend mx-auto align-content-center text-center"
-                src="../../../../assets/img/car-side-free-border.png"
+                src="../../../../assets/img/cars/car-side-free-border.png"
             />
             <div class="mx-auto align-content-center text-center">free</div>
         </div>
@@ -36,7 +36,7 @@
             <img
                 alt="car_side_occupied"
                 class="legend mx-auto align-content-center text-center"
-                src="../../../../assets/img/car-side.png"
+                src="../../../../assets/img/cars/car-side.png"
             />
             <div class="mx-auto align-content-center text-center">occupied</div>
         </div>
@@ -44,7 +44,7 @@
             <img
                 alt="car_side_reserved"
                 class="legend mx-auto align-content-center text-center"
-                src="../../../../assets/img/car-side-reserved.png"
+                src="../../../../assets/img/cars/car-side-reserved.png"
             />
             <div class="mx-auto align-content-center text-center">reserved</div>
         </div>
@@ -52,7 +52,7 @@
             <img
                 alt="car_side_lost"
                 class="legend mx-auto align-content-center text-center"
-                src="../../../../assets/img/car-side-lost.png"
+                src="../../../../assets/img/cars/car-side-lost.png"
             />
             <div class="mx-auto align-content-center text-center">
                 no connection
@@ -65,11 +65,11 @@
         <img
             alt="layout"
             class="layout"
-            src="../../../../assets/img/isd-parking-layout-red-striped-car.png"
+            src="../../../../assets/img/layouts/isd-parking-layout-red-striped-car.png"
         />
 
-        <div *ngIf="dataLoaded">
-            <div *ngFor="let num of numberOfParkingLots">
+        <ng-container *ngIf="dataLoaded">
+            <ng-container *ngFor="let num of numberOfParkingLots">
                 <div
                     (click)="showDetails(parkingLots[num]?.id)"
                     [class.car-highlight]="
@@ -151,7 +151,7 @@
                         }}
                     </span>
                 </div>
-            </div>
+            </ng-container>
             <div class="smoking text-secondary">
                 <i class="fas fa-smoking"></i>
             </div>
@@ -163,6 +163,6 @@
                 <div class="display-5">ISD 1st</div>
                 <div class="display-5">Back Door</div>
             </div>
-        </div>
+        </ng-container>
     </div>
 </div>

@@ -1,14 +1,22 @@
-import {Injectable} from '@angular/core';
-import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
-import {Observable} from 'rxjs';
-import {appRoutes} from '../app.endpoints';
+import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { Observable } from "rxjs";
+import { appRoutes } from "../app.endpoints";
 
 
+/**
+ * Guard that does not allow direct manual page access from browser window
+ */
 @Injectable()
 export class DirectAccessGuard implements CanActivate {
     constructor(private router: Router) {
     }
 
+    /**
+     * Check if this page can be accessed directly
+     * @param next - activated route
+     * @param state - activated route state
+     */
     canActivate(
         next: ActivatedRouteSnapshot,
         state: RouterStateSnapshot

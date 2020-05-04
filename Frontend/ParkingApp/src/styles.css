@@ -85,6 +85,8 @@ footer {
     --instagram: rgba(158, 94, 223, 0.68);
     --apple: rgba(48, 104, 87, 0.62);
 
+    --connected: #1db954;
+
     /* Shadows */
 
     --background-tertiary-shadow: 0 1px 3px 0 rgba(92, 125, 153, 0.5);
@@ -117,6 +119,9 @@ footer {
 
     --background-secondary-light: #fefcfe;
     --background-secondary-dark: #5d5b5d;
+
+    --head-light: #3a383a;
+    --head-dark: #5d5b5d;
 
     --other-text-color-light: #6c757d;
     --other-text-color-dark: #9aa0a6;
@@ -175,6 +180,7 @@ footer {
     --background: var(--color-light);
     --text-color: var(--text-color-dark);
 
+    --head: var(--head-light);
     --background-secondary: var(--background-secondary-light);
     --text-color-secondary: var(--text-color-secondary-light);
     --isd-account-logo: var(--isd-account-logo-light);
@@ -210,6 +216,7 @@ body {
 
     :root:not([data-user-color-scheme]) {
         --background: var(--color-dark);
+        --head: var(--head-dark);
         --text-color: var(--text-color-light);
 
         --background-secondary: var(--background-secondary-dark);
@@ -234,6 +241,7 @@ body {
 
 [data-user-color-scheme='dark'] {
     --background: var(--color-dark);
+    --head: var(--head-dark);
     --text-color: var(--text-color-light);
 
     --background-secondary: var(--background-secondary-dark);
@@ -268,56 +276,7 @@ body {
     }
 }
 
-/*!* If there’s no JS, there’s no need for the user toggle component to show *!
-.no-js .user-toggle {
-display: none;
-}
-
-.user-toggle {
-margin: 2rem auto 0 auto;
-padding-top: 2.5rem;
-max-width: 20rem;
-border-top: 1px solid var(--border-color);
-text-align: center;
-}
-
-.toggle-button {
-display: inline-flex;
-background: var(--button-background);
-color: var(--button-color);
-border: none;
-font: inherit;
-font-size: 1.5rem;
-padding: 0.5rem 1rem;
-transition: background 500ms ease-in-out, color 200ms ease;
-}
-
-.toggle-button__icon {
-background: var(--button-icon);
-width: 1.2em;
-height: 1.2em;
-margin: 0 0 0 0.5em;
-filter: var(--button-icon-filter);
-transform: translateY(1px); !* Optical adjustment *!
-transition: filter 500ms ease-in-out;
-}
-
-.toggle-button:focus {
-outline: 1px solid var(--button-background);
-outline-offset: 0.5rem;
-}
-
-.visually-hidden {
-display: block;
-height: 1px;
-width: 1px;
-overflow: hidden;
-clip: rect(1px 1px 1px 1px);
-clip: rect(1px, 1px, 1px, 1px);
-clip-path: inset(1px);
-white-space: nowrap;
-position: absolute;
-}*/
+/* Pagination */
 
 .ngx-pagination a:hover,
 .ngx-pagination button:hover {
@@ -326,7 +285,7 @@ position: absolute;
 
 .ngx-pagination a {
     color: black !important;
-    transition: color 1s;
+    transition: color 0.3s;
 }
 
 .ngx-pagination a:hover {
@@ -344,4 +303,24 @@ button:disabled {
 
 .disabled {
     pointer-events: all !important;
+}
+
+/* Tooltips */
+
+.tooltip > div {
+    animation-name: delayedFadeIn;
+    animation-duration: 1s; /* Adjust this duration */
+}
+
+@Keyframes delayedFadeIn {
+    0% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 0;
+    }
+    /* Set this to 99% for no fade-in. */
+    100% {
+        opacity: 1;
+    }
 }

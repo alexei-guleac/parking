@@ -1,61 +1,32 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output,} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import {ComponentWithErrorMsg} from '@app/components/account/forms/account-form/account-form.component';
-import {AuthenticationRequest} from '@app/models/payload/AuthenticationRequest';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
+import { AuthenticationRequest } from "@app/models/payload/AuthenticationRequest";
+import { AuthenticationService } from "@app/services/account/auth.service";
+import { FormControlService, togglePassTextType } from "@app/services/account/form-control.service";
+import { SocialProviderService } from "@app/services/account/social/social-provider.service";
 import {
-    AmazonAuthRequest,
-    CommonSocialAuthRequest,
-    GithubAuthRequest,
-    MicrosoftAuthRequest,
-    SocialSignInRequest,
-} from '@app/models/payload/SocialSignInRequest';
-import {AuthenticationService} from '@app/services/account/auth.service';
-import {FormControlService, togglePassTextType,} from '@app/services/account/form-control.service';
-import {providerNames, SocialAccountService,} from '@app/services/account/social/social-account.service';
-import {SocialUserService} from '@app/services/account/social/social-user.service';
-import {handleHttpErrorResponse} from '@app/services/helpers/global-http-interceptor-service.service';
-import {LoggerService} from '@app/services/helpers/logger.service';
-import {actions} from '@app/services/navigation/app.endpoints';
-import {NavigationService} from '@app/services/navigation/navigation.service';
-import {DeviceInfoStorage} from '@app/utils/device-fingerprint';
-import {isNonEmptyStrings} from '@app/utils/string-utils';
-import {AuthService} from 'angularx-social-login-vk';
-import {Subscription} from 'rxjs';
+    socialProviderNames,
+    SocialUserStorageService
+} from "@app/services/account/social/social-user-storage.service";
+import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
+import { actions } from "@app/services/navigation/app.endpoints";
+import { NavigationService } from "@app/services/navigation/navigation.service";
+import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
+import { isNonEmptyStrings } from "@app/utils/string-utils";
+import { Subscription } from "rxjs";
 
 
+/**
+ * Login form component
+ */
 @Component({
     selector: 'app-login-form',
     templateUrl: './login-form.component.html',
-    styleUrls: ['./login-form.component.scss'],
+    styleUrls: ["./login-form.component.scss"]
 })
 export class LoginFormComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
-    errorMessage: string;
-
-    private loginSubscription: Subscription;
-
-    /*private linkedInLogin() {
-        this.ngxLinkedinService.signIn().subscribe((user: any) => {
-            console.log('signIn', user);
-
-            if (user.id) {
-                this.sendSocialLoginRequest(new LinkedInAuthRequest(user.id));
-            }
-        });
-    }*/
-    private togglePassVisible = togglePassTextType;
-
-    constructor(
-        private authenticationService: AuthenticationService,
-        private OauthService: AuthService,
-        private navigationService: NavigationService,
-        private socialService: SocialAccountService,
-        private socialUserService: SocialUserService,
-        private log: LoggerService,
-        /*private ngxLinkedinService: NgxLinkedinService,*/
-        private formControlService: FormControlService
-    ) {
-    }
 
     @Input() isLogFailed: boolean;
 
@@ -71,13 +42,17 @@ export class LoginFormComponent
     @Output()
     userForgotEvent: EventEmitter<any> = new EventEmitter<any>();
 
+    errorMessage: string;
+
+    private loginServerReqSubscription: Subscription;
+
+    private togglePassVisible = togglePassTextType;
+
+    private showLoginForm = false;
+
     private username: string;
 
     private password: string;
-
-    get name() {
-        return this.loginForm.get('username');
-    }
 
     private successMessage: string;
 
@@ -93,32 +68,52 @@ export class LoginFormComponent
 
     private loginForm: FormGroup;
 
-    private msAuthSubscription: Subscription;
+    private socialProviders = socialProviderNames;
 
-    private msLoginAllowed = false;
+    constructor(
+        private authenticationService: AuthenticationService,
+        private navigationService: NavigationService,
+        private socialService: SocialProviderService,
+        private socialUserStorageService: SocialUserStorageService,
+        private formControlService: FormControlService
+    ) {
+    }
 
-    private socialProviders = providerNames;
+    get name() {
+        return this.loginForm.get("username");
+    }
 
     get pass() {
         return this.loginForm.get('password');
     }
 
+    /**
+     * Initialize the directive/component after Angular first displays the data-bound properties
+     * and sets the directive/component's input properties.
+     * Called once, after the first ngOnChanges()
+     */
     ngOnInit(): void {
         this.createForm();
-
         this.processGithubOauthCallback();
         this.initMsgFromParent();
-        this.log.logMethod('Hellloooo!!!');
     }
 
+    /**
+     * Cleanup just before Angular destroys the directive/component.
+     * Unsubscribe Observables and detach event handlers to avoid memory leaks.
+     * Called just before Angular destroys the directive/component
+     */
     ngOnDestroy(): void {
-        if (this.loginSubscription && !this.loginSubscription.closed) {
-            this.loginSubscription.unsubscribe();
+        if (this.loginServerReqSubscription && !this.loginServerReqSubscription.closed) {
+            this.loginServerReqSubscription.unsubscribe();
         }
     }
 
+    /**
+     * Submit form handler
+     * @param valid - form validation state
+     */
     onSubmit(valid: boolean) {
-        // console.log('DEVICE in login' + JSON.stringify(DeviceInfoStorage.deviceInfo));
         this.submitted = true;
         if (this.loginForm.hasError('invalid')) {
             this.submitted = false;
@@ -126,9 +121,6 @@ export class LoginFormComponent
         }
 
         if (isNonEmptyStrings(this.username, this.password)) {
-            /*console.log(this.loginForm.hasError('invalid'));
-            console.log(this.username + '  ' + this.password);
-            console.log('VALID' + valid);*/
             if (!valid) {
                 return;
             }
@@ -136,153 +128,9 @@ export class LoginFormComponent
         }
     }
 
-    private createForm() {
-        this.loginForm = new FormGroup({
-            username: this.formControlService.getUsernameFormControl(
-                this.username
-            ),
-            password: this.formControlService.getPasswordFormControl(
-                this.password
-            ),
-            rememberMe: new FormControl(),
-        });
-    }
-
-    private handleLogin() {
-        this.loginSubscription = this.authenticationService
-            .processAuthentification(
-                new AuthenticationRequest(this.username, this.password),
-                DeviceInfoStorage.deviceInfo
-            )
-            .subscribe(this.handleLoginResponse(), this.handleLoginError());
-    }
-
-    private handleLoginError() {
-        return (error) => {
-            this.isLoginSuccess = false;
-            this.isLoginFailed = true;
-            /*console.log('log ');
-            console.log(error);
-            console.log('Authentication failed.');*/
-            alert('Authentication failed.');
-            this.socialUserService.cleanGitAuth();
-            this.fullLogout();
-
-            handleHttpErrorResponse(error, this);
-        };
-    }
-
-    private handleLoginResponse() {
-        return (response: any) => {
-            if (response.token) {
-                this.isLoginFailed = false;
-                this.isLoginSuccess = true;
-                this.successMessage = 'Login Successful.';
-                // console.log(this.successMessage);
-                // console.log(response.token);
-
-                this.authenticationService.registerSuccessfulAuth(
-                    this.username,
-                    response.token,
-                    this.rememberUser
-                );
-
-                this.socialUserService.cleanGitAuth();
-                this.navigationService.navigateToMain();
-            }
-        };
-    }
-
-    private fullLogout() {
-        this.signOut();
-        this.authenticationService.processLogout();
-        /*if (this.msAuthSubscription && !this.msAuthSubscription.closed) {
-            this.msAuthSubscription.unsubscribe();
-        }*/
-        this.socialUserService.cleanGitAuth();
-    }
-
-    private socialSignIn(socialProvider: string): void {
-        this.socialUserService.clearSocialUser();
-        this.socialUserService.socialUser.subscribe((socialUser: any) => {
-            if (socialUser != null) {
-                if (socialUser.id) {
-                    this.sendSocialLoginRequest(
-                        new CommonSocialAuthRequest(
-                            socialUser.id,
-                            providerNames[socialProvider]
-                        )
-                    );
-                }
-            }
-        });
-        this.socialService.socialSingIn(socialProvider);
-    }
-
-    private socialSignInOther(socialProvider: string) {
-        if (socialProvider === this.socialProviders.git) {
-            this.socialUserService.setGitOauthAction(actions.login);
-            this.socialService.githubLogin();
-        }
-        if (socialProvider === this.socialProviders.ms) {
-            this.socialService.microsoftLogin();
-            this.msLoginAllowed = true;
-            this.processMSCallback();
-        }
-        if (socialProvider === this.socialProviders.a) {
-            this.socialUserService.clearSocialUser();
-            // console.log('Amazon works ' + this.socialUserService.socialUser);
-            this.socialUserService.socialUser.subscribe((socialUser: any) => {
-                if (socialUser != null) {
-                    const user = this.socialUserService.createAmazonUser(
-                        socialUser
-                    );
-
-                    this.sendSocialLoginRequest(new AmazonAuthRequest(user.id));
-                }
-            });
-        }
-
-        /*if (socialProvider === this.socialProviders.linkedin.name) {
-            const social = this.socialProviders.linkedin.short;
-
-            this.linkedInLogin();
-        }*/
-    }
-
-    private sendSocialLoginRequest(socialRequest: SocialSignInRequest) {
-        // console.log('Social login');
-        // console.log('Login ' + id);
-
-        this.loginSubscription = this.socialService
-            .socialServiceLogin(socialRequest, DeviceInfoStorage.deviceInfo)
-            .subscribe(
-                this.handleSocialLoginResponse(),
-                this.handleLoginError()
-            );
-    }
-
-    private handleSocialLoginResponse() {
-        return (response: any) => {
-            if (response.token) {
-                this.isLoginFailed = false;
-                this.isLoginSuccess = true;
-                this.successMessage = 'Social Login Successful.';
-                // console.log(this.successMessage);
-                // console.log(response.token);
-
-                this.authenticationService.registerSuccessfulAuth(
-                    response.username,
-                    response.token,
-                    this.rememberUser
-                );
-
-                this.socialUserService.cleanGitAuth();
-                this.navigationService.navigateToMain();
-            }
-        };
-    }
-
+    /**
+     * Get operation message from parent component
+     */
     private initMsgFromParent() {
         if (this.isConfirmSuccess) {
             this.isLoginSuccess = true;
@@ -294,47 +142,163 @@ export class LoginFormComponent
         }
     }
 
-    private signOut(): void {
-        this.OauthService.signOut();
+    /**
+     * Show/hide login form
+     */
+    private showForm() {
+        this.showLoginForm = !this.showLoginForm;
     }
 
-    private navigateToForgotPass() {
-        this.userForgotEvent.emit();
+    /**
+     * Initiate login form group with validation
+     */
+    private createForm() {
+        this.loginForm = new FormGroup({
+            username: this.formControlService.getUsernameFormControl(this.username),
+            password: this.formControlService.getPasswordFormControl(this.password),
+            rememberMe: new FormControl()
+        });
     }
 
+    /**
+     * Handle user profile login request
+     */
+    private handleLogin() {
+        this.loginServerReqSubscription = this.authenticationService
+            .processAuthentification(
+                new AuthenticationRequest(this.username, this.password),
+                DeviceInfoStorage.deviceInfo
+            )
+            .subscribe(this.handleLoginResponse(), this.handleLoginError()
+            );
+    }
+
+    /**
+     * Handle login server response
+     */
+    private handleLoginResponse() {
+        return (response: any) => {
+            if (response.token) {
+                this.isLoginFailed = false;
+                this.isLoginSuccess = true;
+                this.successMessage = 'Login Successful.';
+
+                this.authenticationService.registerSuccessfulAuth(
+                    this.username,
+                    response.token,
+                    this.rememberUser
+                );
+
+                this.socialService.cleanGitAuth();
+                this.navigationService.navigateToMain();
+            }
+        };
+    }
+
+    /**
+     * Handle server response error
+     */
+    private handleLoginError() {
+        return (error) => {
+            this.handleSocialLoginError(error);
+        };
+    }
+
+    /**
+     * Sign in with specified social provider
+     * (simplified way with common library 'angularx-social-login-vk')
+     * and with other specified social providers
+     * (full Oauth 2.0 flow or other separate social provider specific libraries)
+     */
+    private socialSignIn(socialProvider: string): void {
+        // in advance subscribes to subject when server authentication response arrives
+        this.subscribeToServerResponse();
+        this.socialService.processSocialLogin(socialProvider, actions.login);
+    }
+
+    private handleSocialResponse() {
+        return (response: any) => {
+            console.log("RESPONSE " + JSON.stringify(response));
+            if (response.token) {
+                this.handleSocialLoginResponse(response);
+            }
+            if (response.error) {
+                this.handleSocialLoginError(response);
+            }
+        };
+    }
+
+    /**
+     * Handle social login server response
+     */
+    private handleSocialLoginResponse(response: any) {
+        // if JWT is provided
+        if (response.token) {
+            this.isLoginFailed = false;
+            this.isLoginSuccess = true;
+            this.successMessage = "Social Login Successful.";
+
+            // save user in browser storage
+            this.authenticationService.registerSuccessfulAuth(
+                response.username,
+                response.token,
+                this.rememberUser
+            );
+
+            // remove temporary Github auth data
+            this.socialService.cleanGitAuth();
+            this.navigationService.navigateToMain();
+        }
+    }
+
+    /**
+     * Handle server response error
+     */
+    private handleSocialLoginError(error) {
+        this.isLoginSuccess = false;
+        this.isLoginFailed = true;
+        alert("Authentication failed.");
+        this.socialService.cleanGitAuth();
+        this.fullLogout();
+
+        handleHttpErrorResponse(error, this);
+    }
+
+    /**
+     * Handle redirect from Github Oauth 2.0 flow and prepare social user login request
+     */
     private processGithubOauthCallback() {
-        const code = this.socialUserService.getGitOauthCode();
+        const code = this.socialService.getGitOauthCode();
         if (code != null) {
-            console.log('CODE ' + code);
+            this.subscribeToServerResponse();
+            // if code is provided perform access token request
             this.socialService.handleGithubOauthRequest(code);
-
-            this.socialUserService.gitUser.subscribe((gitUser: any) => {
-                if (gitUser != null) {
-                    if (gitUser.id) {
-                        this.sendSocialLoginRequest(
-                            new GithubAuthRequest(gitUser.id)
-                        );
-                    }
-                }
-            });
         } else {
             this.fullLogout();
         }
     }
 
-    private processMSCallback() {
-        this.msAuthSubscription = this.socialService
-            .getMsProfile()
-            .subscribe((profile: any) => {
-                console.log('PROFILE ' + JSON.stringify(profile));
+    private subscribeToServerResponse() {
+        this.socialUserStorageService.clearSocialResponse();
+        this.socialUserStorageService.socialServerResponse.subscribe(
+            this.handleSocialResponse()
+        );
+    }
 
-                if (this.msLoginAllowed) {
-                    if (profile.id) {
-                        this.sendSocialLoginRequest(
-                            new MicrosoftAuthRequest(profile.id)
-                        );
-                    }
-                }
-            });
+    /**
+     * Navigate to forgot password component layout
+     */
+    private navigateToForgotPass() {
+        this.userForgotEvent.emit();
+    }
+
+    /**
+     * Full logout from all profiles and services with cleaning all additional login information
+     */
+    private fullLogout() {
+        this.authenticationService.fullLogout();
+        /*if (this.msAuthSubscription && !this.msAuthSubscription.closed) {
+            this.msAuthSubscription.unsubscribe();
+        }*/
     }
 }

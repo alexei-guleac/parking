@@ -1,29 +1,47 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from "@angular/core";
 import {
     MODAL_TYPE,
-    MODALS,
-} from '@app/components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
-import {parkingStatuses} from '@app/models/ParkingLotStatus';
-import {ModalDismissReasons, NgbModal, NgbModalRef,} from '@ng-bootstrap/ng-bootstrap';
+    MODALS
+} from "@app/components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component";
+import { parkingStatuses } from "@app/models/ParkingLotStatus";
+import { ModalDismissReasons, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 
 
+/**
+ * Ng-Bootstrap modal windows service
+ */
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root"
 })
 export class ModalService {
+
+    /*
+    * Standard common modal windows options */
     private standardModalWindowOptions = {
         centered: true,
         windowClass: 'modal-holder',
-        backdropClass: 'blurred-backdrop',
+        backdropClass: "blurred-backdrop"
     };
 
     private submitBtnTxt = 'Ok';
 
     private cancelBtnTxt = 'Cancel';
 
+    private logoutModalResult: string;
+
     constructor(private modalService: NgbModal) {
     }
 
+    /**
+     * Open standard ng-bootstrap confirm modal window
+     * @param title - modal window title
+     * @param body  - modal window body
+     * @param submitBtnTxt - modal window submit button text
+     * @param cancelBtnTxt - modal window cancel button text
+     * @param type - specified window type
+     * @param options - ng-bootstrap modal window options
+     * (content-center, window style class, background site style class)
+     */
     openModal(
         title: string,
         body: string,
@@ -42,6 +60,15 @@ export class ModalService {
         return modalRef;
     }
 
+    /**
+     * Open standard ng-bootstrap confirm modal window with autofocus submit button
+     * @param title - modal window title
+     * @param body  - modal window body
+     * @param submitBtnTxt - modal window submit button text
+     * @param cancelBtnTxt - modal window cancel button text
+     * @param options - ng-bootstrap modal window options
+     * (content-center, window style class, background site style class)
+     */
     openAutofocusModal(
         title: string,
         body: string,
@@ -59,6 +86,9 @@ export class ModalService {
         );
     }
 
+    /**
+     * Show account log out confirm modal window
+     */
     openLogoutModal(): NgbModalRef {
         const modalTitle = 'Logout';
         const modalBodyTemplate =
@@ -73,6 +103,10 @@ export class ModalService {
         );
     }
 
+    /**
+     * Show confirmation profile deleting confirm modal window
+     * @param username - user name
+     */
     openDeleteProfileModal(username: string): NgbModalRef {
         const modalTitle = 'Profile deletion';
         const modalBodyTemplate = `<p><strong>Are you sure you want to delete
@@ -89,6 +123,11 @@ export class ModalService {
         );
     }
 
+    /**
+     * Show parking lot reservation confirm modal window
+     * @param parkingLotNumber - target parking lot number
+     * @param parkingLotStatus - target parking lot status
+     */
     openReservationModal(
         parkingLotNumber: number,
         parkingLotStatus: string
@@ -121,17 +160,28 @@ export class ModalService {
         );
     }
 
+    /**
+     * Check if submit button was pressed
+     * @param result - modal window dismiss result
+     */
     isSubmitResult(result: string): boolean {
         return result.toLowerCase().includes(this.submitBtnTxt.toLowerCase());
     }
 
+    /**
+     * Process modal window dismiss reason
+     * @param logoutModalResult - target result of dismiss
+     */
     processDismissReason(logoutModalResult: string) {
         return (reason) => {
             logoutModalResult = `Dismissed ${this.getDismissReason(reason)}`;
-            console.log(logoutModalResult);
         };
     }
 
+    /**
+     * Specify the dismiss reason
+     * @param reason - modal window dismiss reason
+     */
     getDismissReason(reason: any): string {
         if (reason === ModalDismissReasons.ESC) {
             return 'by pressing ESC';
@@ -142,10 +192,18 @@ export class ModalService {
         }
     }
 
+    /**
+     * Open modal window with scrolled content
+     * @param longContent - some window content
+     */
     openScrollModal(longContent: any) {
-        this.modalService.open(longContent, {scrollable: true});
+        this.modalService.open(longContent, { scrollable: true });
     }
 
+    /**
+     * Open modal window by specified type
+     * @param type - target modal window type
+     */
     openModalByType(type: string) {
         return this.modalService.open(
             MODALS[type],
@@ -153,7 +211,48 @@ export class ModalService {
         );
     }
 
+    /**
+     * Open profile editing modal form
+     */
     openProfileEditModal() {
         return this.openModalByType(MODAL_TYPE.accountEditForm);
+    }
+
+    /**
+     * Open social services account connect modal
+     */
+    openSocialConnectModal() {
+        return this.openModalByType(MODAL_TYPE.socialConnect);
+    }
+
+    /**
+     * Show form fields hint
+     */
+    openFormHintModal() {
+        return this.openModalByType(MODAL_TYPE.formFieldsHint);
+    }
+
+    /**
+     * Handle modal window dismiss
+     */
+    handleDismissResult(nextCallback?) {
+        return (reason) => {
+            this.logoutModalResult = `Dismissed ${this.getDismissReason(
+                reason
+            )}`;
+            if (nextCallback) nextCallback();
+        };
+    }
+
+    /**
+     * Handle modal window submit with next callback
+     */
+    handleSubmitResultWithCallback(component, nextCallback?) {
+        return (result) => {
+            this.logoutModalResult = `Closed with: ${result}`;
+            if (this.isSubmitResult(result)) {
+                if (nextCallback) component.nextCallback();
+            }
+        };
     }
 }

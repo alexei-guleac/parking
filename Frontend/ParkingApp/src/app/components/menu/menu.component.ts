@@ -1,12 +1,15 @@
-import {AfterViewInit, Component, EventEmitter, OnInit, Output, ViewEncapsulation,} from '@angular/core';
-import {openClose} from '@app/components/animations/animations';
-import {AuthenticationService} from '@app/services/account/auth.service';
-import {ModalService} from '@app/services/modals/modal.service';
-import {NavigationService} from '@app/services/navigation/navigation.service';
-import {ThemeService} from '@app/services/theme.service';
-import {capitalize} from '@app/utils/string-utils';
+import { AfterViewInit, Component, EventEmitter, Output, ViewEncapsulation } from "@angular/core";
+import { openClose } from "@app/components/animations/animations";
+import { AuthenticationService } from "@app/services/account/auth.service";
+import { ModalService } from "@app/services/modals/modal.service";
+import { NavigationService } from "@app/services/navigation/navigation.service";
+import { ThemeService } from "@app/services/theme.service";
+import { capitalize } from "@app/utils/string-utils";
 
 
+/**
+ * Application navigation menu component
+ */
 @Component({
     selector: 'app-menu',
     animations: [openClose],
@@ -14,10 +17,12 @@ import {capitalize} from '@app/utils/string-utils';
     encapsulation: ViewEncapsulation.None,
     styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent implements OnInit, AfterViewInit {
+export class MenuComponent implements AfterViewInit {
     // for refreshing data
     @Output()
     goBackEvent = new EventEmitter();
+
+    appMenuTooltip = "Open app menu";
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -28,14 +33,17 @@ export class MenuComponent implements OnInit, AfterViewInit {
     ) {
     }
 
-    // private themeToogleChecked = false;
-
-    ngOnInit() {
-    }
-
+    /**
+     * A lifecycle hook that is called after Angular has fully initialized a component's view.
+     * Define an ngAfterViewInit() method to handle any additional initialization tasks
+     */
     ngAfterViewInit(): void {
         this.themeService.initThemeToogle();
     }
+
+    /*
+    * Methods below are intended for navigation to corresponding page
+    * */
 
     private navigateToMain() {
         this.navigation.navigateToMain();
@@ -57,44 +65,61 @@ export class MenuComponent implements OnInit, AfterViewInit {
         this.navigation.navigateToLogin();
     }
 
+    /**
+     * Change application menu button tooltip text depends on close/open state
+     */
+    changeTooltip() {
+        if (
+            document.querySelector("#navbarNav").classList.contains("show")) {
+            this.appMenuTooltip = "Open app menu";
+        } else {
+            this.appMenuTooltip = "Close app menu";
+        }
+    }
+
+    /**
+     * Check if user is logged in
+     */
     private isUserLoggedIn() {
-        // console.log('isUserLoggedIn ' + this.authenticationService.isUserLoggedIn());
         return this.authenticationService.isUserLoggedIn();
     }
 
+    /**
+     * Get logged in user name
+     */
     private getUserName() {
         return this.authenticationService.getLoggedInUserName();
     }
 
+    /**
+     * Capitalize the first letter ща the string
+     * @param field - target string field
+     */
     private capitalize(field: string) {
         return capitalize(field);
     }
 
+    /**
+     * Open user logout confirm modal window
+     */
     private showLogoutModal() {
         const modalRef = this.modalService.openLogoutModal();
-        let logoutModalResult: string;
 
         modalRef.result.then(
             (result) => {
-                logoutModalResult = `Closed with: ${result}`;
-
                 if (this.modalService.isSubmitResult(result)) {
                     this.logout();
                 }
-                console.log(logoutModalResult);
             },
-            (reason) => {
-                logoutModalResult = `Dismissed ${this.modalService.getDismissReason(
-                    reason
-                )}`;
-                console.log(logoutModalResult);
-            }
+            this.modalService.handleDismissResult()
         );
     }
 
+    /**
+     * Full logout from all profiles and services with cleaning all additional login information
+     */
     private logout() {
-        this.authenticationService.processLogout();
-        // console.log(sessionStorage.getItem(storageKeys.TOKEN_NAME));
+        this.authenticationService.fullLogout();
         this.navigationService.navigateToMain();
         // for refreshing data
         this.goBackEvent.emit();

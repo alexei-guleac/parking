@@ -1,15 +1,15 @@
-import {Component, OnInit} from '@angular/core';
+import { Component } from "@angular/core";
 
 
+/**
+ * Separator between form field and social login buttons
+ */
 @Component({
     selector: 'app-or-separator',
     template: '<div class="or-seperator"><b>or</b></div>',
-    styleUrls: ['./or-separator.component.scss'],
+    styleUrls: ["./or-separator.component.scss"]
 })
-export class OrSeparatorComponent implements OnInit {
+export class OrSeparatorComponent {
     constructor() {
-    }
-
-    ngOnInit() {
     }
 }

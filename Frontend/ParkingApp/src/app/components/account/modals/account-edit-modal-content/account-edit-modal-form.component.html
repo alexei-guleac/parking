@@ -42,19 +42,19 @@
                     *ngIf="name.invalid && name.dirty && name.touched"
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
-                    <div *ngIf="name.errors.required">
+                    <ng-container *ngIf="name.errors.required">
                         Name is required.
-                    </div>
-                    <div *ngIf="name.errors.minlength">
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.minlength">
                         Name must be at least 5 characters long.
-                    </div>
-                    <div *ngIf="name.errors.maxlength">
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.maxlength">
                         Name must be maximum 15 characters long.
-                    </div>
-                    <div *ngIf="name.errors.forbiddenName">
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.forbiddenName">
                         Name should contain only<br/>
                         A-Z, a-z, 0-9 symbols and "_" or ".".
-                    </div>
+                    </ng-container>
                 </div>
             </div>
             <div *ngIf="fname" class="form-group mx-auto text-center">
@@ -81,19 +81,19 @@
                     *ngIf="fname.invalid && fname.dirty && fname.touched"
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
-                    <div *ngIf="fname.errors.required">
+                    <ng-container *ngIf="fname.errors.required">
                         First Name is required.
-                    </div>
-                    <div *ngIf="fname.errors.minlength">
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.minlength">
                         First Name must be at least 3 characters long.
-                    </div>
-                    <div *ngIf="fname.errors.maxlength">
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.maxlength">
                         First Name must be maximum 15 characters long.
-                    </div>
-                    <div *ngIf="fname.errors.forbiddenName">
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.forbiddenName">
                         First Name should contain only<br/>
                         A-Z, a-z and symbols "_", "-".
-                    </div>
+                    </ng-container>
                 </div>
             </div>
             <div *ngIf="lname" class="form-group mx-auto text-center">
@@ -120,19 +120,19 @@
                     *ngIf="lname.invalid && lname.dirty && lname.touched"
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
-                    <div *ngIf="lname.errors.required">
+                    <ng-container *ngIf="lname.errors.required">
                         Last Name is required.
-                    </div>
-                    <div *ngIf="lname.errors.minlength">
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.minlength">
                         Last Name must be at least 3 characters long.
-                    </div>
-                    <div *ngIf="lname.errors.maxlength">
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.maxlength">
                         Last Name must be maximum 15 characters long.
-                    </div>
-                    <div *ngIf="lname.errors.forbiddenName">
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.forbiddenName">
                         Last Name should contain only<br/>
                         A-Z, a-z, 0-9 and symbols "_", "-".
-                    </div>
+                    </ng-container>
                 </div>
             </div>
         </div>

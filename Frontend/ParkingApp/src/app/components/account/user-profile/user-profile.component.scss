@@ -1,3 +1,6 @@
+/* User not loaded */
+@import '../../pages/smth-error';
+
 * {
     padding: 0;
     box-sizing: border-box;
@@ -33,7 +36,7 @@
     padding: 2rem;
 }
 
-.alert-success {
+.alert-success, .alert-warning {
     padding: 1rem;
     margin: 2rem !important;
     margin-top: -2rem !important;
@@ -80,6 +83,26 @@ a:hover {
     transition: cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
 }*/
 
+
+/* Connect socials button */
+
+.btn-mater {
+    border: none;
+    border-radius: 50px;
+    box-shadow: var(--material-shadow-thin);
+
+    &:hover {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: var(--btn-material-shadow-medium);
+    }
+}
+
+.btn-socials {
+    padding: 0.8rem 1.1rem;
+    color: var(--text-color);
+    background: var(--background);
+}
+
 .btn-round {
     display: block;
     border-radius: 50px;
@@ -117,7 +140,7 @@ a:hover {
 }
 
 @media (max-width: 992px) {
-    .alert-success {
+    .alert-success, .alert-warning {
         margin-bottom: 6rem !important;
     }
 
@@ -131,4 +154,25 @@ a:hover {
     .card-body.details {
         padding-top: 5rem;
     }
+}
+
+.parking-lot {
+    cursor: unset;
+}
+
+span {
+    color: $black;
+}
+
+.fa-backspace {
+    font-size: 1rem;
+}
+
+.list-group li {
+    background: var(--background);
+}
+
+button i {
+    margin-right: 2rem !important;
+    margin-left: -3rem;
 }

@@ -1,7 +1,10 @@
-import {providerNames} from '../../services/account/social/social-account.service';
-import {User} from '../User';
+import { socialProviderNames } from "@app/services/account/social/social-user-storage.service";
+import { User } from "../User";
 
 
+/**
+ * Different social service provider requests (sign in, sign up, connect/disconnect)
+ */
 export interface SocialSignInRequest {
     id: string;
 
@@ -22,7 +25,7 @@ export class CommonSocialAuthRequest implements SocialSignInRequest {
 export class GithubAuthRequest implements SocialSignInRequest {
     id: string;
 
-    socialProvider = providerNames.github;
+    socialProvider = socialProviderNames.github;
 
     constructor(id: string) {
         this.id = id;
@@ -32,7 +35,7 @@ export class GithubAuthRequest implements SocialSignInRequest {
 export class AmazonAuthRequest implements SocialSignInRequest {
     id: string;
 
-    socialProvider = providerNames.amazon;
+    socialProvider = socialProviderNames.amazon;
 
     constructor(id: string) {
         this.id = id;
@@ -42,32 +45,23 @@ export class AmazonAuthRequest implements SocialSignInRequest {
 export class MicrosoftAuthRequest implements SocialSignInRequest {
     id: string;
 
-    socialProvider = providerNames.microsoft;
+    socialProvider = socialProviderNames.microsoft;
 
     constructor(id: string) {
         this.id = id;
     }
 }
 
-export interface SocialSignUpRequest {
-    id: string;
-
+export interface SocialSignUpRequest extends SocialSignInRequest {
     user: User;
-
-    socialProvider: string;
 }
 
-export class CommonSocialSignUpRequest implements SocialSignUpRequest {
-    id: string;
-
+export class CommonSocialSignUpRequest extends CommonSocialAuthRequest {
     user: User;
 
-    socialProvider: string;
-
     constructor(id: string, user: User, socialProvider: string) {
-        this.id = id;
+        super(id, socialProvider);
         this.user = user;
-        this.socialProvider = socialProvider;
     }
 }
 
@@ -76,7 +70,6 @@ export class GithubSignUpRequest extends GithubAuthRequest {
 
     constructor(id: string, user: User, socialProvider: string) {
         super(id);
-        this.id = id;
         this.user = user;
         this.socialProvider = socialProvider;
     }
@@ -87,7 +80,6 @@ export class MicrosoftSignUpRequest extends MicrosoftAuthRequest {
 
     constructor(id: string, user: User, socialProvider: string) {
         super(id);
-        this.id = id;
         this.user = user;
         this.socialProvider = socialProvider;
     }
@@ -98,8 +90,44 @@ export class AmazonSignUpRequest extends AmazonAuthRequest {
 
     constructor(id: string, user: User, socialProvider: string) {
         super(id);
-        this.id = id;
         this.user = user;
+        this.socialProvider = socialProvider;
+    }
+}
+
+export interface SocialConnectRequest {
+    id: string;
+
+    username: string;
+
+    user: User;
+
+    socialProvider: string;
+}
+
+export class CommonSocialConnectRequest extends CommonSocialSignUpRequest {
+    username: string;
+
+    constructor(id: string, user: User, username: string, socialProvider: string) {
+        super(id, user, socialProvider);
+        this.username = username;
+    }
+}
+
+export interface SocialDisconnectRequest {
+
+    username: string;
+
+    socialProvider: string;
+}
+
+export class CommonSocialDisconnectRequest {
+    username: string;
+
+    socialProvider: string;
+
+    constructor(username: string, socialProvider: string) {
+        this.username = username;
         this.socialProvider = socialProvider;
     }
 }

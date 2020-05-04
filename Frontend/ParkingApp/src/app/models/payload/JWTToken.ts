@@ -1,3 +1,6 @@
+/**
+ * JSON Web Token for user authorization in system
+ */
 export class JWTToken {
     sub: string;
 

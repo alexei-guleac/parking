@@ -1,10 +1,14 @@
-import {Directive, HostListener} from '@angular/core';
+import { Directive, HostListener } from "@angular/core";
 
 
+/**
+ * Prevent button double click
+ */
 @Directive({
     selector: '[appNoDblClick]'
 })
 export class NoDblClickDirective {
+
     constructor() {
     }
 

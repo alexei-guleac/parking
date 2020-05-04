@@ -1,3 +1,6 @@
+/**
+ * Form regular expressions
+ */
 export class RegularExpressions {
     // Username pattern
     /*

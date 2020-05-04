@@ -4,7 +4,7 @@
 >
     <div class="container">
         <a class="navbar-brand logo" (click)="navigateToMain()">
-            <img alt="" src="../../../assets/img/isd-logo.png"/>
+            <img alt="" src="../../../assets/img/company/isd-logo.png"/>
         </a>
         <a class="navbar-brand abs">
             <!--      ParKing-->
@@ -13,7 +13,7 @@
                 [ngClass]="this.isUserLoggedIn() ? 'user-logged' : ''"
                 alt="parking_logo"
                 class="appname-logo"
-                src="../../../assets/img/parking_logo.png"
+                src="../../../assets/img/company/parking_logo.png"
             />
         </a>
         <!--    to do : make logo in svg-->
@@ -25,6 +25,8 @@
             data-target="#navbarNav"
             data-toggle="collapse"
             type="button"
+            (click)="changeTooltip()" ngbTooltip="{{appMenuTooltip}}"
+            placement="top"
         >
             <span class="icon-bar top-bar"></span>
             <span class="icon-bar middle-bar"></span>
@@ -38,6 +40,7 @@
                     class="nav-item mx-auto pl-4"
                 >
                     <a (click)="navigateToLogin()" class="nav-link"
+                       ngbTooltip="Log in account" placement="top"
                     ><i class="fa fa-user"></i> Login</a
                     >
                 </li>
@@ -48,6 +51,7 @@
                     <a
                         (click)="this.navigateToProfile()"
                         class="nav-link username"
+                        ngbTooltip="Go to user profile" placement="top"
                     ><i class="fa fa-user"></i>
                         {{
                         this?.getUserName() == null
@@ -58,6 +62,7 @@
                 </li>
                 <li *ngIf="this.isUserLoggedIn()" class="nav-item mx-auto">
                     <a (click)="showLogoutModal()" class="nav-link"
+                       ngbTooltip="Logout from user profile" placement="top"
                     ><i class="fas fa-sign-out-alt"></i> Logout</a
                     >
                 </li>
@@ -65,6 +70,7 @@
                     <a
                         class="nav-link dropdown-toggle text-light"
                         data-toggle="dropdown"
+                        ngbTooltip="Application menu" placement="top"
                     >
                         Menu
                     </a>
@@ -72,10 +78,12 @@
                         <a
                             (click)="navigateToStatistics()"
                             class="dropdown-item"
+                            ngbTooltip="Go to parking usage statistics" placement="top"
                         ><i class="fas fa-clipboard"></i> Statistics</a
                         >
                         <div class="dropdown-divider"></div>
                         <a (click)="navigateToLayout()" class="dropdown-item"
+                           ngbTooltip="Go to parking map" placement="top"
                         ><i class="fas fa-map-marked-alt"></i> Parking
                             layout</a
                         >
@@ -83,7 +91,10 @@
                     </div>
                 </li>
                 <div class="align-content-center mx-auto pl-4">
-                    <label class="switch">
+                    <label class="theme-switch"
+                           ngbTooltip="Switch to {{this.themeService.themeToogleChecked ?
+                           'light mode' : 'dark mode'}} theme"
+                           placement="top">
                         <input
                             [(ngModel)]="this.themeService.themeToogleChecked"
                             name="theme-switch"

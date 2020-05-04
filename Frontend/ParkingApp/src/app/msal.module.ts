@@ -1,5 +1,5 @@
-import {MsalModule} from '@azure/msal-angular';
-import {Logger, LogLevel} from 'msal';
+import { MsalModule } from "@azure/msal-angular";
+import { Logger, LogLevel } from "msal";
 
 
 export const protectedResourceMap: [string, string[]][] = [
@@ -14,6 +14,9 @@ function loggerCallback(logLevel, message, containsPii) {
     // console.log(message);
 }
 
+/**
+ * Microsoft authentication library config
+ */
 export const MsalAppModule = MsalModule.forRoot(
     {
         auth: {
@@ -38,7 +41,12 @@ export const MsalAppModule = MsalModule.forRoot(
     },
     {
         popUp: !isIE,
-        consentScopes: ['user.read', 'openid', 'profile'],
+        consentScopes: [
+            "user.read",
+            "openid",
+            "profile",
+            "api://a88bb933-319c-41b5-9f04-eff36d985612/access_as_user"
+        ],
         unprotectedResources: ['https://www.microsoft.com/en-us/'],
         protectedResourceMap,
         extraQueryParameters: {}

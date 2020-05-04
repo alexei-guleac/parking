@@ -5,6 +5,7 @@ export const app = {
 export const api = {
     parking: '/parking',
     statistics: '/statistics',
+    statisticsByLot: "/lot_statistics",         // other route for security reasons
 
     login: '/login',
     social: '/social',
@@ -28,6 +29,8 @@ export const api = {
 
     reservation: '/reserve',
     cancelReservation: '/unreserve',
+    connectSocial: "/social_connect",
+    disconnectSocial: "/social_disconnect"
 };
 
 export const appRoutes = {
@@ -54,6 +57,7 @@ export const appRoutes = {
 export const actions = {
     login: 'login',
     registration: 'registration',
+    connectSocial: "connect",
 
     view: 'view',
     show: 'show',

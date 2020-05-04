@@ -8,8 +8,10 @@
         </div>
 
         <div *ngIf="user != null" class="profile">
-            <div class="card-body avatar">
-                <a class="navbar-brand abs">
+            <div class="card-body avatar"
+                 ngbTooltip="Account photo" placement="top">
+                <a class="navbar-brand abs"
+                   ngbTooltip="Edit photo" placement="bottom">
                     <!--      ParKing-->
                     <!-- <img (click)="chooseFile()" [ngClass]="
                     this.isUserLoggedIn() ? 'user-logged' : ''" alt="parking_logo" class="appname-logo "
@@ -18,7 +20,7 @@
                 </a>
             </div>
             <div class="card-body details">
-                <div>
+                <div ngbTooltip="Username" placement="right">
                     <h2 class="username mb-4">
                         {{ this.capitalize(this.user.username) }}
                     </h2>
@@ -28,42 +30,70 @@
                     <hr class="border"/>
                 </div>
 
-                <p *ngIf="this.user.email" class="">
-                    <b>email: </b>
+                <div *ngIf="this.user.email" class="mx-auto text-center">
+                    <b>e-mail: </b>
                     <span class="email">{{ this.user.email }}</span>
-                </p>
-                <p *ngIf="this.status" class="">
+                </div>
+                <div *ngIf="this.status" class="mx-auto text-center">
                     <b>status: </b>
                     <span class="status">{{ this.status }}</span>
-                </p>
-                <p *ngIf="this.user.firstname" class="">
+                </div>
+                <div *ngIf="this.user.firstname" class="mx-auto text-center">
                     <b>firstname: </b>
                     <span class="firstname">{{ this.user.firstname }}</span>
-                </p>
-                <p *ngIf="this.user.lastname" class="">
+                </div>
+                <div *ngIf="this.user.lastname" class="mb-4 mx-auto text-center">
                     <b>lastname: </b>
                     <span class="lastname">{{ this.user.lastname }}</span>
-                </p>
-
-                <p><b>socials: </b><span class="appname">....</span></p>
-                <div class="socials">
-                    social more toogle...
                 </div>
+
+                <button
+                    (click)="openSocialModal()"
+                    class="btn btn-mater btn-socials text-center m-3"
+                    ngbTooltip="Connect social services login" placement="top"
+                >
+                    Connect socials
+                </button>
 
                 <div class="row mt-4">
                     <span
                         (click)="this.editUserInfo()"
                         class="edit-btn mx-auto m-1 col-5 btn-round"
+                        ngbTooltip="Edit user information" placement="top"
                     >
                         Edit <i class="fas fa-user-edit ml-4"></i>
                     </span>
                     <span
                         (click)="this.showDeleteUserModal()"
                         class="delete-btn mx-auto m-1 col-5 btn-round"
+                        ngbTooltip="Permanently delete user account" placement="top"
                     >
                         Delete <i class="far fa-trash-alt ml-4"></i>
                     </span>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div></div>
+
+<div [hidden]="user != null">
+    <div class="smthg-error mt-3 mx-auto text-center">
+        <div class="unable-to-connect mx-auto text-center">
+            <h2>Something went wrong.</h2>
+        </div>
+    </div>
+    <div class="message mx-auto text-center m-1 px-3">
+        Please click on Back button.
+    </div>
+
+    <div class="container">
+        <div class="row my-5">
+            <div class="col text-center">
+                <button (click)="goBack()" appNoDblClick class="btn refresh">
+                    <i class="fas fa-backspace fa-sm mr-3"></i>Back
+                </button>
             </div>
         </div>
     </div>

@@ -1,3 +1,6 @@
+/**
+ * Backend server error message model
+ */
 export class ServerErrorMessage {
     message: string;
 

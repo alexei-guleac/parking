@@ -1,17 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {NavigationExtras} from '@angular/router';
-import {AuthenticationService} from '@app/services/account/auth.service';
-import {handleErrorResponse} from '@app/services/helpers/global-http-interceptor-service.service';
-import {actions, api} from '@app/services/navigation/app.endpoints';
-import {NavigationService} from '@app/services/navigation/navigation.service';
+import { Component } from "@angular/core";
+import { NavigationExtras } from "@angular/router";
+import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
+import { AuthenticationService } from "@app/services/account/auth.service";
+import { handleErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
+import { actions, api } from "@app/services/navigation/app.endpoints";
+import { NavigationService } from "@app/services/navigation/navigation.service";
 
 
+/**
+ * Component for handling user confirmation redirection from email
+ */
 @Component({
     selector: 'app-confirm-registration',
     templateUrl: './confirm-user.component.html',
     styleUrls: ['./confirm-user.component.scss'],
 })
-export class ConfirmUserComponent implements OnInit {
+export class ConfirmUserComponent implements ComponentWithErrorMsg {
+
+    errorMessage: string;
+
+    private confirmationToken: string;
+
+    private confirmationSuccess: boolean;
+
+    private confirmationMessage: string;
+
+    private countdownCounter = 11;
+
+    private formAction = actions.login;
+
+    private formActions = actions;
+
     constructor(
         private navigationService: NavigationService,
         private authenticationService: AuthenticationService
@@ -21,44 +40,40 @@ export class ConfirmUserComponent implements OnInit {
         this.verifyConfirmation();
     }
 
-    private confirmationToken: string;
-
-    private confirmationSuccess: boolean;
-
-    private confirmationMessage: string;
-
-    private errorMessage: string;
-
-    counter = 11;
-
-    private formAction = actions.login;
-
-    private formActions = actions;
-
-    ngOnInit() {
-    }
-
+    /**
+     * Subscribing to query string URL parameters
+     */
     private subscribeUrlParams() {
         this.navigationService.subscribeUrlParams(
             this.getQueryParamsCallback()
         );
     }
 
+    /**
+     * Callback function for processing query string URL parameters
+     */
     private getQueryParamsCallback() {
         return (params) => {
+            // if confirmation token come, save it for later account confirmation processing
             if (params.confirmation_token != null) {
                 this.confirmationToken = params.confirmation_token;
-                // console.log(this.confirmationToken);
             }
         };
     }
 
+    /**
+     * Set from type in order to display the corresponding user form component
+     * (login by default, reset form by after confirmation)
+     */
     private processUrlPath() {
         if (this.navigationService.assertUrlPath(api.confirmReset)) {
             this.formAction = actions.reset;
         }
     }
 
+    /**
+     * Initiate account confirmation process and server response handle result
+     */
     private verifyConfirmation() {
         this.authenticationService
             .processUserConfirmation(this.confirmationToken)
@@ -68,13 +83,16 @@ export class ConfirmUserComponent implements OnInit {
             );
     }
 
+    /**
+     * Callback function handler for account confirmation server response
+     */
     private handleConfirmationResponse() {
         return (response: any) => {
+            // if response contains success field
             if (response.success) {
                 this.confirmationSuccess = true;
                 this.confirmationMessage = 'Confirmation Successful.';
-                /*console.log(this.confirmationMessage);
-                console.log('formAction' + this.formAction);*/
+                // navigate to corresponding user form (login or reset password)
                 this.navigateToAccountForm(this.formAction);
             } else {
                 this.confirmationSuccess = false;
@@ -84,6 +102,12 @@ export class ConfirmUserComponent implements OnInit {
         };
     }
 
+    /**
+     * Switch to specified account form component with message from server and confirmation token
+     * after 7 seconds countdown
+     *
+     * @param action - corresponding user form (login or reset password)
+     */
     private navigateToAccountForm(action: string) {
         const navigationExtras: NavigationExtras = {
             state: {message: this.confirmationMessage},
@@ -91,14 +115,13 @@ export class ConfirmUserComponent implements OnInit {
         };
 
         const interval = setInterval(() => {
-            this.counter--;
+            this.countdownCounter--;
         }, 1000);
 
         setTimeout(() => {
             clearInterval(interval);
-            this.counter = 7;
+            this.countdownCounter = 7;
 
-            // console.log('formAction2' + this.formAction);
             if (this.formAction === actions.login) {
                 this.navigationService.navigateToLoginWithExtras(
                     navigationExtras
@@ -112,14 +135,17 @@ export class ConfirmUserComponent implements OnInit {
         }, 7000);
     }
 
+    /**
+     * Navigate application to main page after 10 seconds countdown
+     */
     private navigateToMain = () => {
         const interval = setInterval(() => {
-            this.counter--;
+            this.countdownCounter--;
         }, 1000);
 
         setTimeout(() => {
             clearInterval(interval);
-            this.counter = 10;
+            this.countdownCounter = 10;
 
             this.navigationService.navigateToMain();
         }, 10000);

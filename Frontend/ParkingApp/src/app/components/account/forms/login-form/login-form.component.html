@@ -1,8 +1,8 @@
 <form
-    #f="ngForm"
-    (ngSubmit)="onSubmit(f.valid)"
-    [formGroup]="loginForm"
-    class="form-group mx-auto text-center"
+  #f="ngForm"
+  (ngSubmit)="onSubmit(f.valid)"
+  [formGroup]="loginForm"
+  class="form-group mx-auto text-center"
 >
     <div *ngIf="isLoginFailed" class="alert alert-warning">
         {{ errorMessage }}
@@ -11,63 +11,72 @@
         {{ successMessage }}
     </div>
 
-    <div class="form-group mx-auto text-center">
-        <label for="username">User Name :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <div class="input-group-append">
+    <button
+        (click)="showForm()"
+        *ngIf="!showLoginForm"
+        class="btn-show-form mt-4 mx-auto text-center"
+    >
+        <span class="mx-auto text-center align-items-center align-content-center">
+            Login with <strong>username</strong></span>
+    </button>
+    <ng-container *ngIf="showLoginForm">
+        <div class="form-group mx-auto text-center">
+            <label for="username">User Name :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i class="fa fa-user"></i
                     ></span>
+                </div>
+                <input
+                    [(ngModel)]="this.username"
+                    class="form-control tett"
+                    formControlName="username"
+                    id="username"
+                    minlength="5"
+                    name="username"
+                    placeholder="Enter User Name"
+                    required
+                    type="text"
+                />
             </div>
-            <input
-                [(ngModel)]="this.username"
-                class="form-control tett"
-                formControlName="username"
-                id="username"
-                minlength="5"
-                name="username"
-                placeholder="Enter User Name"
-                required
-                type="text"
-            />
+            <div
+                *ngIf="name.invalid && this.submitted"
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="name.errors.required">
+                    Username is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.minlength">
+                    At least 5 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.maxlength">
+                    Maximum 15 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="name.errors.forbiddenName">
+                    Should contain only<br/>
+                    A-Z, a-z, 0-9 symbols and "_" or ".".
+                </ng-container>
+            </div>
         </div>
-        <div
-            *ngIf="name.invalid && this.submitted"
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="name.errors.required">
-                Name is required.
-            </div>
-            <div *ngIf="name.errors.minlength">
-                Name must be at least 5 characters long.
-            </div>
-            <div *ngIf="name.errors.maxlength">
-                Name must be maximum 15 characters long.
-            </div>
-            <div *ngIf="name.errors.forbiddenName">
-                Name should contain only<br/>
-                A-Z, a-z, 0-9 symbols and "_" or ".".
-            </div>
-        </div>
-    </div>
-    <div class="form-group mx-auto text-center">
-        <label for="password">Password :</label>
-        <div class="input-group mx-auto text-center w-20rem">
-            <!-- Change input type to be able to accept dynamic data -->
-            <input
-                [(ngModel)]="this.password"
-                [type]="fieldTextTypePass ? 'text' : 'password'"
-                class="form-control full-width"
-                formControlName="password"
-                id="password"
-                minlength="6"
-                name="password"
-                placeholder="Enter password"
-                required
-                type="password"
-            />
+        <div class="form-group mx-auto text-center">
+            <label for="password">Password :</label>
+            <div class="input-group mx-auto text-center w-20rem">
+                <!-- Change input type to be able to accept dynamic data -->
+                <input
+                    [(ngModel)]="this.password"
+                    [type]="fieldTextTypePass ? 'text' : 'password'"
+                    class="form-control full-width"
+                    formControlName="password"
+                    id="password"
+                    minlength="6"
+                    name="password"
+                    placeholder="Enter password"
+                    required
+                    type="password"
+                />
 
-            <div class="input-group-append">
+                <div class="input-group-append">
                 <span class="input-group-text">
                     <i
                         (click)="togglePassVisible(this)"
@@ -78,40 +87,39 @@
                         class="fa"
                     ></i>
                 </span>
+                </div>
+            </div>
+            <div
+                *ngIf="pass.invalid && this.submitted"
+                class="alert alert-danger font-error mx-auto text-center w-20rem"
+            >
+                <ng-container *ngIf="pass.errors.required">
+                    Password is required.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.minlength">
+                    At least 6 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.maxlength">
+                    Maximum 10 characters long.<br/>
+                </ng-container>
+                <ng-container *ngIf="pass.errors.pattern">
+                    Should contain<br/>
+                    at least one uppercase letter, <br/>
+                    one lowercase letter, one number <br/>
+                    and one special character from <strong>!"@#$%^&'*()_+,./</strong>
+                </ng-container>
             </div>
         </div>
-        <div
-            *ngIf="pass.invalid && this.submitted"
-            class="alert alert-danger font-error mx-auto text-center w-20rem"
-        >
-            <div *ngIf="pass.errors.required">
-                Password is required.
-            </div>
-            <div *ngIf="pass.errors.minlength">
-                Password must be <br/>
-                at least 6 characters long.
-            </div>
-            <div *ngIf="pass.errors.maxlength">
-                Password must be maximum <br/>10 characters long.
-            </div>
-            <div *ngIf="pass.errors.pattern">
-                Password should contain<br/>
-                at least one uppercase letter, <br/>
-                one lowercase letter, one number <br/>
-                and one special character from !"@#$%^&'*()_+,./
-            </div>
-        </div>
-    </div>
+    </ng-container>
 
     <app-or-separator></app-or-separator>
 
     <app-social-buttons
-        (amazonEvent)="this.socialSignInOther(socialProviders.a)"
+        (amazonEvent)="this.socialSignIn(socialProviders.a)"
         (fbEvent)="this.socialSignIn(socialProviders.fb)"
         (gEvent)="this.socialSignIn(socialProviders.g)"
-        (gitEvent)="this.socialSignInOther(socialProviders.git)"
-        (linEvent)="this.socialSignInOther(socialProviders.lin)"
-        (msEvent)="this.socialSignInOther(socialProviders.ms)"
+        (gitEvent)="this.socialSignIn(socialProviders.git)"
+        (msEvent)="this.socialSignIn(socialProviders.ms)"
         (vkEvent)="this.socialSignIn(socialProviders.vk)"
     >
     </app-social-buttons>
@@ -133,7 +141,7 @@
         >Forgot Password?</span
         >
     </div>
-
+    <ng-container *ngIf="showLoginForm">
     <div class="button-box mx-auto">
         <button
             (click)="onSubmit(this.loginForm.valid)"
@@ -144,6 +152,7 @@
             Login <span class="fas fa-check"></span>
         </button>
     </div>
+    </ng-container>
 
     <!--<div class="example-container mat-elevation-z8">
         <mat-card class="example-card">

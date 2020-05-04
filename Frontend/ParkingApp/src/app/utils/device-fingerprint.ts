@@ -1,7 +1,7 @@
 'use strict';
-import {Injectable} from '@angular/core';
-import * as Bowser from 'bowser';
-import * as Fingerprint2 from 'fingerprintjs2';
+import { Injectable } from "@angular/core";
+import * as Bowser from "bowser";
+import * as Fingerprint2 from "fingerprintjs2";
 
 
 type RequestIdleCallbackHandle = any;
@@ -34,6 +34,9 @@ const options = {
     }
 };
 
+/**
+ * User device information
+ */
 class DeviceInfo {
 
     platformType: string;
@@ -49,6 +52,9 @@ class DeviceInfo {
     fingerprint: string;
 }
 
+/**
+ * Device information static storage
+ */
 @Injectable({
     providedIn: 'root'
 })
@@ -58,6 +64,9 @@ export class DeviceInfoStorage {
     constructor() {
     }
 
+    /**
+     * Get device info storage
+     */
     public static _getComponentsInfo() {
         _getOs();
         _getBrowser();
@@ -69,15 +78,18 @@ export class DeviceInfoStorage {
     }
 }
 
-/*  User agent
-Language
-Resolution available
-Color depth
-Timezone
-Installed plugins and their versions
-Installed Fonts
-Canvas
-CPU */
+/**
+ * Get user device fingerprint
+ * Includes (
+ * Language
+ * Resolution available
+ * Color depth
+ * Timezone
+ * Installed plugins and their versions
+ * Installed Fonts
+ * Canvas
+ * CPU)
+ */
 export function _getFingerprint() {
     return new Promise((resolve, reject) => {
         async function getHash() {
@@ -85,10 +97,6 @@ export function _getFingerprint() {
                 const components = await Fingerprint2.getPromise(options);
                 const values = components.map(component => component.value);
                 const deviceFingerprint = String(Fingerprint2.x64hash128(values.join(''), 31));
-                console.log(
-                    'fingerprint hash ',
-                    deviceFingerprint
-                );
 
                 resolve(() => {
                     DeviceInfoStorage.deviceInfo.fingerprint = deviceFingerprint;
@@ -105,22 +113,21 @@ export function _getFingerprint() {
 
 function processCallback(resolve, callback) {
     if (window.requestIdleCallback) {
-        // console.log('requestIdleCallback');
         window.requestIdleCallback(async () => resolve(await callback()));
     } else {
-        console.log('setTimeout');
         setTimeout(async () => resolve(await callback()), 500);
     }
 }
 
+/**
+ * Get specific device information
+ * @param keys - target device parameters
+ */
 export function _getDeviceInfo(...keys) {
     return new Promise((resolve, reject) => {
         async function getDeviceComponents() {
             try {
                 const components = await Fingerprint2.getPromise(options);
-                // console.log('fingerprint hash components', components);
-                // console.log(navigator);
-
                 if (keys.length) {
                     const selectedComponents = _getSelectedComponents(
                         components,
@@ -141,20 +148,26 @@ export function _getDeviceInfo(...keys) {
     });
 }
 
+/**
+ * Get selected components device information
+ * @param components - device components
+ * @param keys - target device parameters
+ */
 function _getSelectedComponents(components: any, keys: any) {
-    // console.log('_getSelectedComponents');
-    // console.log('components ' + JSON.stringify(components));
-    // console.log('keys ' + keys);
-
     const selectedComponents: any = {};
+
     keys.forEach(key => {
-        // console.log('getSelectedComponents ' + key + ' ' + getComponentByKey(components, key));
         selectedComponents[key] = getComponentByKey(components, key);
     });
 
     return selectedComponents;
 }
 
+/**
+ * Get component information by key
+ * @param components - device components
+ * @param key - device component key
+ */
 function getComponentByKey(components: any, key: any) {
     for (const k in components) {
         if (components[k].key === key) {
@@ -163,37 +176,35 @@ function getComponentByKey(components: any, key: any) {
     }
 }
 
+/**
+ * Get device browser name
+ */
 export function _getBrowser() {
     const result = Bowser.getParser(window.navigator.userAgent);
-    // console.log(result);
-    console.log(
-        'You are using ' +
-        result.getBrowserName() +
-        ' v' +
-        result.getBrowserVersion() +
-        ' on ' +
-        result.getOSName()
-    );
-
     const browser = result.getBrowserName() + ' ' + result.getBrowserVersion();
     DeviceInfoStorage.deviceInfo.browser = browser;
+
     return browser;
 }
 
+/**
+ * Get device operational system name
+ */
 export function _getOs() {
     const result = Bowser.getParser(window.navigator.userAgent);
     const os = result.getOSName() + ' ' + result.getOSVersion();
-    // console.log(result);
-    console.log('You are using ' + os);
     DeviceInfoStorage.deviceInfo.os = os;
+
     return os;
 }
 
+/**
+ * Get device type
+ */
 export function _getDeviceType() {
     const result = Bowser.getParser(window.navigator.userAgent);
     const platform = result.getPlatformType();
-    // console.log(result);
-    console.log('You are using ' + platform);
     DeviceInfoStorage.deviceInfo.platformType = platform;
+
     return platform;
 }

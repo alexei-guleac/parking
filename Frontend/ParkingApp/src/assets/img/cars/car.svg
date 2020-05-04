@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 511.998 511.998" style="enable-background:new 0 0 511.998 511.998;" xml:space="preserve">
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+     viewBox="0 0 511.998 511.998" style="enable-background:new 0 0 511.998 511.998;" xml:space="preserve">
 <g>
 	<path style="fill:#E38100;" d="M324.282,366.931l74.624-29.874c6.47-2.586,10.72-8.851,10.729-15.824v-22.584l-85.353,34.141
 		V366.931z"/>
@@ -24,10 +24,10 @@
 <path style="fill:#1967A3;" d="M189.705,96.49l8.339-4.635c33.544,29.592,73.668,50.743,117.036,61.693H187.716l-6.555-39.331
 	C179.975,107.091,183.397,99.998,189.705,96.49z"/>
 <g>
-	
+
 		<rect x="285" y="418.126" transform="matrix(-0.5547 0.8321 -0.8321 -0.5547 845.9393 400.5753)" style="fill:#555160;" width="61.551" height="17.071"/>
-	
-		<rect x="187.704" y="395.897" transform="matrix(-0.8321 0.5547 -0.5547 -0.8321 596.1896 672.8424)" style="fill:#555160;" width="17.071" height="61.551"/>
+
+    <rect x="187.704" y="395.897" transform="matrix(-0.8321 0.5547 -0.5547 -0.8321 596.1896 672.8424)" style="fill:#555160;" width="17.071" height="61.551"/>
 </g>
 <path d="M332.006,264.397H180.035l-8.279,82.46c-0.964,9.449,3.397,18.658,11.326,23.899l2.151,1.425
 	c42.881,28.568,98.737,28.568,141.618,0l2.159-1.434c7.929-5.241,12.282-14.45,11.318-23.899L332.006,264.397z M319.536,356.518

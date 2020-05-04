@@ -1,15 +1,19 @@
-import {Injectable} from '@angular/core';
-import {HttpClientService} from '@app/services/helpers/http-client.service';
-import {BroadcastService, MsalService} from '@azure/msal-angular';
-import {Subscription} from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClientService } from "@app/services/helpers/http-client.service";
+import { BroadcastService, MsalService } from "@azure/msal-angular";
+import { Subscription } from "rxjs";
 
 
 const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
 
+/**
+ * Microsoft Authentication Library (MSAL) service
+ */
 @Injectable({
     providedIn: 'root',
 })
 export class MsalAuthService {
+
     isIframe = false;
 
     profile;
@@ -25,10 +29,16 @@ export class MsalAuthService {
     ) {
     }
 
+    /**
+     * Get user profile
+     */
     getProfile() {
         return this.http.getJsonRequest<any>(GRAPH_ENDPOINT);
     }
 
+    /**
+     * Initiates MSAL login
+     */
     msalLogin() {
         this.msalInit();
 
@@ -43,14 +53,23 @@ export class MsalAuthService {
         }
     }
 
+    /**
+     * Initiates MSAL logout
+     */
     msalLogout() {
         this.msalService.logout();
     }
 
+    /**
+     * Initiates MSAL account check
+     */
     msalCheckoutAccount() {
         this.loggedIn = !!this.msalService.getAccount();
     }
 
+    /**
+     * Initiates MSAL
+     */
     private msalInit() {
         this.isIframe = window !== window.parent && !window.opener;
 
@@ -60,7 +79,6 @@ export class MsalAuthService {
             'msal:loginSuccess',
             (accessToken) => {
                 this.msalCheckoutAccount();
-                // console.log('ACCOUNT  ' + JSON.stringify(accessToken));
             }
         );
 

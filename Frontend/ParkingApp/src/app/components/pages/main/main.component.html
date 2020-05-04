@@ -5,8 +5,8 @@
 <!--<div class="display-4 text-light d-flex justify-content-center mb-2 title mt-3">ParKing</div>-->
 
 <app-parking-lot-detail
-    (goBackEvent)="refresh()"
     *ngIf="action === 'view'"
+    (goBackEvent)="refresh()"
     [parkingLot]="selectedParkingLot"
 >
 </app-parking-lot-detail>
@@ -16,13 +16,17 @@
         *ngFor="let parkingLot of parkingLots; trackBy: trackByMethod"
         class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
     >
-        <div class="lot-name mb-2">
-            LOT <b>{{ parkingLot.number }}</b>
+        <div class="parking-lot-name mb-2">
+            LOT <b>{{parkingLot.number}}</b>
         </div>
         <div
             (click)="showDetails(parkingLot.id)"
             [ngClass]="parkingLot.status.toLowerCase()"
-            class="btn lot col-12 border-radius-s"
+            #parkingLotDetailTooltip="ngbTooltip"
+            class="btn parking-lot col-12 border-radius-s"
+
+            data-container="body"
+            ngbTooltip="View parking lot {{parkingLot.number}} details" placement="top"
         >
             <i
                 [ngClass]="{
@@ -38,7 +42,12 @@
             <span
                 (click)="showParkingLotOnMap(parkingLot.number)"
                 *ngIf="this.isUserLoggedIn()"
-                class="map"
+                #parkingLotMapTooltip="ngbTooltip"
+
+                (mouseenter)="preventParentTooltip()"
+                (mouseleave)="allowParentTooltip()" class="parking-map"
+                ngbTooltip="View parking lot {{parkingLot.number}} on map"
+                placement="top"
             >
                 <i class="fas fa-map-marked-alt"></i
                 ></span>
@@ -46,6 +55,7 @@
     </div>
 </div>
 
+<!--if parking lots not provided by server-->
 <div *ngIf="parkingLots == null" class="row">
     <!--<h2 class="error col-12" style="text-align: center; margin-bottom: 20px;">Connection error, please contact
         support</h2>-->
@@ -53,10 +63,10 @@
         *ngFor="let lot of noData; trackBy: trackByMethod"
         class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
     >
-        <div class="lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
+        <div class="parking-lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
         <div
             [ngClass]="{ unknown: selectedParkingLot == null }"
-            class="btn lot col-12"
+            class="btn parking-lot col-12 border-radius-s"
         >
             <i class="fas fa-ban"></i>
         </div>
