@@ -1,8 +1,9 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.models.ParkingLot;
+import com.isd.parking.models.subjects.ParkingLot;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
+import static com.isd.parking.utilities.ColorConsoleOutput.methodMsg;
 
 
 /**
@@ -20,9 +21,6 @@ import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
 @Slf4j
 public class ParkingLotLocalStorage {
 
-    @Value("${parking.lots.number}")
-    private String totalParkingLotsNumber;
-
     //Local in-memory storage of parking lots
     private final HashMap<Long, ParkingLot> parkingMap = new HashMap<>();
 
@@ -31,7 +29,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lots list
      */
-    public synchronized List<ParkingLot> findAll() {
+    public synchronized @NotNull List<ParkingLot> findAll() {
         log.info(methodMsg("get all parking lots local list executed..."));
         return new ArrayList<>(parkingMap.values());
     }
@@ -52,7 +50,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was saved in database
      */
-    public synchronized ParkingLot save(ParkingLot parkingLot) {
+    public synchronized @Nullable ParkingLot save(@NotNull ParkingLot parkingLot) {
         return parkingMap.put(parkingLot.getId(), parkingLot);
     }
 
@@ -62,7 +60,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was updated in database
      */
-    public synchronized ParkingLot update(ParkingLot parkingLot) {
+    public synchronized @Nullable ParkingLot update(@NotNull ParkingLot parkingLot) {
         if (parkingMap.containsValue(parkingLot)) {
             return parkingMap.put(parkingLot.getId(), parkingLot);
         }
@@ -74,7 +72,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was saved in database
      */
-    public synchronized ParkingLot delete(ParkingLot parkingLot) {
+    public synchronized @Nullable ParkingLot delete(@NotNull ParkingLot parkingLot) {
         if (parkingMap.containsValue(parkingLot)) {
             return parkingMap.remove(parkingLot.getId());
         }

@@ -1,7 +1,8 @@
 package com.isd.parking.scheduler;
 
-import com.isd.parking.service.implementations.StatisticsServiceImpl;
+import com.isd.parking.services.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import static com.isd.parking.utils.ColorConsoleOutput.methodMsg;
+import static com.isd.parking.utilities.ColorConsoleOutput.methodMsg;
 
 
 /**
@@ -52,8 +53,8 @@ public class ScheduleStatisticsDeleter {
      */
     //for resolve conflict launching schedule in main thread
     @Bean
-    public ThreadPoolTaskScheduler taskScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+    public @NotNull ThreadPoolTaskScheduler taskScheduler() {
+        @NotNull ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
 
         scheduler.setPoolSize(4);               //change this for increase amount of threads
         scheduler.setThreadNamePrefix("scheduled-task-");

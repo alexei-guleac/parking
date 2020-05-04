@@ -1,5 +1,6 @@
 package com.isd.parking.config.mail;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,8 +50,8 @@ public class EmailConfig {
 
 
     @Bean("gmail")
-    public JavaMailSender gmailMailSender() {
-        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+    public @NotNull JavaMailSender gmailMailSender() {
+        @NotNull JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost(host);
         mailSender.setPort(port);
@@ -58,7 +59,7 @@ public class EmailConfig {
         mailSender.setUsername(userName);
         mailSender.setPassword(passWord);
 
-        Properties props = mailSender.getJavaMailProperties();
+        @NotNull Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", protocol);
         props.put("mail.smtp.auth", auth);
         props.put("mail.smtp.starttls.enable", startTls);
@@ -66,8 +67,8 @@ public class EmailConfig {
         props.put("mail.debug", debug);
 
         // creates a new session with an authenticator
-        Authenticator auth = new Authenticator() {
-            public PasswordAuthentication getPasswordAuthentication() {
+        @NotNull Authenticator auth = new Authenticator() {
+            public @NotNull PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(userName, passWord);
             }
         };

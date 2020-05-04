@@ -3,8 +3,12 @@ package com.isd.parking.models.users;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.isd.parking.utils.ReflectionMethods;
+import com.isd.parking.utilities.ReflectionMethods;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.naming.Name;
 import javax.validation.constraints.Email;
@@ -17,6 +21,7 @@ import java.util.ArrayList;
  */
 @Data
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+@ApiModel(description = "User model. ")
 public class User {
 
     public static final ArrayList<String> userClassAttributesList =
@@ -24,23 +29,28 @@ public class User {
 
     @JsonProperty()
     @JsonAlias({"username"})
+    @ApiModelProperty(notes = "User username", required = true)
     private String username;
 
     @JsonProperty()
     @JsonAlias({"email"})
+    @ApiModelProperty(notes = "User email")
     @Email
     private String email;
 
     @JsonProperty()
     @JsonAlias({"firstname"})
+    @ApiModelProperty(notes = "User firstname")
     private String firstname;
 
     @JsonProperty()
     @JsonAlias({"lastname"})
+    @ApiModelProperty(notes = "User lastname")
     private String lastname;
 
     @JsonProperty()
     @JsonAlias({"password"})
+    @ApiModelProperty(notes = "User password")
     private String password;
 
     public User() {
@@ -51,7 +61,7 @@ public class User {
         this.password = password;
     }
 
-    public User(User user, String password) {
+    public User(@NotNull User user, String password) {
         this.username = user.username;
         this.firstname = user.firstname;
         this.lastname = user.lastname;
@@ -78,7 +88,7 @@ public class User {
         return ReflectionMethods.getPropertyValue(user, name);
     }
 
-    String getFullname() {
+    @Nullable String getFullname() {
         if (this.firstname != null && this.lastname != null) {
             return this.firstname + " " + this.lastname;
         } else return null;

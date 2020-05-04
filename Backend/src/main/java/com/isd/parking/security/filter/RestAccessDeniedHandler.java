@@ -1,9 +1,10 @@
 package com.isd.parking.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.isd.parking.security.model.ErrorMessage;
-import com.isd.parking.security.model.ResponseWrapper;
-import com.isd.parking.security.model.RestErrorList;
+import com.isd.parking.models.ErrorMessage;
+import com.isd.parking.models.ResponseWrapper;
+import com.isd.parking.models.RestErrorList;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 
@@ -25,15 +26,15 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
 
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
+    public void handle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull AccessDeniedException accessDeniedException)
         throws IOException {
-        RestErrorList errorList = new RestErrorList(
+        @NotNull RestErrorList errorList = new RestErrorList(
             SC_FORBIDDEN, new ErrorMessage(accessDeniedException.getMessage()));
-        ResponseWrapper responseWrapper = new ResponseWrapper(
+        @NotNull ResponseWrapper responseWrapper = new ResponseWrapper(
             null, singletonMap("status", SC_FORBIDDEN), errorList);
-        ObjectMapper objMapper = new ObjectMapper();
+        @NotNull ObjectMapper objMapper = new ObjectMapper();
 
-        final HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper(response);
+        final @NotNull HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper(response);
         wrapper.setStatus(SC_FORBIDDEN);
         wrapper.setContentType(APPLICATION_JSON_VALUE);
         wrapper.getWriter().println(objMapper.writeValueAsString(responseWrapper));

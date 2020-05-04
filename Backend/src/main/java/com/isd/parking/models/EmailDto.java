@@ -53,13 +53,13 @@ public class EmailDto {
 
     private String templateLocation;
 
-    private Map<String, Object> parameterMap = new HashMap<>();
+    private @org.jetbrains.annotations.NotNull Map<String, Object> parameterMap = new HashMap<>();
 
-    private Map<String, Object> staticResourceMap = new HashMap<>();
+    private @org.jetbrains.annotations.NotNull Map<String, Object> staticResourceMap = new HashMap<>();
 
     private String emailedMessage;
 
-    public EmailDto(String from, String toList, String subject, String message) {
+    public EmailDto(String from, @org.jetbrains.annotations.NotNull String toList, String subject, String message) {
         this();
         this.from = from;
         this.subject = subject;
@@ -68,20 +68,20 @@ public class EmailDto {
     }
 
 
-    public EmailDto(String from, String toList, String ccList) {
+    public EmailDto(String from, @org.jetbrains.annotations.NotNull String toList, @org.jetbrains.annotations.NotNull String ccList) {
         this();
         this.from = from;
         this.to = splitByComma(toList);
         this.cc = splitByComma(ccList);
     }
 
-    public EmailDto(String from, String toList) {
+    public EmailDto(String from, @org.jetbrains.annotations.NotNull String toList) {
         this();
         this.from = from;
         this.to = splitByComma(toList);
     }
 
-    public EmailDto(String from, String toList, String ccList, String subject, String message) {
+    public EmailDto(String from, @org.jetbrains.annotations.NotNull String toList, @org.jetbrains.annotations.NotNull String ccList, String subject, String message) {
         this();
         this.from = from;
         this.subject = subject;
@@ -90,7 +90,7 @@ public class EmailDto {
         this.cc = splitByComma(ccList);
     }
 
-    private String[] splitByComma(String toMultiple) {
+    private String[] splitByComma(@org.jetbrains.annotations.NotNull String toMultiple) {
         return toMultiple.split(",");
     }
 
@@ -98,7 +98,7 @@ public class EmailDto {
      * @see java.lang.Object#toString()
      */
     @Override
-    public String toString() {
+    public @org.jetbrains.annotations.NotNull String toString() {
         return "EmailDto [" + (from != null ? "from=" + from + ", " : "")
             + (to != null ? "to=" + Arrays.toString(to) + ", " : "")
             + (cc != null ? "cc=" + Arrays.toString(cc) + ", " : "")

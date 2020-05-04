@@ -1,5 +1,6 @@
 package com.isd.parking.security.config.cookie;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -18,10 +19,10 @@ import java.io.IOException;
 public class CookieFilter extends GenericFilterBean {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+    public void doFilter(ServletRequest request, ServletResponse response, @NotNull FilterChain chain)
         throws IOException, ServletException {
 
-        HttpServletResponse resp = (HttpServletResponse) response;
+        @NotNull HttpServletResponse resp = (HttpServletResponse) response;
         resp.setHeader("Set-Cookie", "locale=de; HttpOnly; SameSite=strict");
         chain.doFilter(request, response);
     }

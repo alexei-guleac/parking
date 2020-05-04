@@ -1,14 +1,16 @@
 package com.isd.parking.security.filter;
 
 
+import com.isd.parking.models.users.JwtUser;
 import com.isd.parking.security.JwtUtils;
-import com.isd.parking.security.exceptions.JwtBadSignatureException;
-import com.isd.parking.security.exceptions.JwtExpirationException;
-import com.isd.parking.security.exceptions.MalformedJwtException;
-import com.isd.parking.security.model.JwtUser;
+import com.isd.parking.web.rest.errors.exceptions.JwtBadSignatureException;
+import com.isd.parking.web.rest.errors.exceptions.JwtExpirationException;
+import com.isd.parking.web.rest.errors.exceptions.MalformedJwtException;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Objects;
 
 import static com.isd.parking.security.JwtUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -40,11 +43,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
-    private final RequestMatcher requestMatcher;
+    private final @NotNull RequestMatcher requestMatcher;
 
     private final String secretKey;
 
-    public JwtTokenAuthenticationFilter(String path, String secretKey) {
+    public JwtTokenAuthenticationFilter(@NotNull String path, String secretKey) {
         this.requestMatcher = new AntPathRequestMatcher(path);
         this.secretKey = secretKey;
     }
@@ -59,10 +62,10 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
      * @throws ServletException
      */
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest req, ServletResponse res, @NotNull FilterChain chain) throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
+        @NotNull HttpServletRequest request = (HttpServletRequest) req;
+        @NotNull HttpServletResponse response = (HttpServletResponse) res;
 
         if (!requiresAuthentication(request)) {
             /*
@@ -89,16 +92,16 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             The SecurityContext will be analyzed by chained filters that will throw Exceptions if necessary
             (like if authorizations are incorrect).
             */
-            SignedJWT jwt = extractAndDecodeJwt(request);
+            @NotNull SignedJWT jwt = extractAndDecodeJwt(request);
             checkAuthenticationAndValidity(jwt);
-            Authentication auth = buildAuthenticationFromJwt(jwt, request);
+            @NotNull Authentication auth = Objects.requireNonNull(buildAuthenticationFromJwt(jwt, request));
             SecurityContextHolder.getContext().setAuthentication(auth);
 
             chain.doFilter(request, response);
 
         } catch (JwtExpirationException ex) {
             throw new AccountExpiredException("Account authorization JWT token is not valid anymore ");
-        } catch (JwtBadSignatureException | ParseException | JOSEException ex) {
+        } catch (@NotNull JwtBadSignatureException | ParseException | JOSEException ex) {
             throw new MalformedJwtException("Authorization JWT token is malformed");
         }
 
@@ -115,11 +118,11 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
      *
      * @param request - target request
      * @return signed JWT token
-     * @throws ParseException
+     * @throws ParseException - parsing error
      */
-    private SignedJWT extractAndDecodeJwt(HttpServletRequest request) throws ParseException {
+    private @NotNull SignedJWT extractAndDecodeJwt(@NotNull HttpServletRequest request) throws ParseException {
         String authHeader = request.getHeader(AUTHORIZATION);
-        String token = authHeader.substring("Bearer ".length());
+        @NotNull String token = authHeader.substring("Bearer ".length());
 
         return parse(token);
     }
@@ -128,10 +131,10 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
      * Check that JWT token is not expired and signature secret key conforms stored
      *
      * @param jwt - specified JWT
-     * @throws ParseException
-     * @throws JOSEException
+     * @throws ParseException - parsing error
+     * @throws JOSEException  - if secret is corrupted
      */
-    private void checkAuthenticationAndValidity(SignedJWT jwt) throws ParseException, JOSEException {
+    private void checkAuthenticationAndValidity(@NotNull SignedJWT jwt) throws ParseException, JOSEException {
         assertNotExpired(jwt);
         assertValidSignature(jwt, secretKey);
     }
@@ -142,16 +145,18 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
      * @param jwt     - specified signed JWT token
      * @param request - target HTTP request
      * @return Authentication object result
-     * @throws ParseException
+     * @throws ParseException - parsing error
      */
-    private Authentication buildAuthenticationFromJwt(SignedJWT jwt, HttpServletRequest request) throws ParseException {
+    private @NotNull Authentication buildAuthenticationFromJwt(@NotNull SignedJWT jwt, HttpServletRequest request)
+        throws ParseException {
 
         String username = getUsername(jwt);
         Collection<? extends GrantedAuthority> authorities = JwtUtils.getRoles(jwt);
         Date creationDate = getIssueTime(jwt);
-        JwtUser userDetails = new JwtUser(username, creationDate, authorities);
+        @NotNull JwtUser userDetails = new JwtUser(username, creationDate, authorities);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+        @Nullable UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         return authentication;

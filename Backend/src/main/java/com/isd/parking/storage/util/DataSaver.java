@@ -1,8 +1,8 @@
 package com.isd.parking.storage.util;
 
-import com.isd.parking.models.ParkingLot;
-import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
-import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.models.subjects.ParkingLot;
+import com.isd.parking.services.implementations.ParkingLotDBServiceImpl;
+import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

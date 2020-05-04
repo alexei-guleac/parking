@@ -1,5 +1,6 @@
 package com.isd.parking.security;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -29,7 +30,7 @@ public class PasswordEncoding {
      * @return BCrypt password encoder
      */
     @Bean
-    public static BCryptPasswordEncoder bcryptEncoder() {
+    public static @NotNull BCryptPasswordEncoder bcryptEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -39,17 +40,17 @@ public class PasswordEncoding {
      * @return BCrypt password encoder with mark
      */
     @Bean
-    public static BCryptPasswordEncoder passwordEncoderBc() {
-        final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+    public static @NotNull BCryptPasswordEncoder passwordEncoderBc() {
+        final @NotNull BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         return new BCryptPasswordEncoder() {
 
             @Override
-            public String encode(CharSequence rawPassword) {
+            public @NotNull String encode(@NotNull CharSequence rawPassword) {
                 return "{bcrypt}" + bcrypt.encode(rawPassword.toString());
             }
 
             @Override
-            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+            public boolean matches(CharSequence rawPassword, @NotNull String encodedPassword) {
                 return bcrypt.matches(rawPassword, encodedPassword.substring(8));
             }
         };
@@ -61,7 +62,7 @@ public class PasswordEncoding {
      * @param password - user password to be encrypted
      * @return SHA encrypted string from users password
      */
-    public static String digestSHA(final String password) {
+    public static @NotNull String digestSHA(final @NotNull String password) {
         String base64;
 
         try {
@@ -82,7 +83,7 @@ public class PasswordEncoding {
      * @return default password encoder
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public @NotNull PasswordEncoder passwordEncoder() {
         return DefaultPasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
@@ -93,9 +94,9 @@ public class PasswordEncoding {
          *
          * @return default password encoder
          */
-        static PasswordEncoder createDelegatingPasswordEncoder() {
-            String encodingId = "bcrypt";
-            Map<String, PasswordEncoder> encoders = new HashMap<>();
+        static @NotNull PasswordEncoder createDelegatingPasswordEncoder() {
+            @NotNull String encodingId = "bcrypt";
+            @NotNull Map<String, PasswordEncoder> encoders = new HashMap<>();
             encoders.put(encodingId, bcryptEncoder());
             encoders.put("ldap", new org.springframework.security.crypto.password.LdapShaPasswordEncoder());
             encoders.put("MD4", new org.springframework.security.crypto.password.Md4PasswordEncoder());
@@ -108,7 +109,7 @@ public class PasswordEncoding {
             encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
             encoders.put("customBC", new CustomBcryptPasswordEncoder());
 
-            DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(encodingId, encoders);
+            @NotNull DelegatingPasswordEncoder delegatingPasswordEncoder = new DelegatingPasswordEncoder(encodingId, encoders);
             delegatingPasswordEncoder.setDefaultPasswordEncoderForMatches(encoders.getOrDefault("customBC", new CustomBcryptPasswordEncoder()));
 
             return delegatingPasswordEncoder;
@@ -126,16 +127,16 @@ public class PasswordEncoding {
         private final String salt = "$2a$12$lIGeCCVi1fkIYIZA9ly6ge";
 
         @Override
-        public String encode(CharSequence rawPassword) {
+        public @NotNull String encode(@NotNull CharSequence rawPassword) {
             return "{customBC}" + BCrypt.hashpw(rawPassword.toString(), salt);
         }
 
         @Override
-        public boolean matches(CharSequence rawPassword, String encodedPassword) {
+        public boolean matches(@NotNull CharSequence rawPassword, @NotNull String encodedPassword) {
             return BCrypt.checkpw(rawPassword.toString(), encodedPassword.substring(10));
         }
 
-        public String getH(String s) {
+        public @NotNull String getH(@NotNull String s) {
             return this.encode(s);
         }
     }

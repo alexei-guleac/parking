@@ -5,17 +5,21 @@ import com.isd.parking.security.config.cookie.CookieFilter;
 import com.isd.parking.security.filter.JwtTokenAuthenticationFilter;
 import com.isd.parking.security.filter.RestAccessDeniedHandler;
 import com.isd.parking.security.filter.SecurityAuthenticationEntryPoint;
-import com.isd.parking.utils.AppFileUtils;
+import com.isd.parking.utilities.AppFileUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,33 +31,46 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.zalando.problem.spring.webflux.advice.security.SecurityProblemSupport;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.isd.parking.controller.ApiEndpoints.*;
+import static com.isd.parking.web.rest.ApiEndpoints.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
 /**
- * Configures Spring security (CORS, HTTP, endpoints access, LDAP, user authentication and authorization)
+ * Configures Spring security
+ * (CORS, HTTP, endpoints access, LDAP, user authentication and authorization, Swagger docs)
  */
 @Configuration
 @Slf4j
+@EnableReactiveMethodSecurity
+@EnableWebSecurity
+@Import(SecurityProblemSupport.class)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final String secretKeyFile = "secret.key";
+    private final String JwtSecretKeyFile = "secret.key";
 
     private final LdapAuthoritiesPopulator ldapAuthoritiesPopulator;
 
-    private final String[] pathArray = new String[]{
+    private final String[] applicationPublicAllowedPathArray = new String[]{
         auth + "/**", login + "/**", register + "/**",
         validateCaptcha, gitOAuth, confirmAction,
         forgotPassword, resetPassword,
-        parking, arduinoApi, arduinoWS
+        parking + "/**", statisticsByLot + "/**", arduinoApi, arduinoWS
     };
+
+    // -- swagger ui
+    private final String[] swaggerDocsPath = {"/v2/api-docs",
+        "/configuration/ui",
+        "/swagger-resources/**",
+        "/configuration/security",
+        "/swagger-ui.html",
+        "/webjars/**"};
 
     @Value("${spring.data.ldap.enabled}")
     private boolean ldapEnabled;
@@ -100,13 +117,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${spring.inmemoryauth.adminpassword}")
     private String adminPasswordInMemory;
 
+    private final SecurityProblemSupport problemSupport;
+
     @Autowired
-    public WebSecurityConfiguration(LdapAuthoritiesPopulator ldapAuthoritiesPopulator) {
+    public WebSecurityConfiguration(LdapAuthoritiesPopulator ldapAuthoritiesPopulator,
+                                    SecurityProblemSupport problemSupport) {
         /*
          Ignores the default configuration, useless in our case (session management, etc..)
         */
         super(true);
         this.ldapAuthoritiesPopulator = ldapAuthoritiesPopulator;
+        this.problemSupport = problemSupport;
     }
 
     /**
@@ -118,14 +139,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(@NotNull HttpSecurity http) throws Exception {
 
         /* the secret key used to sign the JWT token is known exclusively by the server.
          With Nimbus JOSE implementation, it must be at least 256 characters longs.
          */
-        String secret = new AppFileUtils().getResourceAsString(secretKeyFile);
+        String secret = new AppFileUtils().getResourceAsString(JwtSecretKeyFile);
 
         http.addFilterBefore(new CORSFilter(), ChannelProcessingFilter.class);
+
         http.
             cors()
             .and()
@@ -152,6 +174,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .exceptionHandling()
             .authenticationEntryPoint(new SecurityAuthenticationEntryPoint())
             .accessDeniedHandler(new RestAccessDeniedHandler())
+            // TODO Spring WebFlux Problem flow support (enable it and add custom error classes)
+            /*.authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport)*/
             .and()
             /*
               anonymous() consider no authentication as being anonymous instead of null in the security context.
@@ -163,11 +188,12 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             // dont authenticate this particular request
-            .antMatchers(pathArray).permitAll()
+            .antMatchers(applicationPublicAllowedPathArray).permitAll()
+            // whitelist Swagger UI resources
+            .antMatchers(swaggerDocsPath).permitAll()
             // all other requests need to be authenticated
             .anyRequest().fullyAuthenticated();
     }
-
 
     /**
      * Configures AuthenticationManagerBuilder to use the specified DetailsService.
@@ -176,7 +202,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
      * @throws Exception
      */
     @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    public void configure(@NotNull AuthenticationManagerBuilder auth) throws Exception {
         /*
             see this article : https://spring.io/guides/gs/authenticating-ldap/
             We  redefine our own LdapAuthoritiesPopulator which need ContextSource().
@@ -216,24 +242,43 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         }
     }
 
+    /*@Bean
+    public SecurityWebFilterChain springSecurityFilterChain(final ServerHttpSecurity http) {
+        // @formatter:off
+        http
+            .exceptionHandling()
+            .authenticationEntryPoint(problemSupport)
+            .accessDeniedHandler(problemSupport)
+            .and()
+            .headers()
+            .contentSecurityPolicy("default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:")
+            .and()
+            .referrerPolicy(ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+            .and()
+            .featurePolicy("geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'");
+
+        // @formatter:on
+        return http.build();
+    }*/
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         /*
-          Overloaded to expose Authenticationmanager's bean created by configure(AuthenticationManagerBuilder).
+          Overloaded to expose AuthenticationManager's bean created by configure(AuthenticationManagerBuilder).
            This bean is used by the AuthenticationController.
          */
         return super.authenticationManagerBean();
     }
 
-    private JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter(String path, String secret) {
+    private @NotNull JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter(String path, String secret) {
         return new JwtTokenAuthenticationFilter(path, secret);
     }
 
     // fallback for in-memory auth (ldap disabled)
     @Bean
     @Override
-    public UserDetailsService userDetailsService() {
+    public @NotNull UserDetailsService userDetailsService() {
 
         //User Role
         UserDetails theUser = User.withUsername(usernameInMemory)
@@ -245,7 +290,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
             .password(adminPasswordInMemory).roles("ADMIN").build();
 
-        InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
+        @NotNull InMemoryUserDetailsManager userDetailsManager = new InMemoryUserDetailsManager();
         userDetailsManager.createUser(theUser);
         userDetailsManager.createUser(theManager);
 
@@ -275,8 +320,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
          * Do Filter on every http-request.
          */
         @Override
-        public final void doFilter(final ServletRequest req, final ServletResponse res, final FilterChain chain) throws IOException, ServletException {
-            final HttpServletResponse response = (HttpServletResponse) res;
+        public final void doFilter(final ServletRequest req, final ServletResponse res, final @NotNull FilterChain chain) throws IOException, ServletException {
+            final @NotNull HttpServletResponse response = (HttpServletResponse) res;
             response.setHeader("Access-Control-Allow-Origin", frontUrl);
 
             // without this header jquery.ajax calls returns 401 even after successful login and SESSION-ID being successfully stored.
@@ -287,7 +332,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Origin, Content-Type, Version");
             response.setHeader("Access-Control-Expose-Headers", "X-Requested-With, Authorization, Origin, Content-Type");
 
-            final HttpServletRequest request = (HttpServletRequest) req;
+            final @NotNull HttpServletRequest request = (HttpServletRequest) req;
             if (!request.getMethod().equals("OPTIONS")) {
                 chain.doFilter(req, res);
             } else {

@@ -1,13 +1,16 @@
 package com.isd.parking.storage.ldap;
 
 import com.isd.parking.models.enums.AccountState;
+import com.isd.parking.models.enums.SocialProvider;
 import com.isd.parking.models.users.UserLdap;
-import com.isd.parking.utils.AppStringUtils;
-import com.isd.parking.utils.ReflectionMethods;
+import com.isd.parking.utilities.AppStringUtils;
+import com.isd.parking.utilities.ReflectionMethods;
 import com.unboundid.ldap.sdk.DN;
 import com.unboundid.ldap.sdk.Entry;
 import com.unboundid.ldap.sdk.LDAPException;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.support.AbstractContextMapper;
@@ -41,30 +44,64 @@ class LdapAttributeMappers {
      * @param user - specified LDAP user
      * @return LDAP attributes
      */
-    static Attributes buildAttributes(UserLdap user) {
-        Attribute objectClass = new BasicAttribute("objectClass");
+    static @NotNull Attributes buildAttributes(@NotNull UserLdap user) {
+        @NotNull Attribute objectClass = new BasicAttribute(OBJECT_CLASS);
         {
             for (String objClass : personObjectClasses) {
                 objectClass.add(objClass);
             }
         }
-        Attributes userAttributes = new BasicAttributes();
+        @NotNull Attributes userAttributes = new BasicAttributes();
         userAttributes.put(objectClass);
 
-        for (String field : userLdapClassFieldsList) {
+        for (@NotNull String field : userLdapClassFieldsList) {
             // write password in bytes (required by Spring LDAP)
-            if (field.equals("userPassword")) {
+            if (field.equals(USER_PASSWORD_ATTRIBUTE)) {
                 if (user.getUserPassword() != null) {
-                    userAttributes.put("userPassword", user.getUserPassword().getBytes());
+                    userAttributes.put(USER_PASSWORD_ATTRIBUTE, user.getUserPassword().getBytes());
+                    continue;
                 }
             }
-            String propertyValue = getUserLdapStringProperty(user, field);
+
+            // specific social id's flat map
+            if (field.equals(USER_SOCIALS_ATTRIBUTE)) {
+                final Map<String, String> socialIds = user.getSocialIds();
+                if (socialIds != null && !socialIds.isEmpty()) {
+                    for (Map.Entry<String, String> socialId : socialIds.entrySet()) {
+                        userAttributes.put(socialId.getKey() + "id", socialId.getValue());
+                    }
+                }
+                continue;
+            }
+
+            @Nullable String propertyValue = getUserLdapStringProperty(user, field);
             if (propertyValue != null) {
                 userAttributes.put(field, propertyValue);
             }
         }
-
         return userAttributes;
+    }
+
+    /**
+     * Converts LDAP user to LDAP file entry
+     *
+     * @param user - target user
+     * @return - LDAP file entry
+     */
+    public static @Nullable Entry mapUserToEntry(@NotNull UserLdap user) {
+        @Nullable Entry userEntry = null;
+
+        try {
+            userEntry = new Entry(new DN(USER_UID_ATTRIBUTE + "=" + user.getUid() + ",ou=people," + LDAP_BASE_DN));
+            userEntry.addAttribute(OBJECT_CLASS, personObjectClasses);
+            // bind attributes
+            for (Map.@NotNull Entry<String, Object> entry : buildFieldsMap(user).entrySet()) {
+                userEntry.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        } catch (LDAPException e) {
+            e.printStackTrace();
+        }
+        return userEntry;
     }
 
     /**
@@ -74,44 +111,35 @@ class LdapAttributeMappers {
      * @param user - specified LDAP user
      * @return map of user fields
      */
-    private static LinkedHashMap<String, Object> buildFieldsMap(UserLdap user) {
+    private static @NotNull LinkedHashMap<String, Object> buildFieldsMap(@NotNull UserLdap user) {
         return new LinkedHashMap<>() {
             {
-                for (String field : userLdapClassFieldsList) {
+                for (@NotNull String field : userLdapClassFieldsList) {
+                    // get user field value
                     Object propertyValue = getUserLdapProperty(user, field);
+                    // if field is present in given user object
                     if (propertyValue != null) {
-                        if (field.equals("userPassword")) {
+                        // due to Spring Security reason
+                        if (field.equals(USER_PASSWORD_ATTRIBUTE)) {
                             String pass = user.getUserPassword();
                             put(field, pass);
-                        } else {
-                            put(field, propertyValue);
+                            continue;
                         }
+                        if (field.equals(USER_SOCIALS_ATTRIBUTE)) {
+                            final Map<String, String> socialIds = user.getSocialIds();
+                            if (socialIds != null && !socialIds.isEmpty()) {
+                                for (Map.Entry<String, String> socialId : socialIds.entrySet()) {
+                                    put(socialId.getKey() + "id", socialId.getValue());
+                                }
+                            }
+                            continue;
+                        }
+
+                        put(field, propertyValue);
                     }
                 }
             }
         };
-    }
-
-    /**
-     * Converts LDAP user to LDAP file entry
-     *
-     * @param user - target user
-     * @return - LDAP file entry
-     */
-    public static Entry mapUserToEntry(UserLdap user) {
-        Entry userEntry = null;
-
-        try {
-            userEntry = new Entry(new DN("uid=" + user.getUid() + ",ou=people," + LDAP_BASE_DN));
-            userEntry.addAttribute(OBJECT_CLASS, personObjectClasses);
-            // bind attributes
-            for (Map.Entry<String, Object> entry : buildFieldsMap(user).entrySet()) {
-                userEntry.addAttribute(entry.getKey(), String.valueOf(entry.getValue()));
-            }
-        } catch (LDAPException e) {
-            e.printStackTrace();
-        }
-        return userEntry;
     }
 
 
@@ -120,8 +148,8 @@ class LdapAttributeMappers {
      */
     static class UserAttributesMapperShort implements AttributesMapper<UserLdap> {
         @Override
-        public UserLdap mapFromAttributes(Attributes attrs) throws NamingException {
-            UserLdap user = new UserLdap();
+        public @NotNull UserLdap mapFromAttributes(@NotNull Attributes attrs) throws NamingException {
+            @NotNull UserLdap user = new UserLdap();
 
             Attribute cn = attrs.get("cn");
             if (cn != null) {
@@ -141,17 +169,20 @@ class LdapAttributeMappers {
     static class UserAttributesMapper implements AttributesMapper<UserLdap> {
 
         @Override
-        public UserLdap mapFromAttributes(Attributes attributes) throws NamingException {
+        public @Nullable UserLdap mapFromAttributes(@Nullable Attributes attributes) throws NamingException {
             UserLdap user;
             if (attributes == null) {
                 return null;
             }
             user = new UserLdap();
 
-            for (String field : userLdapClassFieldsList) {
+            for (@NotNull String field : userLdapClassFieldsList) {
+                // if field is present шт given attributes
                 if (attributes.get(field) != null) {
-                    if (field.equals("accountState")) {
+                    // specific enum conversion
+                    if (field.equals(USER_ACCOUNT_STATE_ATTRIBUTE)) {
                         setUserLdapProperty(user, field, AccountState.valueOf(getAttributeStringValue(attributes, field)));
+                        // specific LocalDateTime to String conversion
                     } else if (ReflectionMethods.getPropertyType(user, field) == LocalDateTime.class) {
                         setUserLdapProperty(user, field, LocalDateTime.parse(getAttributeStringValue(attributes, field)));
                     } else {
@@ -160,6 +191,15 @@ class LdapAttributeMappers {
                 }
             }
 
+            // specific social id's map conversion
+            for (SocialProvider socialProvider : SocialProvider.values()) {
+                final String socialProviderStringShort = socialProvider.getSocialProvider();
+                final String socialId = socialProviderStringShort + "id";
+                final Attribute socialIdAttr = attributes.get(socialId);
+                if (socialIdAttr != null) {
+                    user.getSocialIds().put(socialProviderStringShort, socialIdAttr.toString());
+                }
+            }
             return user;
         }
 
@@ -171,7 +211,7 @@ class LdapAttributeMappers {
          * @return String representation of lDAP attribute
          * @throws NamingException
          */
-        private String getAttributeStringValue(Attributes attributes, String attributeName) throws NamingException {
+        private @NotNull String getAttributeStringValue(@NotNull Attributes attributes, String attributeName) throws NamingException {
             return (String) attributes.get(attributeName).get();
         }
     }
@@ -180,11 +220,11 @@ class LdapAttributeMappers {
      * Maps user from context
      */
     static class UserContextMapper extends AbstractContextMapper<UserLdap> {
-        public UserLdap doMapFromContext(DirContextOperations context) {
-            UserLdap user = new UserLdap();
+        public @NotNull UserLdap doMapFromContext(@NotNull DirContextOperations context) {
+            @NotNull UserLdap user = new UserLdap();
             user.setCn(context.getStringAttribute("cn"));
             user.setSn(context.getStringAttribute("sn"));
-            user.setUid(context.getStringAttribute("uid"));
+            user.setUid(context.getStringAttribute(USER_UID_ATTRIBUTE));
 
             return user;
         }
@@ -196,7 +236,7 @@ class LdapAttributeMappers {
     static class SingleAttributesMapper implements AttributesMapper<String> {
 
         @Override
-        public String mapFromAttributes(Attributes attrs) {
+        public String mapFromAttributes(@NotNull Attributes attrs) {
             Attribute cn = attrs.get("cn");
             return cn.toString();
         }
@@ -208,9 +248,9 @@ class LdapAttributeMappers {
     static class MultipleAttributesMapper implements AttributesMapper<String> {
 
         @Override
-        public String mapFromAttributes(Attributes attrs) throws NamingException {
+        public @NotNull String mapFromAttributes(@NotNull Attributes attrs) throws NamingException {
             NamingEnumeration<? extends Attribute> all = attrs.getAll();
-            StringBuilder result = new StringBuilder();
+            @NotNull StringBuilder result = new StringBuilder();
             result.append("\n Result { \n");
             while (all.hasMore()) {
                 Attribute id = all.next();
@@ -229,13 +269,13 @@ class LdapAttributeMappers {
     static class AuthoritiesAttributesMapper implements AttributesMapper<String> {
 
         @Override
-        public String mapFromAttributes(Attributes attrs) throws NamingException {
-            List<String> rolesList = new ArrayList<>();
+        public String mapFromAttributes(@NotNull Attributes attrs) throws NamingException {
+            @NotNull List<String> rolesList = new ArrayList<>();
 
-            Attribute attr = attrs.get("memberOf");
+            Attribute attr = attrs.get(USER_MEMBER_ATTRIBUTE);
             if (attr != null) {
                 for (int i = 0; i < attr.size(); i++) {
-                    String s = (String) attr.get(i);
+                    @NotNull String s = (String) attr.get(i);
                     String[] str = s.split(",");
                     str = str[0].split("=");
                     rolesList.add("ROLE_" + str[1]);

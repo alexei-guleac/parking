@@ -2,6 +2,7 @@ package com.isd.parking.security.config.ldap;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
 
 
 /**
- * provides LDAP useful beans
+ * Provides LDAP useful beans
  */
 @Configuration
 @Slf4j
@@ -35,6 +36,7 @@ public class LdapBeans {
     }
 
     @Bean
+    @NotNull
     LdapAuthoritiesPopulator ldapAuthoritiesPopulator() {
         /*
           Specificity here : we don't get the Role by reading the members of available groups
@@ -47,9 +49,9 @@ public class LdapBeans {
 
             private final String GROUP_MEMBER_OF = "memberOf";
 
-            private final SpringSecurityLdapTemplate ldapTemplate;
+            private final @NotNull SpringSecurityLdapTemplate ldapTemplate;
 
-            MyLdapAuthoritiesPopulator(ContextSource contextSource) {
+            MyLdapAuthoritiesPopulator(@NotNull ContextSource contextSource) {
                 ldapTemplate = new SpringSecurityLdapTemplate(contextSource);
             }
 
@@ -61,7 +63,7 @@ public class LdapBeans {
              * @return list of LDAP user authorities (roles)
              */
             @Override
-            public Collection<? extends GrantedAuthority> getGrantedAuthorities(DirContextOperations userData, String username) {
+            public Collection<? extends GrantedAuthority> getGrantedAuthorities(@NotNull DirContextOperations userData, String username) {
 
                 String roles = "";
                 String[] groupDns = userData.getStringAttributes(GROUP_MEMBER_OF);
@@ -69,7 +71,7 @@ public class LdapBeans {
                 // if user entry contains memberOf attribute
                 if (!(groupDns == null || groupDns.length == 0)) {
                     roles = Stream.of(groupDns).map(groupDn -> {
-                        LdapName groupLdapName = (LdapName) ldapTemplate.retrieveEntry(groupDn, GROUP_ATTRIBUTE).getDn();
+                        @NotNull LdapName groupLdapName = (LdapName) ldapTemplate.retrieveEntry(groupDn, GROUP_ATTRIBUTE).getDn();
                         // split DN in its different components et get only the last one (cn = my_group)
                         // getValue() allows to only get get the value of the pair (cn => my_group)
                         return groupLdapName.getRdns().stream().map(Rdn::getValue).reduce((a, b) -> b).orElse(null);

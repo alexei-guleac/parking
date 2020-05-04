@@ -1,9 +1,10 @@
 package com.isd.parking.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.isd.parking.security.model.ErrorMessage;
-import com.isd.parking.security.model.ResponseWrapper;
-import com.isd.parking.security.model.RestErrorList;
+import com.isd.parking.models.ErrorMessage;
+import com.isd.parking.models.ResponseWrapper;
+import com.isd.parking.models.RestErrorList;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -27,16 +28,16 @@ public class SecurityAuthenticationEntryPoint implements AuthenticationEntryPoin
 
     @Override
     public void commence(HttpServletRequest request,
-                         HttpServletResponse response,
-                         AuthenticationException authException) throws IOException {
+                         @NotNull HttpServletResponse response,
+                         @NotNull AuthenticationException authException) throws IOException {
 
-        RestErrorList errorList = new RestErrorList(
+        @NotNull RestErrorList errorList = new RestErrorList(
             SC_UNAUTHORIZED, new ErrorMessage(authException.getMessage()));
-        ResponseWrapper responseWrapper = new ResponseWrapper(
+        @NotNull ResponseWrapper responseWrapper = new ResponseWrapper(
             null, singletonMap("status", SC_UNAUTHORIZED), errorList);
-        ObjectMapper objMapper = new ObjectMapper();
+        @NotNull ObjectMapper objMapper = new ObjectMapper();
 
-        HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper(response);
+        @NotNull HttpServletResponseWrapper wrapper = new HttpServletResponseWrapper(response);
         wrapper.setStatus(SC_UNAUTHORIZED);
         wrapper.setContentType(APPLICATION_JSON_VALUE);
         wrapper.getWriter().println(objMapper.writeValueAsString(responseWrapper));

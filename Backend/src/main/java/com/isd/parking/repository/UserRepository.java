@@ -1,6 +1,7 @@
 package com.isd.parking.repository;
 
 import com.isd.parking.models.users.UserLdap;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.ldap.repository.LdapRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,11 +13,11 @@ import java.util.List;
 @Repository
 public interface UserRepository extends LdapRepository<UserLdap> {
 
-    UserLdap findByUid(String username);
+    @NotNull UserLdap findByUid(String username);
 
-    UserLdap findByUidAndUserPassword(String username, String password);
+    @NotNull UserLdap findByUidAndUserPassword(String username, String password);
 
-    List<UserLdap> findByUidLikeIgnoreCase(String username);
+    @NotNull List<UserLdap> findByUidLikeIgnoreCase(String username);
 
-    List<UserLdap> findAll();
+    @NotNull List<UserLdap> findAll();
 }

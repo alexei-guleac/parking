@@ -1,6 +1,6 @@
 package com.isd.parking.repository;
 
-import com.isd.parking.models.StatisticsRecord;
+import com.isd.parking.models.subjects.StatisticsRecord;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 
 /**
@@ -28,4 +29,12 @@ public interface StatisticsRepository extends JpaRepository<StatisticsRecord, Lo
     @Query("DELETE FROM statistics s WHERE s.updatedAt < :date")
     int removeOlderThan(@Param("date") java.sql.Date date);
 
+
+    /**
+     * Get all statistics records from database by parking lot number
+     *
+     * @param parkingLotNumber - target parking lot number
+     * @return - statistics records list
+     */
+    List<StatisticsRecord> findByLotNumber(int parkingLotNumber);
 }

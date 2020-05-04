@@ -1,6 +1,7 @@
 package com.isd.parking.security.config.ldap;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +28,9 @@ public class LdapClientConfiguration {
     }
 
     @Bean
-    public LdapContextSource contextSource() {
+    public @NotNull LdapContextSource contextSource() {
 
-        LdapContextSource contextSource = new LdapContextSource();
+        @NotNull LdapContextSource contextSource = new LdapContextSource();
         contextSource.setUrl(env.getRequiredProperty("ldap.url"));
         contextSource.setBase(env.getRequiredProperty("ldap.partitionSuffix"));
         contextSource.afterPropertiesSet();
@@ -38,7 +39,7 @@ public class LdapClientConfiguration {
     }
 
     @Bean
-    public LdapTemplate ldapTemplate() {
+    public @NotNull LdapTemplate ldapTemplate() {
         return new LdapTemplate(contextSource());
     }
 }

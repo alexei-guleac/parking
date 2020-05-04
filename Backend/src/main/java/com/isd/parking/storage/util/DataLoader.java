@@ -1,11 +1,12 @@
 package com.isd.parking.storage.util;
 
-import com.isd.parking.models.ParkingLot;
 import com.isd.parking.models.enums.ParkingLotStatus;
-import com.isd.parking.service.ParkingLotService;
-import com.isd.parking.service.implementations.ParkingLotDBServiceImpl;
-import com.isd.parking.service.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.models.subjects.ParkingLot;
+import com.isd.parking.services.ParkingLotService;
+import com.isd.parking.services.implementations.ParkingLotDBServiceImpl;
+import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,7 +15,7 @@ import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.Optional;
 
-import static com.isd.parking.utils.ColorConsoleOutput.*;
+import static com.isd.parking.utilities.ColorConsoleOutput.*;
 
 
 /**
@@ -47,7 +48,7 @@ public class DataLoader  {
      */
     @PostConstruct
     public void loadDatabase() {
-        Date date = new Date(System.currentTimeMillis());
+        @NotNull Date date = new Date(System.currentTimeMillis());
         int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
         long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
 
@@ -56,7 +57,10 @@ public class DataLoader  {
             //init with Unknown status parking lots
             for (int i = 1; i <= totalParkingLotsNumber; i++) {
                 //initial saving parking lots to local Java memory
-                parkingLotLocalService.save(new ParkingLot((long) i + 10, i, date, ParkingLotStatus.FREE));
+                parkingLotLocalService.save(
+                    new ParkingLot(
+                        (long) i + 10, i, date, ParkingLotStatus.FREE)
+                );
             }
         } else {
             for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
@@ -77,12 +81,12 @@ public class DataLoader  {
      * @param parkingLotService - target parking lot service
      * @param from              - target source console indicator
      */
-    public void fetchParkingLots(ParkingLotService parkingLotService, String from) {
+    public void fetchParkingLots(@NotNull ParkingLotService parkingLotService, String from) {
         printSeparator();
         log.info(methodMsg("ParkingLot's found with ") + puBrTxt("findAll()") + grTxt(from));
         long numberOfParkLotsInStorage = parkingLotService.countAll();
         log.info(methodMsg("Total number: " + puBrTxt("" + numberOfParkLotsInStorage)));
-        for (ParkingLot parkingLot : parkingLotService.findAll()) {
+        for (@NotNull ParkingLot parkingLot : parkingLotService.findAll()) {
             log.info(parkingLot.toString());
         }
         log.info("");

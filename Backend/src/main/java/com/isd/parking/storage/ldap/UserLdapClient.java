@@ -3,6 +3,7 @@ package com.isd.parking.storage.ldap;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,14 +33,14 @@ import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 
 /**
- * UserLdap Service class for ldap storage repository
+ * UserLdap Service class for LDAP storage
  * Contains methods for
  * - authenticate user,
  * - search user by uid and other attributes
  * - create new user entry in ldap repository,
  * - modify existed user attributes,
  * - delete user,
- * - get all users from ldap storage etc.
+ * - get all users from LDAP storage etc.
  */
 @Service
 @Slf4j
@@ -69,8 +70,8 @@ public class UserLdapClient {
      * @param password - user password
      * @return - success or denied status of user authentication
      */
-    public Boolean authenticate(String uid, String password) {
-        AndFilter filter = new AndFilter();
+    public Boolean authenticate(String uid, @NotNull String password) {
+        @NotNull AndFilter filter = new AndFilter();
         filter.and(new EqualsFilter(USER_UID_ATTRIBUTE, uid));
 
         return ldapTemplate.authenticate(ldapSearchBase, filter.encode(), passwordEncoder.encode(password));
@@ -83,7 +84,7 @@ public class UserLdapClient {
      * @param user - target user
      * @return LDAP server user domain name
      */
-    private Name buildDn(UserLdap user) {
+    private Name buildDn(@NotNull UserLdap user) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
             .add(USER_UID_ATTRIBUTE, user.getUid())
@@ -97,7 +98,7 @@ public class UserLdapClient {
      * @param uid - target user id
      * @return LDAP server user domain name
      */
-    private Name bindDnByUid(String uid) {
+    private Name bindDnByUid(@NotNull String uid) {
         return LdapNameBuilder.newInstance()
             .add("ou", "people")
             .add(USER_UID_ATTRIBUTE, uid)
@@ -110,7 +111,7 @@ public class UserLdapClient {
      * @param user - target user for creating
      * @return operation result
      */
-    public boolean createUser(UserLdap user) {
+    public boolean createUser(@NotNull UserLdap user) {
         ldapTemplate.bind(buildDn(user), null, buildAttributes(user));
         return true;
     }
@@ -121,7 +122,7 @@ public class UserLdapClient {
      * @param user - target user for updating
      * @return operation result
      */
-    public boolean updateUser(UserLdap user) {
+    public boolean updateUser(@NotNull UserLdap user) {
         ldapTemplate.rebind(buildDn(user), null, buildAttributes(user));
         return true;
     }
@@ -129,16 +130,20 @@ public class UserLdapClient {
     /**
      * Modify LDAP user attribute value
      *
-     * @param uid            - target user id
-     * @param attributeName  - specified attribute name
-     * @param attributeValue - specified attribute value
+     * @param uid              - target user id
+     * @param attributeName    - specified attribute name
+     * @param attributeValue   - specified attribute value
+     * @param modificationType - modify or add directory context attribute
      * @return operation result
      */
-    public boolean updateUser(String uid,
+    public boolean updateUser(@NotNull String uid,
                               @Nullable String attributeName,
-                              @Nullable String attributeValue) {
+                              @Nullable String attributeValue,
+                              int modificationType) {
         Attribute attr = new BasicAttribute(attributeName, attributeValue);
-        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
+        log.info(attributeName + " " + attributeValue);
+        log.info(uid + " " + uid);
+        @NotNull ModificationItem item = new ModificationItem(modificationType, attr);
         ldapTemplate.modifyAttributes(bindDnByUid(uid), new ModificationItem[]{item});
 
         return true;
@@ -151,7 +156,7 @@ public class UserLdapClient {
      * @param newUsername - user new uid
      * @return operation result
      */
-    public boolean updateUsername(String username, String newUsername) {
+    public boolean updateUsername(@NotNull String username, @NotNull String newUsername) {
         ldapTemplate.rename(bindDnByUid(username), bindDnByUid(newUsername));
         return true;
     }
@@ -163,10 +168,8 @@ public class UserLdapClient {
      * @param password - target user password
      * @return operation result
      */
-    public boolean updateUserPassword(UserLdap user, String password) {
-        Attribute attr = new BasicAttribute(USER_PASSWORD_ATTRIBUTE, password);
-        ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, attr);
-        ldapTemplate.modifyAttributes(buildDn(user), new ModificationItem[]{item});
+    public boolean updateUserPassword(@NotNull UserLdap user, String password) {
+        this.updateUser(user.getUid(), USER_PASSWORD_ATTRIBUTE, password, DirContext.REPLACE_ATTRIBUTE);
         return true;
     }
 
@@ -176,7 +179,7 @@ public class UserLdapClient {
      * @param user - target user
      * @return operation result
      */
-    public boolean deleteUser(UserLdap user) {
+    public boolean deleteUser(@NotNull UserLdap user) {
         ldapTemplate.unbind(buildDn(user));
         return true;
     }
@@ -187,7 +190,7 @@ public class UserLdapClient {
      * @param uid - target user id
      * @return operation result
      */
-    public boolean deleteUserById(String uid) {
+    public boolean deleteUserById(@NotNull String uid) {
         ldapTemplate.unbind(bindDnByUid(uid));
         return true;
     }
@@ -209,7 +212,7 @@ public class UserLdapClient {
      * @param uid - target user id
      * @return string representation of user membership authorities
      */
-    public String getAuthoritiesMembershipById(final String uid) {
+    public @org.jetbrains.annotations.Nullable String getAuthoritiesMembershipById(final String uid) {
         List<String> rolesList = ldapTemplate.search(
             ldapSearchBase, USER_UID_ATTRIBUTE + "=" + uid, new AuthoritiesAttributesMapper());
         if (rolesList != null && !rolesList.isEmpty()) {
@@ -234,7 +237,7 @@ public class UserLdapClient {
      * @param uid - target user id
      * @return user found
      */
-    public UserLdap findById(String uid) {
+    public @org.jetbrains.annotations.Nullable UserLdap findById(@NotNull String uid) {
         UserLdap user;
         try {
             user = ldapTemplate.lookup(bindDnByUid(uid), new UserAttributesMapper());
@@ -250,7 +253,7 @@ public class UserLdapClient {
      * @param dn - target user domain name
      * @return user found
      */
-    public UserLdap findByDn(String dn) {
+    public @org.jetbrains.annotations.Nullable UserLdap findByDn(String dn) {
         UserLdap user;
         try {
             user = ldapTemplate.lookup(dn, new UserAttributesMapper());
@@ -275,7 +278,7 @@ public class UserLdapClient {
      *
      * @return string representation of all LDAP server users
      */
-    public List<String> getAllUsersDetails() {
+    public @org.jetbrains.annotations.Nullable List<String> getAllUsersDetails() {
         List<String> list = ldapTemplate.list(
             query().base());
         if (list != null && !list.isEmpty()) {
@@ -354,7 +357,7 @@ public class UserLdapClient {
      * @param social - social service provider
      * @return user found
      */
-    public UserLdap getUserBySocialId(String id, String social) {
+    public @org.jetbrains.annotations.Nullable UserLdap getUserBySocialId(String id, String social) {
         LdapQuery query = getUserBySocialIdLdapQuery(id, social);
         List<UserLdap> results = ldapTemplate.search(query, new UserAttributesMapper());
 
@@ -370,7 +373,7 @@ public class UserLdapClient {
      * @param email - target user email
      * @return user found
      */
-    public UserLdap getUserByEmail(String email) {
+    public @org.jetbrains.annotations.Nullable UserLdap getUserByEmail(String email) {
         List<UserLdap> users = getUsersByEmail(email);
 
         if (users != null && !users.isEmpty()) {
@@ -447,7 +450,7 @@ public class UserLdapClient {
      *
      * @return standard base LDAp query
      */
-    private LdapQueryBuilder getBaseLdapQuery() {
+    private @NotNull LdapQueryBuilder getBaseLdapQuery() {
         return query()
             .searchScope(SearchScope.SUBTREE)
             .timeLimit(SEARCH_TIME_LIMIT_MS)
@@ -461,7 +464,7 @@ public class UserLdapClient {
      * @param uid - target user id
      * @return password updated at date
      */
-    public LocalDateTime getPasswordUpdateAt(String uid) {
+    public @org.jetbrains.annotations.Nullable LocalDateTime getPasswordUpdateAt(String uid) {
 
         List<String> attributes = getAttributes(uid, "passwordUpdatedAt");
 
@@ -487,5 +490,30 @@ public class UserLdapClient {
             (AttributesMapper<String>) attrs -> (String) attrs
                 .get(attributeName)
                 .get());
+    }
+
+    /**
+     * Connect given social provider id to user account
+     *
+     * @param uid            - target user username
+     * @param id             - target user social id
+     * @param socialProvider - social service provider
+     * @return operation result
+     */
+    public boolean connectSocialProvider(String uid, String socialProvider, String id) {
+        this.updateUser(uid, socialProvider, id, DirContext.ADD_ATTRIBUTE);
+        return true;
+    }
+
+    /**
+     * Disconnect given social provider id to user account
+     *
+     * @param uid            - target user username
+     * @param socialProvider - social service provider
+     * @return operation result
+     */
+    public boolean disconnectSocialProvider(String uid, String socialProvider) {
+        this.updateUser(uid, socialProvider, null, DirContext.REMOVE_ATTRIBUTE);
+        return true;
     }
 }
