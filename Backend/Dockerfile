@@ -12,10 +12,14 @@
 #RUN mvn clean install -DskipTests
 #ADD target/docker-spring-boot.jar /app/app.jar
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container", "-jar", "/app/app.jar"]
-FROM openjdk:8-jdk-alpine
+#Specifying the base image, I'm using Java 11
+FROM openjdk:11-slim
 VOLUME /tmp
-EXPOSE 8080
+# Sets up ports the container listens on: 8080 (spring boots default) and 5005 (debugger port)
+EXPOSE 8080 5005
 RUN mkdir -p /app/
 RUN mkdir -p /app/logs/
+# Copies the compiled jar file to the root of the container -- DOUBLE CHECK THIS.
 ADD target/docker-spring-boot.jar /app/app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container", "-jar", "/app/app.jar"]
+# Specifies the command that will start up the application.
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-jar","/app/app.jar"]

@@ -176,7 +176,7 @@ creationDate: Sat Mar 07 16:54:16 EET 2020
 uid: aleksei
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 
-dn: uid=user355,ou=people,dc=isd,dc=com
+dn: uid=user3535,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
@@ -187,10 +187,10 @@ email: erer@fdfdfdf.rty
 memberOf: cn=developers,ou=groups
 memberOf: cn=ADMIN,ou=roles
 user_role: ADMIN
-uid: user355
+uid: user3535
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 creationDate: 2020-03-21T14:04:42.762679600
-updatedAt: 2020-05-02T20:12:45.530189100
+updatedAt: 2020-05-06T15:40:44.875991500
 passwordUpdatedAt: 2020-03-21T14:04:42.762679600
 
 dn: uid=sociadX,ou=people,dc=isd,dc=com
@@ -252,4 +252,19 @@ passwordUpdatedAt: 2020-04-30T22:31:13.018507600
 gitid: 44027065
 cn: Vbbnn Xcv
 sn: Xcv
+
+dn: uid=AlexG,ou=people,dc=isd,dc=com
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+uid: AlexG
+accountState: ENABLED
+cn: Alex Gggg
+sn: Gggg
+email: alex.guleac@gmail.com
+creationDate: 2020-05-06T15:42:43.243050800
+updatedAt: 2020-05-06T15:43:49.573165800
+passwordUpdatedAt: 2020-05-06T15:42:43.243050800
+gid: 114041320524240531134
 

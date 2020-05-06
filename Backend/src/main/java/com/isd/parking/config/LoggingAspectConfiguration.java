@@ -1,7 +1,6 @@
 package com.isd.parking.config;
 
 import com.isd.parking.aop.logging.LoggingAspect;
-import io.github.jhipster.config.JHipsterConstants;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,7 @@ import org.springframework.core.env.Environment;
 public class LoggingAspectConfiguration {
 
     @Bean
-    @Profile(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)
+    @Profile(SpringProfilesConstants.SPRING_PROFILE_DEVELOPMENT)
     public @NotNull LoggingAspect loggingAspect(Environment env) {
         return new LoggingAspect(env);
     }

@@ -1,6 +1,6 @@
 package com.isd.parking.aop.logging;
 
-import io.github.jhipster.config.JHipsterConstants;
+import com.isd.parking.config.SpringProfilesConstants;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -68,7 +68,7 @@ public class LoggingAspect {
      */
     @AfterThrowing(pointcut = "applicationPackagePointcut() && springBeanPointcut()", throwing = "e")
     public void logAfterThrowing(@NotNull JoinPoint joinPoint, @NotNull Throwable e) {
-        if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT))) {
+        if (env.acceptsProfiles(Profiles.of(SpringProfilesConstants.SPRING_PROFILE_DEVELOPMENT))) {
             logger(joinPoint)
                 .error(
                     "Exception in {}() with cause = '{}' and exception = '{}'",

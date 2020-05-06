@@ -16,6 +16,7 @@ services:
             - POSTGRES_PASSWORD=admin
             - POSTGRES_USER=postgres
             - POSTGRES_DB=parking
+            - DEBUG=true
         restart: unless-stopped
 
     # angular*****************************************
@@ -30,6 +31,12 @@ services:
             - 4200:4200
         expose:
             - 4200
+        depends_on:
+            - springbootapp
+        logging:
+            driver: json-file
+        environment:
+            - DEBUG=true
 
 
     # app*****************************************
@@ -43,9 +50,15 @@ services:
             - 8080
         ports:
             - 8080:8080
+            - 5005:5005 # debug
+        command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar /app/parking.jar
         restart: unless-stopped
         depends_on:
             - postgres
+        logging:
+            driver: json-file
+        environment:
+            - DEBUG=true
 
 networks:
     parking-network:

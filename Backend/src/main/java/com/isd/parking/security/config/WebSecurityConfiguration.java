@@ -12,12 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -31,7 +29,6 @@ import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
-import org.zalando.problem.spring.webflux.advice.security.SecurityProblemSupport;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -48,9 +45,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  */
 @Configuration
 @Slf4j
-@EnableReactiveMethodSecurity
 @EnableWebSecurity
-@Import(SecurityProblemSupport.class)
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final String JwtSecretKeyFile = "secret.key";
@@ -117,17 +112,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${spring.inmemoryauth.adminpassword}")
     private String adminPasswordInMemory;
 
-    private final SecurityProblemSupport problemSupport;
-
     @Autowired
-    public WebSecurityConfiguration(LdapAuthoritiesPopulator ldapAuthoritiesPopulator,
-                                    SecurityProblemSupport problemSupport) {
+    public WebSecurityConfiguration(LdapAuthoritiesPopulator ldapAuthoritiesPopulator) {
         /*
          Ignores the default configuration, useless in our case (session management, etc..)
         */
         super(true);
         this.ldapAuthoritiesPopulator = ldapAuthoritiesPopulator;
-        this.problemSupport = problemSupport;
     }
 
     /**
@@ -241,25 +232,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .roles("ADMIN");
         }
     }
-
-    /*@Bean
-    public SecurityWebFilterChain springSecurityFilterChain(final ServerHttpSecurity http) {
-        // @formatter:off
-        http
-            .exceptionHandling()
-            .authenticationEntryPoint(problemSupport)
-            .accessDeniedHandler(problemSupport)
-            .and()
-            .headers()
-            .contentSecurityPolicy("default-src 'self'; frame-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://storage.googleapis.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:")
-            .and()
-            .referrerPolicy(ReferrerPolicyServerHttpHeadersWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
-            .and()
-            .featurePolicy("geolocation 'none'; midi 'none'; sync-xhr 'none'; microphone 'none'; camera 'none'; magnetometer 'none'; gyroscope 'none'; speaker 'none'; fullscreen 'self'; payment 'none'");
-
-        // @formatter:on
-        return http.build();
-    }*/
 
     @Bean
     @Override
