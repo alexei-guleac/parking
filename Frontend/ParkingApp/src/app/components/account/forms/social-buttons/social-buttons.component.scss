@@ -1,0 +1,151 @@
+/* Social buttons */
+/*@media (max-width: 488px) {
+    .lwa-button img {
+        background-image: url('src/assets/img/amazon-btn-488px-less_and_992-1200px.png');
+    }
+}*/
+.btn-mater {
+    border: none;
+    border-radius: 50px;
+
+    &:hover {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: var(--material-shadow-thin);
+    }
+}
+
+.social-btn {
+    .btn {
+        &:hover {
+            opacity: 0.9;
+        }
+
+        font-size: 15px;
+        font-weight: normal;
+        display: inline-flex;
+        width: 45%;
+        margin: 10px 10px;
+        text-align: center;
+        text-indent: 10px;
+        color: white;
+        border: none;
+        border-radius: 50px;
+
+        i {
+            font-size: 20px;
+            position: relative;
+            top: 2px;
+            min-width: 25px;
+            margin-right: -20px;
+        }
+    }
+
+    .btn-fb {
+        background: var(--facebook);
+    }
+
+    .btn-twitter {
+        background: var(--twitter);
+    }
+
+    .btn-google {
+        background: var(--google);
+    }
+
+    .btn-microsoft {
+        height: 100%;
+        background: var(--microsoft);
+        background-image: url('../../../../../assets/img/socials-logo/microsoft-logo.svg');
+        background-repeat: no-repeat;
+        background-position: 24px 50%;
+        background-size: 20px 20px;
+    }
+
+    .btn-amazon {
+        height: 100%;
+        background: var(--amazon);
+        background-image: url('src/assets/img/amazon-btn/amazon_icon.svg');
+        background-repeat: no-repeat;
+        background-position: 18px 50%;
+        background-size: 30px 30px;
+    }
+
+    .btn-github {
+        background: var(--github);
+    }
+
+    .btn-linkedin {
+        background: var(--linkedin);
+    }
+
+    .btn-inst {
+        background: var(--instagram);
+    }
+
+    .btn-vk {
+        background: var(--vkontakte);
+    }
+
+    .btn-apple {
+        background: var(--apple);
+    }
+}
+
+.btn {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+
+.social-btn-fade-in {
+    transition: all 1.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.btn-more {
+    color: var(--text-color);
+    background: var(--background);
+}
+
+.btn.btn-amazon {
+    font-size: 15px;
+    font-weight: normal;
+    display: inline-flex;
+    padding: 0 0.8rem;
+    text-align: center;
+    color: white;
+    border: none;
+    border-radius: 50px;
+}
+
+@media (max-width: 488px) {
+    .social-btn {
+        .btn {
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .social-btn {
+        .btn {
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
+}
+
+@media (min-width: 488px) and (max-width: 992px) {
+    .social-btn {
+        .btn.btn-amazon {
+            margin: 10px 10px !important;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    .social-btn {
+        .btn.btn-amazon {
+            margin: 10px 10px !important;
+        }
+    }
+}

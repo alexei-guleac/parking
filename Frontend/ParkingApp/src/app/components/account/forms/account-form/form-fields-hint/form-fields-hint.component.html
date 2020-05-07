@@ -1,0 +1,66 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Form hint</h4>
+    <button
+        (click)="activeModal.dismiss('Cross click')"
+        aria-describedby="modal-title"
+        aria-label="Close button"
+        class="close"
+        type="button"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p>
+        <strong>Username</strong> is required.
+    </p>
+    <ol>
+        <li>At least 5 characters long.</li>
+        <li>Maximum 15 characters long.</li>
+        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+    </ol>
+    <br/>
+
+    <p>
+        <strong>Email</strong> is required.
+    </p>
+    <ol>
+        <li>At least 8 characters long.</li>
+        <li>Maximum 35 characters long.</li>
+        <li>Should contain <strong>@</strong>,<i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+    </ol>
+    <br/>
+
+    <p>
+        <strong>Firstname</strong> is required.
+    </p>
+    <ol>
+        <li>At least 3 characters long.</li>
+        <li>Maximum 15 characters long.</li>
+        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+    </ol>
+    <br/>
+
+    <p>
+        <strong>Lastname</strong> is required.
+    </p>
+    <ol>
+        <li>At least 3 characters long.</li>
+        <li>Maximum 15 characters long.</li>
+        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+    </ol>
+    <br/>
+
+    <p>
+        <strong>Password</strong> is required.
+    </p>
+    <ol>
+        <li>At least 6 characters long.</li>
+        <li>Maximum 10 characters long.</li>
+        <li>Should contain<br/>
+            at least one uppercase letter, <br/>
+            one lowercase letter, one number <br/>
+            and one special character from <strong>!"@#$%^&'*()_+,./</strong></li>
+    </ol>
+    <br/>
+</div>

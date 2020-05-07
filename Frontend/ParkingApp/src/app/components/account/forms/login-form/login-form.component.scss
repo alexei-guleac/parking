@@ -1,0 +1,59 @@
+@import '../account-form/account-form.component.scss';
+
+/*.btn-mater {
+    background-color: var(--background) !important;
+    color: var(--text-color) !important;
+}*/
+
+.reg-form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 30rem;
+    margin: 4rem auto;
+    padding: 2rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    background-color: var(--white);
+}
+
+h1 {
+    font-weight: bold;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    color: #393739;
+}
+
+.box {
+    position: relative;
+    bottom: 0;
+    left: 0;
+    margin-right: 3rem;
+    margin-bottom: 3rem;
+    margin-left: 3rem;
+}
+
+.fa-eye-slash {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.fa-eye {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+/*.btn-mater {*/
+/*    border-radius: 50px;*/
+/*    border: none;*/
+/*}*/
+
+/*.btn-mater:hover {*/
+/*    color: var(--isd-red);*/
+/*    box-shadow: var(--material-shadow-thin);*/
+/*    transition: all 0.3s cubic-bezier(.25, .8, .25, 1);*/
+/*}*/

@@ -26,15 +26,13 @@ import java.util.Collection;
 
 @Slf4j
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
-@ComponentScan(basePackages = {"com.isd.parking.*"})
+@ComponentScan(basePackages = { "com.isd.parking.*" })
 @Profile("default")
 @EnableJpaRepositories
-@EnableConfigurationProperties({ApplicationProperties.class})
-@PropertySources({
-    @PropertySource("classpath:application.properties"),
-    @PropertySource("classpath:postgresql-config.properties"),
-    @PropertySource("classpath:documentation.properties")
-})
+@EnableConfigurationProperties({ ApplicationProperties.class })
+@PropertySources({ @PropertySource("classpath:application.properties"),
+    @PropertySource("classpath:postgresql-docker-config.properties"),
+    @PropertySource("classpath:documentation.properties") })
 public class ParkingApplication {
 
     private final Environment env;

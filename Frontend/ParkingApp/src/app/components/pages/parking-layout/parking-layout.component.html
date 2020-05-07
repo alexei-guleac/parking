@@ -1,0 +1,168 @@
+<div class="background mt-3 mx-auto align-content-center text-center">
+    <!-- <div class="d-flex justify-content-center" >
+      <div class="btn btn-outline-info refresh mt-3 mb-4 w-50" (click)="refresh()">Refresh</div>
+    </div> -->
+
+    <!--  <div class="display-4 text-light d-flex justify-content-center mb-2 title">ParKing Layout</div>-->
+
+    <div
+        *ngIf="message"
+        class="bg-warning display-5 flex justify-content-center text-center mb-2 connection-message"
+    >
+        {{ message }}
+    </div>
+
+    <app-parking-lot-detail
+        (goBackEvent)="refresh()"
+        *ngIf="action === 'view'"
+        [parkingLot]="selectedParkingLot"
+    >
+    </app-parking-lot-detail>
+
+    <!-- parking layout legend -->
+    <div
+        *ngIf="action !== 'view'"
+        class="legend-group mx-auto align-content-center text-center mb-2"
+    >
+        <div class="legend-elem mx-auto align-content-center text-center col-2">
+            <img
+                alt="car_side_free"
+                class="legend mx-auto align-content-center text-center"
+                src="../../../../assets/img/cars/car-side-free-border.png"
+            />
+            <div class="mx-auto align-content-center text-center">free</div>
+        </div>
+        <div class="legend-elem mx-auto align-content-center text-center col-2">
+            <img
+                alt="car_side_occupied"
+                class="legend mx-auto align-content-center text-center"
+                src="../../../../assets/img/cars/car-side.png"
+            />
+            <div class="mx-auto align-content-center text-center">occupied</div>
+        </div>
+        <div class="legend-elem mx-auto align-content-center text-center col-2">
+            <img
+                alt="car_side_reserved"
+                class="legend mx-auto align-content-center text-center"
+                src="../../../../assets/img/cars/car-side-reserved.png"
+            />
+            <div class="mx-auto align-content-center text-center">reserved</div>
+        </div>
+        <div class="legend-elem mx-auto align-content-center text-center col-3">
+            <img
+                alt="car_side_lost"
+                class="legend mx-auto align-content-center text-center"
+                src="../../../../assets/img/cars/car-side-lost.png"
+            />
+            <div class="mx-auto align-content-center text-center">
+                no connection
+            </div>
+        </div>
+    </div>
+
+    <!-- parking lots generator -->
+    <div *ngIf="action !== 'view'" class="container p-0 text-center">
+        <img
+            alt="layout"
+            class="layout"
+            src="../../../../assets/img/layouts/isd-parking-layout-red-striped-car.png"
+        />
+
+        <ng-container *ngIf="dataLoaded">
+            <ng-container *ngFor="let num of numberOfParkingLots">
+                <div
+                    (click)="showDetails(parkingLots[num]?.id)"
+                    [class.car-highlight]="
+                        classApplied[parkingLots[num]?.number]
+                    "
+                    [ngClass]="{
+                        'lot-side': parkingLots[num]?.number < 4,
+                        'lot-top': parkingLots[num]?.number >= 4,
+
+                        'car-free-side':
+                            parkingLots[num]?.status ===
+                                parkingLotStatus.FREE &&
+                            parkingLots[num]?.number < 4,
+                        'car-occupied-side':
+                            (parkingLots[num]?.status ===
+                                parkingLotStatus.OCCUPIED ||
+                                parkingLots[num].status == null) &&
+                            parkingLots[num]?.number < 4,
+                        'car-reserved-side':
+                            (parkingLots[num]?.status ===
+                                parkingLotStatus.RESERVED ||
+                                parkingLots[num].status == null) &&
+                            parkingLots[num]?.number < 4,
+                        'car-lost-side':
+                            parkingLots[num]?.status ===
+                                parkingLotStatus.UNKNOWN &&
+                            parkingLots[num]?.number < 4,
+
+                        'car-free-top':
+                            parkingLots[num]?.status ===
+                                parkingLotStatus.FREE &&
+                            parkingLots[num]?.number >= 4,
+                        'car-occupied-top':
+                            (parkingLots[num]?.status ===
+                                parkingLotStatus.OCCUPIED ||
+                                parkingLots[num].status == null) &&
+                            parkingLots[num]?.number >= 4,
+                        'car-reserved-top':
+                            (parkingLots[num]?.status ===
+                                parkingLotStatus.RESERVED ||
+                                parkingLots[num].status == null) &&
+                            parkingLots[num]?.number >= 4,
+                        'car-lost-top':
+                            parkingLots[num]?.status ===
+                                parkingLotStatus.UNKNOWN &&
+                            parkingLots[num]?.number >= 4
+                    }"
+                    class="car-icon {{ 'lot-' + parkingLots[num]?.number }}"
+                >
+                    <span
+                        *ngIf="
+                            parkingLots[num]?.status === parkingLotStatus.FREE
+                        "
+                        [ngClass]="{
+                            'lot-number-side': parkingLots[num]?.number < 4,
+                            'lot-number-top': parkingLots[num]?.number >= 4
+                        }"
+                    >{{
+                      'L' +
+                      (parkingLots[num]?.number < 10 ? 0 : '') +
+                      parkingLots[num]?.number
+                        }}
+                    </span>
+                    <span
+                        *ngIf="
+                            parkingLots[num]?.status ===
+                            parkingLotStatus.RESERVED
+                        "
+                        [ngClass]="{
+                            'lot-number-side lot-number-reserved-side':
+                                parkingLots[num]?.number < 4,
+                            'lot-number-top lot-number-reserved-top':
+                                parkingLots[num]?.number >= 4
+                        }"
+                    >{{
+                      'L' +
+                      (parkingLots[num]?.number < 10 ? 0 : '') +
+                      parkingLots[num]?.number
+                        }}
+                    </span>
+                </div>
+            </ng-container>
+            <div class="smoking text-secondary">
+                <i class="fas fa-smoking"></i>
+            </div>
+            <div class="backDoor first">
+                <div class="display-5">ISD 2nd</div>
+                <div class="display-5">Back Door</div>
+            </div>
+            <div *ngIf="true" class="backDoor second">
+                <div class="display-5">ISD 1st</div>
+                <div class="display-5">Back Door</div>
+            </div>
+        </ng-container>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Edit profile</h4>
+    <button
+        (click)="activeModal.dismiss('Cross click')"
+        aria-describedby="modal-title"
+        aria-label="Close button"
+        class="close"
+        type="button"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form
+  #f="ngForm"
+  (ngSubmit)="onSubmit(f.valid)"
+  [formGroup]="editForm"
+  class="form-group mx-auto text-center"
+>
+    <div class="modal-body">
+        <div class="container">
+            <div *ngIf="name" class="form-group mx-auto text-center">
+                <label for="username">User Name :</label>
+                <div class="input-group mx-auto text-center w-20rem">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-user"></i
+                            ></span>
+                    </div>
+                    <input
+                        [(ngModel)]="this.username"
+                        class="form-control tett"
+                        formControlName="username"
+                        id="username"
+                        minlength="5"
+                        name="username"
+                        placeholder="Enter User Name"
+                        required
+                        type="text"
+                    />
+                </div>
+                <div
+                    *ngIf="name.invalid && name.dirty && name.touched"
+                    class="alert alert-danger font-error mx-auto text-center w-20rem"
+                >
+                    <ng-container *ngIf="name.errors.required">
+                        Name is required.
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.minlength">
+                        Name must be at least 5 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.maxlength">
+                        Name must be maximum 15 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="name.errors.forbiddenName">
+                        Name should contain only<br/>
+                        A-Z, a-z, 0-9 symbols and "_" or ".".
+                    </ng-container>
+                </div>
+            </div>
+            <div *ngIf="fname" class="form-group mx-auto text-center">
+                <label for="firstname">First Name :</label>
+                <div class="input-group mx-auto text-center w-20rem">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-align-justify"></i
+                            ></span>
+                    </div>
+                    <input
+                        [(ngModel)]="this.firstname"
+                        class="form-control"
+                        formControlName="firstname"
+                        id="firstname"
+                        minlength="3"
+                        name="firstname"
+                        placeholder="Enter First Name"
+                        required
+                        type="text"
+                    />
+                </div>
+                <div
+                    *ngIf="fname.invalid && fname.dirty && fname.touched"
+                    class="alert alert-danger font-error mx-auto text-center w-20rem"
+                >
+                    <ng-container *ngIf="fname.errors.required">
+                        First Name is required.
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.minlength">
+                        First Name must be at least 3 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.maxlength">
+                        First Name must be maximum 15 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="fname.errors.forbiddenName">
+                        First Name should contain only<br/>
+                        A-Z, a-z and symbols "_", "-".
+                    </ng-container>
+                </div>
+            </div>
+            <div *ngIf="lname" class="form-group mx-auto text-center">
+                <label for="lastname">Last Name :</label>
+                <div class="input-group mx-auto text-center w-20rem">
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-align-justify"></i
+                            ></span>
+                    </div>
+                    <input
+                        [(ngModel)]="this.lastname"
+                        class="form-control"
+                        formControlName="lastname"
+                        id="lastname"
+                        minlength="3"
+                        name="lastname"
+                        placeholder="Enter Last Name"
+                        required
+                        type="text"
+                    />
+                </div>
+                <div
+                    *ngIf="lname.invalid && lname.dirty && lname.touched"
+                    class="alert alert-danger font-error mx-auto text-center w-20rem"
+                >
+                    <ng-container *ngIf="lname.errors.required">
+                        Last Name is required.
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.minlength">
+                        Last Name must be at least 3 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.maxlength">
+                        Last Name must be maximum 15 characters long.
+                    </ng-container>
+                    <ng-container *ngIf="lname.errors.forbiddenName">
+                        Last Name should contain only<br/>
+                        A-Z, a-z, 0-9 and symbols "_", "-".
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer align-items-end">
+        <button
+            (click)="onSubmit(this.editForm.valid)"
+            [disabled]="!editForm.valid || editForm.pristine"
+            appNoDblClick
+            class="btn btn-round save-btn form-group text-center"
+            type="submit"
+        >
+            Save
+        </button>
+    </div>
+</form>

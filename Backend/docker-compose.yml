@@ -1,4 +1,5 @@
 version: "3"
+
 services:
     # DB*****************************************
     postgres:
@@ -13,7 +14,7 @@ services:
         ports:
             - 5432:5432
         environment:
-            - POSTGRES_PASSWORD=admin
+            - POSTGRES_PASSWORD=aphextwin
             - POSTGRES_USER=postgres
             - POSTGRES_DB=parking
         restart: unless-stopped
@@ -30,7 +31,6 @@ services:
             - 4200:4200
         expose:
             - 4200
-
 
     # app*****************************************
     springbootapp:

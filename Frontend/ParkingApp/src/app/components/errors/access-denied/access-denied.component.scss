@@ -1,0 +1,139 @@
+//colors
+$white: #fff;
+
+//fonts
+$font_0: 'Montserrat';
+$font_1: 'sans-serif';
+$font_2: 'Montserrat';
+$font_3: 'sans-serif';
+$font_4: 'Montserrat';
+$font_5: 'sans-serif';
+
+#forbidden {
+    position: absolute;
+    top: 50%;
+    height: 50vh;
+
+    .forbidden {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.forbidden-img {
+    width: 25rem;
+    content: var(--forbidden-img);
+}
+
+.unauthorized-img {
+    width: 25rem;
+    content: var(--unauthorized-img);
+}
+
+.forbidden {
+    line-height: 1.4;
+    text-align: center;
+
+    .forbidden-401-403 {
+        position: relative;
+        z-index: -1;
+        height: 300px;
+        margin: 0 auto 10px;
+
+        .forbidden h1 {
+            width: 100%;
+            max-width: 1220px;
+            font-family: $font_0, $font_1;
+            font-size: 104px;
+            font-weight: 200;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            margin: 0;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            color: var(--text-color);
+        }
+
+        .access-denied h2 {
+            max-width: 720px;
+            font-family: $font_2, $font_3;
+            font-size: 28px;
+            font-weight: 400;
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: inline-block;
+            margin: auto;
+            padding: 10px 5px;
+            text-transform: uppercase;
+            color: var(--not-found-color);
+            background: $white;
+        }
+    }
+
+    a {
+        font-family: $font_4, $font_5;
+        font-size: 18px;
+        font-weight: 700;
+        display: inline-block;
+        padding: 13px 23px;
+        transition: 0.2s all;
+        text-decoration: none;
+        text-transform: uppercase;
+        color: $white;
+        border-radius: 1.5rem;
+        background: var(--isd-red);
+        box-shadow: var(--material-shadow-thin);
+
+        &:hover {
+            color: var(--isd-red);
+            background: var(--not-found-color);
+            box-shadow: var(--btn-material-shadow);
+        }
+    }
+}
+
+@media only screen and(max-width: 767px) {
+    .connection-message {
+        padding-top: 1rem;
+    }
+    .forbidden .forbidden-401-403 .forbidden h1 {
+        font-size: 68px;
+    }
+}
+
+@media(min-width: 520px) and(max-width: 620px) {
+    .forbidden .forbidden-401-403 {
+        height: 272px;
+        margin: 0 auto 10px;
+    }
+}
+
+@media only screen and(max-width: 480px) {
+    .forbidden {
+        .forbidden-401-403 {
+            height: 200px;
+            margin: 0 auto 10px;
+
+            .forbidden h1 {
+                font-size: 52px;
+            }
+
+            .access-denied h2 {
+                font-size: 16px;
+            }
+        }
+
+        a {
+            font-size: 14px;
+            padding: 7px 15px;
+        }
+    }
+    .connection-message {
+        padding-top: 1rem;
+    }
+}

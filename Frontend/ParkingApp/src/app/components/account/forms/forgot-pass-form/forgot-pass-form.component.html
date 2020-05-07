@@ -1,0 +1,74 @@
+<form
+  #f="ngForm"
+  (ngSubmit)="onSubmit(f.valid)"
+  [formGroup]="forgotForm"
+  class="form-group mx-auto text-center"
+>
+    <div *ngIf="requestSuccess" class="alert alert-success">
+        {{ confirmationMessage }}
+    </div>
+    <div *ngIf="requestFailed" class="alert alert-warning">
+        {{ errorMessage }}
+    </div>
+
+    <div class="form-group mx-auto text-center">
+        <div class="mx-auto m-3">
+            Please enter your email address. We will send you an email to reset
+            your password.
+        </div>
+
+        <label for="email"></label>
+        <div class="input-group mx-auto text-center w-20rem">
+            <div class="input-group-append">
+                <span class="input-group-text">
+                    <i class="fa fa-envelope"></i
+                    ></span>
+            </div>
+            <input
+                [(ngModel)]="this.email"
+                class="form-control"
+                formControlName="email"
+                id="email"
+                minlength="8"
+                name="email"
+                placeholder="example@mail.com"
+                required
+                type="email"
+            />
+        </div>
+        <!--                    <autocomplete givenPlaceHolder="Your email address"-->
+        <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
+
+        <div
+            *ngIf="mail.invalid && this.submitted"
+            class="alert alert-danger font-error mx-auto text-center w-20rem"
+        >
+            <ng-container *ngIf="mail.errors.required">
+                Email is required.<br/>
+            </ng-container>
+            <ng-container *ngIf="mail.errors.minlength">
+                At least 8 characters long.<br/>
+            </ng-container>
+            <ng-container *ngIf="mail.errors.maxlength">
+                Maximum 35 characters long.<br/>
+            </ng-container>
+            <!--                        <div *ngIf="mail.errors.forbiddenName">-->
+            <ng-container *ngIf="mail.errors.pattern">
+                Should contain @<br/>
+                A-Z, a-z, 0-9 symbols and "_", ".".
+            </ng-container>
+        </div>
+    </div>
+
+    <div class="button-box mx-auto">
+        <button
+            (click)="onSubmit(this.forgotForm.valid)"
+            [disabled]="sendSuccess"
+            appNoDblClick
+            class="btn btn-default submit-btn full-width form-group mx-auto text-center rounded-pill mt-3 mb-n2"
+            type="submit"
+        >
+            Send email&nbsp;&nbsp;<i class="far fa-envelope"></i>
+        </button>
+    </div>
+</form>

@@ -1,0 +1,181 @@
+/* Empty results */
+@import '../../pages/smth-error';
+
+//colors
+$color_tropical_blue_approx: #d1e7fa;
+$color_azure_radiance_approx: #0a8eff;
+$black: black;
+$white: white;
+$color_gravel_approx: #3a383a;
+
+h1 {
+    color: $color_tropical_blue_approx;
+}
+
+label {
+    color: $color_tropical_blue_approx;
+}
+
+.btn {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.reset-btn {
+    width: 100%;
+    margin-top: 0;
+
+    &:hover {
+        color: $color_azure_radiance_approx;
+        border-color: $color_tropical_blue_approx;
+        background-color: $color_tropical_blue_approx;
+    }
+}
+
+.table {
+    overflow: hidden;
+    //Instead of the line below you could use @include box-sizing($bs)
+    box-sizing: content-box;
+    border-spacing: 0;
+    border-collapse: collapse;
+    color: $black;
+    //Instead of the line below you could use @include border-radius($radius, $vertical-radius)
+    border-radius: 10px;
+    background: $white;
+
+    td {
+        color: $white;
+    }
+
+    thead {
+        color: $white;
+        background-color: var(--head);
+
+        th {
+            border-bottom: 0;
+        }
+    }
+}
+
+td {
+    text-align: center;
+    border-top: 0;
+}
+
+th {
+    text-align: center;
+    border-top: 0;
+
+    .parking-lot {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .time {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .date {
+        cursor: pointer;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+span {
+    position: relative;
+}
+
+@media only screen and(max-width: 416px) {
+    .table {
+        td {
+            padding: 0.5rem;
+        }
+
+        th {
+            padding: 0.5rem;
+        }
+
+        thead th {
+            vertical-align: middle;
+        }
+    }
+    .parking-lot .fas {
+        bottom: 2px;
+        left: 89px;
+    }
+    .date .fas {
+        position: absolute;
+        bottom: 1px;
+        left: 39px;
+    }
+    .time .fas {
+        position: absolute;
+        bottom: 1px;
+        left: 41px;
+    }
+}
+
+@media (max-width: 384px) {
+    th {
+        font-size: smaller;
+    }
+    .parking-lot .fas {
+        bottom: 1px;
+        left: 74px;
+    }
+    .date .fas {
+        bottom: 1px;
+        left: 33px;
+    }
+    .time .fas {
+        bottom: 1px;
+        left: 34px;
+    }
+}
+
+.statistics-form {
+    padding-top: 10px;
+}
+
+.form-control {
+    padding: 0;
+}
+
+@media (max-width: 992px) {
+    .input-group-text {
+        width: 150px;
+    }
+}
+
+tr:hover {
+    transition: 0.5s;
+    filter: brightness(90%);
+}
+
+.parking-lot .fas {
+    position: absolute;
+    bottom: 1px;
+    left: 90px;
+}
+
+.date .fas {
+    position: absolute;
+    bottom: 1px;
+    left: 39px;
+}
+
+.time .fas {
+    position: absolute;
+    bottom: 1px;
+    left: 41px;
+}

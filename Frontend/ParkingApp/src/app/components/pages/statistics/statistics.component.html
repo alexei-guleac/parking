@@ -1,0 +1,122 @@
+<div class="container statistics-form">
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="input-group">
+                <div class="input-group-prepend mx-auto text center">
+                    <span class="input-group-text mx-auto text center">
+                        <span class="mx-auto text center">
+                            <i class="fa fa-calendar-check"></i> Start date</span>
+                    </span>
+                </div>
+                <label for="dataBegin"></label>
+                <input (change)="filterData()"
+                       [(ngModel)]="startDate"
+                       class="form-control pl-2"
+                       id="dataBegin" type="date"/>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="input-group">
+                <div class="input-group-prepend mx-auto text center">
+                    <span class="input-group-text mx-auto text center">
+                        <span class="mx-auto text center">
+                            <i class="fas fa-calendar-times"></i> End date</span>
+                    </span>
+                </div>
+                <label for="dateEnd"></label>
+                <input (change)="filterData()"
+                       [(ngModel)]="endDate"
+                       class="form-control pl-2"
+                       id="dateEnd" type="date"/>
+            </div>
+        </div>
+
+        <div class="col-sm-3">
+            <div class="input-group">
+                <div class="input-group-prepend mx-auto text center">
+                    <span class="input-group-text mx-auto text center">
+                        <span class="mx-auto text center">
+                            <i class="fas fa-car-side"></i> Parking lot id
+                        </span>
+                    </span>
+                </div>
+                <select (change)="filterData()"
+                        [(ngModel)]="selectedLotNumber"
+                        class="form-control"
+                        name="lots">
+                    <option> All</option>
+                    <option *ngFor="let lot of lotNumber"> {{ lot }} </option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <button (click)="loadData()" class="btn btn-danger reset-btn">
+                    <i class="fas fa-times-circle"></i>
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+<ng-container *ngIf="filteredStatistics.length != 0">
+    <div class="col-12">
+        <table class="table">
+            <thead>
+            <tr>
+                <th (click)="sortStatisticsTableByLotNumber()">
+                        <span class="parking-lot">Parking Lot
+                            <i *ngIf="lotSortedAsc" class="fas fa-sort-up"></i>
+                            <i *ngIf="lotSortedDesc" class="fas fa-sort-down"></i>
+                        </span>
+                </th>
+                <th>Status</th>
+                <th (click)="sortStatisticsTableByTime()">
+                        <span class="time">Time
+                            <i *ngIf="timeSortedAsc" class="fas fa-sort-up"></i>
+                            <i *ngIf="timeSortedDesc" class="fas fa-sort-down"></i>
+                        </span>
+                </th>
+                <th (click)="sortStatisticsTableByDate()">
+                        <span class="date">Date
+                            <i *ngIf="dateSortedAsc" class="fas fa-sort-up"></i>
+                            <i *ngIf="dateSortedDesc" class="fas fa-sort-down"></i>
+                        </span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let stat of filteredStatistics
+                            | paginate: { itemsPerPage: 10, currentPage: p };
+                        let i = index"
+                [ngStyle]="{ background: getColor(stat.status) }">
+                <!--//here you can set the number of rows to display on one page-->
+                <td>{{ 'LOT ' + stat.lotNumber }}</td>
+                <td>{{ stat.status }}</td>
+                <td>{{ stat.updatedAt | date: 'HH:mm:ss' }}</td>
+                <td>{{ stat.updatedAt | date: 'dd.MM.yy' }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <pagination-controls (pageChange)="p = $event" autoHide="true"></pagination-controls>
+    </div>
+</ng-container>
+
+<div *ngIf="filteredStatistics.length == 0"
+     class="container mx-auto text-center align-content-center mt-2 w-75">
+    <div class="smthg-error mt-3 mx-auto text-center">
+        <div class="unable-to-connect mx-auto text-center">
+            <h2>No results found.</h2>
+        </div>
+    </div>
+    <div class="message mx-auto text-center m-1 px-3">
+        It seems nothing for this calendar period what you are looking for.
+    </div>
+    <img alt="no_statistics"
+         class="w-100 mx-auto text-center align-content-center h-auto"
+         src="../../../../assets/img/no-results-found.png"
+    />
+</div>

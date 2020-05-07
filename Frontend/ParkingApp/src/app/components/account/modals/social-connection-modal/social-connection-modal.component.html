@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Connect socials</h4>
+    <button
+        (click)="activeModal.dismiss('Cross click')"
+        aria-describedby="modal-title"
+        aria-label="Close button"
+        class="close"
+        type="button"
+    >
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+
+    <div *ngIf="invalidConnect" class="alert alert-warning">{{ errorMessage }}</div>
+
+    <div class="container social-toggles mt-3"
+    >
+        <ng-container *ngFor="let s of usedSocialProviders">
+            <app-social-toggle (socialConnectEvent)="this.socialConnect($event)"
+                               (socialDisconnectEvent)="this.socialDisconnect($event)"
+                               [socialName]="capitalize(s)"
+                               [socialProvider]="socialProviders[s]"
+                               socialImgSrc="{{socialLogoPath + s + '-logo.png'}}"
+            >
+            </app-social-toggle>
+        </ng-container>
+    </div>
+</div>
+<div class="modal-footer">
+    <button
+        (click)="activeModal.dismiss('cancel click')"
+        class="btn btn-outline-secondary"
+        type="button"
+    >
+        Cancel
+    </button>
+</div>

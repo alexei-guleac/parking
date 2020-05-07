@@ -12,6 +12,7 @@
 #RUN mvn clean install -DskipTests
 #ADD target/docker-spring-boot.jar /app/app.jar
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container", "-jar", "/app/app.jar"]
+
 #Specifying the base image, I'm using Java 11
 FROM openjdk:11-slim
 VOLUME /tmp
@@ -20,6 +21,9 @@ EXPOSE 8080 5005
 RUN mkdir -p /app/
 RUN mkdir -p /app/logs/
 # Copies the compiled jar file to the root of the container -- DOUBLE CHECK THIS.
-ADD target/docker-spring-boot.jar /app/app.jar
+ADD target/docker-spring-boot.jar /app/parking.jar
 # Specifies the command that will start up the application.
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-jar","/app/app.jar"]
+#ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-jar","/app/parking.jar"]
+#ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
+#ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=dev","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=default","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]

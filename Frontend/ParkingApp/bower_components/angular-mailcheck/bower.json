@@ -1,0 +1,38 @@
+{
+    "name": "angular-mailcheck",
+    "description": "Angular wrapper for Mailcheck.js",
+    "version": "0.2.0",
+    "authors": [
+        "Mikael Korpela <mikael@ihminen.org> (http://www.mikaelkorpela.fi)"
+    ],
+    "homepage": "https://github.com/simison/angular-mailcheck",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/simison/angular-mailcheck.git"
+    },
+    "keywords": [
+        "angularjs",
+        "javascript",
+        "directive",
+        "email",
+        "validator",
+        "interface",
+        "UX",
+        "UI"
+    ],
+    "main": [
+        "./angular-mailcheck.js"
+    ],
+    "ignore": [
+        "gulpfile.js",
+        "*.md",
+        "package.json"
+    ],
+    "dependencies": {
+        "jquery": "*",
+        "angular": "1.x",
+        "mailcheck": "1.1.x"
+    },
+    "private": false,
+    "license": "MIT"
+}
