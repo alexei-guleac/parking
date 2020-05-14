@@ -32,6 +32,10 @@ $color_azure_radiance_approx: #0a8eff;
         transition: 0.5s;
         box-shadow: 0 0.5rem 1rem $black_15;
     }
+
+    &.no-connection-lot {
+        cursor: not-allowed;
+    }
 }
 
 .fas,

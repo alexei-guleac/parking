@@ -1,22 +1,23 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { parking } from '@app/constants/app-constants';
 import {
     getParkingLotByIdPredicate,
     getParkingLotByNumberPredicate,
     getParkingLotsComparator,
     ParkingLot
-} from "@app/models/ParkingLot";
-import { parkingStatuses } from "@app/models/ParkingLotStatus";
-import { DataService } from "@app/services/data/data.service";
-import { actions, appRoutes } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { interval, Subscription } from "rxjs";
+} from '@app/models/ParkingLot';
+import { parkingStatuses } from '@app/models/ParkingLotStatus';
+import { DataService } from '@app/services/data/data.service';
+import { actions, appRoutes } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { interval, Subscription } from 'rxjs';
 
 
 @Component({
-    selector: "app-feature2",
-    templateUrl: "./parking-layout.component.html",
-    styleUrls: ["./parking-layout.component.scss"]
+    selector: 'app-feature2',
+    templateUrl: './parking-layout.component.html',
+    styleUrls: ['./parking-layout.component.scss']
 })
 export class ParkingLayoutComponent
     implements OnInit, OnDestroy, AfterViewInit {
@@ -37,11 +38,11 @@ export class ParkingLayoutComponent
 
     private loadDataSubscription: Subscription;
 
-    private message = "Please wait...";
+    private message = 'Please wait...';
 
     private loadDataCounter = 0;
 
-    private numberOfParkingLots: Array<number> = new Array<number>(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    private numberOfParkingLots: Array<number> = new Array<number>();
 
     private classApplied: Array<boolean> = new Array<boolean>();
 
@@ -53,6 +54,9 @@ export class ParkingLayoutComponent
         private router: Router,
         private navigationService: NavigationService
     ) {
+        for (let i = 0; i < parking.lotsNumber; i++) {
+            this.numberOfParkingLots.push(i);
+        }
     }
 
     /**
@@ -140,13 +144,13 @@ export class ParkingLayoutComponent
             if (data.length !== 0) {
                 this.sortParkingLots(data);
                 this.dataLoaded = true;
-                this.message = "";
+                this.message = '';
                 // console.log('loadData');
 
                 this.fillMissingLots();
                 this.loadDataCounter = 0;
             } else {
-                this.message = "No data found, please contact support";
+                this.message = 'No data found, please contact support';
             }
         };
     }
@@ -158,12 +162,12 @@ export class ParkingLayoutComponent
         return (error) => {
             setTimeout(() => {
                 if (++this.loadDataCounter <= 5) {
-                    this.message = "Connection lost. Please wait...";
+                    this.message = 'Connection lost. Please wait...';
                     // console.log(this.loadDataCounter);
                     this.loadData();
                 } else {
                     this.message =
-                        "Can not connect to server. Please contact support";
+                        'Can not connect to server. Please contact support';
                     this.updateSubscription.unsubscribe();
                     this.loadDataSubscription.unsubscribe();
                 }
@@ -176,8 +180,8 @@ export class ParkingLayoutComponent
      * they will be filled with mock
      */
     private fillMissingLots() {
-        if (this.parkingLots.length < 10) {
-            for (let i = 1; i <= 10; i++) {
+        if (this.parkingLots.length < parking.lotsNumber) {
+            for (let i = 1; i <= parking.lotsNumber; i++) {
                 const pl = new ParkingLot();
                 if (!this.parkingLots.find(getParkingLotByNumberPredicate(i))) {
                     pl.number = pl.id = i;
@@ -233,7 +237,7 @@ export class ParkingLayoutComponent
      * Initializes an auxiliary parking lot highlight array
      */
     private fillClassHighlightArray() {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < parking.lotsNumber; i++) {
             this.classApplied.push(false);
         }
     }

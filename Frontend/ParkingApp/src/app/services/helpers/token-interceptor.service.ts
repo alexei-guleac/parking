@@ -1,7 +1,7 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { getJwtToken } from "../account/account-session-storage.service";
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { getJwtToken } from '../account/account-session-storage.service';
 
 
 /**
@@ -9,6 +9,7 @@ import { getJwtToken } from "../account/account-session-storage.service";
  */
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+
     constructor() {
     }
 

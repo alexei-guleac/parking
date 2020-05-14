@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { RegFormComponent } from "./registration-form.component";
+import { RegFormComponent } from './registration-form.component';
 
 
-describe("RegFormComponent", () => {
+describe('RegFormComponent', () => {
     let component: RegFormComponent;
     let fixture: ComponentFixture<RegFormComponent>;
 
@@ -19,7 +19,7 @@ describe("RegFormComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

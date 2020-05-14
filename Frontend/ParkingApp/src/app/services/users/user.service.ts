@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
-import { User } from "@app/models/User";
-import { HttpClientService } from "@app/services/helpers/http-client.service";
-import { api } from "@app/services/navigation/app.endpoints";
-import { environment } from "@env";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Injectable } from '@angular/core';
+import { User } from '@app/models/User';
+import { HttpClientService } from '@app/services/helpers/http-client.service';
+import { api } from '@app/services/navigation/app.endpoints';
+import { environment } from '@env';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 
 /**
  * Service for performing user related requests
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class UserService {
 
@@ -27,7 +27,7 @@ export class UserService {
             .postJsonRequest<User>(environment.restUrl + api.profile, username)
             .pipe(
                 map((user) => {
-                    console.log("USER" + JSON.stringify(user));
+                    // console.log('USER' + JSON.stringify(user));
                     return user;
                 })
             );

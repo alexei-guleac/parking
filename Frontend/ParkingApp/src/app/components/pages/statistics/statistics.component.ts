@@ -1,45 +1,39 @@
-import { formatDate } from "@angular/common";
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { parkingStatuses } from "@app/models/ParkingLotStatus";
+import { formatDate } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { parking } from '@app/constants/app-constants';
+import { parkingColors } from '@app/models/ParkingLotStatus';
 import {
-    ascendingStatisticsSortByTime,
-    descendingStatisticsSortByTime,
     filterStatisticsByDatePeriod,
     filterStatisticsByNumber,
     getStatisticsByUpdatedAtAscSortComparator,
     Statistics
-} from "@app/models/Statistics";
-import { DataService } from "@app/services/data/data.service";
-import { ObjectsSortService } from "@app/services/data/objects-sort.service";
-import { appRoutes } from "@app/services/navigation/app.endpoints";
+} from '@app/models/Statistics';
+import { DataService, StatsDateSortable } from '@app/services/data/data.service';
+import { ObjectsSortService } from '@app/services/data/objects-sort.service';
+import { StatisticsService } from '@app/services/data/statistics.service';
+import { appRoutes } from '@app/services/navigation/app.endpoints';
 
 
 /**
  * Parking lots usage statistics page
  */
 @Component({
-    selector: "app-statistics",
-    templateUrl: "./statistics.component.html",
-    styleUrls: ["./statistics.component.scss"]
+    selector: 'app-statistics',
+    templateUrl: './statistics.component.html',
+    styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements OnInit, StatsDateSortable {
 
     private statistics: Array<Statistics>;
 
-    private filteredStatistics: Array<Statistics>;
+    filteredStatistics: Array<Statistics>;
 
-    private lotNumber = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    lotSortedAsc = false;
 
     private p = 1;              // declaration of page index used for pagination
 
-    // set the table row color depending on status
-    private colors = [
-        { status: parkingStatuses.FREE, background: "#28a745" },
-        { status: parkingStatuses.OCCUPIED, background: "#dc3545" },
-        { status: parkingStatuses.UNKNOWN, background: "gray" },
-        { status: parkingStatuses.RESERVED, background: "#ffbf0f" }
-    ];
+    lotSortedDesc = false;
 
     private selectedLotNumber: string = null;
 
@@ -47,23 +41,28 @@ export class StatisticsComponent implements OnInit {
 
     private endDate: string;
 
-    private lotSortedAsc = false;
+    dateSortedAsc = false;
 
-    private lotSortedDesc = false;
+    dateSortedDesc = false;
 
-    private dateSortedAsc = false;
+    timeSortedAsc = false;
 
-    private dateSortedDesc = false;
+    timeSortedDesc = false;
 
-    private timeSortedAsc = false;
+    private lotNumber = [];
 
-    private timeSortedDesc = false;
+    // set the table row color depending on status
+    private colors = parkingColors;
 
     constructor(
         private dataService: DataService,
         private route: ActivatedRoute,
-        private objectsSortService: ObjectsSortService
+        private objectsSortService: ObjectsSortService,
+        private statisticsService: StatisticsService
     ) {
+        for (let i = 1; i <= parking.lotsNumber; i++) {
+            this.lotNumber.push(i);
+        }
     }
 
     /**
@@ -89,11 +88,27 @@ export class StatisticsComponent implements OnInit {
         this.filteredStatistics = this.statistics;
         this.selectedLotNumber = undefined;
 
-        this.startDate = this.endDate = formatDate(
-            new Date(),
-            "yyyy-MM-dd",
-            "en-UK"
+        // @ts-ignore
+        Date.prototype.subtractDays = function(d) {
+            this.setTime(this.getTime() - (d * 24 * 60 * 60 * 1000));
+            return this;
+        };
+
+        const dateFormat = 'yyyy-MM-dd';
+        const dateLocale = 'en-UK';
+        const dateStart = new Date();
+        this.startDate = formatDate(
+            dateStart.setDate(dateStart.getDate() - parking.statisticsDaysScheduleDelete),
+            dateFormat,
+            dateLocale
         );
+        const dateEnd = new Date();
+        this.endDate = formatDate(
+            dateEnd.setDate(dateEnd.getDate() + 1),
+            dateFormat,
+            dateLocale
+        );
+        console.log(this.endDate);
         this.filterData();
     }
 
@@ -103,11 +118,11 @@ export class StatisticsComponent implements OnInit {
     private filterData() {
         let tempStats = new Array<Statistics>();
 
-        console.log("new Date(this.startDate).getDate()" + (new Date(this.startDate).setHours(0, 0, 0)));
-        console.log("new Date(this.endDate).getDate()" + new Date(this.endDate));
+        // reset to first page after lot number option selected
+        this.p = 1;
 
         // if all selected
-        if (this.selectedLotNumber === "All") {
+        if (this.selectedLotNumber === 'All') {
             this.selectedLotNumber = null;
         }
 
@@ -116,7 +131,7 @@ export class StatisticsComponent implements OnInit {
             new Date(this.startDate) >
             new Date(this.endDate)
         ) {
-            alert("The start date you entered is higher that the end date");
+            alert('The start date you entered is higher that the end date');
         } else if (this.startDate != null && this.endDate != null) {
             tempStats = this.statistics.filter(
                 filterStatisticsByDatePeriod(this.startDate, this.endDate)
@@ -129,9 +144,6 @@ export class StatisticsComponent implements OnInit {
             }
         }
         this.filteredStatistics = tempStats;
-        console.log("this.filteredStatistics");
-        console.log(this.filteredStatistics);
-        console.log(tempStats);
     }
 
     /**
@@ -140,10 +152,10 @@ export class StatisticsComponent implements OnInit {
     private sortStatisticsTableByLotNumber() {
         this.objectsSortService.sortTable(
             this,
-            "lotSortedAsc",
-            "lotSortedDesc",
+            'lotSortedAsc',
+            'lotSortedDesc',
             this.filteredStatistics,
-            "lotNumber",
+            'lotNumber',
             (this.dateSortedAsc = false),
             (this.dateSortedDesc = false),
             (this.timeSortedDesc = false),
@@ -157,10 +169,10 @@ export class StatisticsComponent implements OnInit {
     private sortStatisticsTableByDate() {
         this.objectsSortService.sortTable(
             this,
-            "dateSortedAsc",
-            "dateSortedDesc",
+            'dateSortedAsc',
+            'dateSortedDesc',
             this.filteredStatistics,
-            "updatedAt",
+            'updatedAt',
             (this.lotSortedAsc = false),
             (this.lotSortedDesc = false),
             (this.timeSortedDesc = false),
@@ -172,38 +184,7 @@ export class StatisticsComponent implements OnInit {
      * Sort statistics data by parking lot updated time
      */
     private sortStatisticsTableByTime() {
-
-        for (let i = 0; i < this.filteredStatistics.length - 1; i++) {
-            if (this.filteredStatistics[i].updatedAt.getTime() >
-                this.filteredStatistics[i + 1].updatedAt.getTime()) {
-                this.timeSortedDesc = true;
-                this.timeSortedAsc = false;
-            }
-
-            if (this.filteredStatistics[i].updatedAt.getTime() <
-                this.filteredStatistics[i + 1].updatedAt.getTime()) {
-                this.timeSortedAsc = true;
-                this.timeSortedDesc = false;
-            }
-        }
-
-        if (this.timeSortedAsc) {
-            this.filteredStatistics.sort(descendingStatisticsSortByTime());
-
-            this.timeSortedAsc = false;
-            this.timeSortedDesc = true;
-        } else {
-            this.filteredStatistics.sort(ascendingStatisticsSortByTime());
-
-            this.timeSortedDesc = false;
-            this.timeSortedAsc = true;
-        }
-
-        this.lotSortedAsc = false;
-        this.lotSortedDesc = false;
-
-        this.dateSortedDesc = false;
-        this.dateSortedAsc = false;
+        this.statisticsService.sortStatisticsTableByTime(this);
     }
 
     /**

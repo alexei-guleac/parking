@@ -1,14 +1,14 @@
-import { Component, EventEmitter, Input, Output } from "@angular/core";
-import { socialProviderNames } from "@app/services/account/social/social-user-storage.service";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { socialProviderNames } from '@app/services/account/social/social-user-storage.service';
 
 
 /**
  * Social provider toggle for modal window
  */
 @Component({
-    selector: "app-social-toggle",
-    templateUrl: "./social-toggle.component.html",
-    styleUrls: ["./social-toggle.component.scss"]
+    selector: 'app-social-toggle',
+    templateUrl: './social-toggle.component.html',
+    styleUrls: ['./social-toggle.component.scss']
 })
 export class SocialToggleComponent {
 

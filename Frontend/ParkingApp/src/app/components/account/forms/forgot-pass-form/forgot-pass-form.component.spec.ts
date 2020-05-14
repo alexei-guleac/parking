@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ForgotPassFormComponent } from "./forgot-pass-form.component";
+import { ForgotPassFormComponent } from './forgot-pass-form.component';
 
 
-describe("ForgotPassFormComponent", () => {
+describe('ForgotPassFormComponent', () => {
     let component: ForgotPassFormComponent;
     let fixture: ComponentFixture<ForgotPassFormComponent>;
 
@@ -19,7 +19,7 @@ describe("ForgotPassFormComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

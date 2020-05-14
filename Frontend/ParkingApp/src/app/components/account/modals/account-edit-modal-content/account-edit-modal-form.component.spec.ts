@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountEditModalFormComponent } from "./account-edit-modal-form.component";
+import { AccountEditModalFormComponent } from './account-edit-modal-form.component';
 
 
-describe("AccountEditModalContentComponent", () => {
+describe('AccountEditModalContentComponent', () => {
     let component: AccountEditModalFormComponent;
     let fixture: ComponentFixture<AccountEditModalFormComponent>;
 
@@ -19,7 +19,7 @@ describe("AccountEditModalContentComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

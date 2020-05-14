@@ -1,29 +1,29 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { AuthenticationRequest } from "@app/models/payload/AuthenticationRequest";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { FormControlService, togglePassTextType } from "@app/services/account/form-control.service";
-import { SocialProviderService } from "@app/services/account/social/social-provider.service";
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { AuthenticationRequest } from '@app/models/payload/AuthenticationRequest';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { FormControlService, togglePassTextType } from '@app/services/account/form-control.service';
+import { SocialProviderService } from '@app/services/account/social/social-provider.service';
 import {
     socialProviderNames,
     SocialUserStorageService
-} from "@app/services/account/social/social-user-storage.service";
-import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { isNonEmptyStrings } from "@app/utils/string-utils";
-import { Subscription } from "rxjs";
+} from '@app/services/account/social/social-user-storage.service';
+import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { isNonEmptyStrings } from '@app/utils/string-utils';
+import { Subscription } from 'rxjs';
 
 
 /**
  * Login form component
  */
 @Component({
-    selector: "app-login-form",
-    templateUrl: "./login-form.component.html",
-    styleUrls: ["./login-form.component.scss"]
+    selector: 'app-login-form',
+    templateUrl: './login-form.component.html',
+    styleUrls: ['./login-form.component.scss']
 })
 export class LoginFormComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
@@ -80,11 +80,11 @@ export class LoginFormComponent
     }
 
     get name() {
-        return this.loginForm.get("username");
+        return this.loginForm.get('username');
     }
 
     get pass() {
-        return this.loginForm.get("password");
+        return this.loginForm.get('password');
     }
 
     /**
@@ -115,7 +115,7 @@ export class LoginFormComponent
      */
     onSubmit(valid: boolean) {
         this.submitted = true;
-        if (this.loginForm.hasError("invalid")) {
+        if (this.loginForm.hasError('invalid')) {
             this.submitted = false;
             return;
         }
@@ -181,7 +181,7 @@ export class LoginFormComponent
             if (response.token) {
                 this.isLoginFailed = false;
                 this.isLoginSuccess = true;
-                this.successMessage = "Login Successful.";
+                this.successMessage = 'Login Successful.';
 
                 this.authenticationService.registerSuccessfulAuth(
                     this.username,
@@ -218,7 +218,7 @@ export class LoginFormComponent
 
     private handleSocialResponse() {
         return (response: any) => {
-            console.log("RESPONSE " + JSON.stringify(response));
+            // console.log('RESPONSE ' + JSON.stringify(response));
             if (response.token) {
                 this.handleSocialLoginResponse(response);
             }
@@ -236,7 +236,7 @@ export class LoginFormComponent
         if (response.token) {
             this.isLoginFailed = false;
             this.isLoginSuccess = true;
-            this.successMessage = "Social Login Successful.";
+            this.successMessage = 'Social Login Successful.';
 
             // save user in browser storage
             this.authenticationService.registerSuccessfulAuth(
@@ -257,7 +257,7 @@ export class LoginFormComponent
     private handleSocialLoginError(error) {
         this.isLoginSuccess = false;
         this.isLoginFailed = true;
-        alert("Authentication failed.");
+        alert('Authentication failed.');
         this.socialService.cleanGitAuth();
         this.fullLogout();
 

@@ -1,29 +1,29 @@
-import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { AuthenticationRequest } from "@app/models/payload/AuthenticationRequest";
-import { ResetPasswordRequest } from "@app/models/payload/ResetPasswordRequest";
-import { User } from "@app/models/User";
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationRequest } from '@app/models/payload/AuthenticationRequest';
+import { ResetPasswordRequest } from '@app/models/payload/ResetPasswordRequest';
+import { User } from '@app/models/User';
 import {
     AccountSessionStorageService,
     AccountStorageService,
     getUsername,
     roleAdmin,
     setUsername
-} from "@app/services/account/account-session-storage.service";
-import { SocialUserStorageService } from "@app/services/account/social/social-user-storage.service";
-import { HttpClientService } from "@app/services/helpers/http-client.service";
-import { api } from "@app/services/navigation/app.endpoints";
-import { environment } from "@env";
-import { AuthService } from "angularx-social-login-vk";
-import { Observable } from "rxjs";
-import "rxjs/add/observable/empty";
+} from '@app/services/account/account-session-storage.service';
+import { SocialUserStorageService } from '@app/services/account/social/social-user-storage.service';
+import { HttpClientService } from '@app/services/helpers/http-client.service';
+import { api } from '@app/services/navigation/app.endpoints';
+import { environment } from '@env';
+import { AuthService } from 'angularx-social-login-vk';
+import { Observable } from 'rxjs';
+import 'rxjs/add/observable/empty';
 
 
 /**
  * Provides methods for server API requests performing
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class AuthenticationService {
     public username: string;
@@ -153,7 +153,7 @@ export class AuthenticationService {
     isUserLoggedIn() {
         const user = getUsername(this.storageType.getType());
 
-        return !(user === null || user === "" || user === undefined);
+        return !(user === null || user === '' || user === undefined);
     }
 
     /**
@@ -171,7 +171,7 @@ export class AuthenticationService {
     getLoggedInUserName() {
         const user = getUsername(this.storageType.getType());
         if (user === null) {
-            return "";
+            return '';
         }
         return user;
     }

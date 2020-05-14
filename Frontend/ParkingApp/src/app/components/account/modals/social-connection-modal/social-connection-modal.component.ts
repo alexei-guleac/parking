@@ -1,28 +1,28 @@
-import { AfterViewChecked, Component, QueryList, ViewChildren } from "@angular/core";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { SocialToggleComponent } from "@app/components/account/modals/social-connection-modal/social-toogle/social-toggle.component";
-import { SocialAccountService } from "@app/services/account/social/social-account.service";
-import { SocialProviderService } from "@app/services/account/social/social-provider.service";
+import { AfterViewChecked, Component, QueryList, ViewChildren } from '@angular/core';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { SocialToggleComponent } from '@app/components/account/modals/social-connection-modal/social-toogle/social-toggle.component';
+import { SocialAccountService } from '@app/services/account/social/social-account.service';
+import { SocialProviderService } from '@app/services/account/social/social-provider.service';
 import {
     socialProviderNames,
     SocialUserStorageService,
     usedSocialProviders
-} from "@app/services/account/social/social-user-storage.service";
-import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { actions } from "@app/services/navigation/app.endpoints";
+} from '@app/services/account/social/social-user-storage.service';
+import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { actions } from '@app/services/navigation/app.endpoints';
 
-import { capitalize } from "@app/utils/string-utils";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
-import { Subject } from "rxjs";
+import { capitalize } from '@app/utils/string-utils';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subject } from 'rxjs';
 
 
 /**
  * Social providers account connection modal window
  */
 @Component({
-    selector: "app-social-connection-modal",
-    templateUrl: "./social-connection-modal.component.html",
-    styleUrls: ["./social-connection-modal.component.scss"]
+    selector: 'app-social-connection-modal',
+    templateUrl: './social-connection-modal.component.html',
+    styleUrls: ['./social-connection-modal.component.scss']
 })
 export class SocialConnectionModalComponent
     implements AfterViewChecked, ComponentWithErrorMsg {
@@ -151,7 +151,11 @@ export class SocialConnectionModalComponent
                     });
             }
             if (response.disconnect) {
-                this.socialToggleComponentChildren.forEach(
+
+                // close window
+                this.activeModal.dismiss();
+
+                /*this.socialToggleComponentChildren.forEach(
                     (child) => {
                         if (child.socialProvider === this.socialProviders[this.socialProvider]) {
 
@@ -177,7 +181,7 @@ export class SocialConnectionModalComponent
                         }
                     });
                 // if remains only one social connect keep it for account save reasons
-                console.log(countConnected);
+                // console.log(countConnected);
                 if (countConnected === 1) {
                     this.socialToggleComponentChildren.forEach(
                         (child) => {
@@ -185,7 +189,7 @@ export class SocialConnectionModalComponent
                                 child.enabled = false;
                             }
                         });
-                }
+                }*/
             }
 
             // remove temporary Github auth data
@@ -198,7 +202,7 @@ export class SocialConnectionModalComponent
      */
     private handleSocialLoginError(error) {
         this.invalidConnect = true;
-        alert("Social connection failed.");
+        alert('Social connection failed.');
         handleHttpErrorResponse(error, this);
 
         this.socialToggleComponentChildren.forEach(

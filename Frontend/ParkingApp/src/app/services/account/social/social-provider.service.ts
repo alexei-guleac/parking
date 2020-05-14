@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
     AmazonAuthRequest,
     AmazonSignUpRequest,
@@ -14,28 +14,28 @@ import {
     SocialDisconnectRequest,
     SocialSignInRequest,
     SocialSignUpRequest
-} from "@app/models/payload/SocialSignInRequest";
-import { User } from "@app/models/User";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { GithubOauthService } from "@app/services/account/social/github-oauth.service";
-import { MsalAuthService } from "@app/services/account/social/msal-auth.service";
-import { SocialAccountService } from "@app/services/account/social/social-account.service";
+} from '@app/models/payload/SocialSignInRequest';
+import { User } from '@app/models/User';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { GithubOauthService } from '@app/services/account/social/github-oauth.service';
+import { MsalAuthService } from '@app/services/account/social/msal-auth.service';
+import { SocialAccountService } from '@app/services/account/social/social-account.service';
 import {
     commonLibrarySocialProviders,
     socialProviderNames,
     SocialUserStorageService
-} from "@app/services/account/social/social-user-storage.service";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { AuthService, FacebookLoginProvider, GoogleLoginProvider, VKLoginProvider } from "angularx-social-login-vk";
-import { Subscription } from "rxjs";
+} from '@app/services/account/social/social-user-storage.service';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { AuthService, FacebookLoginProvider, GoogleLoginProvider, VKLoginProvider } from 'angularx-social-login-vk';
+import { Subscription } from 'rxjs';
 
 
 /**
  * Social providers login/registrtion methods
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class SocialProviderService {
 

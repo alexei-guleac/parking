@@ -1,15 +1,15 @@
-import { Component, Input, Type } from "@angular/core";
-import { FormFieldsHintComponent } from "@app/components/account/forms/account-form/form-fields-hint/form-fields-hint.component";
-import { AccountEditModalFormComponent } from "@app/components/account/modals/account-edit-modal-content/account-edit-modal-form.component";
-import { SocialConnectionModalComponent } from "@app/components/account/modals/social-connection-modal/social-connection-modal.component";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Component, Input, Type } from '@angular/core';
+import { FormFieldsHintComponent } from '@app/components/account/forms/account-form/form-fields-hint/form-fields-hint.component';
+import { AccountEditModalFormComponent } from '@app/components/account/modals/account-edit-modal-content/account-edit-modal-form.component';
+import { SocialConnectionModalComponent } from '@app/components/account/modals/social-connection-modal/social-connection-modal.component';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 /**
  * Confirm modal windows ng-bootstrap templates (optionally with button autofocus)
  */
 @Component({
-    selector: "app-ngbd-modal-confirm",
+    selector: 'app-ngbd-modal-confirm',
     template: `
         <div class="modal-header">
             <h4 class="modal-title" id="modal-title">{{ title }}</h4>
@@ -42,7 +42,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
             </button>
         </div>
     `,
-    styleUrls: ["./ngbd-modal.component.scss"]
+    styleUrls: ['./ngbd-modal.component.scss']
 })
 export class NgbdModalConfirmComponent {
     @Input()
@@ -62,7 +62,7 @@ export class NgbdModalConfirmComponent {
 }
 
 @Component({
-    selector: "app-ngbd-modal-confirm-autofocus",
+    selector: 'app-ngbd-modal-confirm-autofocus',
     template: `
         <div class="modal-header">
             <h4 class="modal-title" id="modal-title">{{ title }}</h4>
@@ -96,7 +96,7 @@ export class NgbdModalConfirmComponent {
             </button>
         </div>
     `,
-    styleUrls: ["./ngbd-modal.component.scss"]
+    styleUrls: ['./ngbd-modal.component.scss']
 })
 export class NgbdModalConfirmAutofocusComponent {
     @Input()
@@ -131,11 +131,11 @@ export const MODALS: { [name: string]: Type<any> } = {
  * Modal window types
  */
 export const MODAL_TYPE = {
-    focusFirst: "focusFirst",
-    autofocus: "autofocus",
-    accountEditForm: "accountEditForm",
-    usernameEditForm: "usernameEditForm",
-    socialConnect: "socialConnect",
-    formFieldsHint: "formFieldsHint"
+    focusFirst: 'focusFirst',
+    autofocus: 'autofocus',
+    accountEditForm: 'accountEditForm',
+    usernameEditForm: 'usernameEditForm',
+    socialConnect: 'socialConnect',
+    formFieldsHint: 'formFieldsHint'
 
 };

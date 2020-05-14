@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { JWTToken } from "@app/models/payload/JWTToken";
-import { JwtHelperService } from "@auth0/angular-jwt";
+import { Injectable } from '@angular/core';
+import { JWTToken } from '@app/models/payload/JWTToken';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 
 /**
  * User auth information storage type
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class AccountStorageService {
     private storeType: string = storageType.local;
@@ -25,25 +25,25 @@ export class AccountStorageService {
  * Browser storage user auth related keys
  */
 export const storageKeys = {
-    USER_NAME_SESSION_ATTRIBUTE_NAME: "authenticatedUser",
-    TOKEN_NAME: "token"
+    USER_NAME_SESSION_ATTRIBUTE_NAME: 'authenticatedUser',
+    TOKEN_NAME: 'token'
 };
 
 /**
  * Browser storage user auth related type
  */
 export const storageType = {
-    local: "local",
-    session: "session"
+    local: 'local',
+    session: 'session'
 };
 
-export const roleAdmin = "ROLE_ADMIN";
+export const roleAdmin = 'ROLE_ADMIN';
 
 /**
  * Service for interacting with browser storage in due to logged user information processing
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class AccountSessionStorageService {
     constructor(
@@ -152,7 +152,7 @@ export class AccountSessionStorageService {
             const decodedToken = this.jwtHelper.decodeToken(token) as JWTToken;
             return decodedToken.roles;
         } else {
-            return "";
+            return '';
         }
     }
 }

@@ -1,28 +1,28 @@
-import { AfterViewInit, Component, EventEmitter, Output, ViewEncapsulation } from "@angular/core";
-import { openClose } from "@app/components/animations/animations";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { ModalService } from "@app/services/modals/modal.service";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { ThemeService } from "@app/services/theme.service";
-import { capitalize } from "@app/utils/string-utils";
+import { AfterViewInit, Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { openClose } from '@app/components/animations/animations';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { ModalService } from '@app/services/modals/modal.service';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { ThemeService } from '@app/services/theme.service';
+import { capitalize } from '@app/utils/string-utils';
 
 
 /**
  * Application navigation menu component
  */
 @Component({
-    selector: "app-menu",
+    selector: 'app-menu',
     animations: [openClose],
-    templateUrl: "./menu.component.html",
+    templateUrl: './menu.component.html',
     encapsulation: ViewEncapsulation.None,
-    styleUrls: ["./menu.component.scss"]
+    styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements AfterViewInit {
     // for refreshing data
     @Output()
     goBackEvent = new EventEmitter();
 
-    appMenuTooltip = "Open app menu";
+    appMenuTooltip = 'Open app menu';
 
     constructor(
         private authenticationService: AuthenticationService,
@@ -50,10 +50,10 @@ export class MenuComponent implements AfterViewInit {
      */
     changeTooltip() {
         if (
-            document.querySelector("#navbarNav").classList.contains("show")) {
-            this.appMenuTooltip = "Open app menu";
+            document.querySelector('#navbarNav').classList.contains('show')) {
+            this.appMenuTooltip = 'Open app menu';
         } else {
-            this.appMenuTooltip = "Close app menu";
+            this.appMenuTooltip = 'Close app menu';
         }
     }
 

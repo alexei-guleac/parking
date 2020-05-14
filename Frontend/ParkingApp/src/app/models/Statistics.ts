@@ -1,4 +1,4 @@
-import { ascendingOrderSortGeneralComparator } from "@app/services/data/objects-sort.service";
+import { ascendingOrderSortGeneralComparator } from '@app/services/data/objects-sort.service';
 
 
 /**
@@ -45,7 +45,7 @@ export class Statistics {
  * Statistics entries sort by lot updated at date compare function
  */
 export function getStatisticsByUpdatedAtAscSortComparator() {
-    return ascendingOrderSortGeneralComparator("updatedAt");
+    return ascendingOrderSortGeneralComparator('updatedAt');
 }
 
 /**

@@ -1,21 +1,21 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
     SocialConnectRequest,
     SocialDisconnectRequest,
     SocialSignInRequest,
     SocialSignUpRequest
-} from "@app/models/payload/SocialSignInRequest";
-import { HttpClientService } from "@app/services/helpers/http-client.service";
-import { api } from "@app/services/navigation/app.endpoints";
-import { environment } from "@env";
-import { Observable } from "rxjs";
+} from '@app/models/payload/SocialSignInRequest';
+import { HttpClientService } from '@app/services/helpers/http-client.service';
+import { api } from '@app/services/navigation/app.endpoints';
+import { environment } from '@env';
+import { Observable } from 'rxjs';
 
 
 /**
  * Service for providing social related requests
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class SocialAccountService {
 

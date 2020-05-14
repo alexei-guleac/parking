@@ -20,13 +20,10 @@
             LOT <b>{{parkingLot.number}}</b>
         </div>
         <div
-          #parkingLotDetailTooltip="ngbTooltip"
           (click)="showDetails(parkingLot.id)"
           [ngClass]="parkingLot.status.toLowerCase()"
           class="btn parking-lot col-12 border-radius-s"
-
           data-container="body"
-          ngbTooltip="View parking lot {{parkingLot.number}} details" placement="top"
         >
             <i
                 [ngClass]="{
@@ -40,11 +37,7 @@
             ></i>
 
             <span
-              #parkingLotMapTooltip="ngbTooltip"
               (click)="showParkingLotOnMap(parkingLot.number)"
-              (mouseenter)="preventParentTooltip()"
-
-              (mouseleave)="allowParentTooltip()"
               *ngIf="this.isUserLoggedIn()" class="parking-map"
               ngbTooltip="View parking lot {{parkingLot.number}} on map"
               placement="top"
@@ -57,8 +50,6 @@
 
 <!--if parking lots not provided by server-->
 <div *ngIf="parkingLots == null" class="row">
-    <!--<h2 class="error col-12" style="text-align: center; margin-bottom: 20px;">Connection error, please contact
-        support</h2>-->
     <div
         *ngFor="let lot of noData; trackBy: trackByMethod"
         class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
@@ -66,7 +57,7 @@
         <div class="parking-lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
         <div
             [ngClass]="{ unknown: selectedParkingLot == null }"
-            class="btn parking-lot col-12 border-radius-s"
+            class="btn parking-lot col-12 border-radius-s no-connection-lot"
         >
             <i class="fas fa-ban"></i>
         </div>

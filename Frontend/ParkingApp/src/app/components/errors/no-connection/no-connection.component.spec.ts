@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NoConnectionComponent } from "./no-connection.component";
+import { NoConnectionComponent } from './no-connection.component';
 
 
-describe("PageNotFoundComponent", () => {
+describe('PageNotFoundComponent', () => {
     let component: NoConnectionComponent;
     let fixture: ComponentFixture<NoConnectionComponent>;
 
@@ -19,7 +19,7 @@ describe("PageNotFoundComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

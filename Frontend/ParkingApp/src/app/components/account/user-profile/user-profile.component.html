@@ -10,14 +10,9 @@
         <div *ngIf="user != null" class="profile">
             <div class="card-body avatar"
                  ngbTooltip="Account photo" placement="top">
-                <a class="navbar-brand abs"
-                   ngbTooltip="Edit photo" placement="bottom">
-                    <!--      ParKing-->
-                    <!-- <img (click)="chooseFile()" [ngClass]="
-                    this.isUserLoggedIn() ? 'user-logged' : ''" alt="parking_logo" class="appname-logo "
-
-                    [src]="imageSrc || 'images/default.png'"/> -->
-                </a>
+                <img [src]="avatar || '../../../../assets/img/avatar-default.png'"
+                     alt="profile_avatar"
+                     class="align-items-center"/>
             </div>
             <div class="card-body details">
                 <div ngbTooltip="Username" placement="right">

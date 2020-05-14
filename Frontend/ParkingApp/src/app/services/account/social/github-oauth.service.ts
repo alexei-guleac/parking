@@ -1,21 +1,21 @@
-import { HttpErrorResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { SocialUserStorageService } from "@app/services/account/social/social-user-storage.service";
-import { HttpClientService } from "@app/services/helpers/http-client.service";
-import { api, app, appRoutes } from "@app/services/navigation/app.endpoints";
-import { environment } from "@env";
-import { Observable } from "rxjs";
+import { HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { SocialUserStorageService } from '@app/services/account/social/social-user-storage.service';
+import { HttpClientService } from '@app/services/helpers/http-client.service';
+import { api, app, appRoutes } from '@app/services/navigation/app.endpoints';
+import { environment } from '@env';
+import { Observable } from 'rxjs';
 
 
 /**
  * Github OAuth 2.0 flow service
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class GithubOauthService {
 
-    private AUTHORIZE_URL = "https://github.com/login/oauth/authorize";
+    private AUTHORIZE_URL = 'https://github.com/login/oauth/authorize';
 
     /*
     * Target redirect URL (localhost allowed).
@@ -32,9 +32,9 @@ export class GithubOauthService {
     /*
     * Required. The client ID received from GitHub when API client app is registered.
     * */
-    private CLIENT_ID = "9454ba3084a75c484cbe";
+    private CLIENT_ID = '9454ba3084a75c484cbe';
 
-    private API_URL = "https://api.github.com/user";
+    private API_URL = 'https://api.github.com/user';
 
     constructor(
         private http: HttpClientService,
@@ -82,7 +82,7 @@ export class GithubOauthService {
      * */
     processGithubOauthRequest(code: string): Observable<any> {
         const url = environment.restUrl + api.gitOAuth;
-        console.log("code " + code);
+        console.log('code ' + code);
 
         return this.http.postJsonRequest<any>(url, {
             code
@@ -96,7 +96,7 @@ export class GithubOauthService {
      */
     processGithubUserDataRequest(accessToken: string): Observable<any> {
         const url = `${this.API_URL}?access_token=${accessToken}`;
-        console.log("accessToken " + accessToken);
+        console.log('accessToken ' + accessToken);
 
         return this.http.getJsonRequest<any>(url);
     }

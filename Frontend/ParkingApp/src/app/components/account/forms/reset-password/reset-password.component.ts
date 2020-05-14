@@ -1,29 +1,29 @@
-import { Component, Input, OnDestroy, OnInit } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { ActivatedRoute, NavigationExtras } from "@angular/router";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { ResetPasswordRequest } from "@app/models/payload/ResetPasswordRequest";
-import { AuthenticationService } from "@app/services/account/auth.service";
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ActivatedRoute, NavigationExtras } from '@angular/router';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { ResetPasswordRequest } from '@app/models/payload/ResetPasswordRequest';
+import { AuthenticationService } from '@app/services/account/auth.service';
 import {
     FormControlService,
     togglePassConfirmTextType,
     togglePassTextType
-} from "@app/services/account/form-control.service";
-import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { isNonEmptyStrings } from "@app/utils/string-utils";
-import { Subscription } from "rxjs";
+} from '@app/services/account/form-control.service';
+import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { isNonEmptyStrings } from '@app/utils/string-utils';
+import { Subscription } from 'rxjs';
 
 
 /**
  * Reset password form
  */
 @Component({
-    selector: "app-reset-password-form",
-    templateUrl: "./reset-password.component.html",
-    styleUrls: ["./reset-password.component.scss"]
+    selector: 'app-reset-password-form',
+    templateUrl: './reset-password.component.html',
+    styleUrls: ['./reset-password.component.scss']
 })
 export class ResetPasswordComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
@@ -66,11 +66,11 @@ export class ResetPasswordComponent
     }
 
     get pass() {
-        return this.resetForm.get("password");
+        return this.resetForm.get('password');
     }
 
     get passConf() {
-        return this.resetForm.get("passConfirm");
+        return this.resetForm.get('passConfirm');
     }
 
     /**
@@ -102,7 +102,7 @@ export class ResetPasswordComponent
      */
     onSubmit(valid: boolean) {
         this.submitted = true;
-        if (this.resetForm.hasError("invalid")) {
+        if (this.resetForm.hasError('invalid')) {
             this.submitted = false;
         }
 
@@ -124,7 +124,7 @@ export class ResetPasswordComponent
                 passConfirm: this.formControlService.getConfirmPasswordFormControl(this.passConfirm)
             },
             this.formControlService
-                .checkPasswordConfirm("password", "passConfirm")
+                .checkPasswordConfirm('password', 'passConfirm')
                 .bind(this)
         );
     }
@@ -153,7 +153,7 @@ export class ResetPasswordComponent
                 this.invalidReset = false;
                 this.resetSuccess = true;
                 this.confirmationMessage =
-                    "Password successfully reset. You can now log in with the new credentials.";
+                    'Password successfully reset. You can now log in with the new credentials.';
                 console.log(this.confirmationMessage);
                 alert(this.confirmationMessage);
 
@@ -169,7 +169,7 @@ export class ResetPasswordComponent
         return (error) => {
             this.invalidReset = true;
             this.resetSuccess = false;
-            alert("Reset failed.");
+            alert('Reset failed.');
 
             handleHttpErrorResponse(error, this);
         };

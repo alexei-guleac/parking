@@ -1,21 +1,21 @@
-import { Component, OnInit } from "@angular/core";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { User } from "@app/models/User";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { ModalService } from "@app/services/modals/modal.service";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { UserService } from "@app/services/users/user.service";
-import { capitalize } from "@app/utils/string-utils";
+import { Component, OnInit } from '@angular/core';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { User } from '@app/models/User';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { ModalService } from '@app/services/modals/modal.service';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { UserService } from '@app/services/users/user.service';
+import { capitalize } from '@app/utils/string-utils';
 
 
 /**
  * User profile page
  */
 @Component({
-    selector: "app-user-profile",
-    templateUrl: "./user-profile.component.html",
-    styleUrls: ["./user-profile.component.scss"]
+    selector: 'app-user-profile',
+    templateUrl: './user-profile.component.html',
+    styleUrls: ['./user-profile.component.scss']
 })
 export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
 
@@ -27,14 +27,14 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
 
     private isActionFailed = false;
 
-    private avatar = "~/images/logo.png";
+    private avatar = null;
 
     private user: User;
 
     private usernameForUpdate: string;
 
     // specified field names allowed for editing
-    private editableFields = ["username", "firstname", "lastname"];
+    private editableFields = ['username', 'firstname', 'lastname'];
 
     private status: string;
 
@@ -92,7 +92,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
         return (user) => {
             if (user) {
                 this.user = user;
-                console.log("user" + user);
+                // console.log('user' + user);
                 this.usernameForUpdate = user.username;
             }
         };
@@ -169,12 +169,12 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
                 this.user[field] = result[field];
                 user[field] = result[field];
 
-                if (field === "firstname") {
+                if (field === 'firstname') {
                     if (!user.lastname) {
                         user.lastname = this.user.lastname;
                     }
                 }
-                if (field === "lastname") {
+                if (field === 'lastname') {
                     if (!user.firstname) {
                         user.firstname = this.user.firstname;
                     }
@@ -224,7 +224,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             if (response.success) {
                 this.isActionFailed = false;
                 this.isActionSuccess = true;
-                this.successMessage = "Profile successfully updated.";
+                this.successMessage = 'Profile successfully updated.';
 
                 // set new user name
                 if (this.user.username !== this.usernameForUpdate) {
@@ -249,7 +249,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             this.isActionFailed = true;
             this.isActionSuccess = false;
 
-            this.errorMessage = "Something went wrong";
+            this.errorMessage = 'Something went wrong';
             handleHttpErrorResponse(error, this);
         };
     }
@@ -262,8 +262,6 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
         const componentInstance = modalRef.componentInstance;
 
         this.initSocialToggles(componentInstance);
-
-        const logoutModalResult = null;
         modalRef.result.then(
             this.processSocialUpdate(), this.processSocialUpdate()
         );
@@ -332,7 +330,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             if (response.success) {
                 this.isActionFailed = false;
                 this.isActionSuccess = true;
-                this.successMessage = "Profile successfully deleted.";
+                this.successMessage = 'Profile successfully deleted.';
 
                 setTimeout(() => {
                     this.logout();

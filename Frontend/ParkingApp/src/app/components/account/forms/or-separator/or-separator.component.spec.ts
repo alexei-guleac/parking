@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OrSeparatorComponent } from "./or-separator.component";
+import { OrSeparatorComponent } from './or-separator.component';
 
 
-describe("OrSeparatorComponent", () => {
+describe('OrSeparatorComponent', () => {
     let component: OrSeparatorComponent;
     let fixture: ComponentFixture<OrSeparatorComponent>;
 
@@ -19,7 +19,7 @@ describe("OrSeparatorComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

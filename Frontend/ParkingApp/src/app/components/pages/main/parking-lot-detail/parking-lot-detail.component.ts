@@ -1,30 +1,26 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output } from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { ParkingLot } from "@app/models/ParkingLot";
-import { parkingStatuses } from "@app/models/ParkingLotStatus";
-import {
-    ascendingStatisticsSortByTime,
-    descendingStatisticsSortByTime,
-    getStatisticsByUpdatedAtAscSortComparator,
-    Statistics
-} from "@app/models/Statistics";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { DataService } from "@app/services/data/data.service";
-import { ObjectsSortService } from "@app/services/data/objects-sort.service";
-import { ReservationService } from "@app/services/data/reservation.service";
-import { ModalService } from "@app/services/modals/modal.service";
-import { delay } from "rxjs/operators";
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ParkingLot } from '@app/models/ParkingLot';
+import { parkingColors, parkingStatuses } from '@app/models/ParkingLotStatus';
+import { getStatisticsByUpdatedAtAscSortComparator, Statistics } from '@app/models/Statistics';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { DataService, StatsDateSortable } from '@app/services/data/data.service';
+import { ObjectsSortService } from '@app/services/data/objects-sort.service';
+import { ReservationService } from '@app/services/data/reservation.service';
+import { StatisticsService } from '@app/services/data/statistics.service';
+import { ModalService } from '@app/services/modals/modal.service';
+import { delay } from 'rxjs/operators';
 
 
 /**
  * Parking lot details
  */
 @Component({
-    selector: "app-parking-lot-detail",
-    templateUrl: "./parking-lot-detail.component.html",
-    styleUrls: ["./parking-lot-detail.component.scss"]
+    selector: 'app-parking-lot-detail',
+    templateUrl: './parking-lot-detail.component.html',
+    styleUrls: ['./parking-lot-detail.component.scss']
 })
-export class ParkingLotDetailComponent implements AfterViewInit {
+export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortable {
 
     @Input()
     parkingLot: ParkingLot;
@@ -38,25 +34,25 @@ export class ParkingLotDetailComponent implements AfterViewInit {
 
     private statistics: Array<Statistics>;
 
-    private filteredStatistics: Array<Statistics>;
+    filteredStatistics: Array<Statistics>;
 
-    private p = 1;              // declaration of page index used for pagination
+    dateSortedAsc = false;
+
+    dateSortedDesc = false;
+
+    timeSortedAsc = false;
+
+    timeSortedDesc = false;
+
+    lotSortedAsc: boolean;
+
+    lotSortedDesc: boolean;
+
+    // declaration of page index used for pagination
+    private p = 1;
 
     // set the table row color depending on status
-    private colors = [
-        { status: parkingStatuses.FREE, background: "#28a745" },
-        { status: parkingStatuses.OCCUPIED, background: "#dc3545" },
-        { status: parkingStatuses.UNKNOWN, background: "gray" },
-        { status: parkingStatuses.RESERVED, background: "#ffbf0f" }
-    ];
-
-    private dateSortedAsc = false;
-
-    private dateSortedDesc = false;
-
-    private timeSortedAsc = false;
-
-    private timeSortedDesc = false;
+    private colors = parkingColors;
 
     constructor(
         private route: ActivatedRoute,
@@ -64,7 +60,8 @@ export class ParkingLotDetailComponent implements AfterViewInit {
         private reservationService: ReservationService,
         private modalService: ModalService,
         private dataService: DataService,
-        private objectsSortService: ObjectsSortService
+        private objectsSortService: ObjectsSortService,
+        private statisticsService: StatisticsService
     ) {
     }
 
@@ -123,10 +120,10 @@ export class ParkingLotDetailComponent implements AfterViewInit {
     private sortStatisticsTableByDate() {
         this.objectsSortService.sortTable(
             this,
-            "dateSortedAsc",
-            "dateSortedDesc",
+            'dateSortedAsc',
+            'dateSortedDesc',
             this.filteredStatistics,
-            "updatedAt",
+            'updatedAt',
             false,
             false,
             (this.timeSortedDesc = false),
@@ -138,34 +135,7 @@ export class ParkingLotDetailComponent implements AfterViewInit {
      * Sort statistics data by parking lot updated time
      */
     private sortStatisticsTableByTime() {
-        for (let i = 0; i < this.filteredStatistics.length - 1; i++) {
-            if (this.filteredStatistics[i].updatedAt.getTime() >
-                this.filteredStatistics[i + 1].updatedAt.getTime()) {
-                this.timeSortedDesc = true;
-                this.timeSortedAsc = false;
-            }
-
-            if (this.filteredStatistics[i].updatedAt.getTime() <
-                this.filteredStatistics[i + 1].updatedAt.getTime()) {
-                this.timeSortedAsc = true;
-                this.timeSortedDesc = false;
-            }
-        }
-
-        if (this.timeSortedAsc) {
-            this.filteredStatistics.sort(descendingStatisticsSortByTime());
-
-            this.timeSortedAsc = false;
-            this.timeSortedDesc = true;
-        } else {
-            this.filteredStatistics.sort(ascendingStatisticsSortByTime());
-
-            this.timeSortedDesc = false;
-            this.timeSortedAsc = true;
-        }
-
-        this.dateSortedDesc = false;
-        this.dateSortedAsc = false;
+        this.statisticsService.sortStatisticsTableByTime(this);
     }
 
     /**
@@ -200,7 +170,7 @@ export class ParkingLotDetailComponent implements AfterViewInit {
      * @param parkingLotNumber - target parking lot number
      */
     private processReservation(parkingLotNumber) {
-        const msg = "Reservation";
+        const msg = 'Reservation';
 
         this.reservationService
             .reserveParkingLot(parkingLotNumber)
@@ -215,7 +185,7 @@ export class ParkingLotDetailComponent implements AfterViewInit {
      * @param parkingLotNumber - target parking lot number
      */
     private processResetReservation(parkingLotNumber) {
-        const msg = "Cancel reservation";
+        const msg = 'Cancel reservation';
 
         this.reservationService
             .unreserveParkingLot(parkingLotNumber)
@@ -232,12 +202,12 @@ export class ParkingLotDetailComponent implements AfterViewInit {
     private handleReservationResponse(msg: string) {
         return (response) => {
             if (response) {
-                alert(msg + " success.");
+                alert(msg + ' success.');
 
                 this.switchParkingLotState();
                 this.disableReserveButtonAfterDelay();
             } else {
-                alert(msg + " failed.");
+                alert(msg + ' failed.');
             }
         };
     }
@@ -250,7 +220,7 @@ export class ParkingLotDetailComponent implements AfterViewInit {
         return (error) => {
             // console.log(error);
             this.reservationSuccess = false;
-            alert(msg + " failed.");
+            alert(msg + ' failed.');
         };
     }
 

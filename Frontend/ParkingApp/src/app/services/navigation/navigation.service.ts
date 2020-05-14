@@ -1,13 +1,13 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRoute, NavigationExtras, Router } from "@angular/router";
-import { actions, appRoutes } from "@app/services/navigation/app.endpoints";
-import { containsString } from "@app/utils/string-utils";
+import { Injectable } from '@angular/core';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { actions, appRoutes } from '@app/services/navigation/app.endpoints';
+import { containsString } from '@app/utils/string-utils';
 
 
 /**
  * Service for application routes navigation
  */
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class NavigationService {
 
     constructor(private router: Router, private route: ActivatedRoute) {

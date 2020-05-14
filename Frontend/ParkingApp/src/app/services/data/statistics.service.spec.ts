@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ObjectsSortService } from './objects-sort.service';
+import { StatisticsService } from './statistics.service';
 
 
-describe('ObjectsSortService', () => {
+describe('StatisticsService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
     it('should be created', () => {
-        const service: ObjectsSortService = TestBed.get(ObjectsSortService);
+        const service: StatisticsService = TestBed.get(StatisticsService);
         expect(service).toBeTruthy();
     });
 });

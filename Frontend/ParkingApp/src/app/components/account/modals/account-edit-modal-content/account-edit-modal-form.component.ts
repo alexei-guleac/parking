@@ -1,17 +1,17 @@
-import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup } from "@angular/forms";
-import { FormControlService } from "@app/services/account/form-control.service";
-import { isNonEmptyStrings } from "@app/utils/string-utils";
-import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormControlService } from '@app/services/account/form-control.service';
+import { isNonEmptyStrings } from '@app/utils/string-utils';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
 /**
  * Account edit modal window form
  */
 @Component({
-    selector: "app-account-edit-modal-content",
-    templateUrl: "./account-edit-modal-form.component.html",
-    styleUrls: ["./account-edit-modal-form.component.scss"]
+    selector: 'app-account-edit-modal-content',
+    templateUrl: './account-edit-modal-form.component.html',
+    styleUrls: ['./account-edit-modal-form.component.scss']
 })
 export class AccountEditModalFormComponent implements OnInit {
 
@@ -33,15 +33,15 @@ export class AccountEditModalFormComponent implements OnInit {
     }
 
     get name() {
-        return this.editForm.get("username");
+        return this.editForm.get('username');
     }
 
     get fname() {
-        return this.editForm.get("firstname");
+        return this.editForm.get('firstname');
     }
 
     get lname() {
-        return this.editForm.get("lastname");
+        return this.editForm.get('lastname');
     }
 
     /**
@@ -59,7 +59,7 @@ export class AccountEditModalFormComponent implements OnInit {
      */
     onSubmit(valid: boolean) {
         this.submitted = true;
-        if (this.editForm.hasError("invalid")) {
+        if (this.editForm.hasError('invalid')) {
             this.submitted = false;
         }
 

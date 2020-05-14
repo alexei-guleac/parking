@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SocialToggleComponent } from "./social-toggle.component";
+import { SocialToggleComponent } from './social-toggle.component';
 
 
-describe("SocialToogleComponent", () => {
+describe('SocialToogleComponent', () => {
     let component: SocialToggleComponent;
     let fixture: ComponentFixture<SocialToggleComponent>;
 
@@ -20,7 +20,7 @@ describe("SocialToogleComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

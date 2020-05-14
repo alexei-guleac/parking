@@ -1,18 +1,18 @@
-import { RouterModule, Routes } from "@angular/router";
-import { UserProfileComponent } from "@app/components/account/user-profile/user-profile.component";
-import { ConfirmUserComponent } from "./components/account/confirm-user/confirm-user.component";
-import { AccountFormComponent } from "./components/account/forms/account-form/account-form.component";
-import { AccessDeniedComponent } from "./components/errors/access-denied/access-denied.component";
-import { NoConnectionComponent } from "./components/errors/no-connection/no-connection.component";
-import { PageNotFoundComponent } from "./components/errors/page-not-found/page-not-found.component";
-import { MainComponent } from "./components/pages/main/main.component";
-import { ParkingLayoutComponent } from "./components/pages/parking-layout/parking-layout.component";
-import { StatisticsComponent } from "./components/pages/statistics/statistics.component";
-import { PrefetchParkingLotsService } from "./services/data/prefetch-parking-lots.service";
-import { PrefetchStatsService } from "./services/data/prefetch-stats.service";
-import { appRoutes } from "./services/navigation/app.endpoints";
-import { DirectAccessGuard } from "./services/navigation/guards/direct-access-guard.service";
-import { ResetGuard } from "./services/navigation/guards/reset-guard.service";
+import { RouterModule, Routes } from '@angular/router';
+import { UserProfileComponent } from '@app/components/account/user-profile/user-profile.component';
+import { ConfirmUserComponent } from './components/account/confirm-user/confirm-user.component';
+import { AccountFormComponent } from './components/account/forms/account-form/account-form.component';
+import { AccessDeniedComponent } from './components/errors/access-denied/access-denied.component';
+import { NoConnectionComponent } from './components/errors/no-connection/no-connection.component';
+import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
+import { MainComponent } from './components/pages/main/main.component';
+import { ParkingLayoutComponent } from './components/pages/parking-layout/parking-layout.component';
+import { StatisticsComponent } from './components/pages/statistics/statistics.component';
+import { PrefetchParkingLotsService } from './services/data/prefetch-parking-lots.service';
+import { PrefetchStatsService } from './services/data/prefetch-stats.service';
+import { appRoutes } from './services/navigation/app.endpoints';
+import { DirectAccessGuard } from './services/navigation/guards/direct-access-guard.service';
+import { ResetGuard } from './services/navigation/guards/reset-guard.service';
 
 /* Application routes */
 const MAIN = appRoutes.main;
@@ -55,7 +55,7 @@ const routes: Routes = [
         component: AccountFormComponent,
         canActivate: [ResetGuard, DirectAccessGuard]
     },
-    { path: ACCOUNT, component: AccountFormComponent, pathMatch: "full" },
+    { path: ACCOUNT, component: AccountFormComponent, pathMatch: 'full' },
     { path: ACCOUNT_CONFIRM, component: ConfirmUserComponent },
     { path: ACCOUNT_CONFIRM_RESET, component: ConfirmUserComponent },
     { path: LOGOUT, component: AccountFormComponent },
@@ -66,7 +66,7 @@ const routes: Routes = [
     { path: SERVER_ERROR, component: NoConnectionComponent },
     { path: ACCESS_DENIED, component: AccessDeniedComponent },
 
-    { path: "**", redirectTo: NOT_FOUND }
+    { path: '**', redirectTo: NOT_FOUND }
 ];
 
 export const AppRouting = RouterModule.forRoot(routes, {

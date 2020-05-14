@@ -1,21 +1,21 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable, NgZone } from "@angular/core";
-import { NavigationExtras, Router } from "@angular/router";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { trimChars } from "@app/utils/string-utils";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import { AccountSessionStorageService } from "../account/account-session-storage.service";
-import { AuthenticationService } from "../account/auth.service";
-import { actions } from "../navigation/app.endpoints";
-import { NavigationService } from "../navigation/navigation.service";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { Injectable, NgZone } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { trimChars } from '@app/utils/string-utils';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { AccountSessionStorageService } from '../account/account-session-storage.service';
+import { AuthenticationService } from '../account/auth.service';
+import { actions } from '../navigation/app.endpoints';
+import { NavigationService } from '../navigation/navigation.service';
 
 
 /**
  * Global server error handler
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
 
@@ -65,14 +65,14 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
             const error = errorResponse.error;
             const errors = errorResponse.error.errors;
 
-            console.error("An error occurred:", errorMessage);
+            console.error('An error occurred:', errorMessage);
             console.log(`Error status : ${errorStatus} ${errorStatusText}`);
 
             const navigationExtras: NavigationExtras = {
-                state: { errors: errors ? errors : error, from: "globalError" },
+                state: { errors: errors ? errors : error, from: 'globalError' },
                 queryParams: { action: actions.login }
             };
-            console.log("Error navigationExtras:", navigationExtras);
+            console.log('Error navigationExtras:', navigationExtras);
 
             switch (errorStatus) {
                 case 401: // login, unauthorized
@@ -97,17 +97,17 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
                     console.log(`Server error`);
                     break;
                 case 0:
-                    if (errorStatusText === "Unknown Error") {
+                    if (errorStatusText === 'Unknown Error') {
                         this.navigationService.navigateToServerNotRunning();
                     }
                     console.log(`Check if server is running`);
                     break;
             }
             if (error instanceof ErrorEvent) {
-                console.error("Error Event");
+                console.error('Error Event');
             }
             if (error instanceof Error) {
-                console.error("Error " + error);
+                console.error('Error ' + error);
             } else {
                 // The backend returned an unsuccessful response code.
                 // The response body may contain clues as to what went wrong,
@@ -116,7 +116,7 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
                 );
             }
         } else {
-            console.error("Other Errors");
+            console.error('Other Errors');
         }
     }
 
@@ -144,11 +144,12 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
  * @param ldapError - LDAP HTTP server response
  */
 function parseLdapError(ldapError: string) {
-    if (ldapError.toLowerCase().includes("ldap")) {
-        return trimChars("[.,:;]", ldapError
-            .split(";")[0]
-            .split(":")[1]
-            .split("-")[1]);
+    console.log(ldapError);
+    if (ldapError.toLowerCase().includes('ldap')) {
+        return trimChars('[.,:;]', ldapError
+            .split(';')[0]
+            .split(':')[1]
+            .split('-')[1]);
     } else {
         return ldapError;
     }

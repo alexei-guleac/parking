@@ -1,4 +1,4 @@
-import { ascendingOrderSortGeneralComparator } from "@app/services/data/objects-sort.service";
+import { ascendingOrderSortGeneralComparator } from '@app/services/data/objects-sort.service';
 
 
 /**
@@ -31,7 +31,7 @@ export class ParkingLot {
  * Parking lots sort by number compare function
  */
 export function getParkingLotsComparator() {
-    return ascendingOrderSortGeneralComparator("number");
+    return ascendingOrderSortGeneralComparator('number');
 }
 
 /**

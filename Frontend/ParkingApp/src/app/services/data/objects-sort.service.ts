@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 
 /**
  * Provides common sorting methods
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class ObjectsSortService {
 

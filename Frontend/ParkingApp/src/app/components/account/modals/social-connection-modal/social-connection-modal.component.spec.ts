@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SocialConnectionModalComponent } from "./social-connection-modal.component";
+import { SocialConnectionModalComponent } from './social-connection-modal.component';
 
 
-describe("SocialConnectionModalComponent", () => {
+describe('SocialConnectionModalComponent', () => {
     let component: SocialConnectionModalComponent;
     let fixture: ComponentFixture<SocialConnectionModalComponent>;
 
@@ -20,7 +20,7 @@ describe("SocialConnectionModalComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

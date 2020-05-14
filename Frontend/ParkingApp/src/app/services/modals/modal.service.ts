@@ -1,17 +1,17 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
     MODAL_TYPE,
     MODALS
-} from "@app/components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component";
-import { parkingStatuses } from "@app/models/ParkingLotStatus";
-import { ModalDismissReasons, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+} from '@app/components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
+import { parkingStatuses } from '@app/models/ParkingLotStatus';
+import { ModalDismissReasons, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 
 /**
  * Ng-Bootstrap modal windows service
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class ModalService {
 
@@ -19,13 +19,13 @@ export class ModalService {
     * Standard common modal windows options */
     private standardModalWindowOptions = {
         centered: true,
-        windowClass: "modal-holder",
-        backdropClass: "blurred-backdrop"
+        windowClass: 'modal-holder',
+        backdropClass: 'blurred-backdrop'
     };
 
-    private submitBtnTxt = "Ok";
+    private submitBtnTxt = 'Ok';
 
-    private cancelBtnTxt = "Cancel";
+    private cancelBtnTxt = 'Cancel';
 
     private logoutModalResult: string;
 
@@ -53,7 +53,7 @@ export class ModalService {
         const modalRef = this.modalService.open(MODALS[type], options);
 
         modalRef.componentInstance.title = title;
-        document.querySelector(".modal-body").innerHTML = body;
+        document.querySelector('.modal-body').innerHTML = body;
         modalRef.componentInstance.submitBtnTxt = submitBtnTxt;
         modalRef.componentInstance.cancelBtnTxt = cancelBtnTxt;
 
@@ -90,9 +90,9 @@ export class ModalService {
      * Show account log out confirm modal window
      */
     openLogoutModal(): NgbModalRef {
-        const modalTitle = "Logout";
+        const modalTitle = 'Logout';
         const modalBodyTemplate =
-            "<p><strong>Are you sure you want to sign out?</strong></p>";
+            '<p><strong>Are you sure you want to sign out?</strong></p>';
 
         return this.openAutofocusModal(
             modalTitle,
@@ -108,7 +108,7 @@ export class ModalService {
      * @param username - user name
      */
     openDeleteProfileModal(username: string): NgbModalRef {
-        const modalTitle = "Profile deletion";
+        const modalTitle = 'Profile deletion';
         const modalBodyTemplate = `<p><strong>Are you sure you want to delete
                 <span class="text-primary">${username}</span> profile?</strong></p>
                 <p>All information associated to this user profile will be permanently deleted.
@@ -132,15 +132,15 @@ export class ModalService {
         parkingLotNumber: number,
         parkingLotStatus: string
     ): NgbModalRef {
-        const modalTitle = "Parking lot reservation";
+        const modalTitle = 'Parking lot reservation';
         const operation =
             parkingLotStatus === parkingStatuses.FREE
-                ? "reservate"
-                : "unreserve";
+                ? 'reservate'
+                : 'unreserve';
         const hint =
             parkingLotStatus === parkingStatuses.FREE
-                ? "cancel"
-                : "submit again";
+                ? 'cancel'
+                : 'submit again';
         const modalBodyTemplate = `<p><strong>Are you sure you want to ${operation} <span class="text-primary">parking lot</span>
                 number <span class="text-primary">${parkingLotNumber}</span>?</strong>
             </p>
@@ -148,8 +148,8 @@ export class ModalService {
             </p>`;
         const submitBtnTxt =
             parkingLotStatus === parkingStatuses.FREE
-                ? "Reservate"
-                : "Unreserve";
+                ? 'Reservate'
+                : 'Unreserve';
 
         return this.openAutofocusModal(
             modalTitle,
@@ -184,9 +184,9 @@ export class ModalService {
      */
     getDismissReason(reason: any): string {
         if (reason === ModalDismissReasons.ESC) {
-            return "by pressing ESC";
+            return 'by pressing ESC';
         } else if (reason === ModalDismissReasons.BACKDROP_CLICK) {
-            return "by clicking on a backdrop";
+            return 'by clicking on a backdrop';
         } else {
             return `with: ${reason}`;
         }

@@ -1,34 +1,38 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { getParkingLotByIdPredicate, getParkingLotsComparator, ParkingLot } from "@app/models/ParkingLot";
-import { parkingStatuses } from "@app/models/ParkingLotStatus";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { DataService } from "@app/services/data/data.service";
-import { appRoutes } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { NgbTooltip } from "@ng-bootstrap/ng-bootstrap";
-import { delay } from "rxjs/operators";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { parking } from '@app/constants/app-constants';
+import { getParkingLotByIdPredicate, getParkingLotsComparator, ParkingLot } from '@app/models/ParkingLot';
+import { parkingStatuses } from '@app/models/ParkingLotStatus';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { DataService } from '@app/services/data/data.service';
+import { appRoutes } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { interval, Subscription } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 
 /**
  * Main application page
  */
 @Component({
-    selector: "app-main",
-    templateUrl: "./main.component.html",
-    styleUrls: ["./main.component.scss"]
+    selector: 'app-main',
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.scss']
 })
 export class MainComponent implements OnInit {
 
     parkingLotStatus = parkingStatuses;
 
-    @ViewChild("parkingLotDetailTooltip", { static: false }) parkingLotDetailTooltip: NgbTooltip;
+    @ViewChild('parkingLotDetailTooltip', { static: false }) parkingLotDetailTooltip: NgbTooltip;
 
-    @ViewChild("parkingLotMapTooltip", { static: false }) parkingLotMapTooltip: NgbTooltip;
+    @ViewChild('parkingLotMapTooltip', { static: false }) parkingLotMapTooltip: NgbTooltip;
 
     private parkingLots: Array<ParkingLot>;
 
     private selectedParkingLot: ParkingLot;
+
+    private updateSubscription: Subscription;
 
     private action: string;
 
@@ -51,11 +55,15 @@ export class MainComponent implements OnInit {
     ngOnInit() {
         // mockup view before server data is loaded
         this.noData = new Array<number>();
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= parking.lotsNumber; i++) {
             this.noData.push(i);
         }
         this.loadData();
         this.processUrlParams();
+
+        this.updateSubscription = interval(3000).subscribe(() => {
+            this.loadData();
+        });
     }
 
     /**

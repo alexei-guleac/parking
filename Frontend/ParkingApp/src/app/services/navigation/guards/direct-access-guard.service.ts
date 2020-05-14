@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { Observable } from "rxjs";
-import { appRoutes } from "../app.endpoints";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { Observable } from 'rxjs';
+import { appRoutes } from '../app.endpoints';
 
 
 /**
@@ -22,7 +22,7 @@ export class DirectAccessGuard implements CanActivate {
         state: RouterStateSnapshot
     ): Observable<boolean> | Promise<boolean> | boolean {
         // If the previous URL was blank, then the user is directly accessing this page
-        if (this.router.url === "/") {
+        if (this.router.url === '/') {
             this.router.navigate([appRoutes.main]); // Navigate away to some other page
             return false;
         }

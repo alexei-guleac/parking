@@ -1,37 +1,37 @@
-import { DOCUMENT } from "@angular/common";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
-import { User } from "@app/models/User";
-import { AuthenticationService } from "@app/services/account/auth.service";
+import { DOCUMENT } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, EventEmitter, Inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { User } from '@app/models/User';
+import { AuthenticationService } from '@app/services/account/auth.service';
 import {
     FormControlService,
     togglePassConfirmTextType,
     togglePassTextType
-} from "@app/services/account/form-control.service";
-import { SocialAccountService } from "@app/services/account/social/social-account.service";
-import { SocialProviderService } from "@app/services/account/social/social-provider.service";
+} from '@app/services/account/form-control.service';
+import { SocialAccountService } from '@app/services/account/social/social-account.service';
+import { SocialProviderService } from '@app/services/account/social/social-provider.service';
 import {
     socialProviderNames,
     SocialUserStorageService
-} from "@app/services/account/social/social-user-storage.service";
-import { ModalService } from "@app/services/modals/modal.service";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { capitalize, isNonEmptyStrings } from "@app/utils/string-utils";
-import { AuthService } from "angularx-social-login-vk";
-import { NgxUiLoaderService } from "ngx-ui-loader";
-import { Subscription } from "rxjs";
+} from '@app/services/account/social/social-user-storage.service';
+import { ModalService } from '@app/services/modals/modal.service';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { capitalize, isNonEmptyStrings } from '@app/utils/string-utils';
+import { AuthService } from 'angularx-social-login-vk';
+import { NgxUiLoaderService } from 'ngx-ui-loader';
+import { Subscription } from 'rxjs';
 
 
 /**
  * Registration form component
  */
 @Component({
-    selector: "app-reg-form",
-    templateUrl: "./registration-form.component.html",
-    styleUrls: ["./registration-form.component.scss"]
+    selector: 'app-reg-form',
+    templateUrl: './registration-form.component.html',
+    styleUrls: ['./registration-form.component.scss']
 })
 export class RegFormComponent implements OnInit, OnDestroy {
 
@@ -50,7 +50,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
     private passConfirm: string;
 
-    private errorMessage = "Invalid Credentials";
+    private errorMessage = 'Invalid Credentials';
 
     private successMessage: string;
 
@@ -76,7 +76,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
     private togglePassConfirmVisible = togglePassConfirmTextType;
 
     private redirectMessage =
-        "After 5 seconds, you will be redirected to the main page";
+        'After 5 seconds, you will be redirected to the main page';
 
     private showRegForm = false;
 
@@ -100,27 +100,27 @@ export class RegFormComponent implements OnInit, OnDestroy {
     }
 
     get lname() {
-        return this.regForm.get("lastname");
+        return this.regForm.get('lastname');
     }
 
     get pass() {
-        return this.regForm.get("password");
+        return this.regForm.get('password');
     }
 
     get passConf() {
-        return this.regForm.get("passConfirm");
+        return this.regForm.get('passConfirm');
     }
 
     get name() {
-        return this.regForm.get("username");
+        return this.regForm.get('username');
     }
 
     get mail() {
-        return this.regForm.get("email");
+        return this.regForm.get('email');
     }
 
     get fname() {
-        return this.regForm.get("firstname");
+        return this.regForm.get('firstname');
     }
 
     /**
@@ -151,7 +151,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
      */
     onSubmit(valid: boolean) {
         this.submitted = true;
-        if (this.regForm.hasError("invalid")) {
+        if (this.regForm.hasError('invalid')) {
             this.submitted = false;
         }
 
@@ -220,7 +220,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
                 captcha: new FormControl()
             },
             this.formControlService
-                .checkPasswordConfirm("password", "passConfirm")
+                .checkPasswordConfirm('password', 'passConfirm')
                 .bind(this)
         );
     }
@@ -260,7 +260,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
                 this.invalidReg = false;
                 this.regSuccess = true;
                 this.successMessage =
-                    "Registration Successful. We sent you mail to confirm your profile. " +
+                    'Registration Successful. We sent you mail to confirm your profile. ' +
                     this.redirectMessage;
                 this.socialService.cleanGitAuth();
                 this.navigateToMain();
@@ -301,7 +301,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
     private handleSocialResponse() {
         return (response: any) => {
-            console.log("RESPONSE " + JSON.stringify(response));
+            console.log('RESPONSE ' + JSON.stringify(response));
             if (response.success) {
                 this.handleSocialRegistrationResponse(response);
             }
@@ -317,7 +317,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
     private handleSocialRegistrationError(error) {
         this.invalidReg = true;
         this.regSuccess = false;
-        this.errorMessage = "Registration failed. ";
+        this.errorMessage = 'Registration failed. ';
 
         // clean all user data and full logout
         this.socialService.cleanGitAuth();
@@ -342,12 +342,12 @@ export class RegFormComponent implements OnInit, OnDestroy {
             this.socialService.cleanGitAuth();
             if (response.confirmationSent) {
                 this.successMessage =
-                    "Registration Successful. We sent you mail to confirm your social profile. " +
+                    'Registration Successful. We sent you mail to confirm your social profile. ' +
                     this.redirectMessage;
                 this.navigateToMain();
             } else {
                 this.successMessage =
-                    "Registration Successful. You can login with your social profile.";
+                    'Registration Successful. You can login with your social profile.';
                 this.navigateToLogin();
             }
         } else {

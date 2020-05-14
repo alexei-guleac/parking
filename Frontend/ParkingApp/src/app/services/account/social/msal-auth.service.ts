@@ -1,16 +1,16 @@
-import { Injectable } from "@angular/core";
-import { HttpClientService } from "@app/services/helpers/http-client.service";
-import { BroadcastService, MsalService } from "@azure/msal-angular";
-import { Subscription } from "rxjs";
+import { Injectable } from '@angular/core';
+import { HttpClientService } from '@app/services/helpers/http-client.service';
+import { BroadcastService, MsalService } from '@azure/msal-angular';
+import { Subscription } from 'rxjs';
 
 
-const GRAPH_ENDPOINT = "https://graph.microsoft.com/v1.0/me";
+const GRAPH_ENDPOINT = 'https://graph.microsoft.com/v1.0/me';
 
 /**
  * Microsoft Authentication Library (MSAL) service
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class MsalAuthService {
 
@@ -43,8 +43,8 @@ export class MsalAuthService {
         this.msalInit();
 
         const isIE =
-            window.navigator.userAgent.indexOf("MSIE ") > -1 ||
-            window.navigator.userAgent.indexOf("Trident/") > -1;
+            window.navigator.userAgent.indexOf('MSIE ') > -1 ||
+            window.navigator.userAgent.indexOf('Trident/') > -1;
 
         if (isIE) {
             this.msalService.loginRedirect();
@@ -76,7 +76,7 @@ export class MsalAuthService {
         this.msalCheckoutAccount();
 
         this.socialAuthSubscription = this.broadcastService.subscribe(
-            "msal:loginSuccess",
+            'msal:loginSuccess',
             (accessToken) => {
                 this.msalCheckoutAccount();
             }
@@ -84,10 +84,10 @@ export class MsalAuthService {
 
         this.msalService.handleRedirectCallback((authError, response) => {
             if (authError) {
-                console.error("Redirect Error: ", authError.errorMessage);
+                console.error('Redirect Error: ', authError.errorMessage);
                 return;
             }
-            console.log("Redirect Success: ", response.accessToken);
+            console.log('Redirect Success: ', response.accessToken);
         });
     }
 }

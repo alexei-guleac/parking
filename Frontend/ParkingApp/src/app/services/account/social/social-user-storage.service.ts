@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
-import { User } from "@app/models/User";
-import { storageKeys } from "@app/services/navigation/app.endpoints";
+import { Injectable } from '@angular/core';
+import { User } from '@app/models/User';
+import { storageKeys } from '@app/services/navigation/app.endpoints';
 import {
     AuthServiceConfig,
     FacebookLoginProvider,
@@ -8,12 +8,12 @@ import {
     LinkedInLoginProvider,
     LoginOpt,
     VKLoginProvider
-} from "angularx-social-login-vk";
-import { BehaviorSubject, Subject } from "rxjs";
+} from 'angularx-social-login-vk';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class SocialUserStorageService {
 
@@ -158,7 +158,7 @@ export class SocialUserStorageService {
      * @param fullname - social user fullname
      */
     private getFirstname(fullname: string) {
-        return fullname.split(" ")[0];
+        return fullname.split(' ')[0];
     }
 }
 
@@ -167,13 +167,13 @@ export class SocialUserStorageService {
  */
 const fbLoginOptions: LoginOpt = {
     scope:
-        "pages_messaging,pages_messaging_subscriptions,email,pages_show_list,manage_pages",
+        'pages_messaging,pages_messaging_subscriptions,email,pages_show_list,manage_pages',
     return_scopes: true,
     enable_profile_selector: true
 }; // https://developers.facebook.com/docs/reference/javascript/FB.login/v2.11
 
 const googleLoginOptions: LoginOpt = {
-    scope: "profile email"
+    scope: 'profile email'
 }; // https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiauth2clientconfig
 
 /**
@@ -183,21 +183,21 @@ export function provideAuthServiceConfig() {
     return new AuthServiceConfig([
         {
             id: FacebookLoginProvider.PROVIDER_ID,
-            provider: new FacebookLoginProvider("509861456396823")
+            provider: new FacebookLoginProvider('509861456396823')
         },
         {
             id: GoogleLoginProvider.PROVIDER_ID,
             provider: new GoogleLoginProvider(
-                "878973947322-drnv3qvmpvs3kaie7s699g99t2odi4fq.apps.googleusercontent.com"
+                '878973947322-drnv3qvmpvs3kaie7s699g99t2odi4fq.apps.googleusercontent.com'
             )
         },
         {
             id: VKLoginProvider.PROVIDER_ID,
-            provider: new VKLoginProvider("7373880")
+            provider: new VKLoginProvider('7373880')
         },
         {
             id: LinkedInLoginProvider.PROVIDER_ID,
-            provider: new LinkedInLoginProvider("771wdzxnwaaund")
+            provider: new LinkedInLoginProvider('771wdzxnwaaund')
         }
     ]);
 }
@@ -206,24 +206,24 @@ export function provideAuthServiceConfig() {
  * Social service providers names
  */
 export const socialProviderNames = {
-    fb: "facebook",
-    g: "google",
-    vk: "vkontakte",
-    git: "github",
-    ms: "microsoft",
-    a: "amazon",
-    t: "twitter",
-    in: "instagram",
+    fb: 'facebook',
+    g: 'google',
+    vk: 'vkontakte',
+    git: 'github',
+    ms: 'microsoft',
+    a: 'amazon',
+    t: 'twitter',
+    in: 'instagram',
 
-    facebook: "fb",
-    google: "g",
-    vkontakte: "vk",
-    linkedin: "lin",
-    github: "git",
-    microsoft: "ms",
-    amazon: "a",
-    twitter: "t",
-    instagram: "in"
+    facebook: 'fb',
+    google: 'g',
+    vkontakte: 'vk',
+    linkedin: 'lin',
+    github: 'git',
+    microsoft: 'ms',
+    amazon: 'a',
+    twitter: 't',
+    instagram: 'in'
 };
 
 /**

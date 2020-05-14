@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ParkingLayoutComponent } from "./parking-layout.component";
+import { ParkingLayoutComponent } from './parking-layout.component';
 
 
-describe("Feature2Component", () => {
+describe('Feature2Component', () => {
     let component: ParkingLayoutComponent;
     let fixture: ComponentFixture<ParkingLayoutComponent>;
 
@@ -19,7 +19,7 @@ describe("Feature2Component", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

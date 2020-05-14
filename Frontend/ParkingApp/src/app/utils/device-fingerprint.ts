@@ -1,7 +1,7 @@
-"use strict";
-import { Injectable } from "@angular/core";
-import * as Bowser from "bowser";
-import * as Fingerprint2 from "fingerprintjs2";
+'use strict';
+import { Injectable } from '@angular/core';
+import * as Bowser from 'bowser';
+import * as Fingerprint2 from 'fingerprintjs2';
 
 
 type RequestIdleCallbackHandle = any;
@@ -56,7 +56,7 @@ class DeviceInfo {
  * Device information static storage
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class DeviceInfoStorage {
     public static deviceInfo: DeviceInfo = new DeviceInfo();
@@ -71,7 +71,7 @@ export class DeviceInfoStorage {
         _getOs();
         _getBrowser();
         _getDeviceType();
-        _getDeviceInfo("timezone", "language");
+        _getDeviceInfo('timezone', 'language');
         _getFingerprint().then(() => {
             return true;
         });
@@ -96,7 +96,7 @@ export function _getFingerprint() {
             try {
                 const components = await Fingerprint2.getPromise(options);
                 const values = components.map(component => component.value);
-                const deviceFingerprint = String(Fingerprint2.x64hash128(values.join(""), 31));
+                const deviceFingerprint = String(Fingerprint2.x64hash128(values.join(''), 31));
 
                 resolve(() => {
                     DeviceInfoStorage.deviceInfo.fingerprint = deviceFingerprint;
@@ -181,7 +181,7 @@ function getComponentByKey(components: any, key: any) {
  */
 export function _getBrowser() {
     const result = Bowser.getParser(window.navigator.userAgent);
-    const browser = result.getBrowserName() + " " + result.getBrowserVersion();
+    const browser = result.getBrowserName() + ' ' + result.getBrowserVersion();
     DeviceInfoStorage.deviceInfo.browser = browser;
 
     return browser;
@@ -192,7 +192,7 @@ export function _getBrowser() {
  */
 export function _getOs() {
     const result = Bowser.getParser(window.navigator.userAgent);
-    const os = result.getOSName() + " " + result.getOSVersion();
+    const os = result.getOSName() + ' ' + result.getOSVersion();
     DeviceInfoStorage.deviceInfo.os = os;
 
     return os;

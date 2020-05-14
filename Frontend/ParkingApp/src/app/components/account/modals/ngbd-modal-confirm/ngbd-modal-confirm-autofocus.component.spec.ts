@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NgbdModalConfirmAutofocusComponent } from "./ngbd-modal-confirm-autofocus.component";
+import { NgbdModalConfirmAutofocusComponent } from './ngbd-modal-confirm-autofocus.component';
 
 
-describe("NgbdModalConfirmAutofocusComponent", () => {
+describe('NgbdModalConfirmAutofocusComponent', () => {
     let component: NgbdModalConfirmAutofocusComponent;
     let fixture: ComponentFixture<NgbdModalConfirmAutofocusComponent>;
 
@@ -19,7 +19,7 @@ describe("NgbdModalConfirmAutofocusComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it('should create', () => {
         expect(component).toBeTruthy();
     });
 });

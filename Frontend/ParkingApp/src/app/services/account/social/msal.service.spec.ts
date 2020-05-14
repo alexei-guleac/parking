@@ -1,12 +1,12 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
-import { MsalAuthService } from "./msal-auth.service";
+import { MsalAuthService } from './msal-auth.service';
 
 
-describe("MsalService", () => {
+describe('MsalService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
-    it("should be created", () => {
+    it('should be created', () => {
         const service: MsalAuthService = TestBed.get(MsalAuthService);
         expect(service).toBeTruthy();
     });

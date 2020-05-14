@@ -1,12 +1,12 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
-import { PrefetchParkingLotsService } from "./prefetch-parking-lots.service";
+import { PrefetchParkingLotsService } from './prefetch-parking-lots.service';
 
 
-describe("PrefectchParkingLotsService", () => {
+describe('PrefectchParkingLotsService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
-    it("should be created", () => {
+    it('should be created', () => {
         const service: PrefetchParkingLotsService = TestBed.get(
             PrefetchParkingLotsService
         );

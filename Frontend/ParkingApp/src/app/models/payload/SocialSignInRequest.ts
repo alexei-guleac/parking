@@ -1,5 +1,5 @@
-import { socialProviderNames } from "@app/services/account/social/social-user-storage.service";
-import { User } from "../User";
+import { socialProviderNames } from '@app/services/account/social/social-user-storage.service';
+import { User } from '../User';
 
 
 /**

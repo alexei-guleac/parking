@@ -1,17 +1,17 @@
-import { Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from "@angular/core";
-import { fadeInOut } from "@app/components/animations/animations";
-import { SocialUserStorageService } from "@app/services/account/social/social-user-storage.service";
-import { NgxLoginWithAmazonButtonComponent } from "ngx-login-with-amazon-button";
+import { Component, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
+import { fadeInOut } from '@app/components/animations/animations';
+import { SocialUserStorageService } from '@app/services/account/social/social-user-storage.service';
+import { NgxLoginWithAmazonButtonComponent } from 'ngx-login-with-amazon-button';
 
 
 /**
  * Social service login/registration buttons
  */
 @Component({
-    selector: "app-social-buttons",
+    selector: 'app-social-buttons',
     animations: [fadeInOut],
-    templateUrl: "./social-buttons.component.html",
-    styleUrls: ["./social-buttons.component.scss"]
+    templateUrl: './social-buttons.component.html',
+    styleUrls: ['./social-buttons.component.scss']
 })
 export class SocialButtonsComponent implements OnInit {
     @Output()
@@ -59,7 +59,7 @@ export class SocialButtonsComponent implements OnInit {
      * Decorator that declares a DOM event to listen for,
      * and provides a handler method to run when that resize event occurs
      */
-    @HostListener("window:resize", ["$event"])
+    @HostListener('window:resize', ['$event'])
     onResize() {
         this.innerWidth = window.innerWidth;
         this.resizeAmazonBtnBackground();
@@ -70,7 +70,7 @@ export class SocialButtonsComponent implements OnInit {
      */
     resizeAmazonBtnBackground() {
         const screenWidth = this.innerWidth;
-        const path = "../../../../../assets/img/amazon-btn/";
+        const path = '../../../../../assets/img/amazon-btn/';
 
         if (this.amazonBtn) {
             this.amazonBtn.height = 48;
@@ -79,19 +79,19 @@ export class SocialButtonsComponent implements OnInit {
                 (screenWidth > 992 && screenWidth < 1200)
             ) {
                 this.amazonBtn.src =
-                    path + "amazon-btn-480px-less_and_992-1200px.svg";
+                    path + 'amazon-btn-480px-less_and_992-1200px.svg';
                 this.amazonBtn.width = 345;
             }
             if (screenWidth > 480 && screenWidth < 770) {
-                this.amazonBtn.src = path + "amazon-btn-480-770px.svg";
+                this.amazonBtn.src = path + 'amazon-btn-480-770px.svg';
                 this.amazonBtn.width = 156;
             }
             if (screenWidth > 770 && screenWidth < 992) {
-                this.amazonBtn.src = path + "amazon-btn-770-992px.svg";
+                this.amazonBtn.src = path + 'amazon-btn-770-992px.svg';
                 this.amazonBtn.width = 280;
             }
             if (screenWidth > 1200) {
-                this.amazonBtn.src = path + "amazon-btn-1200px_high.svg";
+                this.amazonBtn.src = path + 'amazon-btn-1200px_high.svg';
                 this.amazonBtn.width = 150;
             }
         }
@@ -102,7 +102,7 @@ export class SocialButtonsComponent implements OnInit {
      * @param event - Amazon Oauth flow event
      */
     amazonAuthorize(event: any | AccessTokenRequest | CodeRequest) {
-        if (event.token_type === "bearer") {
+        if (event.token_type === 'bearer') {
             amazon.Login.retrieveProfile(
                 event.access_token,
                 (response: any) => {

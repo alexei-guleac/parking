@@ -1,15 +1,15 @@
-import { Component } from "@angular/core";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
+import { Component } from '@angular/core';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
 
 
 /**
  * Access denied error page (401 unauthorized or 403 forbidden)
  */
 @Component({
-    selector: "app-access-denied",
-    templateUrl: "./access-denied.component.html",
-    styleUrls: ["./access-denied.component.scss"]
+    selector: 'app-access-denied',
+    templateUrl: './access-denied.component.html',
+    styleUrls: ['./access-denied.component.scss']
 })
 export class AccessDeniedComponent {
 

@@ -43,8 +43,8 @@ export function containsString(referrer: string, someString: string) {
  * @param targetStr - target string
  */
 export function trimChars(char, targetStr) {
-    const re = new RegExp("^[" + char + "]+|[" + char + "]+$", "g");
-    return targetStr.replace(re, "");
+    const re = new RegExp('^[' + char + ']+|[' + char + ']+$', 'g');
+    return targetStr.replace(re, '');
 }
 
 

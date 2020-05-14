@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient } from '@angular/common/http';
 import {
     AfterViewInit,
     Directive,
@@ -13,7 +13,7 @@ import {
     NgZone,
     OnInit,
     Output
-} from "@angular/core";
+} from '@angular/core';
 
 import {
     AbstractControl,
@@ -22,9 +22,9 @@ import {
     NG_VALUE_ACCESSOR,
     NgControl,
     Validators
-} from "@angular/forms";
+} from '@angular/forms';
 
-import "rxjs/add/operator/map";
+import 'rxjs/add/operator/map';
 
 
 declare const grecaptcha: any;
@@ -36,7 +36,7 @@ declare global {
     }
 }
 
-export const RECAPTCHA_URL = new InjectionToken("RECAPTCHA_URL");
+export const RECAPTCHA_URL = new InjectionToken('RECAPTCHA_URL');
 
 /**
  * Google recaptcha async validator
@@ -52,7 +52,7 @@ class ReCaptchaAsyncValidator {
      */
     validateToken(token: string) {
         return (_: AbstractControl) => {
-            console.log("validateToken");
+            console.log('validateToken');
             return this.http
                 .post(this.url, { grecaptcha: { token } })
                 .map((result: any) => {
@@ -67,9 +67,9 @@ class ReCaptchaAsyncValidator {
 }
 
 export interface ReCaptchaConfig {
-    theme?: "dark" | "light";
-    type?: "audio" | "image";
-    size?: "compact" | "normal";
+    theme?: 'dark' | 'light';
+    type?: 'audio' | 'image';
+    size?: 'compact' | 'normal';
     tabindex?: number;
 }
 
@@ -78,8 +78,8 @@ export interface ReCaptchaConfig {
  */
 @Directive({
     // tslint:disable-next-line:directive-selector
-    selector: "[appNbRecaptcha]",
-    exportAs: "appNbRecaptcha",
+    selector: '[appNbRecaptcha]',
+    exportAs: 'appNbRecaptcha',
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -129,7 +129,7 @@ export class ReCaptchaDirective
                 ...this.config,
                 sitekey: this.key,
                 callback: this.onSuccess.bind(this),
-                "expired-callback": this.onExpired.bind(this)
+                'expired-callback': this.onExpired.bind(this)
             };
             this.widgetId = this.render(this.element.nativeElement, config);
         };
@@ -219,7 +219,7 @@ export class ReCaptchaDirective
      * Add the script
      */
     addScript() {
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         // for other languages
         // const lang = this.lang ? '&hl=' + this.lang : '';
         // script.src = `https://www.google.com/recaptcha/api.js?onload=reCaptchaLoad&render=explicit${lang}`;

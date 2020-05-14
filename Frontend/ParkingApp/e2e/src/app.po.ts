@@ -1,4 +1,4 @@
-import { browser, by, element } from "protractor";
+import { browser, by, element } from 'protractor';
 
 
 export class AppPage {
@@ -7,6 +7,6 @@ export class AppPage {
     }
 
     getTitleText() {
-        return element(by.css("app-root .content span")).getText() as Promise<string>;
+        return element(by.css('app-root .content span')).getText() as Promise<string>;
     }
 }

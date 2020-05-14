@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 
 /**
  * Application theme service
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class ThemeService {
 
@@ -22,11 +22,11 @@ export class ThemeService {
      * Initiates theme toggle
      */
     initThemeToogle() {
-        document.documentElement.classList.remove("no-js");
+        document.documentElement.classList.remove('no-js');
 
-        const STORAGE_KEY = "user-color-scheme";
-        const COLOR_MODE_KEY = "--color-mode";
-        const modeToggleButton = document.querySelector(".slider");
+        const STORAGE_KEY = 'user-color-scheme';
+        const COLOR_MODE_KEY = '--color-mode';
+        const modeToggleButton = document.querySelector('.slider');
 
         /**
          * Pass in an element and its CSS Custom Property that you want the value of.
@@ -39,25 +39,25 @@ export class ThemeService {
         const getCSSCustomProp = (
             propKey,
             element = document.documentElement,
-            castAs = "string"
+            castAs = 'string'
         ) => {
             let response = getComputedStyle(element).getPropertyValue(propKey);
 
             // Tidy up the string if there's something to work with
             if (response.length) {
-                response = response.replace(/\'|"/g, "").trim();
+                response = response.replace(/\'|"/g, '').trim();
             }
 
             // Convert the response into a whatever type we wanted
             switch (castAs) {
-                case "number":
-                case "int":
+                case 'number':
+                case 'int':
                     return parseInt(response, 10);
-                case "float":
+                case 'float':
                     return parseFloat(response);
-                case "boolean":
-                case "bool":
-                    return response === "true" || response === "1";
+                case 'boolean':
+                case 'bool':
+                    return response === 'true' || response === '1';
             }
 
             // Return the string response by default
@@ -75,7 +75,7 @@ export class ThemeService {
 
             if (currentSetting) {
                 document.documentElement.setAttribute(
-                    "data-user-color-scheme",
+                    'data-user-color-scheme',
                     currentSetting
                 );
                 setButtonLabelAndStatus(currentSetting);
@@ -88,7 +88,7 @@ export class ThemeService {
             const currentSetting = localStorage.getItem(STORAGE_KEY);
 
             if (currentSetting) {
-                this.themeToogleChecked = currentSetting === "dark";
+                this.themeToogleChecked = currentSetting === 'dark';
             }
         };
 
@@ -96,21 +96,21 @@ export class ThemeService {
          * Get’s the current setting > reverses it > stores it
          */
         const toggleSetting = () => {
-            console.log("toggleSetting");
+            // console.log('toggleSetting');
             let currentSetting = localStorage.getItem(STORAGE_KEY);
 
             switch (currentSetting) {
                 case null:
                     currentSetting =
-                        getCSSCustomProp(COLOR_MODE_KEY) === "dark"
-                            ? "light"
-                            : "dark";
+                        getCSSCustomProp(COLOR_MODE_KEY) === 'dark'
+                            ? 'light'
+                            : 'dark';
                     break;
-                case "light":
-                    currentSetting = "dark";
+                case 'light':
+                    currentSetting = 'dark';
                     break;
-                case "dark":
-                    currentSetting = "light";
+                case 'dark':
+                    currentSetting = 'light';
                     break;
             }
 
@@ -124,7 +124,7 @@ export class ThemeService {
          */
         const setButtonLabelAndStatus = (currentSetting) => {
             this.modeToggleText = `Enable ${
-                currentSetting === "dark" ? "light" : "dark"
+                currentSetting === 'dark' ? 'light' : 'dark'
             } mode`;
             this.modeStatusElement = `Color mode is now "${currentSetting}"`;
         };
@@ -133,7 +133,7 @@ export class ThemeService {
          * Clicking the button runs the apply setting method which grabs its parameter
          * from the toggle setting method.
          */
-        modeToggleButton.addEventListener("click", (evt) => {
+        modeToggleButton.addEventListener('click', (evt) => {
             // evt.preventDefault();
             applySetting(toggleSetting());
         });

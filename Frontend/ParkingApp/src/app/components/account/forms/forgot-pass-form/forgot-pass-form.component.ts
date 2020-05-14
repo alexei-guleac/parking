@@ -1,22 +1,22 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { FormControlService } from "@app/services/account/form-control.service";
-import { handleHttpErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { isNonEmptyString } from "@app/utils/string-utils";
-import { Subscription } from "rxjs";
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { FormControlService } from '@app/services/account/form-control.service';
+import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { isNonEmptyString } from '@app/utils/string-utils';
+import { Subscription } from 'rxjs';
 
 
 /**
  * Forgot password form component
  */
 @Component({
-    selector: "app-forgot-pass-form",
-    templateUrl: "./forgot-pass-form.component.html",
-    styleUrls: ["./forgot-pass-form.component.scss"]
+    selector: 'app-forgot-pass-form',
+    templateUrl: './forgot-pass-form.component.html',
+    styleUrls: ['./forgot-pass-form.component.scss']
 })
 export class ForgotPassFormComponent
     implements OnInit, OnDestroy, ComponentWithErrorMsg {
@@ -50,7 +50,7 @@ export class ForgotPassFormComponent
     }
 
     get mail() {
-        return this.forgotForm.get("email");
+        return this.forgotForm.get('email');
     }
 
     /**
@@ -83,7 +83,7 @@ export class ForgotPassFormComponent
      */
     onSubmit(valid: boolean) {
         this.submitted = true;
-        if (this.forgotForm.hasError("invalid")) {
+        if (this.forgotForm.hasError('invalid')) {
             this.submitted = false;
             return;
         }
@@ -101,7 +101,7 @@ export class ForgotPassFormComponent
      */
     private createForm() {
         this.forgotForm = new FormGroup({
-            email: this.formControlService.getEmailFormControl("")
+            email: this.formControlService.getEmailFormControl('')
         });
     }
 
@@ -127,9 +127,9 @@ export class ForgotPassFormComponent
                 this.disableButtonAfterDelay();
                 this.requestFailed = false;
                 this.confirmationMessage =
-                    "Request to reset password received. " +
-                    "Check your inbox for the reset link. " +
-                    "You will be redirected to the main page in 5 seconds.";
+                    'Request to reset password received. ' +
+                    'Check your inbox for the reset link. ' +
+                    'You will be redirected to the main page in 5 seconds.';
                 this.redirectToMainAfterDelay();
             }
         };

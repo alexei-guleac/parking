@@ -1,12 +1,12 @@
-import { TestBed } from "@angular/core/testing";
+import { TestBed } from '@angular/core/testing';
 
-import { XhrInterceptor } from "./xhr-interceptor.service";
+import { XhrInterceptor } from './xhr-interceptor.service';
 
 
-describe("XhrInterceptorService", () => {
+describe('XhrInterceptorService', () => {
     beforeEach(() => TestBed.configureTestingModule({}));
 
-    it("should be created", () => {
+    it('should be created', () => {
         const service: XhrInterceptor = TestBed.get(XhrInterceptor);
         expect(service).toBeTruthy();
     });

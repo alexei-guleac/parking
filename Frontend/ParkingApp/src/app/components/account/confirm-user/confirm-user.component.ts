@@ -1,19 +1,19 @@
-import { Component } from "@angular/core";
-import { NavigationExtras } from "@angular/router";
-import { ComponentWithErrorMsg } from "@app/components/account/forms/account-form/account-form.component";
-import { AuthenticationService } from "@app/services/account/auth.service";
-import { handleErrorResponse } from "@app/services/helpers/global-http-interceptor-service.service";
-import { actions, api } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
+import { Component } from '@angular/core';
+import { NavigationExtras } from '@angular/router';
+import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
+import { AuthenticationService } from '@app/services/account/auth.service';
+import { handleErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
+import { actions, api } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
 
 
 /**
  * Component for handling user confirmation redirection from email
  */
 @Component({
-    selector: "app-confirm-registration",
-    templateUrl: "./confirm-user.component.html",
-    styleUrls: ["./confirm-user.component.scss"]
+    selector: 'app-confirm-registration',
+    templateUrl: './confirm-user.component.html',
+    styleUrls: ['./confirm-user.component.scss']
 })
 export class ConfirmUserComponent implements ComponentWithErrorMsg {
 
@@ -91,12 +91,12 @@ export class ConfirmUserComponent implements ComponentWithErrorMsg {
             // if response contains success field
             if (response.success) {
                 this.confirmationSuccess = true;
-                this.confirmationMessage = "Confirmation Successful.";
+                this.confirmationMessage = 'Confirmation Successful.';
                 // navigate to corresponding user form (login or reset password)
                 this.navigateToAccountForm(this.formAction);
             } else {
                 this.confirmationSuccess = false;
-                this.confirmationMessage = "Confirmation failed. Submit again";
+                this.confirmationMessage = 'Confirmation failed. Submit again';
                 this.navigateToMain();
             }
         };

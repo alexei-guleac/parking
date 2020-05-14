@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { RegularExpressions } from "@app/validation/reg-exp-patterns";
-import { regexpTestValidator } from "@app/validation/regexp-name-validator";
+import { Injectable } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RegularExpressions } from '@app/validation/reg-exp-patterns';
+import { regexpTestValidator } from '@app/validation/regexp-name-validator';
 
 
 /**
  * Provides Angular form controls for form inputs
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class FormControlService {
     constructor() {

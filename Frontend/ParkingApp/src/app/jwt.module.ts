@@ -1,5 +1,5 @@
-import { JwtModule, JwtModuleOptions } from "@auth0/angular-jwt";
-import { getJwtToken } from "./services/account/account-session-storage.service";
+import { JwtModule, JwtModuleOptions } from '@auth0/angular-jwt';
+import { getJwtToken } from './services/account/account-session-storage.service';
 
 
 /**

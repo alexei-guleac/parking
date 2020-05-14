@@ -1,13 +1,13 @@
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { setAcceptJsonHeaders } from "@app/config/http-config";
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { setAcceptJsonHeaders } from '@app/config/http-config';
 
 
 /**
  * Additional HTTP client wrapper for performing POST/GET server requests (including JSON accepted)
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class HttpClientService {
 

@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
-import { Statistics } from "@app/models/Statistics";
-import { Observable } from "rxjs";
-import { DataService } from "./data.service";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
+import { Statistics } from '@app/models/Statistics';
+import { Observable } from 'rxjs';
+import { DataService } from './data.service';
 
 
 /**
  * Service for parking lot usage statistics data preloading
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class PrefetchLotStatsService
     implements Resolve<Observable<Array<Statistics>>> {

@@ -1,22 +1,22 @@
-import { Component } from "@angular/core";
-import { fadeInOut } from "@app/components/animations/animations";
-import { ServerErrorMessage } from "@app/models/ServerErrorMessage";
-import { SocialUserStorageService } from "@app/services/account/social/social-user-storage.service";
-import { ModalService } from "@app/services/modals/modal.service";
-import { actions } from "@app/services/navigation/app.endpoints";
-import { NavigationService } from "@app/services/navigation/navigation.service";
-import { DeviceInfoStorage } from "@app/utils/device-fingerprint";
-import { containsString } from "@app/utils/string-utils";
+import { Component } from '@angular/core';
+import { fadeInOut } from '@app/components/animations/animations';
+import { ServerErrorMessage } from '@app/models/ServerErrorMessage';
+import { SocialUserStorageService } from '@app/services/account/social/social-user-storage.service';
+import { ModalService } from '@app/services/modals/modal.service';
+import { actions } from '@app/services/navigation/app.endpoints';
+import { NavigationService } from '@app/services/navigation/navigation.service';
+import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
+import { containsString } from '@app/utils/string-utils';
 
 
 /**
  * Root component for user account forms (login, registration, forgot password, password reset)
  */
 @Component({
-    selector: "app-account-form",
+    selector: 'app-account-form',
     animations: [fadeInOut],
-    templateUrl: "./account-form.component.html",
-    styleUrls: ["./account-form.component.scss"]
+    templateUrl: './account-form.component.html',
+    styleUrls: ['./account-form.component.scss']
 })
 export class AccountFormComponent {
 
@@ -112,8 +112,8 @@ export class AccountFormComponent {
                 this.login = true;
                 this.isLoginFailed = true;
                 // if message contains 'token', implied that token was expired or malformed
-                if (containsString(errorMsg, "token")) {
-                    this.errorMessage = errorMsg + ". \nLog in again.";
+                if (containsString(errorMsg, 'token')) {
+                    this.errorMessage = errorMsg + '. \nLog in again.';
                 } else {
                     this.errorMessage = errorMsg;
                 }

@@ -4,7 +4,12 @@
 
 export const environment = {
     production: false,
-    restUrl: "http://localhost:8080"
+    restUrl: 'http://localhost:8080'
+    // restUrl: 'http://192.168.31.227:8080',
+    // restUrl: 'http://springbootapp:8080',
+    // restUrl: 'http://172.18.0.4:8080',
+    // restUrl: 'http://localhost:8080',
+    // restUrl: 'http://104.248.250.89:8080'
 };
 /*
 export const environment = {

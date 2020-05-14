@@ -21,6 +21,8 @@
     EXPOSE 4200
 
     # Serve the app
-    #CMD ["npm", "start"]
+    # CMD ["npm", "start"]              # frontend not accessed via docker image
     # Launch application
+    # CMD ["ng", "build", "--prod"]     # cause build lint errors (private fields)
     CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+

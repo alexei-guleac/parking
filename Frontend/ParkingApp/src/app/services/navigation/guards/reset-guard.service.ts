@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { api, appRoutes } from "@app/services/navigation/app.endpoints";
-import { containsString } from "@app/utils/string-utils";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { api, appRoutes } from '@app/services/navigation/app.endpoints';
+import { containsString } from '@app/utils/string-utils';
+import { Observable } from 'rxjs';
 
 
 /**
  * Guard that does not allow access to reset password page
  */
 @Injectable({
-    providedIn: "root"
+    providedIn: 'root'
 })
 export class ResetGuard implements CanActivate {
 
@@ -29,7 +29,7 @@ export class ResetGuard implements CanActivate {
 
         if (
             containsString(navigatedFrom, api.confirmReset) &&
-            containsString(navigatedFrom, "confirmation_token")
+            containsString(navigatedFrom, 'confirmation_token')
         ) {
             const targetUrl: string = state.url;
             if (targetUrl.includes(appRoutes.reset)) {
