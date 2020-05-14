@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.models.enums</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">com.isd.parking.models.enums.SocialProvider</node>
+    <node x="0.0" y="383.0">com.isd.parking.models.enums.AccountState</node>
+    <node x="269.0" y="0.0">com.isd.parking.models.enums.ParkingLotStatus</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="88.0" y="236.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

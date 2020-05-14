@@ -1,0 +1,125 @@
+create table statistics
+(
+    id                 bigserial not null
+        constraint statistics_pkey
+            primary key,
+    lot_number         integer,
+    parking_lot_status integer,
+    updated_at         timestamp
+);
+
+alter table statistics
+    owner to postgres;
+
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (1, 10, 1, '2020-05-05 08:46:41.336000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (2, 6, 1, '2020-05-05 09:20:15.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (3, 1, 1, '2020-05-05 09:46:15.028000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (4, 7, 2, '2020-05-05 13:30:36.735000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (5, 5, 2, '2020-05-05 14:49:36.147000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (6, 7, 1, '2020-05-05 16:20:07.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (7, 2, 0, '2020-05-05 17:46:22.369000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (8, 3, 2, '2020-05-05 17:49:29.985000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (9, 2, 2, '2020-05-05 18:05:45.054000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (10, 6, 0, '2020-05-05 18:20:25.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (11, 10, 0, '2020-05-05 18:32:13.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (12, 1, 0, '2020-05-05 18:46:48.510000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (13, 8, 0, '2020-05-05 19:09:16.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (14, 2, 1, '2020-05-06 07:20:10.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (15, 5, 1, '2020-05-06 08:20:09.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (16, 8, 1, '2020-05-06 09:20:22.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (17, 10, 1, '2020-05-06 09:20:23.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (18, 6, 1, '2020-05-06 09:20:39.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (19, 1, 2, '2020-05-06 11:20:10.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (20, 4, 2, '2020-05-06 13:25:28.061000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (21, 9, 0, '2020-05-06 17:46:31.860000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (22, 4, 0, '2020-05-06 17:53:14.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (23, 2, 0, '2020-05-06 18:20:11.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (24, 7, 0, '2020-05-06 18:20:15.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (25, 5, 0, '2020-05-06 18:20:18.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (26, 10, 0, '2020-05-06 18:20:32.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (27, 8, 0, '2020-05-06 18:20:47.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (28, 6, 0, '2020-05-06 18:20:48.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (29, 2, 1, '2020-05-07 08:35:19.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (30, 9, 1, '2020-05-07 09:20:08.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (31, 1, 1, '2020-05-07 09:20:14.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (32, 4, 1, '2020-05-07 09:20:20.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (33, 7, 1, '2020-05-07 09:20:24.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (34, 5, 1, '2020-05-07 09:20:26.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (35, 6, 1, '2020-05-07 09:20:50.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (36, 10, 1, '2020-05-07 10:20:46.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (37, 8, 1, '2020-05-07 10:20:51.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (38, 3, 1, '2020-05-07 11:20:04.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (39, 6, 0, '2020-05-07 18:01:10.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (40, 1, 0, '2020-05-07 18:14:22.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (41, 9, 0, '2020-05-07 18:20:09.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (42, 2, 0, '2020-05-07 18:20:21.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (43, 4, 0, '2020-05-07 18:20:29.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (44, 7, 0, '2020-05-07 18:20:32.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (45, 6, 2, '2020-05-07 18:20:59.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (46, 8, 0, '2020-05-07 18:21:00.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (47, 10, 0, '2020-05-07 18:21:03.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (48, 5, 0, '2020-05-07 18:33:29.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (49, 3, 0, '2020-05-07 19:31:19.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (50, 2, 1, '2020-05-08 08:20:28.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (51, 4, 1, '2020-05-08 08:52:35.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (52, 1, 2, '2020-05-08 08:53:27.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (53, 9, 1, '2020-05-08 09:20:12.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (54, 3, 1, '2020-05-08 09:20:21.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (55, 5, 1, '2020-05-08 09:20:36.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (56, 7, 1, '2020-05-08 09:20:43.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (57, 8, 1, '2020-05-08 09:21:10.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (58, 1, 1, '2020-05-08 09:32:34.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (59, 10, 2, '2020-05-08 16:23:09.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (60, 9, 0, '2020-05-08 18:20:23.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (61, 3, 0, '2020-05-08 18:20:31.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (62, 2, 0, '2020-05-08 18:20:33.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (63, 5, 0, '2020-05-08 18:20:38.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (64, 1, 0, '2020-05-08 18:20:40.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (65, 4, 0, '2020-05-08 18:20:41.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (66, 7, 0, '2020-05-08 18:20:50.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (67, 1, 1, '2020-05-10 08:20:43.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (68, 3, 1, '2020-05-10 08:59:33.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (69, 9, 1, '2020-05-10 09:11:30.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (70, 5, 1, '2020-05-10 09:20:47.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (71, 4, 1, '2020-05-10 09:20:49.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (72, 7, 1, '2020-05-10 09:21:04.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (73, 1, 0, '2020-05-10 18:20:44.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (74, 9, 0, '2020-05-10 18:20:44.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (75, 5, 0, '2020-05-10 18:20:52.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (76, 1, 2, '2020-05-10 18:20:54.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (77, 4, 0, '2020-05-10 18:20:55.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (78, 7, 0, '2020-05-10 18:21:13.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (79, 3, 0, '2020-05-10 18:31:38.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (80, 2, 2, '2020-05-10 18:35:40.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (81, 1, 1, '2020-05-11 08:21:02.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (82, 3, 1, '2020-05-11 09:03:41.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (83, 2, 1, '2020-05-11 09:20:42.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (84, 9, 1, '2020-05-11 09:20:54.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (85, 4, 1, '2020-05-11 09:21:04.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (86, 3, 1, '2020-05-11 09:35:52.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (87, 7, 2, '2020-05-11 11:21:18.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (88, 5, 2, '2020-05-11 14:20:58.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (89, 3, 0, '2020-05-11 17:56:49.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (90, 2, 0, '2020-05-11 17:59:55.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (91, 9, 0, '2020-05-11 18:20:59.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (92, 1, 0, '2020-05-11 18:21:07.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (93, 4, 0, '2020-05-11 18:23:12.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (94, 3, 0, '2020-05-11 19:13:57.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (95, 3, 2, '2020-05-11 19:35:00.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (96, 2, 1, '2020-05-12 07:21:01.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (97, 9, 1, '2020-05-12 08:21:08.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (98, 5, 0, '2020-05-12 09:21:11.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (99, 1, 1, '2020-05-12 09:21:14.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (100, 4, 2, '2020-05-12 10:21:17.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (101, 3, 1, '2020-05-12 10:53:05.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (102, 5, 2, '2020-05-12 12:35:26.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (103, 10, 1, '2020-05-12 15:35:21.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (104, 3, 0, '2020-05-12 18:21:14.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (105, 9, 0, '2020-05-12 18:21:17.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (106, 1, 0, '2020-05-12 18:21:22.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (107, 2, 0, '2020-05-12 18:35:06.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (108, 2, 1, '2020-05-13 07:55:07.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (109, 3, 2, '2020-05-13 15:36:23.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (110, 2, 0, '2020-05-13 18:03:12.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (111, 2, 1, '2020-05-14 09:07:15.000000');
+INSERT INTO public.statistics (id, lot_number, parking_lot_status, updated_at) VALUES (112, 2, 2, '2020-05-15 07:45:21.000000');

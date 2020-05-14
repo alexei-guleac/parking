@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.web.rest.payload.connect</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">com.isd.parking.web.rest.payload.connect.SocialDisconnectRequest</node>
+    <node x="0.0" y="383.0">com.isd.parking.web.rest.payload.connect.SocialDisconnectResponse</node>
+    <node x="288.0" y="383.0">com.isd.parking.web.rest.payload.connect.SocialConnectResponse</node>
+    <node x="302.0" y="0.0">com.isd.parking.web.rest.payload.connect.SocialConnectRequest</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="120.0" y="175.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

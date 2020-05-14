@@ -141,8 +141,6 @@ public class UserLdapClient {
                               @Nullable String attributeValue,
                               int modificationType) {
         Attribute attr = new BasicAttribute(attributeName, attributeValue);
-        log.info(attributeName + " " + attributeValue);
-        log.info(uid + " " + uid);
         @NotNull ModificationItem item = new ModificationItem(modificationType, attr);
         ldapTemplate.modifyAttributes(bindDnByUid(uid), new ModificationItem[]{item});
 

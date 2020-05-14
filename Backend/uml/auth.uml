@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.web.rest.payload.auth</OriginalElement>
+  <nodes>
+    <node x="663.5" y="454.0">com.isd.parking.web.rest.payload.auth.GithubOauthRequest.GithubOauthConstants</node>
+    <node x="951.0" y="0.0">com.isd.parking.web.rest.payload.auth.SocialAuthRequest</node>
+    <node x="629.0" y="0.0">com.isd.parking.web.rest.payload.auth.GithubOauthRequest</node>
+    <node x="354.5" y="0.0">com.isd.parking.web.rest.payload.auth.AuthenticationResponse</node>
+    <node x="56.5" y="388.0">com.isd.parking.web.rest.payload.auth.AuthenticationRequest.AuthDetails</node>
+    <node x="0.0" y="771.0">com.isd.parking.web.rest.payload.auth.GithubOauthResponse</node>
+    <node x="0.0" y="0.0">com.isd.parking.web.rest.payload.auth.AuthenticationRequest</node>
+    <node x="349.0" y="322.0">com.isd.parking.web.rest.payload.auth.SocialAuthResponse</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.isd.parking.web.rest.payload.auth.GithubOauthRequest.GithubOauthConstants" target="com.isd.parking.web.rest.payload.auth.GithubOauthRequest">
+      <point x="-52.0" y="-50.0" />
+      <point x="715.5" y="429.0" />
+      <point x="698.25" y="429.0" />
+      <point x="-69.25" y="202.0" />
+    </edge>
+    <edge source="com.isd.parking.web.rest.payload.auth.SocialAuthResponse" target="com.isd.parking.web.rest.payload.auth.AuthenticationResponse">
+      <point x="58.75" y="-136.0" />
+      <point x="525.25" y="297.0" />
+      <point x="522.5" y="297.0" />
+      <point x="56.0" y="136.0" />
+    </edge>
+    <edge source="com.isd.parking.web.rest.payload.auth.AuthenticationRequest.AuthDetails" target="com.isd.parking.web.rest.payload.auth.AuthenticationRequest">
+      <point x="-47.75" y="-169.0" />
+      <point x="104.25" y="363.0" />
+      <point x="76.0" y="363.0" />
+      <point x="-76.0" y="169.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6781940441882806" x="588.5" y="510.5" />
+  <SelectedNodes>
+    <node>com.isd.parking.web.rest.payload.auth.GithubOauthRequest.GithubOauthConstants</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

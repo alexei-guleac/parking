@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.models</OriginalElement>
+  <nodes>
+    <node x="240.0" y="1499.0">com.isd.parking.models.users</node>
+    <node x="1203.0" y="575.0">com.isd.parking.models.RestErrorList</node>
+    <node x="144.0" y="1395.0">com.isd.parking.models.enums</node>
+    <node x="359.125" y="192.0">com.isd.parking.models.ConfirmationRecord</node>
+    <node x="844.0" y="520.0">com.isd.parking.models.ResponseWrapper</node>
+    <node x="466.5416666666667" y="0.0">com.isd.parking.models.AccountOperation</node>
+    <node x="1057.5" y="0.0">com.isd.parking.models.ErrorMessage</node>
+    <node x="0.0" y="0.0">com.isd.parking.models.EmailDto</node>
+    <node x="353.0" y="910.0">com.isd.parking.models.ConfirmationRecord_</node>
+    <node x="30.0" y="1499.0">com.isd.parking.models.subjects</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.isd.parking.models.subjects" target="com.isd.parking.models.subjects">
+      <point x="-40.0" y="27.0" />
+      <point x="70.0" y="1573.0" />
+      <point x="10.0" y="1573.0" />
+      <point x="10.0" y="1539.5" />
+      <point x="-80.0" y="13.5" />
+    </edge>
+    <edge source="com.isd.parking.models.ResponseWrapper" target="com.isd.parking.models.ErrorMessage">
+      <point x="0.0" y="-202.0" />
+      <point x="1013.5" y="495.0" />
+      <point x="1116.25" y="495.0" />
+      <point x="-58.75" y="235.0" />
+    </edge>
+    <edge source="com.isd.parking.models.ConfirmationRecord_" target="com.isd.parking.models.AccountOperation">
+      <point x="148.66666666666663" y="-171.0" />
+      <point x="724.6666666666666" y="885.0" />
+      <point x="672.625" y="885.0" />
+      <point x="672.625" y="167.0" />
+      <point x="659.0416666666666" y="167.0" />
+      <point x="77.0" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.models.users" target="com.isd.parking.models.enums">
+      <point x="-34.0" y="-27.0" />
+      <point x="274.0" y="1479.0" />
+      <point x="229.0" y="1479.0" />
+      <point x="17.0" y="27.0" />
+    </edge>
+    <edge source="com.isd.parking.models.subjects" target="com.isd.parking.models.enums">
+      <point x="-40.0" y="-27.0" />
+      <point x="70.0" y="1469.0" />
+      <point x="161.0" y="1469.0" />
+      <point x="-51.0" y="27.0" />
+    </edge>
+    <edge source="com.isd.parking.models.RestErrorList" target="com.isd.parking.models.ErrorMessage">
+      <point x="0.0" y="-147.0" />
+      <point x="1336.5" y="495.0" />
+      <point x="1233.75" y="495.0" />
+      <point x="58.75" y="235.0" />
+    </edge>
+    <edge source="com.isd.parking.models.ConfirmationRecord" target="com.isd.parking.models.AccountOperation">
+      <point x="-75.75" y="-334.0" />
+      <point x="434.875" y="167.0" />
+      <point x="505.0416666666667" y="167.0" />
+      <point x="-77.0" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.models.ConfirmationRecord_" target="com.isd.parking.models.ConfirmationRecord">
+      <point x="-148.66666666666663" y="-171.0" />
+      <point x="427.33333333333337" y="885.0" />
+      <point x="434.875" y="885.0" />
+      <point x="-75.75" y="334.0" />
+    </edge>
+    <edge source="com.isd.parking.models.users" target="com.isd.parking.models.users">
+      <point x="-34.0" y="27.0" />
+      <point x="274.0" y="1573.0" />
+      <point x="220.0" y="1573.0" />
+      <point x="220.0" y="1539.5" />
+      <point x="-68.0" y="13.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="844.7142857142856" y="327.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

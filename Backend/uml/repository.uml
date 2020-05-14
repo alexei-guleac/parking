@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.repository</OriginalElement>
+  <nodes>
+    <node x="331.0" y="565.0">com.isd.parking.repository.ParkingLotRepository</node>
+    <node x="0.0" y="442.0">com.isd.parking.repository.ConfirmationTokenRepository</node>
+    <node x="0.0" y="565.0">com.isd.parking.repository.StatisticsRepository</node>
+    <node x="0.0" y="275.0">com.isd.parking.repository.UserRepository</node>
+    <node x="0.0" y="0.0">com.isd.parking.repository.ParkingLotLocalStorage</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="206.5" y="310.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

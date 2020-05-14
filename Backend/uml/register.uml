@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.web.rest.payload.register</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">com.isd.parking.web.rest.payload.register.RegistrationRequest</node>
+    <node x="303.0" y="0.0">com.isd.parking.web.rest.payload.register.SocialRegisterRequest</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="108.0" y="76.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

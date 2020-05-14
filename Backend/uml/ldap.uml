@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.storage.ldap</OriginalElement>
+  <nodes>
+    <node x="2010.8333333333335" y="562.0">com.isd.parking.storage.ldap.LdapMappingException</node>
+    <node x="996.5160856009069" y="519.0">com.isd.parking.storage.ldap.LdapAttributeMappers</node>
+    <node x="1182.5000000000002" y="828.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.MultipleAttributesMapper</node>
+    <node x="1450.5000000000002" y="828.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.UserContextMapper</node>
+    <node x="1719.7500000000002" y="1579.0">com.isd.parking.storage.ldap.UserLdapFileService</node>
+    <node x="21.5" y="817.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapper</node>
+    <node x="1816.9321641156462" y="796.0">com.isd.parking.storage.ldap.LdapFileRepository</node>
+    <node x="567.0000000000002" y="1234.6666666666667">com.isd.parking.storage.ldap.UserLdapClient</node>
+    <node x="660.766085600907" y="0.0">com.isd.parking.storage.ldap.LdapConstants</node>
+    <node x="914.5000000000002" y="828.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.SingleAttributesMapper</node>
+    <node x="629.5000000000002" y="828.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapperShort</node>
+    <node x="345.5000000000002" y="828.9999999999999">com.isd.parking.storage.ldap.LdapAttributeMappers.AuthoritiesAttributesMapper</node>
+    <node x="692.5000000000002" y="2253.3333333333335">com.isd.parking.storage.ldap.UserServiceImpl</node>
+    <node x="1803.8333333333335" y="454.0">com.isd.parking.storage.ldap.LdapFileRepository.EntryContainer</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers.AuthoritiesAttributesMapper">
+      <point x="-55.714285714285666" y="-466.0" />
+      <point x="706.2857142857144" y="1178.0" />
+      <point x="477.5000000000002" y="1178.0" />
+      <point x="0.0" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.MultipleAttributesMapper" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="61.75" y="-28.0" />
+      <point x="1367.7500000000002" y="776.0" />
+      <point x="1259.4049744897957" y="776.0" />
+      <point x="80.88888888888891" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.SingleAttributesMapper" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="0.0" y="-28.0" />
+      <point x="1038.0000000000002" y="776.0" />
+      <point x="1138.0716411564624" y="776.0" />
+      <point x="-40.44444444444446" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapFileRepository" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="28.166666666666742" y="-181.0" />
+      <point x="2014.098830782313" y="776.0" />
+      <point x="2000.3333333333335" y="776.0" />
+      <point x="2000.3333333333335" y="404.0" />
+      <point x="918.578585600907" y="404.0" />
+      <point x="120.3125" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapFileService" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="-40.75" y="-105.0" />
+      <point x="1842.0000000000002" y="1198.0" />
+      <point x="1793.0000000000002" y="1198.0" />
+      <point x="1793.0000000000002" y="414.0" />
+      <point x="884.203585600907" y="414.0" />
+      <point x="85.9375" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="111.42857142857144" y="-466.0" />
+      <point x="873.4285714285716" y="1188.0" />
+      <point x="1172.0000000000002" y="1188.0" />
+      <point x="1172.0000000000002" y="776.0" />
+      <point x="1178.516085600907" y="776.0" />
+      <point x="0.0" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers.SingleAttributesMapper">
+      <point x="55.71428571428578" y="-466.0" />
+      <point x="817.714285714286" y="1178.0" />
+      <point x="1038.0000000000002" y="1178.0" />
+      <point x="0.0" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapperShort">
+      <point x="0.0" y="-466.0" />
+      <point x="0.0" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapperShort" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="0.0" y="-28.0" />
+      <point x="762.0000000000002" y="766.0" />
+      <point x="1097.6271967120178" y="766.0" />
+      <point x="-80.88888888888891" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapFileService" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="-122.25" y="-105.0" />
+      <point x="1760.5000000000002" y="1198.0" />
+      <point x="1440.0000000000002" y="1198.0" />
+      <point x="1440.0000000000002" y="766.0" />
+      <point x="1299.84941893424" y="766.0" />
+      <point x="121.33333333333326" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapFileRepository" target="com.isd.parking.storage.ldap.LdapMappingException">
+      <point x="140.83333333333348" y="-181.0" />
+      <point x="2126.7654974489797" y="776.0" />
+      <point x="2154.3333333333335" y="776.0" />
+      <point x="0.0" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapFileService" target="com.isd.parking.storage.ldap.LdapMappingException">
+      <point x="122.25" y="-105.0" />
+      <point x="2005.0000000000002" y="1198.0" />
+      <point x="2225.9172548185943" y="1198.0" />
+      <point x="2225.9172548185943" y="776.0" />
+      <point x="2250.0" y="776.0" />
+      <point x="95.66666666666652" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="0.0" y="-71.0" />
+      <point x="1178.516085600907" y="434.0" />
+      <point x="815.453585600907" y="434.0" />
+      <point x="17.1875" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapper">
+      <point x="-111.42857142857133" y="-466.0" />
+      <point x="650.5714285714289" y="1188.0" />
+      <point x="173.5" y="1188.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.UserContextMapper" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="83.0" y="-28.0" />
+      <point x="1699.5000000000002" y="424.0" />
+      <point x="849.828585600907" y="424.0" />
+      <point x="51.5625" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapFileRepository" target="com.isd.parking.storage.ldap.LdapFileRepository.EntryContainer">
+      <point x="-140.83333333333348" y="-181.0" />
+      <point x="1845.0988307823127" y="776.0" />
+      <point x="1834.8333333333335" y="776.0" />
+      <point x="-62.0" y="136.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserServiceImpl" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="-133.60000000000014" y="-268.0" />
+      <point x="725.9000000000001" y="2180.0" />
+      <point x="0.0" y="2180.0" />
+      <point x="0.0" y="404.0" />
+      <point x="677.953585600907" y="404.0" />
+      <point x="-120.3125" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserServiceImpl" target="com.isd.parking.storage.ldap.UserLdapClient">
+      <point x="-66.79999999999995" y="-268.0" />
+      <point x="792.7000000000003" y="2170.0" />
+      <point x="664.5000000000002" y="2170.0" />
+      <point x="-97.5" y="466.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.AuthoritiesAttributesMapper" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="66.0" y="-28.0" />
+      <point x="543.5000000000002" y="756.0" />
+      <point x="1057.1827522675735" y="756.0" />
+      <point x="-121.33333333333337" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.UserContextMapper" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="-83.0" y="-28.0" />
+      <point x="1533.5000000000002" y="756.0" />
+      <point x="1340.2938633786848" y="756.0" />
+      <point x="161.77777777777783" y="71.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapAttributeMappers.MultipleAttributesMapper">
+      <point x="167.1428571428571" y="-466.0" />
+      <point x="929.1428571428573" y="1198.0" />
+      <point x="1306.0000000000002" y="1198.0" />
+      <point x="0.0" y="28.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapper" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="-76.0" y="-39.0" />
+      <point x="97.5" y="424.0" />
+      <point x="746.703585600907" y="424.0" />
+      <point x="-51.5625" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapFileService" target="com.isd.parking.storage.ldap.LdapFileRepository">
+      <point x="40.75" y="-105.0" />
+      <point x="1923.5000000000002" y="1198.0" />
+      <point x="1985.9321641156462" y="1198.0" />
+      <point x="0.0" y="181.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserServiceImpl" target="com.isd.parking.storage.ldap.UserLdapFileService">
+      <point x="66.79999999999995" y="-268.0" />
+      <point x="926.3000000000002" y="2170.0" />
+      <point x="1801.2500000000002" y="2170.0" />
+      <point x="-81.5" y="105.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.AuthoritiesAttributesMapper" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="-66.0" y="-28.0" />
+      <point x="411.5000000000002" y="434.0" />
+      <point x="781.078585600907" y="434.0" />
+      <point x="-17.1875" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapFileRepository.EntryContainer" target="com.isd.parking.storage.ldap.LdapFileRepository">
+      <point x="62.0" y="136.0" />
+      <point x="1958.8333333333335" y="776.0" />
+      <point x="1957.7654974489794" y="776.0" />
+      <point x="-28.166666666666742" y="-181.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.UserLdapClient" target="com.isd.parking.storage.ldap.LdapConstants">
+      <point x="-167.14285714285705" y="-466.0" />
+      <point x="594.8571428571431" y="1198.0" />
+      <point x="11.0" y="1198.0" />
+      <point x="11.0" y="414.0" />
+      <point x="712.328585600907" y="414.0" />
+      <point x="-85.9375" y="192.0" />
+    </edge>
+    <edge source="com.isd.parking.storage.ldap.LdapAttributeMappers.UserAttributesMapper" target="com.isd.parking.storage.ldap.LdapAttributeMappers">
+      <point x="76.0" y="-39.0" />
+      <point x="249.5" y="746.0" />
+      <point x="1016.738307823129" y="746.0" />
+      <point x="-161.77777777777783" y="71.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5999999999999998" x="1664.8333333333337" y="546.3333333333336" />
+  <SelectedNodes>
+    <node>com.isd.parking.storage.ldap.UserServiceImpl</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

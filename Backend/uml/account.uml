@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.web.rest.controllers.account</OriginalElement>
+  <nodes>
+    <node x="645.0" y="361.0">com.isd.parking.web.rest.controllers.account.AuthenticationController</node>
+    <node x="0.0" y="700.0">com.isd.parking.web.rest.controllers.account.SocialController</node>
+    <node x="0.0" y="361.0">com.isd.parking.web.rest.controllers.account.RegistrationController</node>
+    <node x="427.0" y="700.0">com.isd.parking.web.rest.controllers.account.UserController</node>
+    <node x="0.0" y="0.0">com.isd.parking.web.rest.controllers.account.AccountController</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="0.7278350515463917" x="549.5" y="475.0" />
+  <SelectedNodes>
+    <node>com.isd.parking.web.rest.controllers.account.AuthenticationController</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

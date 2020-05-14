@@ -32,6 +32,7 @@ import java.util.Collection;
 @EnableConfigurationProperties({ ApplicationProperties.class })
 @PropertySources({ @PropertySource("classpath:application.properties"),
     @PropertySource("classpath:postgresql-docker-config.properties"),
+    // @PropertySource("classpath:postgresql-config.properties"),
     @PropertySource("classpath:documentation.properties") })
 public class ParkingApplication {
 

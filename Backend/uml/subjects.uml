@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.models.subjects</OriginalElement>
+  <nodes>
+    <node x="13.5" y="0.0">com.isd.parking.models.subjects.ParkingLot</node>
+    <node x="400.5" y="0.0">com.isd.parking.models.subjects.StatisticsRecord</node>
+    <node x="0.0" y="586.0">com.isd.parking.models.subjects.ParkingLot_</node>
+    <node x="386.0" y="542.0">com.isd.parking.models.subjects.StatisticsRecord_</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.isd.parking.models.subjects.StatisticsRecord_" target="com.isd.parking.models.subjects.StatisticsRecord">
+      <point x="-91.75" y="-105.0" />
+      <point x="477.75" y="517.0" />
+      <point x="485.0" y="517.0" />
+      <point x="-84.5" y="246.0" />
+    </edge>
+    <edge source="com.isd.parking.models.subjects.ParkingLot_" target="com.isd.parking.models.subjects.ParkingLot">
+      <point x="85.25" y="-105.0" />
+      <point x="255.75" y="561.0" />
+      <point x="249.0" y="561.0" />
+      <point x="78.5" y="268.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="154.5" y="126.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

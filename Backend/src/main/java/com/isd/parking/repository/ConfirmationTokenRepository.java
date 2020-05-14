@@ -2,6 +2,7 @@ package com.isd.parking.repository;
 
 import com.isd.parking.models.ConfirmationRecord;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationR
 
     @NotNull ConfirmationRecord findByConfirmationToken(String confirmationToken);
 
-    @NotNull ConfirmationRecord findFirstByUidOrderByCreatedAtDesc(String username);
+    @Nullable ConfirmationRecord findFirstByUidOrderByCreatedAtDesc(String username);
 }

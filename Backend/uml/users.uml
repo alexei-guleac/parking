@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.isd.parking.models.users</OriginalElement>
+  <nodes>
+    <node x="405.5" y="718.0">com.isd.parking.models.users.SocialUser</node>
+    <node x="381.0" y="0.0">com.isd.parking.models.users.User</node>
+    <node x="0.0" y="0.0">com.isd.parking.models.users.UserLdap</node>
+    <node x="726.0" y="0.0">com.isd.parking.models.users.JwtUser</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.isd.parking.models.users.SocialUser" target="com.isd.parking.models.users.User">
+      <point x="0.0" y="-125.0" />
+      <point x="0.0" y="334.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.9237388724035608" x="358.790619889725" y="362.14262769033087" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

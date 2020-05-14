@@ -51,7 +51,7 @@ public class ConfirmationServiceImpl implements ConfirmationService {
     @Override
     public Optional<ConfirmationRecord> findLastByUsername(String username) {
         log.info(methodMsg("get confirmationToken..."));
-        return Optional.of(confirmationTokenRepository.findFirstByUidOrderByCreatedAtDesc(username));
+        return Optional.ofNullable(confirmationTokenRepository.findFirstByUidOrderByCreatedAtDesc(username));
     }
 
     /**
