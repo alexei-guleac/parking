@@ -8,7 +8,7 @@ import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
 import com.isd.parking.web.rest.payload.ActionSuccessResponse;
-import com.isd.parking.web.rest.payload.UpdateUserRequest;
+import com.isd.parking.web.rest.payload.account.UpdateUserRequest;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;

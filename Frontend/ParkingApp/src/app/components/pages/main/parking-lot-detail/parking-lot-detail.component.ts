@@ -2,7 +2,7 @@ import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/
 import { ActivatedRoute } from '@angular/router';
 import { ParkingLot } from '@app/models/ParkingLot';
 import { parkingColors, parkingStatuses } from '@app/models/ParkingLotStatus';
-import { getStatisticsByUpdatedAtAscSortComparator, Statistics } from '@app/models/Statistics';
+import { getStatisticsByUpdatedAtDescSortComparator, Statistics } from '@app/models/Statistics';
 import { AuthenticationService } from '@app/services/account/auth.service';
 import { DataService, StatsDateSortable } from '@app/services/data/data.service';
 import { ObjectsSortService } from '@app/services/data/objects-sort.service';
@@ -108,8 +108,9 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
             (data) => {
                 this.statistics = data;
                 // preliminarily sort statistics by date parking lot status updated in ascending order
-                this.statistics.sort(getStatisticsByUpdatedAtAscSortComparator());
+                this.statistics.sort(getStatisticsByUpdatedAtDescSortComparator());
                 this.filteredStatistics = this.statistics;
+                this.dateSortedDesc = true;
             }
         );
     }

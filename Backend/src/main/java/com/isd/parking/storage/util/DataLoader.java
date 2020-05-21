@@ -24,10 +24,13 @@ import static com.isd.parking.utilities.ColorConsoleOutput.*;
  */
 @Component
 @Slf4j
-public class DataLoader  {
+public class DataLoader {
 
-    @Value("${parking.lots.number}")
+    @Value("${parking.lots.number.total}")
     private String totalParkingLotsNumber;
+
+    @Value("${parking.lots.number.permasterboard}")
+    private String masterParkingLotsNumber;
 
     private final ParkingLotDBServiceImpl parkingLotDBService;
 
@@ -54,12 +57,18 @@ public class DataLoader  {
 
         //if db empty
         if (numberOfParkLotsInDatabase == 0) {
-            //init with Unknown status parking lots
-            for (int i = 1; i <= totalParkingLotsNumber; i++) {
+            int masterBoardPrefix = 1;
+            //init with FREE status parking lots
+            for (int i = 0, j = 0; i < totalParkingLotsNumber; i++, j++) {
+
+                if (j == Integer.parseInt(masterParkingLotsNumber)) {
+                    ++masterBoardPrefix;
+                    j = 0;
+                }
                 //initial saving parking lots to local Java memory
                 parkingLotLocalService.save(
                     new ParkingLot(
-                        (long) i + 10, i, date, ParkingLotStatus.FREE)
+                        Long.valueOf(masterBoardPrefix + "" + j), i + 1, date, ParkingLotStatus.FREE)
                 );
             }
         } else {

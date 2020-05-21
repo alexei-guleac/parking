@@ -1,30 +1,30 @@
-package com.isd.parking.web.rest.payload.register;
+package com.isd.parking.web.rest.payload.account;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.isd.parking.models.users.User;
 import com.isd.parking.web.rest.payload.DeviceInfo;
-import com.isd.parking.web.rest.payload.auth.SocialAuthRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
 
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "User registration with social service provider. ")
-public class SocialRegisterRequest extends SocialAuthRequest {
+@ApiModel(description = "Forgot user password request. ")
+public class ForgotPassRequest {
 
     @JsonProperty()
-    @JsonAlias({"user"})
-    @ApiModelProperty(notes = "User registration information", required = true)
+    @JsonAlias({"email"})
+    @ApiModelProperty(notes = "User email. ", required = true)
     @NotBlank
     @NonNull
-    private User user;
+    private String email;
 
     @JsonProperty()
     @JsonAlias({"deviceInfo"})
@@ -32,5 +32,4 @@ public class SocialRegisterRequest extends SocialAuthRequest {
     @NotBlank
     @NonNull
     private DeviceInfo deviceInfo;
-
 }

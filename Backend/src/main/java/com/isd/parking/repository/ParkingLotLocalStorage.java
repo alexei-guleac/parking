@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static com.isd.parking.utilities.ColorConsoleOutput.methodMsg;
-
 
 /**
  * Local Java memory parking lots repository class
@@ -30,7 +28,7 @@ public class ParkingLotLocalStorage {
      * @return Parking lots list
      */
     public synchronized @NotNull List<ParkingLot> findAll() {
-        log.info(methodMsg("get all parking lots local list executed..."));
+        // log.info(methodMsg("get all parking lots local list executed..."));
         return new ArrayList<>(parkingMap.values());
     }
 
@@ -42,6 +40,18 @@ public class ParkingLotLocalStorage {
     public synchronized Optional<ParkingLot> findById(Long parkingLotId) {
         ParkingLot parkingLot = parkingMap.get(parkingLotId);
         return Optional.ofNullable(parkingLot);
+    }
+
+    /**
+     * Get parking lot by number method
+     *
+     * @return specified parking lot
+     */
+    public Optional<ParkingLot> findByLotNumber(Integer parkingLotNumber) {
+
+        return parkingMap.values().stream()
+            .filter(lot -> lot.getNumber().equals(parkingLotNumber))
+            .findFirst();
     }
 
     /**

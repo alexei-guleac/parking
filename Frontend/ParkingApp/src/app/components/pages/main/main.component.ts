@@ -53,7 +53,7 @@ export class MainComponent implements OnInit {
      * Called once, after the first ngOnChanges()
      */
     ngOnInit() {
-        // mockup view before server data is loaded
+        // mock up view before server data is loaded
         this.noData = new Array<number>();
         for (let i = 1; i <= parking.lotsNumber; i++) {
             this.noData.push(i);

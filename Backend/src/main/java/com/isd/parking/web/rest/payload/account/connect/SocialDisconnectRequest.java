@@ -1,8 +1,7 @@
-package com.isd.parking.web.rest.payload;
+package com.isd.parking.web.rest.payload.account.connect;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.isd.parking.models.users.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -16,15 +15,8 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Request for user information update. ")
-public class UpdateUserRequest {
-
-    @JsonProperty()
-    @JsonAlias({"user"})
-    @ApiModelProperty(notes = "User information", required = true)
-    @NotBlank
-    @NonNull
-    private User user;
+@ApiModel(description = "Social provider profile disconnection request. ")
+public class SocialDisconnectRequest {
 
     @JsonProperty()
     @JsonAlias({"username"})
@@ -32,4 +24,12 @@ public class UpdateUserRequest {
     @NotBlank
     @NonNull
     private String username;
+
+    @JsonProperty()
+    @JsonAlias({"socialProvider"})
+    @ApiModelProperty(notes = "Social provider short name", required = true)
+    @NotBlank
+    @NonNull
+    private String socialProvider;
+
 }

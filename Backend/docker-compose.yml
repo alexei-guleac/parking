@@ -37,7 +37,6 @@ services:
         image: springbootapp:latest
         networks:
             - parking-network
-
         container_name: springbootapp
         expose:
             - 8080

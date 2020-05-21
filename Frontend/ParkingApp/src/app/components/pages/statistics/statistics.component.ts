@@ -6,7 +6,7 @@ import { parkingColors } from '@app/models/ParkingLotStatus';
 import {
     filterStatisticsByDatePeriod,
     filterStatisticsByNumber,
-    getStatisticsByUpdatedAtAscSortComparator,
+    getStatisticsByUpdatedAtAscSortComparator, getStatisticsByUpdatedAtDescSortComparator,
     Statistics
 } from '@app/models/Statistics';
 import { DataService, StatsDateSortable } from '@app/services/data/data.service';
@@ -81,7 +81,7 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
         this.statistics = this.route.snapshot.data[appRoutes.statistics];
 
         // preliminarily sort statistics by date parking lot status updated in ascending order
-        this.statistics.sort(getStatisticsByUpdatedAtAscSortComparator());
+        this.statistics.sort(getStatisticsByUpdatedAtDescSortComparator());
         // reset other fields sort order by default
         this.resetFieldsSort();
 
@@ -108,7 +108,7 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
             dateFormat,
             dateLocale
         );
-        console.log(this.endDate);
+        // console.log(this.endDate);
         this.filterData();
     }
 
@@ -198,8 +198,8 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
 
     private resetFieldsSort() {
 
-        this.dateSortedAsc = true;
-        this.dateSortedDesc = false;
+        this.dateSortedAsc = false;
+        this.dateSortedDesc = true;
 
         this.lotSortedAsc = false;
         this.lotSortedDesc = false;

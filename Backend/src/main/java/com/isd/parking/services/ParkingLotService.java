@@ -15,4 +15,6 @@ public interface ParkingLotService {
     ParkingLot save(ParkingLot parkingLot);
 
     long countAll();
+
+    Optional<ParkingLot> findByLotNumber(Integer parkingLotNumber);
 }

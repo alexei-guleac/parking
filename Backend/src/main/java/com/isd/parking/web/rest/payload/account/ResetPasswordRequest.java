@@ -1,7 +1,8 @@
-package com.isd.parking.web.rest.payload;
+package com.isd.parking.web.rest.payload.account;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.isd.parking.web.rest.payload.DeviceInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;

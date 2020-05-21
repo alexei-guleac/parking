@@ -1,4 +1,4 @@
-package com.isd.parking.web.rest.payload.auth;
+package com.isd.parking.web.rest.payload.account.auth;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;

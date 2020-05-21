@@ -1,7 +1,8 @@
-package com.isd.parking.web.rest.payload;
+package com.isd.parking.web.rest.payload.account;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.isd.parking.models.users.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -15,20 +16,20 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ApiModel(description = "Forgot user password request. ")
-public class ForgotPassRequest {
+@ApiModel(description = "Request for user information update. ")
+public class UpdateUserRequest {
 
     @JsonProperty()
-    @JsonAlias({"email"})
-    @ApiModelProperty(notes = "User email. ", required = true)
+    @JsonAlias({"user"})
+    @ApiModelProperty(notes = "User information", required = true)
     @NotBlank
     @NonNull
-    private String email;
+    private User user;
 
     @JsonProperty()
-    @JsonAlias({"deviceInfo"})
-    @ApiModelProperty(notes = "User device information (for region language targeting purpose). ")
+    @JsonAlias({"username"})
+    @ApiModelProperty(notes = "User username", required = true)
     @NotBlank
     @NonNull
-    private DeviceInfo deviceInfo;
+    private String username;
 }

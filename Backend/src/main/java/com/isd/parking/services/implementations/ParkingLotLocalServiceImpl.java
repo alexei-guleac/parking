@@ -38,7 +38,7 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
      */
     @Override
     public List<ParkingLot> findAll() {
-        log.info(methodMsg("get all parking lots list executed..."));
+        // log.info(methodMsg("get all parking lots list executed..."));
         return parkingLotLocalStorage.findAll();
     }
 
@@ -49,8 +49,18 @@ public class ParkingLotLocalServiceImpl implements ParkingLotService {
      */
     @Override
     public Optional<ParkingLot> findById(Long parkingLotId) {
-        log.info(methodMsg("get parking lot by id executed..."));
+        // log.info(methodMsg("get parking lot by id executed..."));
         return parkingLotLocalStorage.findById(parkingLotId);
+    }
+
+    /**
+     * Get parking lot by number from local Java memory method
+     *
+     * @return - specified parking lot
+     */
+    @Override
+    public Optional<ParkingLot> findByLotNumber(Integer parkingLotNumber) {
+        return parkingLotLocalStorage.findByLotNumber(parkingLotNumber);
     }
 
     /**

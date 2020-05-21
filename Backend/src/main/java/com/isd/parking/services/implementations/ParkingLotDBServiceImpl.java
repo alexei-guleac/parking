@@ -41,7 +41,7 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
     @Transactional
     @Override
     public @NotNull List<ParkingLot> findAll() {
-        log.info(methodMsg("get all parking lots list executed..."));
+        // log.info(methodMsg("get all parking lots list executed..."));
         return parkingLotRepository.findAll();
     }
 
@@ -53,8 +53,14 @@ public class ParkingLotDBServiceImpl implements ParkingLotService {
     @Transactional
     @Override
     public @NotNull Optional<ParkingLot> findById(@NotNull Long parkingLotId) {
-        log.info(methodMsg("get parking lot by id executed..."));
+        // log.info(methodMsg("get parking lot by id executed..."));
         return parkingLotRepository.findById(parkingLotId);
+    }
+
+    @Override
+    public Optional<ParkingLot> findByLotNumber(Integer parkingLotNumber) {
+        // log.info(methodMsg("get parking lot by number executed..."));
+        return parkingLotRepository.findByNumber(parkingLotNumber);
     }
 
     /**

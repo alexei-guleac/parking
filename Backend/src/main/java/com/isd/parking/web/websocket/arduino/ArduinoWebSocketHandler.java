@@ -7,6 +7,7 @@ import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
 import com.isd.parking.services.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -66,22 +67,52 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
      *
      * @param session - WebSocketSession
      * @param message - text message from Arduino
-     *
-     * * Message sample:
-     * * {"mBody":"Arduino data", "id":"1", "status":"FREE", "token":"4a0a8679643673d083b23f52c21f27cac2b03fa2"};
+     *                <p>
+     *                * Message sample:
+     *                * {"mBody":"Arduino data", "id":"10", "status":"FREE", "secure_key":"4a0a8679643673d083b23f52c21f27cac2b03fa2"};
+     *                * {"mBody":"Arduino data", "id":"10", "status":"OCCUPIED", "secure_key":"4a0a8679643673d083b23f52c21f27cac2b03fa2"}
      */
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
 
         log.info(grTxt("Session Id: ") + redTxt(session.getId()) + grTxt(", message body ") + blTxt(message.toString()));
+        @NotNull JSONObject arduinoMsgPayload;
+        String arduinoToken;
+        String lotId = null;
+        String lotNumber = null;
 
-        @NotNull JSONObject arduinoMsgPayload = new JSONObject(message.getPayload());
-        String arduinoToken = new JSONObject(message.getPayload()).getString("secure_key");
-        if (arduinoToken.equals(securityToken)) {
-            String lotId = arduinoMsgPayload.getString("id");
+        try {
+            arduinoMsgPayload = new JSONObject(message.getPayload());
+        } catch (JSONException e) {
+            log.info("malformed JSON string: " + e.getMessage());
+            e.printStackTrace();
+            return;
+        }
+
+        arduinoToken = arduinoMsgPayload.getString("secure_key");
+        if (arduinoToken != null && arduinoToken.equals(securityToken)) {
+            try {
+                lotId = arduinoMsgPayload.getString("id");
+            } catch (JSONException e) {
+                try {
+                    lotNumber = arduinoMsgPayload.getString("number");
+                } catch (JSONException d) {
+                    log.info("invalid Arduino message: " + d.getMessage());
+                    e.printStackTrace();
+                    return;
+                }
+            }
             String parkingLotStatus = arduinoMsgPayload.getString("status");
 
-            Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(Long.valueOf(lotId));
+            Optional<ParkingLot> parkingLotOptional = Optional.empty();
+            if (lotId != null) {
+                parkingLotOptional = parkingLotLocalService.findById(Long.valueOf(lotId));
+            } else {
+                if (lotNumber != null) {
+                    parkingLotOptional = parkingLotLocalService.findByLotNumber(Integer.valueOf(lotNumber));
+                }
+            }
+
             parkingLotOptional.ifPresent(parkingLot -> {
                 if (!parkingLotStatus.equals(String.valueOf(parkingLot.getStatus()))) {
                     parkingLot.setStatus(ParkingLotStatus.valueOf(parkingLotStatus));

@@ -38,8 +38,8 @@
                 <i class="fas fa-backspace fa-sm mr-3"></i>Back
             </button>
             <button
-                (click)="showReservationModal()"
                 *ngIf="this.isAdminLoggedIn()"
+                (click)="showReservationModal()"
                 [disabled]="reservationSuccess"
                 appNoDblClick
                 class="btn col refresh text-center mx-auto"
