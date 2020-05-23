@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     // restUrl: 'http://localhost:8080'
-    restUrl: 'http://68.183.149.220:4200'
+    restUrl: 'http://68.183.149.220:8080'
 };
 
 /*
