@@ -4,20 +4,9 @@
 
 export const environment = {
     production: false,
-    restUrl: 'http://localhost:8080'
-    // restUrl: 'http://192.168.31.227:8080',
-    // restUrl: 'http://springbootapp:8080',
-    // restUrl: 'http://172.18.0.4:8080',
-    // restUrl: 'http://localhost:8080',
-    // restUrl: 'http://104.248.250.89:8080'
+    // restUrl: 'http://localhost:8080'
+    restUrl: 'http://68.183.149.220:4200'
 };
-/*
-export const environment = {
-  production: false,
-  // restUrl: 'http://104.248.250.89:8080'
-  // restUrl: 'http://localhost:8080'
-  restUrl: 'http://springbootapp:8080'
-};*/
 
 /*
  * For easier debugging in development mode, you can import the following file
