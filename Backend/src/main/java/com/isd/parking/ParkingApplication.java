@@ -31,9 +31,9 @@ import java.util.Collection;
 @EnableJpaRepositories
 @EnableConfigurationProperties({ ApplicationProperties.class })
 @PropertySources({@PropertySource("classpath:application.properties"),
-        // @PropertySource("classpath:postgresql-docker-config.properties"),
-        @PropertySource("classpath:postgresql-config.properties"),
-        @PropertySource("classpath:documentation.properties")})
+    @PropertySource("classpath:postgresql-docker-config.properties"),
+    // @PropertySource("classpath:postgresql-config.properties"),
+    @PropertySource("classpath:documentation.properties")})
 public class ParkingApplication {
 
     private final Environment env;

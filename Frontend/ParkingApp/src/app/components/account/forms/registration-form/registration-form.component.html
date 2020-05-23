@@ -97,7 +97,6 @@
                 <ng-container *ngIf="mail.errors.maxlength">
                     Maximum 35 characters long.<br/>
                 </ng-container>
-                <!--                        <div *ngIf="mail.errors.forbiddenName">-->
                 <ng-container *ngIf="mail.errors.pattern">
                     Should contain @<br/>
                     A-Z, a-z, 0-9 symbols and "_", ".".
@@ -197,7 +196,7 @@
                 <input
                     [(ngModel)]="this.password"
                     [type]="fieldTextTypePass ? 'text' : 'password'"
-                    class="form-control full-width"
+                    class="form-control"
                     formControlName="password"
                     id="password"
                     minlength="6"
@@ -243,6 +242,7 @@
                 </ng-container>
             </div>
         </div>
+
         <div class="form-group mx-auto text-center">
             <label for="passConfirm">Repeat password :</label>
             <div class="input-group mx-auto text-center w-20rem">

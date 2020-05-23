@@ -1,28 +1,46 @@
-# Create image based on the official Node 11 image from dockerhub
-    FROM node:12.2.0
+# Create image based on the official Node 12.2.0 image from Dockerhub
+# Tells Docker to use another image as the base layer in our Dockerfile
+# - in this case, we're getting an image with Node.js installed, version 12.2.0
+FROM node:12.2.0
 
-    # Create a directory where our app will be placed
-    RUN mkdir -p /usr/src/app
+# Create a directory where our app will be placed
+RUN mkdir -p /usr/src/app
 
-    # Change directory so that our commands run inside this new directory
-    WORKDIR /usr/src/app
+# Change directory so that our commands run inside this new directory
+# Tells Docker the folder that it should be performing the following commands in.
+WORKDIR /usr/src/app
 
-    # Copy dependency definitions
-    COPY package.json /usr/src/app
+# Copy dependency definitions
+# Tells Docker to copy only package.json & package-lock.json into the Docker image. We do this because Docker can cache compositions of layers
+# - meaning that if nothing changes in our package.json,
+# we can just pull a composition of layers that we've already built before.
+# COPY package.json /usr/src/app
+COPY package*.json ./
 
-    # Install dependecies
-    RUN npm install
-	RUN npm install -g @angular/cli
+# Install dependencies
+RUN npm install
+# Does what it says on the tin, and runs the npm install command to create a new layer of the image with all of our modules installed.
+# Again, if nothing has changed in our package.json, this will pull a pre-built version.
+RUN npm install -g @angular/cli
 
-    # Get all the code needed to run the app
-    COPY . /usr/src/app
+# Get all the code needed to run the app
+# Copies the rest of the application into the filesystem. As the application is likely to change more frequently
+# (i.e. every time you make a code change) it makes sense to make this one of the last layers for caching purposes.
+COPY . /usr/src/app
 
-    # Expose the port the app runs in
-    EXPOSE 4200
+# Expose the port the app runs in
+# Tells Docker to open port 4200 on the container when it is running.
+EXPOSE 4200
 
-    # Serve the app
-    # CMD ["npm", "start"]              # frontend not accessed via docker image
-    # Launch application
-    # CMD ["ng", "build", "--prod"]     # cause build lint errors (private fields)
-    CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
+# Serve the app
+
+# frontend not accessed via docker image (localhost)
+# CMD ["npm", "start"]
+
+# Launch application
+# cause build lint errors (private fields etc.)
+# CMD ["ng", "build", "--prod"]
+
+# Workable command for localhost
+CMD ["ng", "serve", "--host", "0.0.0.0", "--port", "4200"]
 

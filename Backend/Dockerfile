@@ -38,4 +38,5 @@ ADD ${JAR_FILE} /app/parking.jar
 # ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-jar","/app/parking.jar"]
 # ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=container","-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
 # ENTRYPOINT ["java","-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5005","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=dev","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=default","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
+# ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=default","-Xms2g","-Xmx8g","-jar","/app/parking.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=default","-Xms512m","-Xmx1g","-jar","/app/parking.jar"]
