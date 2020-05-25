@@ -111,13 +111,20 @@ export class AccountSessionStorageService {
      * Clear browser cache storage
      */
     clearCacheStorage() {
-        window.caches.keys().then((keyList) =>
-            Promise.all(
-                keyList.map((key) => {
-                    return caches.delete(key);
-                })
-            )
-        );
+        const winCaches = window.caches;
+        if (winCaches) {
+            const keys = winCaches.keys();
+
+            if (keys !== undefined) {
+                keys.then((keyList) =>
+                    Promise.all(
+                        keyList.map((key) => {
+                            return caches.delete(key);
+                        })
+                    )
+                );
+            }
+        }
     }
 
     /**

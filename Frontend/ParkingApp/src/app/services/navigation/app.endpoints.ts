@@ -1,7 +1,3 @@
-export const app = {
-    frontURL: 'http://localhost:4200'
-};
-
 export const api = {
     parking: '/parking',
     statistics: '/statistics',

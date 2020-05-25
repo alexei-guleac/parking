@@ -50,20 +50,20 @@
                     Connect socials
                 </button>
 
-                <div class="row mt-4">
+                <div class="mt-4 actions">
                     <span
                         (click)="this.editUserInfo()"
-                        class="edit-btn mx-auto m-1 col-5 btn-round"
+                        class="profile-action-btn edit-btn mx-auto m-1 col-5 btn-round"
                         ngbTooltip="Edit user information" placement="top"
                     >
-                        Edit <i class="fas fa-user-edit ml-4"></i>
+                        Edit <i class="profile-action-icons fas fa-user-edit"></i>
                     </span>
                     <span
                         (click)="this.showDeleteUserModal()"
-                        class="delete-btn mx-auto m-1 col-5 btn-round"
+                        class="profile-action-btn delete-btn mx-auto m-1 col-5 btn-round"
                         ngbTooltip="Permanently delete user account" placement="top"
                     >
-                        Delete <i class="far fa-trash-alt ml-4"></i>
+                        Delete <i class="profile-action-icons far fa-trash-alt"></i>
                     </span>
                 </div>
             </div>

@@ -16,7 +16,6 @@
 }
 
 .wrapper * {
-    margin: 0 auto;
     text-align: center;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
@@ -83,22 +82,11 @@
     max-width: 45rem;
 }
 
-/*a {
-    color: rgba(98, 98, 204, 0.884);
-    transition: cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
-}
-
-a:hover {
-    color: rgb(4, 0, 255);
-    transition: cubic-bezier(0.215, 0.610, 0.355, 1) 0.5s;
-}*/
-
-
 /* Connect socials button */
 
 .btn-mater {
     border: none;
-    border-radius: 50px;
+    border-radius: 3.125rem;
     box-shadow: var(--material-shadow-thin);
 
     &:hover {
@@ -115,7 +103,7 @@ a:hover {
 
 .btn-round {
     display: block;
-    border-radius: 50px;
+    border-radius: 3.125rem;
     font-weight: normal;
     font-size: 1.1rem;
     border: none;
@@ -131,6 +119,9 @@ a:hover {
 
 .edit-btn,
 .delete-btn {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+    min-width: 12rem;
     color: antiquewhite;
 
     &:hover {
@@ -155,7 +146,7 @@ a:hover {
     }
 
     .avatar {
-        top: -20%;
+        top: -14%;
         left: 38%;
         right: 38%;
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -163,6 +154,19 @@ a:hover {
 
     .card-body.details {
         padding-top: 5rem;
+    }
+}
+
+// center fix
+@media (max-width: 575px) {
+    .avatar {
+        left: 30%;
+    }
+}
+
+@media (max-width: 575px) {
+    .avatar {
+        left: 30%;
     }
 }
 
@@ -185,4 +189,18 @@ span {
 button i {
     margin-right: 2rem !important;
     margin-left: -3rem;
+}
+
+.actions {
+    display: flex;
+}
+
+.profile-action-icons {
+    margin-left: 2vw;
+}
+
+@media (max-width: 575px) {
+    .actions {
+        display: block;
+    }
 }

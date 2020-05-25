@@ -24,7 +24,6 @@ export class SocialUserStorageService {
     socialServerResponse: Subject<any> = new Subject<any>();
 
     constructor() {
-
     }
 
     /**

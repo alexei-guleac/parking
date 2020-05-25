@@ -120,7 +120,7 @@ export class MenuComponent implements AfterViewInit {
      */
     private logout() {
         this.authenticationService.fullLogout();
-        this.navigationService.navigateToMain();
+        this.navigationService.navigateToMainWithReload();
         // for refreshing data
         this.goBackEvent.emit();
     }

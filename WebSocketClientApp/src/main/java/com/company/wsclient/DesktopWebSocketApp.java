@@ -2,7 +2,7 @@ package com.company.wsclient;
 
 import com.company.wsclient.frames.MainAppFrame;
 
-import static com.company.wsclient.constants.Constants.wsHost;
+import static com.company.wsclient.constants.ApiPoints.wsUrl;
 
 
 public class DesktopWebSocketApp {
@@ -13,7 +13,7 @@ public class DesktopWebSocketApp {
             location = args[0];
             System.out.println("Default server url specified: '" + location + "'");
         } else {
-            location = wsHost;
+            location = wsUrl;
             System.out.println("Default server url not specified: defaulting to '" + location + "'");
         }
 

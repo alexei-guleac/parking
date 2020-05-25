@@ -1,15 +1,15 @@
 @import '../account/modals/ngbd-modal-confirm/ngbd-modal.component';
 
 .logo img {
-    width: 131px;
-    height: 131px;
+    width: 8.1875rem;
+    height: 8.1875rem;
     content: var(--isd-account-logo);
 }
 
 @media (max-width: 525px) {
     .logo img {
-        width: 75px;
-        height: 75px;
+        width: 4.6875rem;
+        height: 4.6875rem;
     }
 }
 
@@ -72,7 +72,7 @@ $font_3: 'sans-serif';
     transition: 1s;
     color: var(--text-color);
     background: var(--background-secondary);
-    border-radius: 5px;
+    border-radius: 0.3125rem;
 
     &:hover {
         color: $black !important;
@@ -80,7 +80,7 @@ $font_3: 'sans-serif';
 }
 
 .dropdown-menu {
-    border-radius: 6px;
+    border-radius: 0.375rem;
     transition: 1s;
 }
 
@@ -139,7 +139,7 @@ $font_3: 'sans-serif';
 
 .icon-bar {
     display: block;
-    width: 26px;
+    width: 1.625rem;
     height: 2px;
     margin-top: 5px;
     transition: all 0.2s;
@@ -151,7 +151,7 @@ $font_3: 'sans-serif';
 }
 
 #navbarNav > ul > li > div > a:hover {
-    padding-left: 30px;
+    padding-left: 1.875rem;
     color: var(--isd-red) !important;
 }
 
@@ -196,8 +196,8 @@ $font_3: 'sans-serif';
 .theme-switch {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 34px;
+    width: 3.75rem;
+    height: 2.125rem;
     margin-top: 2px;
 }
 
@@ -233,8 +233,8 @@ $color_silver_approx: #ccc;
         position: absolute;
         bottom: 4px;
         left: 4px;
-        width: 26px;
-        height: 26px;
+        width: 1.625rem;
+        height: 1.625rem;
         content: '';
         transition: all 500ms, background 500ms ease-in-out, color 200ms ease;
         color: var(--text-color);
@@ -248,7 +248,7 @@ input[name='theme-switch'] {
         background-color: var(--isd-red);
 
         &:before {
-            transform: translateX(26px);
+            transform: translateX(1.625rem);
         }
     }
 
@@ -259,9 +259,15 @@ input[name='theme-switch'] {
 
 /* Rounded sliders */
 .slider.round {
-    border-radius: 34px;
+    border-radius: 2.125rem;
 
     &:before {
         border-radius: 50%;
+    }
+}
+
+@media (max-width: 375px) {
+    .appname-logo {
+        width: 35vw;
     }
 }

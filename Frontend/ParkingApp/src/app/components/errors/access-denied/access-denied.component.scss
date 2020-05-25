@@ -40,13 +40,13 @@ $font_5: 'sans-serif';
         position: relative;
         z-index: -1;
         height: 300px;
-        margin: 0 auto 10px;
+        margin: 0 auto 0.625rem;
 
         .forbidden h1 {
             width: 100%;
             max-width: 1220px;
             font-family: $font_0, $font_1;
-            font-size: 104px;
+            font-size: 6.5rem;
             font-weight: 200;
             position: absolute;
             top: 30%;
@@ -60,7 +60,7 @@ $font_5: 'sans-serif';
         .access-denied h2 {
             max-width: 720px;
             font-family: $font_2, $font_3;
-            font-size: 28px;
+            font-size: 1.75rem;
             font-weight: 400;
             position: absolute;
             right: 0;
@@ -77,10 +77,10 @@ $font_5: 'sans-serif';
 
     a {
         font-family: $font_4, $font_5;
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 700;
         display: inline-block;
-        padding: 13px 23px;
+        padding: 0.8125rem 1.4375rem;
         transition: 0.2s all;
         text-decoration: none;
         text-transform: uppercase;
@@ -102,38 +102,54 @@ $font_5: 'sans-serif';
         padding-top: 1rem;
     }
     .forbidden .forbidden-401-403 .forbidden h1 {
-        font-size: 68px;
+        font-size: 4.25rem;
     }
 }
 
 @media(min-width: 520px) and(max-width: 620px) {
     .forbidden .forbidden-401-403 {
-        height: 272px;
-        margin: 0 auto 10px;
+        height: 17rem;
+        margin: 0 auto 0.625rem;
     }
 }
 
 @media only screen and(max-width: 480px) {
     .forbidden {
         .forbidden-401-403 {
-            height: 200px;
-            margin: 0 auto 10px;
+            height: 12.5rem;
+            margin: 0 auto 0.625rem;
 
             .forbidden h1 {
-                font-size: 52px;
+                font-size: 3.25rem;
             }
 
             .access-denied h2 {
-                font-size: 16px;
+                font-size: 1rem;
             }
         }
 
         a {
-            font-size: 14px;
-            padding: 7px 15px;
+            font-size: 0.875rem;
+            padding: 0.4375rem 0.9375rem;
         }
     }
     .connection-message {
         padding-top: 1rem;
+    }
+}
+
+@media (max-width: 488px) {
+    .forbidden-img {
+        width: 100%;
+    }
+}
+
+.forbidden {
+    max-width: 100%;
+}
+
+@media (max-width: 400px) {
+    .forbidden h1 {
+        font-size: 12vw !important;
     }
 }

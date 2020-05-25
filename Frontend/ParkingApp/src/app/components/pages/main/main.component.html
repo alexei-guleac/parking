@@ -1,16 +1,3 @@
-<!-- <div class="d-flex justify-content-center" >
-  <div class="btn refresh mt-3 mb-4" (click)="refresh()">Refresh</div>
-</div> -->
-
-<!--<div class="display-4 text-light d-flex justify-content-center mb-2 title mt-3">ParKing</div>-->
-
-<app-parking-lot-detail
-    (goBackEvent)="refresh()"
-    *ngIf="action === 'view'"
-    [parkingLot]="selectedParkingLot"
->
-</app-parking-lot-detail>
-
 <div *ngIf="action !== 'view'" class="container row p-0 mx-auto">
     <div
         *ngFor="let parkingLot of parkingLots; trackBy: trackByMethod"
@@ -46,20 +33,27 @@
                 ></span>
         </div>
     </div>
-</div>
 
-<!--if parking lots not provided by server-->
-<div *ngIf="parkingLots == null" class="row">
-    <div
-        *ngFor="let lot of noData; trackBy: trackByMethod"
-        class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
-    >
-        <div class="parking-lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
+    <!--if parking lots not provided by server-->
+    <div *ngIf="parkingLots == null" class="row">
         <div
-            [ngClass]="{ unknown: selectedParkingLot == null }"
-            class="btn parking-lot col-12 border-radius-s no-connection-lot"
+            *ngFor="let lot of noData; trackBy: trackByMethod"
+            class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
         >
-            <i class="fas fa-ban"></i>
+            <div class="parking-lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
+            <div
+                [ngClass]="{ unknown: selectedParkingLot == null }"
+                class="btn parking-lot col-12 border-radius-s no-connection-lot"
+            >
+                <i class="fas fa-ban"></i>
+            </div>
         </div>
     </div>
 </div>
+
+<app-parking-lot-detail
+    (goBackEvent)="refresh()"
+    *ngIf="action === 'view'"
+    [parkingLot]="selectedParkingLot"
+>
+</app-parking-lot-detail>

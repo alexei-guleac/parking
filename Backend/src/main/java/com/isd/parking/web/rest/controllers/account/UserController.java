@@ -65,7 +65,7 @@ public class UserController {
             required = true, dataType = "String")
     )
     @ResponseBody
-    @PostMapping("/" + ApiEndpoints.profile)
+    @PostMapping(ApiEndpoints.profile)
     public SocialUser getUserByUsername(@RequestBody String username) {
         UserLdap userFound = userService.findById(username);
         if (userFound == null) {
@@ -95,7 +95,7 @@ public class UserController {
             required = true, dataType = "UpdateUserRequest")
     )
     @ResponseBody
-    @PostMapping("/" + ApiEndpoints.profileUpdate)
+    @PostMapping(ApiEndpoints.profileUpdate)
     public @NotNull ResponseEntity<?> updateUser(@RequestBody @NotNull UpdateUserRequest updateUserRequest) {
 
         final User user = updateUserRequest.getUser();
@@ -149,7 +149,7 @@ public class UserController {
             value = "${UserController.deleteUser.username}", required = true, dataType = "String")
     )
     @ResponseBody
-    @PostMapping("/" + ApiEndpoints.profileDelete)
+    @PostMapping(ApiEndpoints.profileDelete)
     public @NotNull ResponseEntity<?> deleteUser(@RequestBody String username) {
 
         UserLdap userFound = userService.findById(username);
@@ -176,7 +176,7 @@ public class UserController {
         @ApiResponse(code = 200, message = "Success|OK")
     })
     @ResponseBody
-    @GetMapping("/" + ApiEndpoints.users)
+    @GetMapping(ApiEndpoints.users)
     public Iterable<UserLdap> getAllUsers() {
         return userService.findAll();
     }

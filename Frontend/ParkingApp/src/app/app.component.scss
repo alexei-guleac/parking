@@ -4,4 +4,16 @@ footer {
 
 .container {
     height: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 488px) {
+    .container {
+        width: 100%;
+    }
+}
+
+.card-body {
+    width: 100%;
+    max-width: 100%;
 }

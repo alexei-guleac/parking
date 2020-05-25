@@ -91,7 +91,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Transactional
     @Override
     public @NotNull StatisticsRecord save(@NotNull ParkingLot parkingLot) {
-        log.info(methodMsg("Service save statistics event executed..."));
+        // log.info(methodMsg("Service save statistics event executed..."));
 
         StatisticsRecord statisticsRecord = StatisticsRecord.builder()
             .lotNumber(parkingLot.getNumber())

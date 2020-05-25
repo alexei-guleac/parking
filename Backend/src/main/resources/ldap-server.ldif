@@ -164,18 +164,6 @@ objectClass: groupOfURLs
 cn: ADMIN
 memberURL: ldap:///ou=people,dc=isd,dc=com??sub?user_role=ADMIN
 
-dn: uid=aleksei,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-cn: Aleksei Test
-sn: Test
-email: test@mail.com
-creationDate: Sat Mar 07 16:54:16 EET 2020
-uid: aleksei
-userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
-
 dn: uid=user35,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
@@ -183,7 +171,7 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 cn: Alexei Guleac
 sn: Guleac
-email: erer@fdfdfdf.rty
+email: test_email@gmail.com
 memberOf: cn=developers,ou=groups
 memberOf: cn=ADMIN,ou=roles
 user_role: ADMIN
@@ -192,79 +180,4 @@ userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0T
 creationDate: 2020-03-21T14:04:42.762679600
 updatedAt: 2020-05-13T22:51:21.410146300
 passwordUpdatedAt: 2020-03-21T14:04:42.762679600
-
-dn: uid=socialUser,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: socialUser
-accountState: ENABLED
-cn: Nata Nemuza
-sn: Nemuza
-email: nata.nemuza@gmail.com
-creationDate: 2020-04-30T17:21:42.804007500
-updatedAt: 2020-04-30T22:00:15.220955
-passwordUpdatedAt: 2020-04-30T17:21:42.804007500
-fbid: 637849780349462
-
-dn: uid=Jack,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: Jack
-accountState: ENABLED
-email: aleks7900@gmail.com
-creationDate: 2020-04-30T17:55:26.051254100
-updatedAt: 2020-04-30T22:34:32.498228700
-passwordUpdatedAt: 2020-04-30T17:55:26.051254100
-aid: amzn1.account.AGYY3GUIQYVMPSQ6WWMODJ4QDF5Q
-cn: Jack Spring
-sn: Spring
-
-dn: uid=testSocialUser,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: testSocialUser
-accountState: ENABLED
-cn: Alexei Guleac
-sn: Guleac
-email: al.guleac@gmail.com
-creationDate: 2020-04-30T21:42:46.656579700
-updatedAt: 2020-05-12T18:36:11.074728800
-passwordUpdatedAt: 2020-04-30T21:42:46.656579700
-gid: 114399335358807439330
-vkid: 70434057
-
-dn: uid=AsdsdsdW,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: AsdsdsdW
-accountState: SOCIAL
-creationDate: 2020-04-30T22:31:13.018507600
-updatedAt: 2020-04-30T22:32:05.925587300
-passwordUpdatedAt: 2020-04-30T22:31:13.018507600
-gitid: 44027065
-cn: Vbbnn Xcv
-sn: Xcv
-
-dn: uid=Alexei,ou=people,dc=isd,dc=com
-objectClass: top
-objectClass: person
-objectClass: organizationalPerson
-objectClass: inetOrgPerson
-uid: Alexei
-accountState: ENABLED
-cn: Alex Lastname
-sn: Lastname
-email: alex.guleac@gmail.com
-creationDate: 2020-05-13T20:35:18.307522900
-updatedAt: 2020-05-13T20:38:57.073197
-passwordUpdatedAt: 2020-05-13T20:35:18.307522900
-gid: 114041320524240531134
 

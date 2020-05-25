@@ -10,7 +10,6 @@
 }
 
 .card {
-    min-width: 25rem;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: var(--card-material-shadow);
 }
@@ -19,6 +18,13 @@
     content: var(--isd-account-logo);
     width: 9rem;
     height: 9rem;
+}
+
+@media (max-width: 488px) {
+    .isd-logo {
+        width: 18vw !important;
+        height: 18vw !important;
+    }
 }
 
 form input.form-control {
@@ -55,7 +61,7 @@ form input.form-control {
 /* Form fields */
 
 .w-20rem {
-    width: 20rem;
+    max-width: 20rem;
 }
 
 .border-radius-m {
@@ -83,10 +89,10 @@ form input.form-control {
 
 .submit-btn {
     font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 700;
     display: inline-block;
-    padding: 13px 23px;
+    padding: 0.8125rem 1.4375rem;
     -webkit-transition: 0.2s all;
     transition: 0.2s all;
     text-decoration: none;
@@ -115,50 +121,18 @@ form input.form-control {
     position: absolute;
     top: 1%;
     right: 2%;
-    width: 40px;
-    height: 40px;
-    margin-top: 10px;
-    margin-right: 8px;
-    padding-top: 8px;
-    padding-right: 12px;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-top: 0.625rem;
+    margin-right: 1.125rem;
+    padding-top: 1.125rem;
+    padding-right: 0.75rem;
     text-align: center;
     color: var(--text-color);
     border: none;
-    border-radius: 50px;
+    border-radius: 3.125rem;
     background: none;
 }
-
-/*
-.hint {
-    position: relative;
-    z-index: 100;
-    top: 5%;
-    right: -50%;
-    display: block;
-    width: 275px;
-    height: 200px;
-    margin: 20px 20px;
-    border-radius: 5px;
-    background-color: #f2f2f2;
-    box-shadow: 0 0 6px #b2b2b2;
-
-    &::after {
-        position: relative;
-        top: -64px;
-        left: 30px;
-        display: block;
-        width: 20px;
-        height: 20px;
-        content: '\00a0';
-        -webkit-transform: rotate(45deg);
-        -moz-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        -o-transform: rotate(45deg);
-        transform: rotate(45deg);
-        background-color: #f2f2f2;
-        box-shadow: -2px -2px 2px 0 rgba(178, 178, 178, 0.4);
-    }
-}*/
 
 .pseudolink {
     color: var(--pseudolink-color);
@@ -172,7 +146,7 @@ form input.form-control {
 
 .btn-mater {
     border: none;
-    border-radius: 50px;
+    border-radius: 3.125rem;
 
     &:hover {
         transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -185,10 +159,10 @@ form input.form-control {
     position: absolute;
     top: 1%;
     left: 2%;
-    width: 40px;
-    height: 40px;
-    padding-top: 8px;
-    padding-right: 18px;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding-top: 0.5rem;
+    padding-right: 1.125rem;
     text-align: center;
     border-radius: 50%;
 
@@ -204,15 +178,15 @@ form input.form-control {
 .btn-show-form {
     padding: 0.8rem;
     background: var(--background-secondary);
-    font-size: 15px;
+    font-size: 0.9375rem;
     font-weight: normal;
     display: inline-flex;
     width: 45%;
-    margin: 10px 10px;
+    margin: 0.625rem 0.625rem;
     text-align: center !important;
     color: var(--text-color);
     border: none;
-    border-radius: 50px;
+    border-radius: 3.125rem;
     box-shadow: var(--material-shadow-thin);
 
     &:hover {
@@ -220,24 +194,28 @@ form input.form-control {
     }
 
     i {
-        font-size: 20px;
+        font-size: 1.25rem;
         position: relative;
         top: 2px;
-        min-width: 25px;
-        margin-right: -20px;
+        min-width: 1.5625rem;
+        margin-right: -1.25rem;
     }
 }
 
 @media (max-width: 488px) {
     .btn-show-form {
         width: 100%;
-        margin: 10px 0;
+        margin: 0.625rem 0;
     }
 }
 
 @media (min-width: 992px) and (max-width: 1200px) {
     .btn-show-form {
         width: 100%;
-        margin: 10px 0;
+        margin: 0.625rem 0;
     }
+}
+
+.mb-pass {
+    margin-bottom: 2.8rem;
 }

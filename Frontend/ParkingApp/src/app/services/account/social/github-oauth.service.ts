@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { SocialUserStorageService } from '@app/services/account/social/social-user-storage.service';
 import { HttpClientService } from '@app/services/helpers/http-client.service';
-import { api, app, appRoutes } from '@app/services/navigation/app.endpoints';
+import { api, appRoutes } from '@app/services/navigation/app.endpoints';
 import { environment } from '@env';
 import { Observable } from 'rxjs';
 
@@ -25,7 +25,7 @@ export class GithubOauthService {
     * If provided, the redirect URL's host and port must exactly match the callback URL.
     * The redirect URL's path must reference a subdirectory of the callback URL.
     * */
-    private REDIRECT_URI = app.frontURL + appRoutes.accountLogin;
+    private REDIRECT_URI = environment.frontUrl + appRoutes.accountLogin;
 
     private ENCODED_REDIRECT_URI = encodeURIComponent(this.REDIRECT_URI);
 
@@ -79,7 +79,7 @@ export class GithubOauthService {
      * @param code - - given temporary code from the previous step.
      * The temporary code will expire after 10 minutes.
      * This code is exchanged for an access token
-     * */
+     */
     processGithubOauthRequest(code: string): Observable<any> {
         const url = environment.restUrl + api.gitOAuth;
         console.log('code ' + code);

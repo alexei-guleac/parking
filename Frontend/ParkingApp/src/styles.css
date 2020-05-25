@@ -15,14 +15,22 @@
 html,
 body {
     height: 100%;
+    max-width: 100%; /* horizontal overflow fix */
 }
 
 body {
     margin: 0;
     font-family: Roboto, 'Helvetica Neue', sans-serif;
-    min-width: 435px; /* Suppose you want minimum width of 450px*/
-    width: auto !important;
-    /*_width: expression( document.body.clientWidth > 435 ? "435px" : "auto" ); !* sets max-width for IE6 *!*/
+    /*min-width: 350px; !* Suppose you want minimum width of 350px*!*/
+    /*width: auto !important;*/
+    /*_width: expression( document.body.clientWidth > 350 ? "350px" : "auto" ); !* sets max-width for IE6 *!*/
+}
+
+@media (max-width: 575px) {
+    html,
+    body {
+        width: 100%;
+    }
 }
 
 footer {
@@ -50,7 +58,7 @@ footer {
     --error-dark: #800600;
     --error-light: #ffcecc;*/
 
-    /* My Colors */
+    /* App Colors */
 
     --white: #fff;
     --btn-background-color: #f7b432;

@@ -52,12 +52,17 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final LdapAuthoritiesPopulator ldapAuthoritiesPopulator;
 
-    private final String[] applicationPublicAllowedPathArray = new String[]{
-        auth + "/**", login + "/**", register + "/**",
-        validateCaptcha, gitOAuth, confirmAction,
-        forgotPassword, resetPassword,
-        parking + "/**", statisticsByLot + "/**", arduinoApi, arduinoWS
-    };
+    private final String[] applicationPublicAllowedPathArray;
+
+    {
+        final String allPoints = "/**";
+        applicationPublicAllowedPathArray = new String[]{
+                auth + allPoints, login + allPoints, register + allPoints,
+                validateCaptcha, gitOAuth, confirmAction,
+                forgotPassword, resetPassword,
+                parking + allPoints, statisticsByLot + allPoints, arduinoApi, arduinoWS
+            };
+    }
 
     // -- swagger ui
     private final String[] swaggerDocsPath = {"/v2/api-docs",

@@ -35,14 +35,14 @@ $font_5: 'sans-serif';
     .noconnect-500 {
         position: relative;
         z-index: -1;
-        height: 300px;
-        margin: 0 auto 10px;
+        height: 18.75rem;
+        margin: 0 auto 0.625rem;
 
         .no-connection h1 {
             width: 100%;
             max-width: 1220px;
             font-family: $font_0, $font_1;
-            font-size: 104px;
+            font-size: 6.5rem;
             font-weight: 200;
             position: absolute;
             top: 30%;
@@ -57,7 +57,7 @@ $font_5: 'sans-serif';
         .unable-to-connect h2 {
             max-width: 720px;
             font-family: $font_2, $font_3;
-            font-size: 28px;
+            font-size: 1.75rem;
             font-weight: 400;
             position: absolute;
             right: 0;
@@ -65,7 +65,7 @@ $font_5: 'sans-serif';
             left: 0;
             display: inline-block;
             margin: auto;
-            padding: 10px 5px;
+            padding: 0.625rem 0.3125rem;
             text-transform: uppercase;
             color: var(--not-found-color);
             background: $white;
@@ -74,10 +74,10 @@ $font_5: 'sans-serif';
 
     a {
         font-family: $font_4, $font_5;
-        font-size: 18px;
+        font-size: 1.125rem;
         font-weight: 700;
         display: inline-block;
-        padding: 13px 23px;
+        padding: 0.8125rem 1.4375rem;
         //Instead of the line below you could use @include transition($transition-1, $transition-2, $transition-3, $transition-4, $transition-5, $transition-6, $transition-7, $transition-8, $transition-9, $transition-10)
         transition: 0.2s all;
         text-decoration: none;
@@ -103,13 +103,13 @@ $font_5: 'sans-serif';
         padding-top: 1rem;
     }
     .noconnect .noconnect-500 .no-connection h1 {
-        font-size: 68px;
+        font-size: 4.25rem;
     }
 }
 
 @media (min-width: 520px) and(max-width: 620px) {
     .noconnect .noconnect-500 {
-        height: 272px;
+        height: 17rem;
         margin: 0 auto 10px;
     }
 }
@@ -117,24 +117,40 @@ $font_5: 'sans-serif';
 @media only screen and(max-width: 480px) {
     .noconnect {
         .noconnect-500 {
-            height: 200px;
-            margin: 0 auto 10px;
+            height: 12.5rem;
+            margin: 0 auto 0.625rem;
 
             .no-connection h1 {
-                font-size: 52px;
+                font-size: 3.25rem;
             }
 
             .unable-to-connect h2 {
-                font-size: 16px;
+                font-size: 1rem;
             }
         }
 
         a {
-            font-size: 14px;
-            padding: 7px 15px;
+            font-size: 0.875rem;
+            padding: 0.4375rem 0.9375rem;
         }
     }
     .connection-message {
         padding-top: 1rem;
+    }
+}
+
+@media (max-width: 488px) {
+    .no-connection-img {
+        width: 100%;
+    }
+}
+
+.noconnect {
+    max-width: 100%;
+}
+
+@media (max-width: 400px) {
+    .no-connection h1 {
+        font-size: 12vw !important;
     }
 }

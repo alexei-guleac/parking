@@ -34,7 +34,7 @@ public class ParkingLot {
     @Column(name = "id")
     @ApiModelProperty(notes = "Parking lot unique id " +
         "(two numbers comes from Arduino scalable infrastructure - master board id + slave board id)")
-    private @NotNull Long id = 11L;
+    private @NotNull Long id = 10L;         // initial id master board + slave
 
     @Column(name = "lot_number")
     @ApiModelProperty(notes = "Parking lot number")

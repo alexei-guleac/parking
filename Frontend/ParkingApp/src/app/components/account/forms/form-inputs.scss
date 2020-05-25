@@ -5,7 +5,7 @@ $color_silver_chalice_approx: #a1a1a1;
 input {
     &.ng-invalid {
         &:not([name*='pass']):not(form) {
-            border-right: 5px solid var(--input-invalid-border);
+            border-right: 0.3125rem solid var(--input-invalid-border);
         }
 
         &.form-control:focus {
@@ -25,7 +25,7 @@ input {
     }
 
     &.ng-valid[required]:not([name*='pass']) {
-        border-right: 5px solid var(--input-valid-border);
+        border-right: 0.3125rem solid var(--input-valid-border);
     }
 
     &.ng-valid.form-control:focus {
@@ -36,11 +36,11 @@ input {
 
 input[name*='pass'] {
     &.ng-valid[required] {
-        border-left: 5px solid var(--input-valid-border);
+        border-left: 0.3125rem solid var(--input-valid-border);
     }
 
     &.ng-invalid:not(form) {
-        border-left: 5px solid var(--input-invalid-border);
+        border-left: 0.3125rem solid var(--input-invalid-border);
     }
 
     &.ng-pristine:not(form) {
@@ -49,6 +49,6 @@ input[name*='pass'] {
 }
 
 .ng-valid.required {
-    border-right: 5px solid var(--input-valid-border);
-    border-left: 5px solid var(--input-valid-border);
+    border-right: 0.3125rem solid var(--input-valid-border);
+    border-left: 0.3125rem solid var(--input-valid-border);
 }

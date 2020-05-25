@@ -23,6 +23,7 @@ import org.java_websocket.drafts.Draft_6455;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -236,15 +237,32 @@ public class MainAppFrame extends MaterialFrame {
         constraints.anchor = GridBagConstraints.PAGE_END; //bottom of space
         contentPane.add(pane, constraints);
 
+        initFrame();
+    }
+
+    private void initFrame() {
         setFrameDimensions();
         addWindowListener(new AppWindowAdapter(this));
         setupCursor();
         setupFont("Arial", Font.PLAIN, 14);
         setTitle(getString("app.name"));
-        //this.setIconImage(new ImageIcon(System.getProperty("user.dir") + "favicon"));
+
+        ImageIcon imageIcon = loadIcon("/favicon-light.png");
+        // log.info(String.valueOf(imageIcon));
+        if(imageIcon != null)
+            setIconImage(imageIcon.getImage());
         pack();
         setLocationRelativeTo(getOwner());
         setVisible(true);
+    }
+
+    private ImageIcon loadIcon(String strPath)
+    {
+        URL imgURL = getClass().getResource(strPath);
+        if(imgURL != null)
+            return new ImageIcon(imgURL);
+        else
+            return null;
     }
 
     private void initComponents() {

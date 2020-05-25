@@ -119,7 +119,7 @@ span {
 
 @media (max-width: 992px) {
     .input-group-text {
-        width: 150px;
+        width: 9.375rem;
     }
 }
 
@@ -145,3 +145,38 @@ tr:hover {
     bottom: 1px;
     left: 41px;
 }
+
+@media (max-width: 768px) {
+    .statistics-form .col-sm-3 {
+        padding: 0 !important;
+    }
+}
+
+.statistics-form .form-control {
+    padding-left: 1rem;
+}
+
+@media (min-width: 572px) and (max-width: 768px) {
+    .statistics-form .form-control {
+        padding-left: 0;
+    }
+}
+
+.statistics-form .form-control {
+    min-width: 7rem;
+}
+
+@media (min-width: 1200px) {
+    .number-selector {
+        min-width: 1rem !important;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1200px) {
+    .statistics-form .input-group-prepend {
+        margin: 0 auto !important;
+        // width: 8rem;
+    }
+}
+
+

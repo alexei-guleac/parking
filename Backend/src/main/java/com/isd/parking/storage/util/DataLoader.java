@@ -21,6 +21,7 @@ import static com.isd.parking.utilities.ColorConsoleOutput.*;
 /**
  * Utility class
  * Fills the database and local Java memory storage with initial parking lots data
+ * after server first start
  */
 @Component
 @Slf4j
@@ -55,17 +56,17 @@ public class DataLoader {
         int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
         long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
 
-        //if db empty
+        // if db empty
         if (numberOfParkLotsInDatabase == 0) {
             int masterBoardPrefix = 1;
-            //init with FREE status parking lots
+            // init with FREE status parking lots
             for (int i = 0, j = 0; i < totalParkingLotsNumber; i++, j++) {
 
                 if (j == Integer.parseInt(masterParkingLotsNumber)) {
                     ++masterBoardPrefix;
                     j = 0;
                 }
-                //initial saving parking lots to local Java memory
+                // initial saving parking lots to local Java memory
                 parkingLotLocalService.save(
                     new ParkingLot(
                         Long.valueOf(masterBoardPrefix + "" + j), i + 1, date, ParkingLotStatus.FREE)
@@ -73,7 +74,7 @@ public class DataLoader {
             }
         } else {
             for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
-                //saving parking lots state to local Java memory from Database
+                // saving parking lots state to local Java memory from Database
                 parkingLotLocalService.save(parkingLot);
             }
         }

@@ -19,6 +19,11 @@ import static com.isd.parking.storage.ldap.LdapFileRepository.*;
 @Service
 public class UserLdapFileService {
 
+    /**
+     * Save user in .ldif file
+     * @param user - target user
+     * @return operation result
+     */
     public boolean save(@org.jetbrains.annotations.NotNull UserLdap user) {
         Entry entry = mapUserToEntry(user);
         try {
@@ -35,6 +40,14 @@ public class UserLdapFileService {
         return true;
     }
 
+    /**
+     * Modify LDAP user attribute value in .ldif file
+     *
+     * @param uid       - target user id
+     * @param attributeName  - specified attribute name
+     * @param attributeValue - specified attribute value
+     * @return operation result
+     */
     public boolean update(@NotNull String uid,
                           @Nullable String attributeName,
                           @Nullable String attributeValue) {
@@ -42,16 +55,35 @@ public class UserLdapFileService {
         return true;
     }
 
+    /**
+     * Modify user password in .ldif file
+     *
+     * @param uid     - target LDAP user uid
+     * @param password - target user password
+     * @return operation result
+     */
     public boolean updateUserPassword(String uid, String password) {
         updateEntryInLdifFile(uid, USER_PASSWORD_ATTRIBUTE, password, DirContext.REPLACE_ATTRIBUTE);
         return true;
     }
 
+    /**
+     * Delete user from .ldif file
+     *
+     * @param user - target user
+     * @return operation result
+     */
     public boolean deleteUser(@org.jetbrains.annotations.NotNull UserLdap user) {
         deleteEntryFromLdifFile(user);
         return true;
     }
 
+    /**
+     * Delete user by id from .ldif file
+     *
+     * @param uid - target user id
+     * @return operation result
+     */
     public boolean deleteUserById(String uid) {
         deleteEntryFromLdifFile(uid);
         return true;

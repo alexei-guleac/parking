@@ -23,7 +23,7 @@ public class CookieFilter extends GenericFilterBean {
         throws IOException, ServletException {
 
         @NotNull HttpServletResponse resp = (HttpServletResponse) response;
-        resp.setHeader("Set-Cookie", "locale=de; HttpOnly; SameSite=strict");
+        resp.setHeader("Set-Cookie", "locale=en; HttpOnly; SameSite=strict");
         chain.doFilter(request, response);
     }
 }

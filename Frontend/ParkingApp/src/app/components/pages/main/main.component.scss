@@ -22,9 +22,9 @@ $color_azure_radiance_approx: #0a8eff;
 }
 
 .parking-lot {
-    min-width: 150px;
-    height: 100px;
-    margin-bottom: 20px;
+    min-width: 9.375rem;
+    height: 6.25rem;
+    margin-bottom: 1.25rem;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: var(--card-material-shadow);
 
@@ -48,7 +48,7 @@ $color_azure_radiance_approx: #0a8eff;
 }
 
 .parking-lot-name {
-    font-size: 25px;
+    font-size: 1.5625rem;
     text-transform: uppercase;
 }
 

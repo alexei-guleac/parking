@@ -18,7 +18,7 @@ import java.util.Properties;
  * Configures connection to the mail host
  */
 @Configuration
-@PropertySource("classpath:email-config.properties")
+@PropertySource("classpath:email-config-${spring.email-properties.prefix}.properties")
 public class EmailConfig {
 
     @Value("${spring.mail.host}")
@@ -48,7 +48,6 @@ public class EmailConfig {
     @Value("${mail.smtp.debug}")
     private String debug;
 
-
     @Bean("gmail")
     public @NotNull JavaMailSender gmailMailSender() {
         @NotNull JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -59,11 +58,23 @@ public class EmailConfig {
         mailSender.setUsername(userName);
         mailSender.setPassword(passWord);
 
+        // @NotNull Properties props = mailSender.getJavaMailProperties();
+        // props.put("mail.transport.protocol", protocol);
+        // props.put("mail.smtp.auth", auth);
+        // props.put("mail.smtp.starttls.enable", startTls);
+        // props.put("mail.from.email", from);
+        // props.put("mail.debug", debug);
+
         @NotNull Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", protocol);
-        props.put("mail.smtp.auth", auth);
-        props.put("mail.smtp.starttls.enable", startTls);
+        props.put("mail.smtps.auth", auth);
+        // props.put("mail.smtps.starttls.enable", startTls);
+        props.put("mail.smtp.ssl", "true");
+        // props.put("mail.smtps.ssl.checkserveridentity", "true");
+        props.put("mail.smtps.ssl.trust", "*");
         props.put("mail.from.email", from);
+        props.put("mail.smtps.socketFactory.port", port);
+        props.put("mail.smtps.socketFactory.class","javax.net.ssl.SSLSocketFactory");
         props.put("mail.debug", debug);
 
         // creates a new session with an authenticator

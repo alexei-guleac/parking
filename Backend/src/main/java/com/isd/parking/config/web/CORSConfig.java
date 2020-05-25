@@ -36,11 +36,11 @@ public class CORSConfig implements WebMvcConfigurer {
      */
     @Override
     public void addCorsMappings(@NotNull CorsRegistry registry) {
-
         log.info(grTxt("Call from front application"));
+        // log.info(grTxt(digitalOceanHostUrl));
         registry.addMapping("/**")
             .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
-            .allowedOrigins(frontUrl)  //TODO: change the URL for the prod URL when we deploy
+            .allowedOrigins(frontUrl)
             .allowCredentials(true)
             .maxAge(MAX_AGE_SECS);
     }

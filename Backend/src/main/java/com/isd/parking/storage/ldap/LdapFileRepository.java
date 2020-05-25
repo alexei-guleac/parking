@@ -257,7 +257,7 @@ public class LdapFileRepository {
      * @return container with found entry and it's index in file entries
      */
     private static @org.jetbrains.annotations.NotNull EntryContainer foundEntryByUid(String userAttributeValue, @org.jetbrains.annotations.NotNull List<Entry> entries) {
-        return Objects.requireNonNull(foundEntry("uid", userAttributeValue, entries));
+        return Objects.requireNonNull(foundEntry(USER_UID_ATTRIBUTE, userAttributeValue, entries));
     }
 
     /**

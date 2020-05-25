@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { actions, appRoutes } from '@app/services/navigation/app.endpoints';
 import { containsString } from '@app/utils/string-utils';
+import { hosts } from '../../../environments/ports';
 
 
 /**
@@ -18,6 +19,20 @@ export class NavigationService {
      */
     navigateToMain() {
         this.router.navigate([appRoutes.main]);
+    }
+
+    /**
+     * Navigate to main page
+     */
+    navigateToMainWithReload() {
+        window.location.href = hosts.protocol + hosts.domaintk;
+    }
+
+    /**
+     * Refresh entire page
+     */
+    refresh(): void {
+        window.location.reload();
     }
 
     /**

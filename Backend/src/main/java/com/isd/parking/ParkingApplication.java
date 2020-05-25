@@ -31,8 +31,8 @@ import java.util.Collection;
 @EnableJpaRepositories
 @EnableConfigurationProperties({ ApplicationProperties.class })
 @PropertySources({@PropertySource("classpath:application.properties"),
-    @PropertySource("classpath:postgresql-docker-config.properties"),
-    // @PropertySource("classpath:postgresql-config.properties"),
+    // database configuration file
+    @PropertySource("classpath:postgresql-config-${spring.db-properties.prefix}.properties"),
     @PropertySource("classpath:documentation.properties")})
 public class ParkingApplication {
 

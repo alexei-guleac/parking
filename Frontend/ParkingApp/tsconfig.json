@@ -13,7 +13,7 @@
                 "assets/*"
             ],
             "@env": [
-                "src/environments/environment"
+                "src/environments/environment.prod"
             ],
             "@pages/*": [
                 "pages/*"

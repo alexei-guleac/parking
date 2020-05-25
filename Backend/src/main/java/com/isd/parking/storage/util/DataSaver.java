@@ -13,6 +13,7 @@ import javax.annotation.PreDestroy;
 /**
  * Utility class
  * Saves all parking lots states to the database from local Java memory storage
+ * before server is shutting down
  */
 @Service
 @Slf4j

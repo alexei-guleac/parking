@@ -11,7 +11,7 @@ import static com.company.wsclient.resources.ResourceBundleProvider.getString;
 
 public class AppWindowAdapter extends WindowAdapter {
 
-    private MainAppFrame mainAppFrame;
+    private final MainAppFrame mainAppFrame;
 
     public AppWindowAdapter(MainAppFrame mainAppFrame) {
         this.mainAppFrame = mainAppFrame;
@@ -22,6 +22,7 @@ public class AppWindowAdapter extends WindowAdapter {
 
         Object[] choices = {getString("exit.program.message.ok"), getString("exit.program.message.cancel")};
         Object defaultChoice = choices[0];
+        mainAppFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         int confirmed = JOptionPane.showOptionDialog(
                 null,

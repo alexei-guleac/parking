@@ -8,6 +8,13 @@ import 'hammerjs';
 
 if (environment.production) {
     enableProdMode();
+
+    // disable logs in production mode
+    if (window) {
+        // tslint:disable-next-line:only-arrow-functions
+        window.console.log = function() {
+        };
+    }
 }
 
 platformBrowserDynamic()

@@ -32,7 +32,7 @@ import { Subscription } from 'rxjs';
 
 
 /**
- * Social providers login/registrtion methods
+ * Social providers login/registration methods
  */
 @Injectable({
     providedIn: 'root'

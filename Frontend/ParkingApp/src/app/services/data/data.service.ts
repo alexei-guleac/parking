@@ -8,6 +8,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 
+/**
+ * Common interface for ensure the availability of the following fields
+ */
 export interface StatsDateSortable {
     filteredStatistics: Array<Statistics>;
     lotSortedDesc: boolean;
