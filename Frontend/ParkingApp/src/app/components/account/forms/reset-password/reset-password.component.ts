@@ -14,6 +14,7 @@ import { actions } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
 import { isNonEmptyStrings } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 
@@ -61,7 +62,8 @@ export class ResetPasswordComponent
         private route: ActivatedRoute,
         private navigation: NavigationService,
         private authenticationService: AuthenticationService,
-        private formControlService: FormControlService
+        private formControlService: FormControlService,
+        private translate: TranslateService
     ) {
     }
 
@@ -152,9 +154,8 @@ export class ResetPasswordComponent
             if (response.success) {
                 this.invalidReset = false;
                 this.resetSuccess = true;
-                this.confirmationMessage =
-                    'Password successfully reset. You can now log in with the new credentials.';
-                console.log(this.confirmationMessage);
+                this.confirmationMessage = this.translate.instant('reset-password.success-msg');
+                // console.log(this.confirmationMessage);
                 alert(this.confirmationMessage);
 
                 this.navigateToLogin();
@@ -169,7 +170,7 @@ export class ResetPasswordComponent
         return (error) => {
             this.invalidReset = true;
             this.resetSuccess = false;
-            alert('Reset failed.');
+            alert(this.translate.instant('reset-password.err-msg'));
 
             handleHttpErrorResponse(error, this);
         };

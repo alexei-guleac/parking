@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, QueryList, ViewChildren } from '@angular/core';
 import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
-import { SocialToggleComponent } from '@app/components/account/modals/social-connection-modal/social-toogle/social-toggle.component';
+import { SocialToggleComponent } from '@app/components/modals/social-connection-modal/social-toogle/social-toggle.component';
 import { SocialAccountService } from '@app/services/account/social/social-account.service';
 import { SocialProviderService } from '@app/services/account/social/social-provider.service';
 import {
@@ -11,8 +11,9 @@ import {
 import { handleHttpErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
 import { actions } from '@app/services/navigation/app.endpoints';
 
-import { capitalize } from '@app/utils/string-utils';
+import { capitalizeFirstLetter } from '@app/utils/string-utils';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
 
@@ -48,7 +49,8 @@ export class SocialConnectionModalComponent
     constructor(public activeModal: NgbActiveModal,
                 private socialService: SocialProviderService,
                 private socialAccountService: SocialAccountService,
-                private socialUserStorageService: SocialUserStorageService) {
+                private socialUserStorageService: SocialUserStorageService,
+                private translate: TranslateService) {
     }
 
     /**
@@ -56,7 +58,7 @@ export class SocialConnectionModalComponent
      * @param socialName - target name
      */
     capitalize(socialName: string) {
-        return capitalize(socialName);
+        return capitalizeFirstLetter(socialName);
     }
 
     /**
@@ -202,7 +204,7 @@ export class SocialConnectionModalComponent
      */
     private handleSocialLoginError(error) {
         this.invalidConnect = true;
-        alert('Social connection failed.');
+        alert(this.translate.instant('modals.submit'));
         handleHttpErrorResponse(error, this);
 
         this.socialToggleComponentChildren.forEach(

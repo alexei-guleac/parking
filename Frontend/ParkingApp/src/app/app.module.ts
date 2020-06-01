@@ -1,4 +1,4 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpBackend, HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,15 +6,22 @@ import { MatCardModule } from '@angular/material/card';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAuthServiceConfig } from '@app/services/account/social/social-user-storage.service';
+import { AcceptLanguageInterceptorService } from '@app/services/internalization/accept-language-interceptor.service';
+import { MissingTranslationService } from '@app/services/internalization/missing-translation.service';
 import { MsalInterceptor } from '@azure/msal-angular';
 import { environment } from '@env';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MissingTranslationHandler, TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Angulartics2Module } from 'angulartics2';
 import { AuthServiceConfig, SocialLoginModule } from 'angularx-social-login-vk';
 import { NgxLinkedinModule } from 'ngx-linkedin';
 import { NgxLoginWithAmazonButtonModule } from 'ngx-login-with-amazon-button';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { TranslateCacheModule, TranslateCacheService, TranslateCacheSettings } from 'ngx-translate-cache';
+import { NgxTranslateCutModule } from 'ngx-translate-cut';
 import { NgxUiLoaderHttpModule, NgxUiLoaderModule, NgxUiLoaderRouterModule } from 'ngx-ui-loader';
+import { localization } from '../environments/localization';
 import { AppComponent } from './app.component';
 import { AppRouting } from './app.routing';
 import { ConfirmUserComponent } from './components/account/confirm-user/confirm-user.component';
@@ -26,18 +33,18 @@ import { OrSeparatorComponent } from './components/account/forms/or-separator/or
 import { RegFormComponent } from './components/account/forms/registration-form/registration-form.component';
 import { ResetPasswordComponent } from './components/account/forms/reset-password/reset-password.component';
 import { SocialButtonsComponent } from './components/account/forms/social-buttons/social-buttons.component';
-import { AccountEditModalFormComponent } from './components/account/modals/account-edit-modal-content/account-edit-modal-form.component';
+import { UserProfileComponent } from './components/account/user-profile/user-profile.component';
+import { MenuComponent } from './components/menu/menu.component';
+import { AccountEditModalFormComponent } from './components/modals/account-edit-modal-content/account-edit-modal-form.component';
 import {
     NgbdModalConfirmAutofocusComponent,
     NgbdModalConfirmComponent
-} from './components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
-import { SocialConnectionModalComponent } from './components/account/modals/social-connection-modal/social-connection-modal.component';
-import { SocialToggleComponent } from './components/account/modals/social-connection-modal/social-toogle/social-toggle.component';
-import { UserProfileComponent } from './components/account/user-profile/user-profile.component';
-import { AccessDeniedComponent } from './components/errors/access-denied/access-denied.component';
-import { NoConnectionComponent } from './components/errors/no-connection/no-connection.component';
-import { PageNotFoundComponent } from './components/errors/page-not-found/page-not-found.component';
-import { MenuComponent } from './components/menu/menu.component';
+} from './components/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
+import { SocialConnectionModalComponent } from './components/modals/social-connection-modal/social-connection-modal.component';
+import { SocialToggleComponent } from './components/modals/social-connection-modal/social-toogle/social-toggle.component';
+import { AccessDeniedComponent } from './components/pages/errors/access-denied/access-denied.component';
+import { NoConnectionComponent } from './components/pages/errors/no-connection/no-connection.component';
+import { PageNotFoundComponent } from './components/pages/errors/page-not-found/page-not-found.component';
 import { MainComponent } from './components/pages/main/main.component';
 import { ParkingLotDetailComponent } from './components/pages/main/parking-lot-detail/parking-lot-detail.component';
 import { ParkingLayoutComponent } from './components/pages/parking-layout/parking-layout.component';
@@ -153,7 +160,29 @@ const LOADER = [
         JwtAppModule,
 
         ...SOCIALS, // socials
-        ...LOADER  // loader
+        ...LOADER,  // loader
+
+        // ngx-translate and the loader module
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                deps: [HttpBackend],
+                useFactory: translateHttpLoaderFactory
+            },
+            missingTranslationHandler: { provide: MissingTranslationHandler, useClass: MissingTranslationService },
+            defaultLanguage: localization.defaultLocale
+        }),
+        TranslateCacheModule.forRoot({
+            cacheService: {
+                provide: TranslateCacheService,
+                useFactory: TranslateCacheFactory,
+                deps: [TranslateService, TranslateCacheSettings]
+            },
+            cacheName: 'lang',                      // default value is 'lang'.
+            cacheMechanism: 'LocalStorage',         // default value is 'LocalStorage'.
+            cookieExpiry: 720                       // default value is 720, a month.
+        }),
+        NgxTranslateCutModule
     ],
 
     providers: [
@@ -184,6 +213,11 @@ const LOADER = [
             multi: true
         },
         {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AcceptLanguageInterceptorService,
+            multi: true
+        },
+        {
             provide: AuthServiceConfig,
             useFactory: provideAuthServiceConfig
         },
@@ -196,4 +230,14 @@ const LOADER = [
 })
 
 export class AppModule {
+}
+
+
+// AoT requires an exported function for factories
+export function TranslateCacheFactory(translateService, translateCacheSettings) {
+    return new TranslateCacheService(translateService, translateCacheSettings);
+}
+
+export function translateHttpLoaderFactory(httpBackend: HttpBackend): TranslateHttpLoader {
+    return new TranslateHttpLoader(new HttpClient(httpBackend));
 }

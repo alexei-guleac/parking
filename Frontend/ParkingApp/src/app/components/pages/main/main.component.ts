@@ -8,6 +8,7 @@ import { DataService } from '@app/services/data/data.service';
 import { appRoutes } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 import { interval, Subscription } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
@@ -43,7 +44,8 @@ export class MainComponent implements OnInit {
         private router: Router,
         private route: ActivatedRoute,
         private navigationService: NavigationService,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private translate: TranslateService
     ) {
     }
 
@@ -61,7 +63,9 @@ export class MainComponent implements OnInit {
         this.loadData();
         this.processUrlParams();
 
-        this.updateSubscription = interval(3000).subscribe(() => {
+        const requestPeriod = 3500;
+
+        this.updateSubscription = interval(requestPeriod).subscribe(() => {
             this.loadData();
         });
     }

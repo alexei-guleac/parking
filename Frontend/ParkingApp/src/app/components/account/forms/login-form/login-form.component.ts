@@ -14,6 +14,7 @@ import { actions } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
 import { isNonEmptyStrings } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 
@@ -75,7 +76,8 @@ export class LoginFormComponent
         private navigationService: NavigationService,
         private socialService: SocialProviderService,
         private socialUserStorageService: SocialUserStorageService,
-        private formControlService: FormControlService
+        private formControlService: FormControlService,
+        private translate: TranslateService
     ) {
     }
 
@@ -181,7 +183,7 @@ export class LoginFormComponent
             if (response.token) {
                 this.isLoginFailed = false;
                 this.isLoginSuccess = true;
-                this.successMessage = 'Login Successful.';
+                this.successMessage = this.translate.instant('login-form.success-msg');
 
                 this.authenticationService.registerSuccessfulAuth(
                     this.username,
@@ -236,7 +238,7 @@ export class LoginFormComponent
         if (response.token) {
             this.isLoginFailed = false;
             this.isLoginSuccess = true;
-            this.successMessage = 'Social Login Successful.';
+            this.successMessage = this.translate.instant('login-form.success-msg-social');
 
             // save user in browser storage
             this.authenticationService.registerSuccessfulAuth(
@@ -257,7 +259,7 @@ export class LoginFormComponent
     private handleSocialLoginError(error) {
         this.isLoginSuccess = false;
         this.isLoginFailed = true;
-        alert('Authentication failed.');
+        alert(this.translate.instant('login-form.fail-msg'));
         this.socialService.cleanGitAuth();
         this.fullLogout();
 

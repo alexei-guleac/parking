@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.lang.NonNull;
@@ -44,6 +43,13 @@ public class WebTemplateConfig implements ApplicationContextAware, WebMvcConfigu
 
     private static final String EMAIL_TEMPLATE_ENCODING = "UTF8";
 
+    private final MessageSource messageSource;
+
+    @Autowired
+    public WebTemplateConfig(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
     /**
      * Configures Thymeleaf Template Engine with specified view resolvers for different data types
      *
@@ -61,7 +67,7 @@ public class WebTemplateConfig implements ApplicationContextAware, WebMvcConfigu
         templateEngine.addTemplateResolver(stringTemplateResolver());
         templateEngine.setTemplateResolver(fileTemplateResolver());
         // Message source, internationalization specific to emails
-        templateEngine.setTemplateEngineMessageSource(emailMessageSource());
+        templateEngine.setTemplateEngineMessageSource(messageSource);
 
         return templateEngine;
     }
@@ -154,20 +160,6 @@ public class WebTemplateConfig implements ApplicationContextAware, WebMvcConfigu
         registry.addResourceHandler("/images/**").addResourceLocations("/images/");
         registry.addResourceHandler("/css/**").addResourceLocations("/css/");
         registry.addResourceHandler("/js/**").addResourceLocations("/js/");
-    }
-
-    /**
-     * Configures messages source to display values from property files
-     *
-     * @return configured ResourceBundleMessageSource
-     */
-    @Bean
-    @Description("Spring Message Resolver")
-    public @NotNull ResourceBundleMessageSource emailMessageSource() {
-        final @NotNull ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasename("mail/MailMessages");
-
-        return messageSource;
     }
 
     /**

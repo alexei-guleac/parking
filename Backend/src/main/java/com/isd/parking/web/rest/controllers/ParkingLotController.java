@@ -1,6 +1,7 @@
 package com.isd.parking.web.rest.controllers;
 
 import com.isd.parking.config.SwaggerConfig;
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.exceptions.ResourceNotFoundException;
 import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.models.subjects.ParkingLot;
@@ -12,13 +13,13 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -42,13 +43,21 @@ public class ParkingLotController {
 
     private final DataLoader loader;
 
+    private final ResourceBundleMessageSource messageSource;
+
+    private final SmartLocaleResolver localeResolver;
+
     @Autowired
     public ParkingLotController(ParkingLotLocalServiceImpl parkingLotLocalService,
                                 StatisticsServiceImpl statisticsService,
-                                DataLoader loader) {
+                                DataLoader loader,
+                                ResourceBundleMessageSource messageSource,
+                                SmartLocaleResolver localeResolver) {
         this.parkingLotLocalService = parkingLotLocalService;
         this.statisticsService = statisticsService;
         this.loader = loader;
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
     }
 
     /**
@@ -89,11 +98,15 @@ public class ParkingLotController {
             required = true, dataType = "Long")
     )
     @GetMapping(ApiEndpoints.parking + "/{id}")
-    public @NotNull ResponseEntity<ParkingLot> getParkingLotById(@PathVariable("id") Long parkingLotId)
-
+    public @NotNull ResponseEntity<ParkingLot> getParkingLotById(@PathVariable("id") Long parkingLotId,
+                                                                 @RequestHeader Map<String, String> headers)
         throws ResourceNotFoundException {
+
+        final Locale locale = localeResolver.resolveLocale(headers);
+
         ParkingLot parkingLot = parkingLotLocalService.findById(parkingLotId)
-            .orElseThrow(() -> new ResourceNotFoundException("Parking Lot not found for this id :: " + parkingLotId));
+            .orElseThrow(() -> new ResourceNotFoundException(
+                messageSource.getMessage("ParkingLotController.not-found", null, locale) + " " + parkingLotId));
 
         return ResponseEntity.ok().body(parkingLot);
     }

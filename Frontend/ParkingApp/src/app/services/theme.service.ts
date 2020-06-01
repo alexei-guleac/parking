@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 })
 export class ThemeService {
 
-    themeToogleChecked = false;
+    themeToggleChecked = false;
 
     private modeStatusElement: string;
 
@@ -88,7 +88,7 @@ export class ThemeService {
             const currentSetting = localStorage.getItem(STORAGE_KEY);
 
             if (currentSetting) {
-                this.themeToogleChecked = currentSetting === 'dark';
+                this.themeToggleChecked = currentSetting === 'dark';
             }
         };
 

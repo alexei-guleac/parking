@@ -14,11 +14,11 @@
 </div>
 
 <button
-    (click)="toogleShowMoreSocial()"
+    (click)="toggleShowMoreSocial()"
     *ngIf="showMore == false"
     class="btn btn-mater btn-more text-center m-3"
 >
-    Show more
+    {{ 'social-buttons.show' | translate }}
 </button>
 
 <div
@@ -33,10 +33,6 @@
         <i class="fa fa-github"></i>
         <span class="mx-auto"><b>Github</b></span>
     </span>
-    <!--<span class="btn btn-inst btn-lg btn-block">
-        <i class="fa fa-instagram"></i>
-        <span class="mx-auto"><b>Instagram</b></span>
-    </span>-->
     <!--<span class="btn btn-apple btn-lg btn-block">
         <i class="fa fa-apple"></i>
         <span class="mx-auto"><b>Apple ID</b></span>

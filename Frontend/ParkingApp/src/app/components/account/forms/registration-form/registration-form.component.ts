@@ -19,7 +19,8 @@ import { ModalService } from '@app/services/modals/modal.service';
 import { actions } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
-import { capitalize, isNonEmptyStrings } from '@app/utils/string-utils';
+import { capitalizeFirstLetter, isNonEmptyStrings } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from 'angularx-social-login-vk';
 import { NgxUiLoaderService } from 'ngx-ui-loader';
 import { Subscription } from 'rxjs';
@@ -50,7 +51,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
     private passConfirm: string;
 
-    private errorMessage = 'Invalid Credentials';
+    private errorMessage: string;
 
     private successMessage: string;
 
@@ -75,8 +76,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
     private togglePassConfirmVisible = togglePassConfirmTextType;
 
-    private redirectMessage =
-        'After 5 seconds, you will be redirected to the main page';
+    private redirectMessage = this.translate.instant('registration-form.redir-msg');
 
     private showRegForm = false;
 
@@ -94,7 +94,8 @@ export class RegFormComponent implements OnInit, OnDestroy {
         private socialAccountService: SocialAccountService,
         private socialUserStorageService: SocialUserStorageService,
         private formControlService: FormControlService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private translate: TranslateService
     ) {
         this.gRecaptcha = this.document.gRecaptcha;
     }
@@ -157,8 +158,8 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
         const username = this.username;
         const email = this.email;
-        const lastname = capitalize(this.lastname);
-        const firstname = capitalize(this.firstname);
+        const lastname = capitalizeFirstLetter(this.lastname);
+        const firstname = capitalizeFirstLetter(this.firstname);
         const pass = this.password;
 
         if (isNonEmptyStrings(username, pass)) {
@@ -260,8 +261,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
                 this.invalidReg = false;
                 this.regSuccess = true;
                 this.successMessage =
-                    'Registration Successful. We sent you mail to confirm your profile. ' +
-                    this.redirectMessage;
+                    this.translate.instant('registration-form.success-msg') + ' ' + this.redirectMessage;
                 this.socialService.cleanGitAuth();
                 this.navigateToMain();
             } else {
@@ -301,7 +301,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
 
     private handleSocialResponse() {
         return (response: any) => {
-            console.log('RESPONSE ' + JSON.stringify(response));
+            // console.log('RESPONSE ' + JSON.stringify(response));
             if (response.success) {
                 this.handleSocialRegistrationResponse(response);
             }
@@ -317,7 +317,7 @@ export class RegFormComponent implements OnInit, OnDestroy {
     private handleSocialRegistrationError(error) {
         this.invalidReg = true;
         this.regSuccess = false;
-        this.errorMessage = 'Registration failed. ';
+        this.errorMessage = this.translate.instant('registration-form.err-msg') + ' ';
 
         // clean all user data and full logout
         this.socialService.cleanGitAuth();
@@ -342,12 +342,12 @@ export class RegFormComponent implements OnInit, OnDestroy {
             this.socialService.cleanGitAuth();
             if (response.confirmationSent) {
                 this.successMessage =
-                    'Registration Successful. We sent you mail to confirm your social profile. ' +
+                    this.translate.instant('registration-form.success-msg-social-mail') + ' ' +
                     this.redirectMessage;
                 this.navigateToMain();
             } else {
                 this.successMessage =
-                    'Registration Successful. You can login with your social profile.';
+                    this.translate.instant('registration-form.success-msg-social');
                 this.navigateToLogin();
             }
         } else {

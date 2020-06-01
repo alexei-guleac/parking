@@ -54,7 +54,7 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
 
     /**
      * Handle HTTP server error
-     * @param errorResponse - HTTP server error respnse
+     * @param errorResponse - HTTP server error response
      */
     private handleError(errorResponse: any) {
         if (errorResponse instanceof HttpErrorResponse) {
@@ -129,7 +129,7 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
 
     /**
      * Navigate to login page
-     * @param navigationExtras - addiritional information
+     * @param navigationExtras - additional information
      */
     private navigateToLogin(navigationExtras: NavigationExtras) {
         this.zone.run(() =>
@@ -145,13 +145,15 @@ export class GlobalHttpErrorInterceptorService implements HttpInterceptor {
  */
 function parseLdapError(ldapError: string) {
     console.log(ldapError);
-    if (ldapError.toLowerCase().includes('ldap')) {
-        return trimChars('[.,:;]', ldapError
-            .split(';')[0]
-            .split(':')[1]
-            .split('-')[1]);
-    } else {
-        return ldapError;
+    if (ldapError) {
+        if (ldapError.toLowerCase().includes('ldap')) {
+            return trimChars('[.,:;]', ldapError
+                .split(';')[0]
+                .split(':')[1]
+                .split('-')[1]);
+        } else {
+            return ldapError;
+        }
     }
 }
 

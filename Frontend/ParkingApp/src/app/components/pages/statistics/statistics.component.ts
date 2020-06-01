@@ -6,7 +6,7 @@ import { parkingColors } from '@app/models/ParkingLotStatus';
 import {
     filterStatisticsByDatePeriod,
     filterStatisticsByNumber,
-    getStatisticsByUpdatedAtAscSortComparator, getStatisticsByUpdatedAtDescSortComparator,
+    getStatisticsByUpdatedAtDescSortComparator,
     Statistics
 } from '@app/models/Statistics';
 import { DataService, StatsDateSortable } from '@app/services/data/data.service';
@@ -25,21 +25,11 @@ import { appRoutes } from '@app/services/navigation/app.endpoints';
 })
 export class StatisticsComponent implements OnInit, StatsDateSortable {
 
-    private statistics: Array<Statistics>;
-
     filteredStatistics: Array<Statistics>;
 
     lotSortedAsc = false;
 
-    private p = 1;              // declaration of page index used for pagination
-
     lotSortedDesc = false;
-
-    private selectedLotNumber: string = null;
-
-    private startDate: string;
-
-    private endDate: string;
 
     dateSortedAsc = false;
 
@@ -48,6 +38,16 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
     timeSortedAsc = false;
 
     timeSortedDesc = false;
+
+    private statistics: Array<Statistics>;
+
+    private p = 1;              // declaration of page index used for pagination
+
+    private selectedLotNumber: string = null;
+
+    private startDate: string;
+
+    private endDate: string;
 
     private lotNumber = [];
 
@@ -72,6 +72,7 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
      */
     ngOnInit() {
         this.loadData();
+        this.initSelect();
     }
 
     /**
@@ -197,7 +198,6 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
     }
 
     private resetFieldsSort() {
-
         this.dateSortedAsc = false;
         this.dateSortedDesc = true;
 
@@ -207,4 +207,14 @@ export class StatisticsComponent implements OnInit, StatsDateSortable {
         this.timeSortedAsc = false;
         this.timeSortedDesc = false;
     }
+
+    /**
+     * Fix angular first empty option in select
+     */
+    private initSelect() {
+        setTimeout(() => {
+            const menu = document.querySelector('.number-selector');
+            menu[0].selected = true;
+        }, 500);
+    };
 }

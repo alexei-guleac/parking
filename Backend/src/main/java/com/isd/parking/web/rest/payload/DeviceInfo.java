@@ -37,7 +37,7 @@ public class DeviceInfo {
 
     @JsonProperty()
     @JsonAlias({"language"})
-    @ApiModelProperty(notes = "Device language (ru, en)")
+    @ApiModelProperty(notes = "Device language (ru, ro, en, etc.)")
     @NotBlank
     @NonNull
     private String language;

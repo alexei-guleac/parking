@@ -11,6 +11,7 @@ import { parkingStatuses } from '@app/models/ParkingLotStatus';
 import { DataService } from '@app/services/data/data.service';
 import { actions, appRoutes } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { TranslateService } from '@ngx-translate/core';
 import { interval, Subscription } from 'rxjs';
 
 
@@ -38,7 +39,7 @@ export class ParkingLayoutComponent
 
     private loadDataSubscription: Subscription;
 
-    private message = 'Please wait...';
+    private message = this.translate.instant('parking-layout.wait');
 
     private loadDataCounter = 0;
 
@@ -52,7 +53,8 @@ export class ParkingLayoutComponent
         private dataService: DataService,
         private route: ActivatedRoute,
         private router: Router,
-        private navigationService: NavigationService
+        private navigationService: NavigationService,
+        private translate: TranslateService
     ) {
         for (let i = 0; i < parking.lotsNumber; i++) {
             this.numberOfParkingLots.push(i);
@@ -114,14 +116,14 @@ export class ParkingLayoutComponent
     private subscribeOnUrlParams() {
         this.route.queryParams.subscribe(
             // tslint:disable-next-line: no-string-literal
-            this.getQueryparamsCallback()
+            this.getQueryParamsCallback()
         );
     }
 
     /**
      * Callback function for processing query string URL parameters
      */
-    private getQueryparamsCallback() {
+    private getQueryParamsCallback() {
         return (params) => {
             if (params.action) {
                 this.action = params.action;
@@ -150,7 +152,7 @@ export class ParkingLayoutComponent
                 this.fillMissingLots();
                 this.loadDataCounter = 0;
             } else {
-                this.message = 'No data found, please contact support';
+                this.message = this.translate.instant('parking-layout.no-data');
             }
         };
     }
@@ -162,12 +164,14 @@ export class ParkingLayoutComponent
         return (error) => {
             setTimeout(() => {
                 if (++this.loadDataCounter <= 5) {
-                    this.message = 'Connection lost. Please wait...';
+                    this.message =
+                        this.translate.instant('parking-layout.connect-lost') + ' ' +
+                        this.translate.instant('parking-layout.wait');
                     // console.log(this.loadDataCounter);
                     this.loadData();
                 } else {
                     this.message =
-                        'Can not connect to server. Please contact support';
+                        this.translate.instant('parking-layout.cant-connect');
                     this.updateSubscription.unsubscribe();
                     this.loadDataSubscription.unsubscribe();
                 }

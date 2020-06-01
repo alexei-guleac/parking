@@ -25,7 +25,7 @@ public class StatisticsRecord {
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(notes = "Statistics record unique id")
     private Long id;
 

@@ -10,9 +10,6 @@ import { getJwtToken } from '../account/account-session-storage.service';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-    constructor() {
-    }
-
     /**
      * Add JWT if it is present in browser storage
      * @param request - HTTP server request

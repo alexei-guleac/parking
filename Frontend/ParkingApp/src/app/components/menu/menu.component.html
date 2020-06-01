@@ -7,7 +7,7 @@
             <img alt="" src="../../../assets/img/company/isd-logo.png"/>
         </a>
         <a class="navbar-brand abs">
-            <!--      ParKing-->
+            <!--  ParKing-->
             <img
                 (click)="navigateToMain()"
                 [ngClass]="this.isUserLoggedIn() ? 'user-logged' : ''"
@@ -16,16 +16,15 @@
                 src="../../../assets/img/company/parking_logo.png"
             />
         </a>
-        <!--    to do : make logo in svg-->
         <button
-            (click)="changeTooltip()"
+            (click)="changeMenuTooltip()"
             aria-controls="navbarNav"
             aria-expanded="false"
             aria-label="Toggle navigation"
             class="navbar-toggler collapsed align-self-center mt-4 p-3"
             data-target="#navbarNav"
             data-toggle="collapse"
-            ngbTooltip="{{appMenuTooltip}}" placement="top"
+            ngbTooltip="{{ appMenuTooltip }}" placement="top"
             type="button"
         >
             <span class="icon-bar top-bar"></span>
@@ -40,9 +39,8 @@
                     class="nav-item mx-auto pl-4"
                 >
                     <a (click)="navigateToLogin()" class="nav-link"
-                       ngbTooltip="Log in account" placement="top"
-                    ><i class="fa fa-user"></i> Login</a
-                    >
+                       ngbTooltip="{{this.translate.instant('menu.tooltips.login')}}" placement="top"
+                    ><i class="fa fa-user"></i>&nbsp;{{ 'menu.login' | translate }}</a>
                 </li>
                 <li
                     *ngIf="this.isUserLoggedIn()"
@@ -51,52 +49,50 @@
                     <a
                         (click)="this.navigateToProfile()"
                         class="nav-link username"
-                        ngbTooltip="Go to user profile" placement="top"
+                        ngbTooltip="{{this.translate.instant('menu.tooltips.profile')}}" placement="top"
                     ><i class="fa fa-user"></i>
                         {{
-                      this?.getUserName() == null
-                        ? 'Unknown user'
-                        : this.capitalize(this?.getUserName())
+                      this?.getUserName() == null ? 'Unknown user' : this.capitalize(this?.getUserName())
                         }}
                     </a>
                 </li>
                 <li *ngIf="this.isUserLoggedIn()" class="nav-item mx-auto">
                     <a (click)="showLogoutModal()" class="nav-link"
-                       ngbTooltip="Logout from user profile" placement="top"
-                    ><i class="fas fa-sign-out-alt"></i> Logout</a
-                    >
+                       ngbTooltip="{{this.translate.instant('menu.tooltips.logout')}}" placement="top"
+                    ><i class="fas fa-sign-out-alt"></i>&nbsp;{{ 'menu.logout' | translate }}</a>
                 </li>
                 <li *ngIf="this.isUserLoggedIn()" class="nav-item dropdown">
                     <a
                         class="nav-link dropdown-toggle text-light"
                         data-toggle="dropdown"
-                        ngbTooltip="Application menu" placement="top"
+                        ngbTooltip="{{this.translate.instant('menu.tooltips.menu')}}" placement="top"
                     >
-                        Menu
+                        {{ 'menu.title' | translate }}
                     </a>
                     <div aria-labelledby="navbarDropdown" class="dropdown-menu">
                         <a
                             (click)="navigateToStatistics()"
                             class="dropdown-item"
-                            ngbTooltip="Go to parking usage statistics" placement="top"
-                        ><i class="fas fa-clipboard"></i> Statistics</a
-                        >
+                            ngbTooltip="{{this.translate.instant('menu.tooltips.stats')}}" placement="top"
+                        ><i class="fas fa-clipboard"></i>&nbsp;{{ 'menu.stats' | translate }}</a>
                         <div class="dropdown-divider"></div>
                         <a (click)="navigateToLayout()" class="dropdown-item"
-                           ngbTooltip="Go to parking map" placement="top"
-                        ><i class="fas fa-map-marked-alt"></i> Parking
-                            layout</a
-                        >
-                        <!-- <a class="dropdown-item text-light" (click)="navigateToTest2()">Test layout</a> -->
+                           ngbTooltip="{{this.translate.instant('menu.tooltips.map')}}" placement="top"
+                        ><i class="fas fa-map-marked-alt"></i>&nbsp;{{ 'menu.layout' | translate }}</a>
                     </div>
                 </li>
-                <div class="align-content-center mx-auto pl-4">
+                <!-- theme switch -->
+                <div class="align-content-center mx-auto pl-2">
                     <label class="theme-switch"
-                           ngbTooltip="Switch to {{this.themeService.themeToogleChecked ?
-                           'light mode' : 'dark mode'}} theme"
+                           ngbTooltip=
+                               "{{this.translate.instant('menu.tooltips.switch')}}
+                                {{this.themeService.themeToggleChecked ?
+                           this.translate.instant('menu.tooltips.light-mode')
+                           : this.translate.instant('menu.tooltips.dark-mode')}}
+                            {{this.translate.instant('menu.tooltips.theme')}}"
                            placement="top">
                         <input
-                            [(ngModel)]="this.themeService.themeToogleChecked"
+                            [(ngModel)]="this.themeService.themeToggleChecked"
                             name="theme-switch"
                             type="checkbox"
                         />
@@ -104,6 +100,20 @@
                         ><span class="slider-img"></span
                         ></span>
                     </label>
+                </div>
+                <!-- language select-->
+                <div class="mx-auto"
+                     ngbTooltip="{{this.translate.instant('menu.tooltips.lang')}}"
+                     placement="top">
+                    <div class="form-group lang-select text-dark pl-1">
+                        <select (change)="switchLanguage()"
+                                [(ngModel)]="selectedLanguage"
+                                class="form-control select">
+                            <option *ngFor="let lang of locales"
+                                    [ngValue]="lang">{{lang}}
+                            </option>
+                        </select>
+                    </div>
                 </div>
             </ul>
         </div>
@@ -113,11 +123,3 @@
 <div class="container">
     <hr style="border-top: 3px solid var(--isd-red) !important;"/>
 </div>
-
-<!--<div class="user-toggle">
-    <div class="[ visually-hidden ][ js-mode-status ]" role="status">{{modeStatusElement}}</div>
-    <button class="[ toggle-button ] [ js-mode-toggle ]">
-        <span class="[ toggle-button__text ] [ js-mode-toggle-text ]">{{modeToggleText}}</span>
-        <span aria-hidden="true" class="toggle-button__icon"></span>
-    </button>
-</div>-->

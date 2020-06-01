@@ -9,6 +9,7 @@ import { ObjectsSortService } from '@app/services/data/objects-sort.service';
 import { ReservationService } from '@app/services/data/reservation.service';
 import { StatisticsService } from '@app/services/data/statistics.service';
 import { ModalService } from '@app/services/modals/modal.service';
+import { TranslateService } from '@ngx-translate/core';
 import { delay } from 'rxjs/operators';
 
 
@@ -61,7 +62,8 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
         private modalService: ModalService,
         private dataService: DataService,
         private objectsSortService: ObjectsSortService,
-        private statisticsService: StatisticsService
+        private statisticsService: StatisticsService,
+        private translate: TranslateService
     ) {
     }
 
@@ -71,7 +73,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
      * Called once, after the first ngOnChanges()
      */
     ngAfterViewInit() {
-        this.loadData();
+        this.loadStatsData();
     }
 
     /**
@@ -103,7 +105,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
     /**
      * Load parking lots statistics data
      */
-    private loadData() {
+    private loadStatsData() {
         this.dataService.getStatsByLotNumber(this.parkingLot.number).subscribe(
             (data) => {
                 this.statistics = data;
@@ -155,7 +157,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
         const parkingLotNumber = this.parkingLot.id;
         const parkingLotStatus = this.parkingLot.status;
 
-        // reservate only if parking lot status is FREE to avoid conflicts
+        // reserve only if parking lot status is FREE to avoid conflicts
         if (parkingLotStatus === parkingStatuses.FREE) {
             this.processReservation(parkingLotNumber);
         }
@@ -171,7 +173,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
      * @param parkingLotNumber - target parking lot number
      */
     private processReservation(parkingLotNumber) {
-        const msg = 'Reservation';
+        const msg = this.translate.instant('parking-lot-detail.reservation');
 
         this.reservationService
             .reserveParkingLot(parkingLotNumber)
@@ -186,7 +188,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
      * @param parkingLotNumber - target parking lot number
      */
     private processResetReservation(parkingLotNumber) {
-        const msg = 'Cancel reservation';
+        const msg = this.translate.instant('parking-lot-detail.cancel-reservation');
 
         this.reservationService
             .unreserveParkingLot(parkingLotNumber)
@@ -203,12 +205,13 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
     private handleReservationResponse(msg: string) {
         return (response) => {
             if (response) {
-                alert(msg + ' success.');
+                alert(msg + ' ' + this.translate.instant('parking-lot-detail.success-msg'));
 
                 this.switchParkingLotState();
                 this.disableReserveButtonAfterDelay();
+                this.loadStatsData();
             } else {
-                alert(msg + ' failed.');
+                alert(msg + ' ' + this.translate.instant('parking-lot-detail.fail-msg'));
             }
         };
     }
@@ -221,7 +224,7 @@ export class ParkingLotDetailComponent implements AfterViewInit, StatsDateSortab
         return (error) => {
             // console.log(error);
             this.reservationSuccess = false;
-            alert(msg + ' failed.');
+            alert(msg + ' ' + this.translate.instant('parking-lot-detail.fail-msg'));
         };
     }
 

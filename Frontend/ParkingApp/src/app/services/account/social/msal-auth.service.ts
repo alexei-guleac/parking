@@ -87,7 +87,7 @@ export class MsalAuthService {
                 console.error('Redirect Error: ', authError.errorMessage);
                 return;
             }
-            console.log('Redirect Success: ', response.accessToken);
+            // console.log('Redirect Success: ', response.accessToken);
         });
     }
 }

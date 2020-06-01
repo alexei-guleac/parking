@@ -1,5 +1,6 @@
 package com.isd.parking.security.config;
 
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.security.PasswordEncoding.CustomBcryptPasswordEncoder;
 import com.isd.parking.security.config.cookie.CookieFilter;
 import com.isd.parking.security.filter.JwtTokenAuthenticationFilter;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -249,7 +251,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     private @NotNull JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter(String path, String secret) {
-        return new JwtTokenAuthenticationFilter(path, secret);
+        return new JwtTokenAuthenticationFilter(path, secret, new ResourceBundleMessageSource(), new SmartLocaleResolver());
     }
 
     // fallback for in-memory auth (ldap disabled)

@@ -124,7 +124,7 @@ export class SocialButtonsComponent implements OnInit {
     /**
      * Show/hide more social buttons
      */
-    private toogleShowMoreSocial() {
+    private toggleShowMoreSocial() {
         this.showMore = !this.showMore;
 
         setTimeout(() => {
@@ -134,7 +134,6 @@ export class SocialButtonsComponent implements OnInit {
         // hide social buttons
         setTimeout(() => {
             this.showMore = false;
-            console.log(this.showMore);
         }, 60000);
     }
 

@@ -7,6 +7,7 @@ import { handleHttpErrorResponse } from '@app/services/helpers/global-http-inter
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
 import { isNonEmptyString } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 
 
@@ -45,7 +46,8 @@ export class ForgotPassFormComponent
     constructor(
         private authenticationService: AuthenticationService,
         private navigation: NavigationService,
-        private formControlService: FormControlService
+        private formControlService: FormControlService,
+        private translate: TranslateService
     ) {
     }
 
@@ -126,10 +128,7 @@ export class ForgotPassFormComponent
                 this.requestSuccess = true;
                 this.disableButtonAfterDelay();
                 this.requestFailed = false;
-                this.confirmationMessage =
-                    'Request to reset password received. ' +
-                    'Check your inbox for the reset link. ' +
-                    'You will be redirected to the main page in 5 seconds.';
+                this.confirmationMessage = this.translate.instant('forgot-pass-form.success-msg');
                 this.redirectToMainAfterDelay();
             }
         };

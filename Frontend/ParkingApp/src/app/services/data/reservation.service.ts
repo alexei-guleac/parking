@@ -24,7 +24,7 @@ export class ReservationService {
     reserveParkingLot(parkingLotNumber: number): Observable<boolean> {
         const url =
             environment.restUrl + api.reservation + '/' + parkingLotNumber;
-        console.log('Reservation... parking lot #' + parkingLotNumber);
+        // console.log('Reservation... parking lot #' + parkingLotNumber);
 
         return this.http.get<boolean>(url, {
             headers: setAcceptJsonHeaders()
@@ -40,7 +40,7 @@ export class ReservationService {
             environment.restUrl +
             api.cancelReservation +
             '/' + parkingLotNumber;
-        console.log('Cancel reservation... parking lot #' + parkingLotNumber);
+        // console.log('Cancel reservation... parking lot #' + parkingLotNumber);
 
         return this.http.get<boolean>(url, {
             headers: setAcceptJsonHeaders()

@@ -1,10 +1,12 @@
 package com.isd.parking.web.rest.controllers.account;
 
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.models.enums.AccountState;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.security.JwtUtils;
 import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
+import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.auth.AuthenticationRequest;
 import com.isd.parking.web.rest.payload.account.auth.AuthenticationResponse;
 import com.isd.parking.web.rest.payload.account.auth.SocialAuthRequest;
@@ -14,6 +16,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,9 +25,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Locale;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -48,13 +55,25 @@ public class AuthenticationController {
 
     private final JwtUtils jwtUtils;
 
+    private final ResourceBundleMessageSource messageSource;
+
+    private final SmartLocaleResolver localeResolver;
+
+    private final ResponseEntityFactory responseEntityFactory;
+
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,
                                     UserServiceImpl userService,
-                                    JwtUtils jwtUtils) {
+                                    JwtUtils jwtUtils,
+                                    ResourceBundleMessageSource messageSource,
+                                    SmartLocaleResolver localeResolver,
+                                    ResponseEntityFactory responseEntityFactory) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtUtils = jwtUtils;
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
+        this.responseEntityFactory = responseEntityFactory;
     }
 
     /**
@@ -94,17 +113,19 @@ public class AuthenticationController {
             required = true, dataType = "AuthenticationRequest")
     )
     @RequestMapping(method = POST)
-    public @NotNull ResponseEntity<?> authentication(@RequestBody @NotNull AuthenticationRequest authenticationRequest)
+    public @NotNull ResponseEntity<?> authentication(@RequestBody @NotNull AuthenticationRequest authenticationRequest,
+                                                     @RequestHeader Map<String, String> headers)
         throws AuthenticationException, JOSEException {
 
         final AuthenticationRequest.AuthDetails credentials = authenticationRequest.getAuthDetails();
         final String username = credentials.getUsername();
         final String password = credentials.getPassword();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         // check if user exists
         final UserLdap userFound = userService.findById(username);
         if (userFound != null) {
-            assertAccountEnabled(userFound);
+            assertAccountEnabled(userFound, locale);
 
             @NotNull final UsernamePasswordAuthenticationToken userAuthToken =
                 new UsernamePasswordAuthenticationToken(username, password);
@@ -118,8 +139,7 @@ public class AuthenticationController {
             // Return the token
             return ResponseEntity.ok(new AuthenticationResponse(token));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User doesn't exists on the server");
+            return responseEntityFactory.userNotExists(locale);
         }
     }
 
@@ -143,15 +163,17 @@ public class AuthenticationController {
             required = true, dataType = "SocialAuthRequest")
     )
     @RequestMapping(value = ApiEndpoints.socialLogin, method = POST)
-    public @NotNull ResponseEntity<?> socialLogin(@RequestBody @NotNull SocialAuthRequest socialAuthRequest)
+    public @NotNull ResponseEntity<?> socialLogin(@RequestBody @NotNull SocialAuthRequest socialAuthRequest,
+                                                  @RequestHeader Map<String, String> headers)
         throws JOSEException {
 
         final String id = socialAuthRequest.getId();
         final String provider = socialAuthRequest.getSocialProvider();
         final UserLdap userFound = userService.getUserBySocialId(id, provider);
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         if (userFound != null) {
-            assertAccountEnabled(userFound);
+            assertAccountEnabled(userFound, locale);
 
             final String username = userFound.getUid();
             final String authorities = userService.getAuthoritiesMembershipById(username);
@@ -160,8 +182,7 @@ public class AuthenticationController {
             // Return the token
             return ResponseEntity.ok(new SocialAuthResponse(token, username));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account associated with this social profile not found");
+            return responseEntityFactory.socialNotExists(locale);
         }
     }
 
@@ -169,17 +190,18 @@ public class AuthenticationController {
      * Checks if user account is enabled
      *
      * @param user - target user
+     * @param locale - user specified locale
      */
-    private void assertAccountEnabled(@NotNull UserLdap user) {
+    private void assertAccountEnabled(@NotNull UserLdap user, Locale locale) {
         if (user.getAccountState() != AccountState.ENABLED) {
             if (user.getAccountState() == AccountState.WAITING_CONFIRMATION) {
                 throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "Confirm registration. There should be a letter in the mail with a confirmation link.");
+                    messageSource.getMessage("AuthenticationController.not-confirmed", null, locale));
             } else if (user.getAccountState() == AccountState.DISABLED) {
                 throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    "User with this email disabled on the server. Contact with administrator.");
+                    messageSource.getMessage("AuthenticationController.user-disabled", null, locale));
             }
         }
     }

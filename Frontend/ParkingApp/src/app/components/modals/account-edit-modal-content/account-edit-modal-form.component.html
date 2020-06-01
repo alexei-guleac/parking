@@ -1,5 +1,5 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Edit profile</h4>
+    <h4 class="modal-title" id="modal-title">{{ 'account-edit-modal-form.title' | translate }}</h4>
     <button
         (click)="activeModal.dismiss('Cross click')"
         aria-describedby="modal-title"
@@ -19,16 +19,15 @@
     <div class="modal-body">
         <div class="container">
             <div *ngIf="name" class="form-group mx-auto text-center">
-                <label for="username">User Name :</label>
+                <label for="username">{{ 'account-edit-modal-form.uname.text' | translate }}</label>
                 <div class="input-group mx-auto text-center w-20rem">
                     <div class="input-group-append">
                         <span class="input-group-text">
-                            <i class="fa fa-user"></i
-                            ></span>
+                            <i class="fa fa-user"></i></span>
                     </div>
                     <input
                         [(ngModel)]="this.username"
-                        class="form-control tett"
+                        class="form-control"
                         formControlName="username"
                         id="username"
                         minlength="5"
@@ -43,27 +42,26 @@
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
                     <ng-container *ngIf="name.errors.required">
-                        Name is required.
+                        {{ 'account-edit-modal-form.uname.req' | translate }}
                     </ng-container>
                     <ng-container *ngIf="name.errors.minlength">
-                        Name must be at least 5 characters long.
+                        {{ 'account-edit-modal-form.uname.minlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="name.errors.maxlength">
-                        Name must be maximum 15 characters long.
+                        {{ 'account-edit-modal-form.uname.maxlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="name.errors.forbiddenName">
-                        Name should contain only<br/>
-                        A-Z, a-z, 0-9 symbols and "_" or ".".
+                        {{ 'common.constraints.uname.content' | translate | translateCut:0 }}<br/>
+                        {{ 'common.constraints.uname.content' | translate | translateCut:1}}
                     </ng-container>
                 </div>
             </div>
             <div *ngIf="fname" class="form-group mx-auto text-center">
-                <label for="firstname">First Name :</label>
+                <label for="firstname">{{ 'account-edit-modal-form.fn.text' | translate }}</label>
                 <div class="input-group mx-auto text-center w-20rem">
                     <div class="input-group-append">
                         <span class="input-group-text">
-                            <i class="fa fa-align-justify"></i
-                            ></span>
+                            <i class="fa fa-align-justify"></i></span>
                     </div>
                     <input
                         [(ngModel)]="this.firstname"
@@ -82,27 +80,26 @@
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
                     <ng-container *ngIf="fname.errors.required">
-                        First Name is required.
+                        {{ 'account-edit-modal-form.fn.req' | translate }}
                     </ng-container>
                     <ng-container *ngIf="fname.errors.minlength">
-                        First Name must be at least 3 characters long.
+                        {{ 'account-edit-modal-form.fn.minlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="fname.errors.maxlength">
-                        First Name must be maximum 15 characters long.
+                        {{ 'account-edit-modal-form.fn.maxlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="fname.errors.forbiddenName">
-                        First Name should contain only<br/>
-                        A-Z, a-z and symbols "_", "-".
+                        {{ 'common.constraints.name.content' | translate | translateCut:0 }} <br/>
+                        {{ 'common.constraints.name.content' | translate | translateCut:1 }}
                     </ng-container>
                 </div>
             </div>
             <div *ngIf="lname" class="form-group mx-auto text-center">
-                <label for="lastname">Last Name :</label>
+                <label for="lastname">{{ 'account-edit-modal-form.ln.text' | translate }}</label>
                 <div class="input-group mx-auto text-center w-20rem">
                     <div class="input-group-append">
                         <span class="input-group-text">
-                            <i class="fa fa-align-justify"></i
-                            ></span>
+                            <i class="fa fa-align-justify"></i></span>
                     </div>
                     <input
                         [(ngModel)]="this.lastname"
@@ -121,17 +118,17 @@
                     class="alert alert-danger font-error mx-auto text-center w-20rem"
                 >
                     <ng-container *ngIf="lname.errors.required">
-                        Last Name is required.
+                        {{ 'account-edit-modal-form.ln.req' | translate }}
                     </ng-container>
                     <ng-container *ngIf="lname.errors.minlength">
-                        Last Name must be at least 3 characters long.
+                        {{ 'account-edit-modal-form.ln.minlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="lname.errors.maxlength">
-                        Last Name must be maximum 15 characters long.
+                        {{ 'account-edit-modal-form.ln.maxlen' | translate }}
                     </ng-container>
                     <ng-container *ngIf="lname.errors.forbiddenName">
-                        Last Name should contain only<br/>
-                        A-Z, a-z, 0-9 and symbols "_", "-".
+                        {{ 'common.constraints.name.content' | translate | translateCut:0 }} <br/>
+                        {{ 'common.constraints.name.content' | translate | translateCut:1 }}
                     </ng-container>
                 </div>
             </div>
@@ -145,7 +142,7 @@
             class="btn btn-round save-btn form-group text-center"
             type="submit"
         >
-            Save
+            {{ 'account-edit-modal-form.save' | translate }}
         </button>
     </div>
 </form>

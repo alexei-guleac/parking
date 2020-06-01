@@ -15,16 +15,16 @@
         class="btn-show-form mt-4 mx-auto text-center"
     >
         <span class="mx-auto text-center align-items-center align-content-center">
-            Register with <strong>e-mail</strong></span>
+            {{ 'registration-form.reg.with' | translate }}
+            <strong>{{ 'registration-form.reg.btn' | translate }}</strong></span>
     </button>
     <ng-container *ngIf="showRegForm">
         <div class="form-group mx-auto text-center">
-            <label for="username">User Name :</label>
+            <label for="username">{{ 'registration-form.uname.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-user"></i
-                    ></span>
+                    <i class="fa fa-user"></i></span>
                 </div>
                 <input
                     [(ngModel)]="this.username"
@@ -39,33 +39,30 @@
                 />
             </div>
             <div
-                *ngIf="
-                name.invalid && (name.dirty || name.pristine) && this.submitted
-            "
+                *ngIf="name.invalid && (name.dirty || name.pristine) && this.submitted"
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="name.errors.required">
-                    Username is required.<br/>
+                    {{ 'registration-form.uname.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.minlength">
-                    At least 5 characters long.<br/>
+                    {{ 'registration-form.uname.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.maxlength">
-                    Maximum 15 characters long.<br/>
+                    {{ 'registration-form.uname.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.forbiddenName">
-                    Should contain only<br/>
-                    A-Z, a-z, 0-9 symbols and "_" or ".".
+                    {{ 'common.constraints.uname.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.uname.content' | translate | translateCut:1 }}
                 </ng-container>
             </div>
         </div>
         <div class="form-group mx-auto text-center">
-            <label for="email">Email :</label>
+            <label for="email">{{ 'registration-form.email.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-envelope"></i
-                    ></span>
+                    <i class="fa fa-envelope"></i></span>
                 </div>
                 <input
                     [(ngModel)]="this.email"
@@ -79,37 +76,33 @@
                     type="email"
                 />
             </div>
-            <!--                    <autocomplete givenPlaceHolder="Your email address"-->
-            <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
-
+            <!-- <autocomplete givenPlaceHolder="Your email address"-->
+            <!--               (selectedValue)="handleSelect($event)"></autocomplete>-->
             <div
-                *ngIf="
-                mail.invalid && (mail.dirty || mail.pristine) && this.submitted
-            "
+                *ngIf="mail.invalid && (mail.dirty || mail.pristine) && this.submitted"
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="mail.errors.required">
-                    Email is required.<br/>
+                    {{ 'registration-form.email.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="mail.errors.minlength">
-                    At least 8 characters long.<br/>
+                    {{ 'registration-form.email.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="mail.errors.maxlength">
-                    Maximum 35 characters long.<br/>
+                    {{ 'registration-form.email.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="mail.errors.pattern">
-                    Should contain @<br/>
-                    A-Z, a-z, 0-9 symbols and "_", ".".
+                    {{ 'common.constraints.email.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.email.content' | translate | translateCut:1 }}
                 </ng-container>
             </div>
         </div>
         <div class="form-group mx-auto text-center">
-            <label for="firstname">First Name :</label>
+            <label for="firstname">{{ 'registration-form.fn.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-align-justify"></i
-                    ></span>
+                    <i class="fa fa-align-justify"></i></span>
                 </div>
                 <input
                     [(ngModel)]="this.firstname"
@@ -124,35 +117,30 @@
                 />
             </div>
             <div
-                *ngIf="
-                fname.invalid &&
-                (fname.dirty || fname.pristine) &&
-                this.submitted
-            "
+                *ngIf="fname.invalid && (fname.dirty || fname.pristine) && this.submitted"
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="fname.errors.required">
-                    Firstname is required.<br/>
+                    {{ 'registration-form.fn.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="fname.errors.minlength">
-                    At least 3 characters long.<br/>
+                    {{ 'registration-form.fn.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="fname.errors.maxlength">
-                    Maximum 15 characters long.<br/>
+                    {{ 'registration-form.fn.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="fname.errors.forbiddenName">
-                    Should contain only<br/>
-                    A-Z, a-z and symbols "_", "-".
+                    {{ 'common.constraints.name.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.name.content' | translate | translateCut:1 }}
                 </ng-container>
             </div>
         </div>
         <div class="form-group mx-auto text-center">
-            <label for="lastname">Last Name :</label>
+            <label for="lastname">{{ 'registration-form.ln.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-align-justify"></i
-                    ></span>
+                    <i class="fa fa-align-justify"></i></span>
                 </div>
                 <input
                     [(ngModel)]="this.lastname"
@@ -167,30 +155,26 @@
                 />
             </div>
             <div
-                *ngIf="
-                lname.invalid &&
-                (lname.dirty || lname.pristine) &&
-                this.submitted
-            "
+                *ngIf="lname.invalid && (lname.dirty || lname.pristine) && this.submitted"
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="lname.errors.required">
-                    Lastname is required.<br/>
+                    {{ 'registration-form.ln.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="lname.errors.minlength">
-                    At least 3 characters long.<br/>
+                    {{ 'registration-form.ln.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="lname.errors.maxlength">
-                    Maximum 15 characters long.<br/>
+                    {{ 'registration-form.ln.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="lname.errors.forbiddenName">
-                    Should contain only<br/>
-                    A-Z, a-z, 0-9 and symbols "_", "-".
+                    {{ 'common.constraints.name.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.name.content' | translate | translateCut:1 }}
                 </ng-container>
             </div>
         </div>
         <div class="form-group mx-auto text-center">
-            <label for="password">Password :</label>
+            <label for="password">{{ 'registration-form.pw.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <!-- Change input type to be able to accept dynamic data -->
                 <input
@@ -220,31 +204,30 @@
                 </div>
             </div>
             <div
-                *ngIf="
-                pass.invalid && (pass.dirty || pass.pristine) && this.submitted
-            "
+                *ngIf="pass.invalid && (pass.dirty || pass.pristine) && this.submitted"
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="pass.errors.required">
-                    Password is required.<br/>
+                    {{ 'registration-form.pw.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.minlength">
-                    At least 6 characters long.<br/>
+                    {{ 'registration-form.pw.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.maxlength">
-                    Maximum 10 characters long.<br/>
+                    {{ 'registration-form.pw.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.pattern">
-                    Should contain<br/>
-                    at least one uppercase letter, <br/>
-                    one lowercase letter, one number <br/>
-                    and one special character from <strong>!"@#$%^&'*()_+,./</strong>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:1 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:2 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:3 }} <br/>
+                    <strong>!"@#$%^&'*()_+,./</strong>
                 </ng-container>
             </div>
         </div>
 
         <div class="form-group mx-auto text-center mb-pass">
-            <label for="passConfirm">Repeat password :</label>
+            <label for="passConfirm">{{ 'registration-form.pwconf.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <!-- Change input type to be able to accept dynamic data -->
                 <input
@@ -273,24 +256,21 @@
                 </div>
             </div>
             <div
-                *ngIf="
-                passConf.invalid &&
-                (passConf.dirty || passConf.pristine) &&
-                this.submitted
+                *ngIf="passConf.invalid && (passConf.dirty || passConf.pristine) && this.submitted
             "
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="passConf.errors.required">
-                    Password confirmation is required.<br/>
+                    {{ 'registration-form.pwconf.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="passConf.errors.minlength">
-                    At least 6 characters long.<br/>
+                    {{ 'registration-form.pwconf.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="passConf.errors.maxlength">
-                    Maximum 10 characters long.<br/>
+                    {{ 'registration-form.pwconf.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="passConf.errors.notEqual">
-                    Passwords didn't match.
+                    {{ 'registration-form.pwconf.notmatch' | translate }}
                 </ng-container>
             </div>
         </div>
@@ -327,11 +307,11 @@
                 name="terms"
                 type="checkbox"
             />
-            <label for="terms"> I agree to the &ensp;</label>
+            <label for="terms">
+                &nbsp;{{ 'registration-form.agree' | translate }} &ensp;</label>
         </span>
-            <a (click)="openTermsOfService(termsOfService)" class="pseudolink"
-            >&ensp;Terms of service</a
-            >
+            <a (click)="openTermsOfService(termsOfService)" class="pseudo-link"
+            >&ensp;{{ 'registration-form.terms' | translate }}</a>
         </div>
 
         <div class="button-box mx-auto">
@@ -342,7 +322,8 @@
                 class="btn btn-default full-width rounded-pill mt-4 submit-btn"
                 type="submit"
             >
-                Create account <span class="fas fa-check"></span>
+                {{ 'registration-form.create' | translate }}&nbsp;
+                <span class="fas fa-check"></span>
             </button>
         </div>
     </ng-container>
@@ -523,7 +504,7 @@
             class="btn btn-light"
             type="button"
         >
-            Close
+            {{ 'registration-form.close' | translate }}
         </button>
     </div>
 </ng-template>

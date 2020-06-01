@@ -1,0 +1,350 @@
+{
+    "access-denied": {
+        "home": "Merge la pagina principală",
+        "login": "Logare",
+        "msg": "Cererea nu a fost aplicată, deoarece îi lipsește datele de autentificare valide pentru autentificarea resursei țintă.",
+        "msg2": "Accesul interzis. Ați încercat să accesați o pagină pentru care nu aveți autorizație prealabilă.",
+        "msg3": "Ne pare rău, accesul dvs. este refuzat din motive de securitate ale serverului nostru și, de asemenea, ale datelor noastre sensibile.",
+        "msg4": "Vă rugăm să vă autentificați sau să vă înregistrați pentru a continua navigarea.",
+        "msg5": "Vă rugăm să reveniți la pagina principală pentru a continua navigarea.",
+        "subtitle": "Acces interzis",
+        "title": "Neautorizat"
+    },
+    "account-edit-modal-form": {
+        "fn": {
+            "maxlen": "Prenumele trebuie să aibă maximum 15 caractere.",
+            "minlen": "Prenumele trebuie să aibă cel puțin 3 caractere.",
+            "req": "Prenume este necesar.",
+            "text": "Nume :"
+        },
+        "ln": {
+            "maxlen": "Numele trebuie să aibă maximum 15 caractere.",
+            "minlen": "Numele trebuie să aibă cel puțin 3 caractere.",
+            "req": "Numele este obligatoriu.",
+            "text": "Numele de familie :"
+        },
+        "save": "Salvați",
+        "title": "Editarea profilului",
+        "uname": {
+            "maxlen": "Numele trebuie să aibă maximum 15 caractere.",
+            "minlen": "Numele trebuie să aibă cel puțin 5 caractere.",
+            "req": "Numele este necesar.",
+            "text": "Nume de utilizator :"
+        }
+    },
+    "account-form": {
+        "log-again": "Conectați-vă din nou.",
+        "login": {
+            "link": "Intrati",
+            "quest": "Deja înregistrat?"
+        },
+        "reg": {
+            "link": "Inregistreaza-te",
+            "quest": "Nu aveți încă un cont?",
+            "title": "Creeaza-ti contul"
+        }
+    },
+    "common": {
+        "constraints": {
+            "email.content": "Ar trebui să conțină @| A-Z, a-z, 0-9 simboluri și \"_\", \".\"",
+            "name.content": "Ar trebui să conțină doar |A-Z, a-z, 0-9 și simbolurile \"_\", \"-\".",
+            "pw.content": "Ar trebui să conțină |cel puțin o literă mare, |o literă minusculă, un număr |și un caracter special din",
+            "uname.content": "Ar trebui să conțină doar|A-Z, a-z, 0-9 simboluri și \"_\" sau \".\"."
+        }
+    },
+    "confirm-user": {
+        "err-msg": "Confirmarea a eșuat. Trimiteți din nou",
+        "msg1": "Vei fi redirecționat către",
+        "msg1-login": "logare",
+        "msg1-main": "principal",
+        "msg1-reset": "resetare parolă",
+        "msg2": "pagina in",
+        "msg3": "secunde",
+        "redir-msg1": "Vei fi redirecționat către pagina principală in",
+        "redir-msg2 seconds": "secunde",
+        "success-msg": "Confirmare de succes.",
+        "title-err": "Ceva n-a mers bine!",
+        "title-success": "Minunat!"
+    },
+    "forgot-pass-form": {
+        "email": {
+            "maxlen": "Lungime maximă de 35 de caractere.",
+            "minlen": "Lungime de cel puțin 8 caractere.",
+            "req": "E-mailul este necesar."
+        },
+        "send": "Trimite email",
+        "success-msg": "Solicitare de resetare a parolei primite. Verificați inboxul pentru a găsi linkul de resetare. Vei fi redirecționat către pagina principală în 5 secunde.",
+        "text": "Vă rugăm să introduceți adresa dvs. de e-mail. Vă vom trimite un e-mail pentru a vă reseta parola."
+    },
+    "form-fields-hint": {
+        "email": {
+            "content": "Ar trebui să conțină|, A-Z, simboluri a-z, 0-9 și \"_\", \".\"",
+            "maxlen": "Lungime maximă de 35 de caractere",
+            "minlen": "Lungime de cel puțin 8 caractere.",
+            "text": "E-mail"
+        },
+        "fn": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 3 caractere.",
+            "text": "Nume"
+        },
+        "ln": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 3 caractere.",
+            "text": "Numele de familie"
+        },
+        "pw": {
+            "content": "Ar trebui să conțină",
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "text": "Parola"
+        },
+        "req": "este necesară.",
+        "title": "Sugestie de formă",
+        "uname": {
+            "content": "Ar trebui să conțină numai",
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 5 caractere.",
+            "text": "Nume de utilizator"
+        }
+    },
+    "login-form": {
+        "fail-msg": "Autentificare esuata.",
+        "forgot": "Ați uitat parola?",
+        "log-with": "Logheaza-te cu",
+        "log-with-name": "nume de utilizator",
+        "login": "Logare",
+        "pw": {
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "req": "Parola este necesara.",
+            "text": "Parola :"
+        },
+        "remember": "Să-mi amintesc de mine",
+        "success-msg": "Autentificare reușită.",
+        "success-msg-social": "Conectarea socială a avut succes.",
+        "uname": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 5 caractere.",
+            "req": "Numele de utilizator este necesar.",
+            "text": "Nume de utilizator :"
+        }
+    },
+    "main": {
+        "lot": {
+            "title": "LOT"
+        },
+        "tooltips": {
+            "map": "Vizualizați parcarea {{parkingLotNumber}} pe hartă"
+        }
+    },
+    "menu": {
+        "layout": "Dispunerea parcării",
+        "login": "Logare",
+        "logout": "Deconecta",
+        "stats": "Statistici",
+        "title": "Meniul",
+        "tooltips": {
+            "close-menu": "Închideți meniul aplicației",
+            "dark-mode": "mod intunecat",
+            "lang": "Comutați limbajul aplicației",
+            "light-mode": "modul luminos",
+            "login": "Autentificare cont",
+            "logout": "Deconectare de la profilul utilizatorului",
+            "map": "Accesați harta parcării",
+            "menu": "Meniu aplicație",
+            "open-menu": "Deschideți meniul aplicației",
+            "profile": "Accesați profilul utilizatorului",
+            "stats": "Accesați statisticile de utilizare a parcărilor",
+            "switch": "Schimba cu",
+            "theme": "temă"
+        }
+    },
+    "modals": {
+        "cancel": "Anulare",
+        "deletion": "Ștergerea profilului",
+        "deletion-body": "<p><strong> Ești sigur că vrei să ștergi\n  <span class = \"text-primary\"> {{username}} </span> profil? </strong> </p>\n  <p> Toate informațiile asociate acestui profil de utilizator vor fi șterse definitiv.\n  <span class = \"text-danger\"> Această operație nu poate fi anulată. </span> </p>",
+        "logout": "Deconectare",
+        "logout-body": "Ești sigur că vrei să te deconectezi?",
+        "reservation": "Rezervare parcare",
+        "reservation-body": "<p><strong>Sunteți sigur că doriți să {{operation}} <span class=\"text-primary\">parcare</span> numărul <span class=\"text-primary\">{{parkingLotNumber}}</span>?</strong>\n</p>\n<p><span class=\"text-success\">Puteți {{hint}} această rezervare mai târziu.</span>\n</p>",
+        "reserve-action": "anulare",
+        "reserve-operation": "rezervă",
+        "submit": "Da",
+        "unreserve-action": "trimiteți din nou",
+        "unreserve-operation": "derezerva"
+    },
+    "no-connection": {
+        "msg": "Conexiunea dvs. pare să fie offline.",
+        "msg2": "Verificați conexiunea la internet și încercați din nou sau contactați asistența.",
+        "subtitle": "Imposibil de conectat cu serverul.",
+        "title": "Nici o conexiune",
+        "try": "Încearcă din nou"
+    },
+    "page-not-found": {
+        "body": "Pagina nu poate fi găsită",
+        "home": "Merge la pagina principală",
+        "msg": "Pagina pe care o căutați s-ar putea să fi fost eliminată, a fost modificată sau este temporar disponibilă.",
+        "title": "Oops!"
+    },
+    "parking-layout": {
+        "cant-connect": "Nu se poate conecta la server. Vă rugăm să contactați asistența",
+        "connect-lost": "Conexiunea a fost pierdută.",
+        "door": "Ieșire",
+        "first": "1-a",
+        "free": "liber",
+        "no-connection": "fară conexiune",
+        "no-data": "Nu au fost găsite date, vă rugăm să contactați asistența",
+        "occupied": "ocupat",
+        "reserved": "rezervat",
+        "second": "a 2-a",
+        "wait": "Vă rugăm să așteptați..."
+    },
+    "parking-lot-detail": {
+        "back": "Înapoi",
+        "cancel-reservation": "Anulați rezervarea",
+        "err": {
+            "msg": "Vă rugăm să faceți clic pe butonul Înapoi.",
+            "text": "Ceva n-a mers bine."
+        },
+        "fail-msg": "a eșuat.",
+        "name": "Nume",
+        "no-results": {
+            "msg": "Această parcare nu a fost încă folosită pentru această săptămână.",
+            "text": "Nici un rezultat gasit."
+        },
+        "reservation": "Rezervare",
+        "reserve-make": "Face",
+        "reserve-reset": "Restabili",
+        "reserve-text": "rezervare",
+        "since": "De la",
+        "stats": {
+            "date": "Data",
+            "lot": "Loc de parcare",
+            "time": "Timp",
+            "title": "Statistici de utilizare"
+        },
+        "status": "Stare",
+        "success-msg": "succes.",
+        "title": "Detalii despre parcare"
+    },
+    "registration-form": {
+        "agree": "Sunt de acord cu",
+        "close": "Închide",
+        "create": "Creează cont",
+        "email": {
+            "maxlen": "Lungime maximă de 35 de caractere",
+            "minlen": "Lungime de cel puțin 8 caractere.",
+            "req": "E-mailul este necesar.",
+            "text": "E-mail :"
+        },
+        "err-msg": "Inregistrare esuata.",
+        "fn": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 3 caractere.",
+            "req": "Prenume este necesar.",
+            "text": "Nume :"
+        },
+        "ln": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 3 caractere.",
+            "req": "Numele este obligatoriu.",
+            "text": "Numele de familie :"
+        },
+        "pw": {
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "req": "Parola este necesara.",
+            "text": "Parola :"
+        },
+        "pwconf": {
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "notmatch": "Parolele nu s-au potrivit.",
+            "req": "Confirmarea parolei este necesară.",
+            "text": "Repeta parola :"
+        },
+        "redir-msg": "După 5 secunde veți fi redirecționat către pagina principală",
+        "reg": {
+            "btn": "E-mail",
+            "with": "Inregistreaza-te cu"
+        },
+        "success-msg": "Inregistrare realizata. V-am trimis mail pentru a vă confirma profilul.",
+        "success-msg-social": "Inregistrare realizata. Vă puteți autentifica cu profilul social.",
+        "success-msg-social-mail": "Inregistrare realizata. V-am trimis mail pentru a vă confirma profilul social.",
+        "terms": "Termenii serviciului",
+        "uname": {
+            "maxlen": "Lungime maximă de 15 caractere",
+            "minlen": "Lungime de cel puțin 5 caractere.",
+            "req": "Numele de utilizator este necesar.",
+            "text": "Nume de utilizator :"
+        }
+    },
+    "reset-password": {
+        "err-msg": "Resetarea a eșuat.",
+        "pw": {
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "req": "Parola este necesara.",
+            "text": "Parola :"
+        },
+        "pwconf": {
+            "maxlen": "Lungime maximă de 10 caractere.",
+            "minlen": "Lungime de cel puțin 6 caractere.",
+            "notmatch": "Parolele nu s-au potrivit.",
+            "req": "Confirmarea parolei este necesară.",
+            "text": "Repeta parola :"
+        },
+        "reset": "Resetează parola",
+        "success-msg": "Parola resetată cu succes. Acum puteți să vă autentificați cu noile acreditări."
+    },
+    "separator": "sau",
+    "social-buttons": {
+        "show": "Afișa mai multe"
+    },
+    "social-connection-modal": {
+        "cancel": "Anulare",
+        "connect": "Conectați-vă rețelele sociale",
+        "err-msg": "Conectarea furnizorului social a eșuat."
+    },
+    "statistics": {
+        "all": "Toate",
+        "date": "Data",
+        "end": "Încheiere",
+        "lot": {
+            "id": "№ de parcare",
+            "title": "Loc de parcare"
+        },
+        "no-results": {
+            "msg": "Nu pare nimic pentru această perioadă calendaristică ceea ce căutați.",
+            "text": "Nici un rezultat gasit."
+        },
+        "reset": "Resetare",
+        "start": "Început",
+        "status": "Stare",
+        "time": "Timp"
+    },
+    "user-profile": {
+        "back": "Înapoi",
+        "connect": "Conectați-vă rețelele sociale",
+        "del": "Șterge",
+        "del-success": "Profilul a fost șters cu succes.",
+        "edit": "Editați",
+        "err": {
+            "msg": "Vă rugăm să faceți clic pe butonul Înapoi.",
+            "text": "Ceva n-a mers bine."
+        },
+        "err-msg": "Ceva n-a mers bine.",
+        "fn": "Nume",
+        "ln": "Numele de familie",
+        "status": "stare",
+        "success-msg": "Profilul a fost actualizat cu succes.",
+        "tooltips": {
+            "acc-photo": "Fotografia contului",
+            "connect": "Conectați autentificarea cu serviciile sociale",
+            "del": "Ștergeți definitiv contul de utilizator",
+            "edit": "Editați informațiile utilizatorului",
+            "uname": "Nume de utilizator"
+        }
+    }
+}

@@ -1,24 +1,21 @@
 <div class="" id="myModal">
     <div class="modal-dialog modal-confirm">
         <div class="modal-content shadow">
-            <div class="modal-header">
+            <div class="text-center m-3">
                 <ng-container *ngIf="confirmationSuccess">
                     <div class="icon-box icon-box-success">
-                        <!--[if !IE]> --><i class="material-icons">done</i>
-                        <!-- <![endif]-->
-                        <!--[if lt IE 9
-                            ]><i class="material-icons">&#xE876;</i><!
-                        [endif]-->
+                        <i class="material-icons">&#xE876;</i>
                     </div>
-                    <h4 class="modal-title text-center align-content-center">Awesome!</h4>
+                    <h4 class="text-center">
+                        {{ 'confirm-user.title-success' | translate }}
+                    </h4>
                 </ng-container>
-
                 <ng-container *ngIf="!confirmationSuccess">
                     <div class="icon-box icon-box-error">
                         <i class="material-icons">&#xe5cd;</i>
                     </div>
-                    <h4 class="modal-title text-center">
-                        Something went wrong!
+                    <h4 class="text-center">
+                        {{ 'confirm-user.title-err' | translate }}
                     </h4>
                 </ng-container>
             </div>
@@ -26,20 +23,24 @@
                 <ng-container *ngIf="confirmationSuccess">
                     <p class="text-center">{{ confirmationMessage }}</p>
                     <p class="text-center">
-                        You will be redirected to the
+                        {{ 'confirm-user.msg1' | translate }}
                         {{
-                      this.formAction === formActions.login ? 'login' :
-                        this.formAction === formActions.reset ? 'password reset' : 'main'
+                      this.formAction === formActions.login ? this.translate.instant('confirm-user.msg1-login') :
+                        this.formAction === formActions.reset ? this.translate.instant('confirm-user.msg1-reset') :
+                          this.translate.instant('confirm-user.msg1-main')
                         }}
-                        page in <strong>{{ this.countdownCounter }}</strong> seconds
+                        {{ 'confirm-user.msg2' | translate }}
+                        <strong>{{ this.countdownCounter }}</strong>
+                        {{ 'confirm-user.msg3 ' | translate }}
                     </p>
                 </ng-container>
 
                 <ng-container *ngIf="!confirmationSuccess && errorMessage">
                     <p class="text-center">{{ errorMessage }}</p>
                     <p class="text-center">
-                        You will be redirected to the main page in
-                        <strong>{{ this.countdownCounter }}</strong> seconds
+                        {{ 'confirm-user.redir-msg1' | translate }}
+                        <strong>{{ this.countdownCounter }}</strong>
+                        {{ 'confirm-user.redir-msg2' | translate }}
                     </p>
                 </ng-container>
             </div>

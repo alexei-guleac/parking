@@ -33,6 +33,7 @@ import java.util.Collection;
 @PropertySources({@PropertySource("classpath:application.properties"),
     // database configuration file
     @PropertySource("classpath:postgresql-config-${spring.db-properties.prefix}.properties"),
+    @PropertySource("classpath:localization-i18n.properties"),
     @PropertySource("classpath:documentation.properties")})
 public class ParkingApplication {
 

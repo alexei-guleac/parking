@@ -4,7 +4,9 @@ import { AuthenticationService } from '@app/services/account/auth.service';
 import { ModalService } from '@app/services/modals/modal.service';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { ThemeService } from '@app/services/theme.service';
-import { capitalize } from '@app/utils/string-utils';
+import { capitalizeFirstLetter } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
+import { localization } from '../../../environments/localization';
 
 
 /**
@@ -22,14 +24,19 @@ export class MenuComponent implements AfterViewInit {
     @Output()
     goBackEvent = new EventEmitter();
 
-    appMenuTooltip = 'Open app menu';
+    appMenuTooltip = '';
+
+    locales = localization.locales;
+
+    selectedLanguage: string;
 
     constructor(
         private authenticationService: AuthenticationService,
         private navigation: NavigationService,
         private modalService: ModalService,
         private navigationService: NavigationService,
-        private themeService: ThemeService
+        private themeService: ThemeService,
+        private translate: TranslateService
     ) {
     }
 
@@ -38,7 +45,9 @@ export class MenuComponent implements AfterViewInit {
      * Define an ngAfterViewInit() method to handle any additional initialization tasks
      */
     ngAfterViewInit(): void {
+        // this.appMenuTooltip = this.translate.instant('menu.tooltips.open-menu');
         this.themeService.initThemeToogle();
+        this.initLanguageSelect();
     }
 
     /*
@@ -48,12 +57,12 @@ export class MenuComponent implements AfterViewInit {
     /**
      * Change application menu button tooltip text depends on close/open state
      */
-    changeTooltip() {
+    changeMenuTooltip() {
         if (
             document.querySelector('#navbarNav').classList.contains('show')) {
-            this.appMenuTooltip = 'Open app menu';
+            this.appMenuTooltip = this.translate.instant('menu.tooltips.open-menu');
         } else {
-            this.appMenuTooltip = 'Close app menu';
+            this.appMenuTooltip = this.translate.instant('menu.tooltips.close-menu');
         }
     }
 
@@ -96,7 +105,7 @@ export class MenuComponent implements AfterViewInit {
      * @param field - target string field
      */
     private capitalize(field: string) {
-        return capitalize(field);
+        return capitalizeFirstLetter(field);
     }
 
     /**
@@ -120,8 +129,34 @@ export class MenuComponent implements AfterViewInit {
      */
     private logout() {
         this.authenticationService.fullLogout();
-        this.navigationService.navigateToMainWithReload();
+        this.navigationService.navigateToMain();
         // for refreshing data
         this.goBackEvent.emit();
+    }
+
+    /**
+     * Setup language select in accordance with browser or user selected language
+     * This also fix angular first empty option in select
+     */
+    private initLanguageSelect() {
+        setTimeout(() => {
+            const menu = document.querySelector('.form-control.select');
+            // tslint:disable-next-line:forin
+            for (let i = 0; i < menu.children.length; i++) {
+                if (menu.children.item(i).textContent.trim() === this.translate.currentLang) {
+                    menu[i].selected = true;
+                    break;
+                }
+            }
+        }, 1000);
+    };
+
+    /**
+     * Switch application language based on user choice
+     */
+    private switchLanguage() {
+        if (this.selectedLanguage) {
+            this.translate.use(this.selectedLanguage);
+        }
     }
 }

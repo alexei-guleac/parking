@@ -1,5 +1,6 @@
 package com.isd.parking.web.rest.controllers.account;
 
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.models.AccountOperation;
 import com.isd.parking.models.ConfirmationRecord;
 import com.isd.parking.models.users.User;
@@ -10,6 +11,7 @@ import com.isd.parking.services.implementations.EmailSenderServiceImpl;
 import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
 import com.isd.parking.web.rest.payload.DeviceInfo;
+import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.register.RegistrationRequest;
 import com.isd.parking.web.rest.payload.account.register.RegistrationSuccessResponse;
 import com.isd.parking.web.rest.payload.account.register.SocialRegisterRequest;
@@ -17,14 +19,16 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.isd.parking.utilities.AppStringUtils.generateCommonLangPassword;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -50,15 +54,23 @@ public class RegistrationController {
 
     private final UserMapper userMapper;
 
+    private final SmartLocaleResolver localeResolver;
+
+    private final ResponseEntityFactory responseEntityFactory;
+
     @Autowired
     public RegistrationController(UserServiceImpl userService,
                                   ConfirmationServiceImpl confirmationTokenService,
                                   EmailSenderServiceImpl emailSenderService,
-                                  UserMapper userMapper) {
+                                  UserMapper userMapper,
+                                  SmartLocaleResolver localeResolver,
+                                  ResponseEntityFactory responseEntityFactory) {
         this.userService = userService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
         this.userMapper = userMapper;
+        this.localeResolver = localeResolver;
+        this.responseEntityFactory = responseEntityFactory;
     }
 
     /**
@@ -80,19 +92,19 @@ public class RegistrationController {
             required = true, dataType = "RegistrationRequest")
     )
     @RequestMapping(method = POST)
-    public @NotNull ResponseEntity<?> registration(@RequestBody @NotNull RegistrationRequest request) {
-
+    public @NotNull ResponseEntity<?> registration(@RequestBody @NotNull RegistrationRequest request,
+                                                   @RequestHeader Map<String, String> headers) {
         final User user = request.getUser();
         final String username = user.getUsername();
         final String email = user.getEmail();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         //verify if user exists in DB and throw error, else create
         boolean userExists = userService.searchUser(username);
         boolean emailExists = userService.searchUsersByEmail(email);
 
         if (userExists) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account with this username already exists");
+            return responseEntityFactory.usernameExists(locale);
         } else if (emailExists) {
             final UserLdap existedUser = userService.getUserByEmail(email);
 
@@ -104,20 +116,18 @@ public class RegistrationController {
                 final UserLdap newUser = userMapper.userToUserLdap(user);
                 userService.deleteUser(newUser);
 
-                return processUserCreation(newUser, request.getDeviceInfo());
+                return processUserCreation(newUser, request.getDeviceInfo(), locale);
             }
             // if user exists and account confirmation link is valid
             if (existedUser.accountConfirmationValid()) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Account with this email already exists and waiting for confirmation");
+                return responseEntityFactory.emailExistsWaiting(locale);
             }
 
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account with this email already exists");
+            return responseEntityFactory.emailExists(locale);
         } else {
             // create new user
             final UserLdap newUser = userMapper.userToUserLdap(user);
-            return processUserCreation(newUser, request.getDeviceInfo());
+            return processUserCreation(newUser, request.getDeviceInfo(), locale);
         }
     }
 
@@ -140,18 +150,18 @@ public class RegistrationController {
             required = true, dataType = "SocialRegisterRequest")
     )
     @RequestMapping(ApiEndpoints.socialLogin)
-    public @NotNull ResponseEntity<?> socialRegistration(@RequestBody @NotNull SocialRegisterRequest request) {
-
+    public @NotNull ResponseEntity<?> socialRegistration(@RequestBody @NotNull SocialRegisterRequest request,
+                                                         @RequestHeader Map<String, String> headers) {
         final User user = request.getUser();
         final String email = user.getEmail();
         final String id = request.getId();
         final String provider = request.getSocialProvider();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         //verify if user exists in db and throw error, else create
         final UserLdap userFound = userService.getUserBySocialId(id, provider);
         if (userFound != null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Account with this social id already exists");
+            return responseEntityFactory.socialIdExists(locale);
         } else {
             if (email != null) {
                 final UserLdap existedUser = userService.getUserByEmail(email);
@@ -164,22 +174,20 @@ public class RegistrationController {
                         newUser.setUserPassword(generateCommonLangPassword());
 
                         userService.deleteUser(newUser);
-                        return processUserCreation(newUser, request.getDeviceInfo());
+                        return processUserCreation(newUser, request.getDeviceInfo(), locale);
                     }
                     if (existedUser.accountConfirmationValid()) {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("Social account with this email already exists and waiting for confirmation");
+                        return responseEntityFactory.socialExistsWaiting(locale);
                     }
 
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Social account with this email already exists");
+                    return responseEntityFactory.socialEmailExists(locale);
                 }
             }
             // else create new user
             final UserLdap newUser = userMapper.userToUserLdap(user);
             newUser.prepareSocialUser(id, provider);
 
-            return processUserCreation(newUser, request.getDeviceInfo());
+            return processUserCreation(newUser, request.getDeviceInfo(), locale);
         }
     }
 
@@ -191,13 +199,12 @@ public class RegistrationController {
      * @param deviceInfo - user device information for region targeting
      * @return HTTP response with registration error or success details
      */
-    private @NotNull ResponseEntity<?> processUserCreation(@NotNull UserLdap newUser, DeviceInfo deviceInfo) {
+    private @NotNull ResponseEntity<?> processUserCreation(@NotNull UserLdap newUser, DeviceInfo deviceInfo, Locale locale) {
         userService.createUser(newUser);
 
         final UserLdap createdUser = userService.findById(newUser.getUid());
         if (createdUser == null) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User was not created");
+            return responseEntityFactory.userNotCreated(locale);
         } else {
             if (createdUser.getEmail() != null) {
                 createConfirmation(createdUser, deviceInfo);

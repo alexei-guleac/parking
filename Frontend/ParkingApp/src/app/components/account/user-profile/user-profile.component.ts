@@ -6,7 +6,8 @@ import { handleHttpErrorResponse } from '@app/services/helpers/global-http-inter
 import { ModalService } from '@app/services/modals/modal.service';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { UserService } from '@app/services/users/user.service';
-import { capitalize } from '@app/utils/string-utils';
+import { capitalizeFirstLetter } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 
 
 /**
@@ -42,7 +43,8 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
         private userService: UserService,
         private modalService: ModalService,
         private authenticationService: AuthenticationService,
-        private navigationService: NavigationService
+        private navigationService: NavigationService,
+        private translate: TranslateService
     ) {
     }
 
@@ -103,7 +105,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
      * @param field - target string field
      */
     private capitalize(field: string) {
-        return capitalize(field);
+        return capitalizeFirstLetter(field);
     }
 
     /**
@@ -224,7 +226,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             if (response.success) {
                 this.isActionFailed = false;
                 this.isActionSuccess = true;
-                this.successMessage = 'Profile successfully updated.';
+                this.successMessage = this.translate.instant('user-profile.success-msg');
 
                 // set new user name
                 if (this.user.username !== this.usernameForUpdate) {
@@ -249,7 +251,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             this.isActionFailed = true;
             this.isActionSuccess = false;
 
-            this.errorMessage = 'Something went wrong';
+            this.errorMessage = this.translate.instant('user-profile.err-msg');
             handleHttpErrorResponse(error, this);
         };
     }
@@ -330,7 +332,7 @@ export class UserProfileComponent implements OnInit, ComponentWithErrorMsg {
             if (response.success) {
                 this.isActionFailed = false;
                 this.isActionSuccess = true;
-                this.successMessage = 'Profile successfully deleted.';
+                this.successMessage = this.translate.instant('user-profile.del-success');
 
                 setTimeout(() => {
                     this.logout();

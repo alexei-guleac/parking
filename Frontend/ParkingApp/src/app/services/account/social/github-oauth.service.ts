@@ -82,7 +82,7 @@ export class GithubOauthService {
      */
     processGithubOauthRequest(code: string): Observable<any> {
         const url = environment.restUrl + api.gitOAuth;
-        console.log('code ' + code);
+        // console.log('code ' + code);
 
         return this.http.postJsonRequest<any>(url, {
             code
@@ -96,7 +96,7 @@ export class GithubOauthService {
      */
     processGithubUserDataRequest(accessToken: string): Observable<any> {
         const url = `${this.API_URL}?access_token=${accessToken}`;
-        console.log('accessToken ' + accessToken);
+        // console.log('accessToken ' + accessToken);
 
         return this.http.getJsonRequest<any>(url);
     }
@@ -116,9 +116,7 @@ export class GithubOauthService {
     private handleError() {
         return (error) => {
             if (error instanceof HttpErrorResponse) {
-                console.log(
-                    error
-                );
+                // console.log(error);
             }
         };
     }

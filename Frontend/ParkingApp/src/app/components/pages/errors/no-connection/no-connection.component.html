@@ -6,28 +6,26 @@
     >
         <div class="noconnect-500 mt-3">
             <div class="no-connection">
-                <h1>No connection</h1>
+                <h1>{{ 'no-connection.title' | translate }}</h1>
             </div>
             <div class="unable-to-connect">
-                <h2>Unable to connect with the server.</h2>
+                <h2>{{ 'no-connection.subtitle' | translate }}</h2>
             </div>
         </div>
         <div class="connection-message mx-auto text-center m-1 px-3">
-            Your connection appears to be offline. <br/>
-            Please check your internet connection and try again or contact
-            support.
+            {{ 'no-connection.msg' | translate }} <br/>
+            {{ 'no-connection.msg2' | translate }}
         </div>
 
         <div class="w-100">
             <a class="m-4 mx-auto text-center align-content-center" href="/"
-            >Try again</a
-            >
+            >{{ 'no-connection.try' | translate }}</a>
         </div>
 
         <img
             alt="no_connection_image"
             class="no-connection-img mx-auto text-center align-content-center mt-2 mb-5"
-            src="../../../../assets/img/error-pages/no-connection.png"
+            src="../../../../../assets/img/error-pages/no-connection.png"
         />
     </div>
 </div>

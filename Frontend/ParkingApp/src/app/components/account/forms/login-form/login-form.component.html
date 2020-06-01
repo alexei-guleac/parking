@@ -12,25 +12,25 @@
     </div>
 
     <button
-        (click)="showForm()"
         *ngIf="!showLoginForm"
+        (click)="showForm()"
         class="btn-show-form mt-4 mx-auto text-center"
     >
         <span class="mx-auto text-center align-items-center align-content-center">
-            Login with <strong>username</strong></span>
+            {{ 'login-form.log-with' | translate }}
+            <strong>{{ 'login-form.log-with-name' | translate }}</strong></span>
     </button>
     <ng-container *ngIf="showLoginForm">
         <div class="form-group mx-auto text-center">
-            <label for="username">User Name :</label>
+            <label for="username">{{ 'login-form.uname.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-user"></i
-                    ></span>
+                    <i class="fa fa-user"></i></span>
                 </div>
                 <input
                     [(ngModel)]="this.username"
-                    class="form-control tett"
+                    class="form-control"
                     formControlName="username"
                     id="username"
                     minlength="5"
@@ -45,22 +45,22 @@
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="name.errors.required">
-                    Username is required.<br/>
+                    {{ 'login-form.uname.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.minlength">
-                    At least 5 characters long.<br/>
+                    {{ 'login-form.uname.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.maxlength">
-                    Maximum 15 characters long.<br/>
+                    {{ 'login-form.uname.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="name.errors.forbiddenName">
-                    Should contain only<br/>
-                    A-Z, a-z, 0-9 symbols and "_" or ".".
+                    {{ 'common.constraints.uname.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.uname.content' | translate | translateCut:1 }}
                 </ng-container>
             </div>
         </div>
         <div class="form-group mx-auto text-center mb-pass">
-            <label for="password">Password :</label>
+            <label for="password">{{ 'login-form.pw.text' | translate }}</label>
             <div class="input-group mx-auto text-center w-20rem">
                 <!-- Change input type to be able to accept dynamic data -->
                 <input
@@ -84,8 +84,7 @@
                             'fas fa-eye-slash': !fieldTextTypePass,
                             'fas fa-eye': fieldTextTypePass
                         }"
-                        class="fa"
-                    ></i>
+                        class="fa"></i>
                 </span>
                 </div>
             </div>
@@ -94,19 +93,20 @@
                 class="alert alert-danger font-error mx-auto text-center w-20rem"
             >
                 <ng-container *ngIf="pass.errors.required">
-                    Password is required.<br/>
+                    {{ 'login-form.pw.req' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.minlength">
-                    At least 6 characters long.<br/>
+                    {{ 'login-form.pw.minlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.maxlength">
-                    Maximum 10 characters long.<br/>
+                    {{ 'login-form.pw.maxlen' | translate }}<br/>
                 </ng-container>
                 <ng-container *ngIf="pass.errors.pattern">
-                    Should contain<br/>
-                    at least one uppercase letter, <br/>
-                    one lowercase letter, one number <br/>
-                    and one special character from <strong>!"@#$%^&'*()_+,./</strong>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:0 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:1 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:2 }} <br/>
+                    {{ 'common.constraints.pw.content' | translate | translateCut:3 }} <br/>
+                    <strong>!"@#$%^&'*()_+,./</strong>
                 </ng-container>
             </div>
         </div>
@@ -135,11 +135,10 @@
                 type="checkbox"
                 value="yes"
             />
-            <label for="rememberMe"> Remember me</label>
+            <label for="rememberMe">&nbsp;{{ 'login-form.remember' | translate }}</label>
         </div>
-        <span (click)="navigateToForgotPass()" class="pull-right pseudolink"
-        >Forgot Password?</span
-        >
+        <span (click)="navigateToForgotPass()" class="pull-right pseudo-link"
+        >{{ 'login-form.forgot' | translate }}</span>
     </div>
     <ng-container *ngIf="showLoginForm">
         <div class="button-box mx-auto">
@@ -149,7 +148,7 @@
                 class="btn btn-default submit-btn full-width form-group mx-auto text-center rounded-pill mt-3 mb-n2"
                 type="submit"
             >
-                Login <span class="fas fa-check"></span>
+                {{ 'login-form.login' | translate }} <span class="fas fa-check"></span>
             </button>
         </div>
     </ng-container>
@@ -157,8 +156,6 @@
     <!--<div class="example-container mat-elevation-z8">
         <mat-card class="example-card">
             <mat-card-header>
-                <mat-card-title><h2>Welcome <span *ngIf="loggedIn===true">{{user.firstName}} {{user.lastName}}, </span>
-                    to Angular 8 Application</h2></mat-card-title>
                 <mat-card-subtitle>
                     <button (click)="socialSignIn()" *ngIf="loggedIn===false" color="primary" mat-flat-button
                             type="button">Sign In With Facebook
@@ -175,13 +172,6 @@
                 <mat-card-subtitle>Full Name: {{user.firstName}} {{user.lastName}}</mat-card-subtitle>
             </mat-card-header>
             <img [src]="user.photoUrl" alt="My Facebook Photo" mat-card-image>
-            <mat-card-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim id est laborum.
-            </mat-card-content>
         </mat-card>
     </div>-->
 </form>

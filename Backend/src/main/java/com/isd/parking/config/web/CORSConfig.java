@@ -37,7 +37,7 @@ public class CORSConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@NotNull CorsRegistry registry) {
         log.info(grTxt("Call from front application"));
-        // log.info(grTxt(digitalOceanHostUrl));
+        // log.info(grTxt(frontUrl));
         registry.addMapping("/**")
             .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
             .allowedOrigins(frontUrl)

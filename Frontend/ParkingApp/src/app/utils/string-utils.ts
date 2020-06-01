@@ -24,7 +24,7 @@ export function isNonEmptyStrings(...strings) {
  * Capitalize the first letter ща the string
  * @param str - target string field
  */
-export function capitalize(str: string) {
+export function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 

@@ -7,6 +7,7 @@ import { actions } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
 import { DeviceInfoStorage } from '@app/utils/device-fingerprint';
 import { containsString } from '@app/utils/string-utils';
+import { TranslateService } from '@ngx-translate/core';
 
 
 /**
@@ -43,7 +44,8 @@ export class AccountFormComponent {
     constructor(
         private navigationService: NavigationService,
         private socialUserStorageService: SocialUserStorageService,
-        private modalService: ModalService
+        private modalService: ModalService,
+        private translate: TranslateService
     ) {
         this.handleRedirectFromErrorInterceptor();
         this.subscribeUrlParams();
@@ -113,7 +115,7 @@ export class AccountFormComponent {
                 this.isLoginFailed = true;
                 // if message contains 'token', implied that token was expired or malformed
                 if (containsString(errorMsg, 'token')) {
-                    this.errorMessage = errorMsg + '. \nLog in again.';
+                    this.errorMessage = errorMsg + '. \n' + this.translate.instant('account-form.log-again');
                 } else {
                     this.errorMessage = errorMsg;
                 }

@@ -123,7 +123,7 @@ public class MainAppFrame extends MaterialFrame {
 
         //---- languageList ----
         languageList.addActionListener(this::languageChanged);
-        for (String s : Locales.languages.keySet()) {
+        for (String s : Locales.LOCALE_MAP.keySet()) {
             languageList.addItem(s);
         }
         languageList.setMaximumSize(new Dimension(100, 20));
@@ -349,7 +349,7 @@ public class MainAppFrame extends MaterialFrame {
     }
 
     private void languageChanged(ActionEvent actionEvent) {
-        final Locale locale = Locales.languages.get(
+        final Locale locale = Locales.LOCALE_MAP.get(
                 Objects.requireNonNull(languageList.getSelectedItem()).toString());
         updateLanguage(locale);
     }

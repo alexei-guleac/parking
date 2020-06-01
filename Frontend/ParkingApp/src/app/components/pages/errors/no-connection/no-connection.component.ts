@@ -10,7 +10,4 @@ import { Component } from '@angular/core';
     styleUrls: ['./no-connection.component.scss']
 })
 export class NoConnectionComponent {
-
-    constructor() {
-    }
 }

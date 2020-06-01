@@ -1,0 +1,38 @@
+<div class="error col-12 mx-auto text-center align-content-center align-items-center">
+    <div class="forbidden mx-auto text-center align-content-center align-items-center">
+        <div class="forbidden-401-403 mt-3">
+            <div class="forbidden">
+                <h1 *ngIf="unauthorized">{{ 'access-denied.title' | translate }}</h1>
+                <h1 *ngIf="forbidden">{{ 'access-denied.subtitle' | translate }}</h1>
+            </div>
+            <div class="access-denied">
+                <h2 *ngIf="unauthorized">
+                    401 - {{ 'access-denied.msg' | translate }}
+                </h2>
+                <h2 *ngIf="forbidden">
+                    403 - {{ 'access-denied.msg2' | translate }}
+                </h2>
+            </div>
+        </div>
+
+        <div class="message mx-auto text-center m-1 px-3">
+            {{ 'access-denied.msg3' | translate }}
+            <p *ngIf="unauthorized">{{ 'access-denied.msg4' | translate }}</p>
+            <p *ngIf="forbidden">{{ 'access-denied.msg5' | translate }}</p>
+        </div>
+
+        <div class="w-100">
+            <a class="m-4 mx-auto text-center align-content-center" href="/">
+                <ng-container *ngIf="unauthorized">{{ 'access-denied.login' | translate }}</ng-container>
+                <ng-container *ngIf="forbidden">{{ 'access-denied.home' | translate }}</ng-container>
+            </a>
+        </div>
+
+        <img *ngIf="unauthorized" alt="unauthorized_access"
+             class="unauthorized-img mx-auto text-center align-content-center mt-2 mb-5"
+             src="../../../../../assets/img/error-pages/unauthorized.png">
+        <img *ngIf="forbidden" alt="forbidden-image"
+             class="forbidden-img mx-auto text-center align-content-center mt-2 mb-5"
+             src="../../../../../assets/img/error-pages/forbidden.png">
+    </div>
+</div>

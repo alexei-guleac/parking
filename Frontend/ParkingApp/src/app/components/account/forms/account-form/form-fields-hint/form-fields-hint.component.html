@@ -1,5 +1,7 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Form hint</h4>
+    <h4 class="modal-title" id="modal-title">
+        {{ 'form-fields-hint.title' | translate }}
+    </h4>
     <button
         (click)="activeModal.dismiss('Cross click')"
         aria-describedby="modal-title"
@@ -12,55 +14,71 @@
 </div>
 <div class="modal-body">
     <p>
-        <strong>Username</strong> is required.
+        <strong>{{ 'form-fields-hint.uname.text' | translate }}</strong>
+        {{ 'form-fields-hint.req' | translate }}
     </p>
     <ol>
-        <li>At least 5 characters long.</li>
-        <li>Maximum 15 characters long.</li>
-        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+        <li>{{ 'form-fields-hint.uname.minlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.uname.maxlen' | translate }}</li>
+        <li>{{ 'common.constraints.uname.content' | translate | translateCut:0 }}
+            <br/> <i>{{ 'common.constraints.uname.content' | translate | translateCut:1 }}</i>.
+        </li>
     </ol>
     <br/>
 
     <p>
-        <strong>Email</strong> is required.
+        <strong>{{ 'form-fields-hint.email.text' | translate }}</strong>
+        {{ 'form-fields-hint.req' | translate }}
     </p>
     <ol>
-        <li>At least 8 characters long.</li>
-        <li>Maximum 35 characters long.</li>
-        <li>Should contain <strong>@</strong>,<i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+        <li>{{ 'form-fields-hint.email.minlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.email.maxlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.email.content' | translate | translateCut:0}}
+            <strong> @ </strong><i>{{ 'form-fields-hint.email.content' | translate | translateCut:1}}</i>
+        </li>
     </ol>
     <br/>
 
     <p>
-        <strong>Firstname</strong> is required.
+        <strong>{{ 'form-fields-hint.fn.text' | translate }}</strong>
+        {{ 'form-fields-hint.req' | translate }}
     </p>
     <ol>
-        <li>At least 3 characters long.</li>
-        <li>Maximum 15 characters long.</li>
-        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+        <li>{{ 'form-fields-hint.fn.minlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.fn.maxlen' | translate }}</li>
+        <li>{{ 'common.constraints.name.content' | translate | translateCut:0 }}
+            <br/> <i>{{ 'common.constraints.name.content' | translate | translateCut:1 }}</i>
+        </li>
     </ol>
     <br/>
 
     <p>
-        <strong>Lastname</strong> is required.
+        <strong>{{ 'form-fields-hint.ln.text' | translate }}</strong>
+        {{ 'form-fields-hint.req' | translate }}
     </p>
     <ol>
-        <li>At least 3 characters long.</li>
-        <li>Maximum 15 characters long.</li>
-        <li>Should contain only <i>A-Z, a-z, 0-9 symbols and "_" or "."</i></li>
+        <li>{{ 'form-fields-hint.ln.minlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.ln.maxlen' | translate }}</li>
+        <li>{{ 'common.constraints.name.content' | translate | translateCut:0 }}
+            <br/> <i>{{ 'common.constraints.name.content' | translate | translateCut:1 }}</i>
+        </li>
     </ol>
     <br/>
 
     <p>
-        <strong>Password</strong> is required.
+        <strong>{{ 'form-fields-hint.pw.text' | translate }}</strong>
+        {{ 'form-fields-hint.req' | translate }}
     </p>
     <ol>
-        <li>At least 6 characters long.</li>
-        <li>Maximum 10 characters long.</li>
-        <li>Should contain<br/>
-            at least one uppercase letter, <br/>
-            one lowercase letter, one number <br/>
-            and one special character from <strong>!"@#$%^&'*()_+,./</strong></li>
+        <li>{{ 'form-fields-hint.pw.minlen' | translate }}</li>
+        <li>{{ 'form-fields-hint.pw.maxlen' | translate }}</li>
+        <li>
+            {{ 'common.constraints.pw.content' | translate | translateCut:0 }} <br/>
+            {{ 'common.constraints.pw.content' | translate | translateCut:1 }} <br/>
+            {{ 'common.constraints.pw.content' | translate | translateCut:2 }} <br/>
+            {{ 'common.constraints.pw.content' | translate | translateCut:3 }} <br/>
+            <strong>!"@#$%^&'*()_+,./</strong>
+        </li>
     </ol>
     <br/>
 </div>

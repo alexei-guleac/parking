@@ -6,9 +6,12 @@ import java.util.Map;
 
 
 public class Locales {
-    public static final Map<String, Locale> languages = new HashMap<>() {{
-        put("ru", new Locale("ru", "RU"));
-        put("ro", new Locale("ro", "RO"));
-        put("en", new Locale("en", "EN"));
+
+    public static final String[] languages = {"ru", "ro", "en"};
+
+    public static final Map<String, Locale> LOCALE_MAP = new HashMap<>() {{
+        put(languages[0], new Locale(languages[0], languages[0].toUpperCase()));
+        put(languages[1], new Locale(languages[1], languages[1].toUpperCase()));
+        put(languages[2], new Locale(languages[2], "US"));
     }};
 }

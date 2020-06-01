@@ -164,7 +164,7 @@ objectClass: groupOfURLs
 cn: ADMIN
 memberURL: ldap:///ou=people,dc=isd,dc=com??sub?user_role=ADMIN
 
-dn: uid=user35,ou=people,dc=isd,dc=com
+dn: uid=sampleUser,ou=people,dc=isd,dc=com
 objectClass: top
 objectClass: person
 objectClass: organizationalPerson
@@ -175,9 +175,9 @@ email: test_email@gmail.com
 memberOf: cn=developers,ou=groups
 memberOf: cn=ADMIN,ou=roles
 user_role: ADMIN
-uid: user35
+uid: sampleUser
 userPassword: {customBC}$2a$12$lIGeCCVi1fkIYIZA9ly6gejKB9iIwptc.hbsIYUNXKNrKCB0TH4oa
 creationDate: 2020-03-21T14:04:42.762679600
-updatedAt: 2020-05-13T22:51:21.410146300
+updatedAt: 2020-05-31T21:02:11.409593800
 passwordUpdatedAt: 2020-03-21T14:04:42.762679600
 

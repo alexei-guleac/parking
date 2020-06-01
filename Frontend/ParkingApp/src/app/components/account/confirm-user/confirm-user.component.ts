@@ -5,6 +5,7 @@ import { AuthenticationService } from '@app/services/account/auth.service';
 import { handleErrorResponse } from '@app/services/helpers/global-http-interceptor-service.service';
 import { actions, api } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 /**
@@ -33,7 +34,8 @@ export class ConfirmUserComponent implements ComponentWithErrorMsg {
 
     constructor(
         private navigationService: NavigationService,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private translate: TranslateService
     ) {
         this.processUrlPath();
         this.subscribeUrlParams();
@@ -91,12 +93,12 @@ export class ConfirmUserComponent implements ComponentWithErrorMsg {
             // if response contains success field
             if (response.success) {
                 this.confirmationSuccess = true;
-                this.confirmationMessage = 'Confirmation Successful.';
+                this.confirmationMessage = this.translate.instant('confirm-user.success-msg');
                 // navigate to corresponding user form (login or reset password)
                 this.navigateToAccountForm(this.formAction);
             } else {
                 this.confirmationSuccess = false;
-                this.confirmationMessage = 'Confirmation failed. Submit again';
+                this.confirmationMessage = this.translate.instant('confirm-user.err-msg');
                 this.navigateToMain();
             }
         };

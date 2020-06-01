@@ -1,8 +1,9 @@
 import { Component, Input, Type } from '@angular/core';
 import { FormFieldsHintComponent } from '@app/components/account/forms/account-form/form-fields-hint/form-fields-hint.component';
-import { AccountEditModalFormComponent } from '@app/components/account/modals/account-edit-modal-content/account-edit-modal-form.component';
-import { SocialConnectionModalComponent } from '@app/components/account/modals/social-connection-modal/social-connection-modal.component';
+import { AccountEditModalFormComponent } from '@app/components/modals/account-edit-modal-content/account-edit-modal-form.component';
+import { SocialConnectionModalComponent } from '@app/components/modals/social-connection-modal/social-connection-modal.component';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 
 
 /**
@@ -30,7 +31,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
                     class="btn btn-outline-secondary"
                     (click)="modal.dismiss('cancel click')"
             >
-                {{ cancelBtnTxt || 'Cancel' }}
+                {{ cancelBtnTxt || this.translate.instant('modals.cancel') }}
             </button>
             <button
                     type="button"
@@ -38,7 +39,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
                     class="btn btn-danger"
                     (click)="modal.close('Ok click')"
             >
-                {{ submitBtnTxt || 'Ok' }}
+                {{ submitBtnTxt || this.translate.instant('modals.submit') }}
             </button>
         </div>
     `,
@@ -57,7 +58,8 @@ export class NgbdModalConfirmComponent {
     @Input()
     submitBtnTxt: string;
 
-    constructor(public modal: NgbActiveModal) {
+    constructor(public modal: NgbActiveModal,
+                private translate: TranslateService) {
     }
 }
 
@@ -83,7 +85,7 @@ export class NgbdModalConfirmComponent {
                     class="btn btn-outline-secondary"
                     (click)="modal.dismiss('cancel click')"
             >
-                {{ cancelBtnTxt || 'Cancel' }}
+                {{ cancelBtnTxt || this.translate.instant('modals.cancel') }}
             </button>
             <button
                     type="button"
@@ -92,7 +94,7 @@ export class NgbdModalConfirmComponent {
                     class="btn btn-danger"
                     (click)="modal.close('Ok click')"
             >
-                {{ submitBtnTxt || 'Ok' }}
+                {{ submitBtnTxt || this.translate.instant('modals.submit') }}
             </button>
         </div>
     `,
@@ -111,7 +113,8 @@ export class NgbdModalConfirmAutofocusComponent {
     @Input()
     submitBtnTxt: string;
 
-    constructor(public modal: NgbActiveModal) {
+    constructor(public modal: NgbActiveModal,
+                private translate: TranslateService) {
     }
 }
 

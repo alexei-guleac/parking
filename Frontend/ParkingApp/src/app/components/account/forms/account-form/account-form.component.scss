@@ -123,9 +123,9 @@ form input.form-control {
     right: 2%;
     width: 2.5rem;
     height: 2.5rem;
-    margin-top: 0.625rem;
+    margin-top: -0.625rem;
     margin-right: 1.125rem;
-    padding-top: 1.125rem;
+    padding-top: -1.125rem;
     padding-right: 0.75rem;
     text-align: center;
     color: var(--text-color);
@@ -134,7 +134,7 @@ form input.form-control {
     background: none;
 }
 
-.pseudolink {
+.pseudo-link {
     color: var(--pseudolink-color);
 
     &:hover {

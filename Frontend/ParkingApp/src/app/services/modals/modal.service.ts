@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import {
-    MODAL_TYPE,
-    MODALS
-} from '@app/components/account/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
+import { MODAL_TYPE, MODALS } from '@app/components/modals/ngbd-modal-confirm/ngbd-modal-confirm-autofocus.component';
 import { parkingStatuses } from '@app/models/ParkingLotStatus';
+import { capitalizeFirstLetter } from '@app/utils/string-utils';
 import { ModalDismissReasons, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 
 
 /**
@@ -23,13 +22,17 @@ export class ModalService {
         backdropClass: 'blurred-backdrop'
     };
 
-    private submitBtnTxt = 'Ok';
+    private submitBtnTxt;
 
-    private cancelBtnTxt = 'Cancel';
+    private readonly cancelBtnTxt;
 
     private logoutModalResult: string;
 
-    constructor(private modalService: NgbModal) {
+    constructor(private modalService: NgbModal,
+                private translate: TranslateService) {
+        // patterns only for revealing the result of a window, do not replace this to locale
+        this.submitBtnTxt = 'Ok';
+        this.cancelBtnTxt = 'Cancel';
     }
 
     /**
@@ -90,15 +93,17 @@ export class ModalService {
      * Show account log out confirm modal window
      */
     openLogoutModal(): NgbModalRef {
-        const modalTitle = 'Logout';
+        const modalTitle = this.translate.instant('modals.logout');
         const modalBodyTemplate =
-            '<p><strong>Are you sure you want to sign out?</strong></p>';
+            '<p><strong>' + this.translate.instant('modals.logout-body') + '</strong></p>';
+        const cancelBtnTxt =
+            this.translate.instant('modals.cancel');
 
         return this.openAutofocusModal(
             modalTitle,
             modalBodyTemplate,
             modalTitle,
-            this.cancelBtnTxt,
+            cancelBtnTxt,
             this.standardModalWindowOptions
         );
     }
@@ -108,17 +113,17 @@ export class ModalService {
      * @param username - user name
      */
     openDeleteProfileModal(username: string): NgbModalRef {
-        const modalTitle = 'Profile deletion';
-        const modalBodyTemplate = `<p><strong>Are you sure you want to delete
-                <span class="text-primary">${username}</span> profile?</strong></p>
-                <p>All information associated to this user profile will be permanently deleted.
-                <span class="text-danger">This operation can not be undone.</span></p>`;
+        const modalTitle = this.translate.instant('modals.deletion');
+        const modalBodyTemplate =
+            this.translate.instant('modals.deletion-body', { username });
+        const cancelBtnTxt =
+            this.translate.instant('modals.cancel');
 
         return this.openAutofocusModal(
             modalTitle,
             modalBodyTemplate,
             modalTitle,
-            this.cancelBtnTxt,
+            cancelBtnTxt,
             this.standardModalWindowOptions
         );
     }
@@ -132,30 +137,29 @@ export class ModalService {
         parkingLotNumber: number,
         parkingLotStatus: string
     ): NgbModalRef {
-        const modalTitle = 'Parking lot reservation';
+        const modalTitle = this.translate.instant('modals.reservation');
         const operation =
             parkingLotStatus === parkingStatuses.FREE
-                ? 'reservate'
-                : 'unreserve';
+                ? this.translate.instant('modals.reserve-operation')
+                : this.translate.instant('modals.unreserve-operation');
         const hint =
             parkingLotStatus === parkingStatuses.FREE
-                ? 'cancel'
-                : 'submit again';
-        const modalBodyTemplate = `<p><strong>Are you sure you want to ${operation} <span class="text-primary">parking lot</span>
-                number <span class="text-primary">${parkingLotNumber}</span>?</strong>
-            </p>
-            <p><span class="text-success">You can ${hint} this reservation later.</span>
-            </p>`;
+                ? this.translate.instant('modals.reserve-action')
+                : this.translate.instant('modals.unreserve-action');
+        const modalBodyTemplate =
+            this.translate.instant('modals.reservation-body', { operation, parkingLotNumber, hint });
         const submitBtnTxt =
             parkingLotStatus === parkingStatuses.FREE
-                ? 'Reservate'
-                : 'Unreserve';
+                ? capitalizeFirstLetter(this.translate.instant('modals.reserve-operation'))
+                : capitalizeFirstLetter(this.translate.instant('modals.unreserve-operation'));
+        const cancelBtnTxt =
+            this.translate.instant('modals.cancel');
 
         return this.openAutofocusModal(
             modalTitle,
             modalBodyTemplate,
             submitBtnTxt,
-            this.cancelBtnTxt,
+            cancelBtnTxt,
             this.standardModalWindowOptions
         );
     }

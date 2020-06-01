@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
  */
 @Component({
     selector: 'app-or-separator',
-    template: '<div class="or-seperator"><b>or</b></div>',
+    template: '<div class="or-seperator"><b>{{ \'separator\' | translate }}</b></div>',
     styleUrls: ['./or-separator.component.scss']
 })
 export class OrSeparatorComponent {

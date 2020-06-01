@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -33,6 +34,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static com.isd.parking.config.locale.Localization.getLocale;
 import static com.isd.parking.web.rest.ApiEndpoints.confirmAction;
 import static com.isd.parking.web.rest.ApiEndpoints.confirmReset;
 
@@ -45,6 +47,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final TemplateEngine templateEngine;
 
+    private final MessageSource messageSource;
+
     @Value("${spring.mail.from.email}")
     private String from;
 
@@ -53,9 +57,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     @Autowired
     public EmailSenderServiceImpl(@Qualifier("gmail") JavaMailSender mailSender,
-                                  @Qualifier("templateEngine") TemplateEngine templateEngine) {
+                                  @Qualifier("templateEngine") TemplateEngine templateEngine,
+                                  MessageSource messageSource) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -72,7 +78,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public void sendRegistrationConfirmMail(@NotBlank @NonNull @NotNull UserLdap emailUser,
                                             @NotBlank @NonNull @NotNull ConfirmationRecord confirmationRecord,
                                             @NotBlank @NonNull DeviceInfo deviceInfo) throws IOException, MessagingException {
-        final @NotNull String subject = "Complete Registration!";
+
+        final String userDeviceLanguage = deviceInfo.getLanguage();
+        final Locale locale = getLocale(userDeviceLanguage);
+        final @NotNull String subject =
+            messageSource.getMessage("email.registration.subject", null, locale);
         final @NotNull String templateName = "confirm_account_mail.html";
         @NotNull EmailDto emailDto = createHtmlEmailData(emailUser, confirmationRecord, deviceInfo, subject, templateName);
         sendHtmlEmail(emailDto);
@@ -92,7 +102,10 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public void sendPassResetMail(@NotBlank @NonNull @NotNull UserLdap emailUser,
                                   @NotBlank @NonNull @NotNull ConfirmationRecord confirmationRecord,
                                   @NotBlank @NonNull DeviceInfo deviceInfo) throws IOException, MessagingException {
-        final @NotNull String subject = "Complete Password Reset!";
+        final String userDeviceLanguage = deviceInfo.getLanguage();
+        final Locale locale = getLocale(userDeviceLanguage);
+        final @NotNull String subject =
+            messageSource.getMessage("email.pass-reset.subject", null, locale);
         final @NotNull String templateName = "reset_password_mail.html";
         @NotNull EmailDto emailDto = createHtmlEmailData(emailUser, confirmationRecord, deviceInfo, subject, templateName);
 
@@ -115,7 +128,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                                                   @NotBlank @NonNull String subject,
                                                   @NotBlank @NonNull String templateName) {
         @NotNull EmailDto emailDto = createEmailDtoFromUserLdap(emailUser, subject, templateName);
-        @NotNull HashMap<String, Object> parametersMap = createTemplateParametersMap(emailUser, confirmationRecord, deviceInfo);
+        @NotNull HashMap<String, Object> parametersMap =
+            createTemplateParametersMap(emailUser, confirmationRecord, deviceInfo);
         emailDto.setParameterMap(parametersMap);
 
         return emailDto;
@@ -133,7 +147,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                                                                          @NotBlank @NonNull @NotNull ConfirmationRecord confirmationRecord,
                                                                          @NotBlank @NonNull DeviceInfo deviceInfo) {
         @NotNull ObjectMapper oMapper = new ObjectMapper();
-        @NotNull HashMap<String, Object> deviceInfoMap = (HashMap<String, Object>) oMapper.convertValue(deviceInfo, Map.class);
+        @NotNull HashMap<String, Object> deviceInfoMap =
+            (HashMap<String, Object>) oMapper.convertValue(deviceInfo, Map.class);
         @NotNull HashMap<String, Object> parametersMap = new HashMap<>(deviceInfoMap);
 
         @NotNull String username = emailUser.getUid().substring(0, 1).toUpperCase() + emailUser.getUid().substring(1);
@@ -300,12 +315,13 @@ public class EmailSenderServiceImpl implements EmailSenderService {
      * @throws MessagingException
      * @throws IOException
      */
-    private @NotNull MimeMessageHelper prepareMessage(@NotNull MimeMessage mimeMessage, @NotNull EmailDto emailDto)
+    private @NotNull MimeMessageHelper prepareMessage(@NotNull MimeMessage mimeMessage,
+                                                      @NotNull EmailDto emailDto)
         throws MessagingException, IOException {
 
         // Prepare message using a Spring helper
-        @NotNull MimeMessageHelper message = new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-            "UTF-8");
+        @NotNull MimeMessageHelper message =
+            new MimeMessageHelper(mimeMessage, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, "UTF-8");
         message.setSubject(emailDto.getSubject());
         message.setFrom(emailDto.getFrom());
         message.setTo(emailDto.getTo());

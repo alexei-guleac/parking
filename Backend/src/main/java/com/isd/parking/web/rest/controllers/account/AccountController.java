@@ -1,5 +1,6 @@
 package com.isd.parking.web.rest.controllers.account;
 
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.models.AccountOperation;
 import com.isd.parking.models.ConfirmationRecord;
 import com.isd.parking.models.enums.AccountState;
@@ -10,9 +11,9 @@ import com.isd.parking.services.RestService;
 import com.isd.parking.services.implementations.ConfirmationServiceImpl;
 import com.isd.parking.services.implementations.EmailSenderServiceImpl;
 import com.isd.parking.storage.ldap.UserServiceImpl;
-import com.isd.parking.utilities.AppDateUtils;
 import com.isd.parking.web.rest.ApiEndpoints;
 import com.isd.parking.web.rest.payload.ActionSuccessResponse;
+import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.ForgotPassRequest;
 import com.isd.parking.web.rest.payload.account.RecaptchaResponse;
 import com.isd.parking.web.rest.payload.account.ResetPasswordRequest;
@@ -21,7 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,8 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.isd.parking.storage.ldap.LdapConstants.USER_ACCOUNT_STATE_ATTRIBUTE;
@@ -49,6 +53,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Slf4j
 public class AccountController {
 
+    @Value("${front.host.dev}")
+    private String serverUrl;
+
     private final UserServiceImpl userService;
 
     private final RestService restService;
@@ -57,15 +64,27 @@ public class AccountController {
 
     private final EmailSenderServiceImpl emailSenderService;
 
+    private final ResponseEntityFactory responseEntityFactory;
+
+    private final ResourceBundleMessageSource messageSource;
+
+    private final SmartLocaleResolver localeResolver;
+
     @Autowired
     public AccountController(UserServiceImpl userService,
                              RestService restService,
                              ConfirmationServiceImpl confirmationTokenService,
-                             EmailSenderServiceImpl emailSenderService) {
+                             EmailSenderServiceImpl emailSenderService,
+                             ResponseEntityFactory responseEntityFactory,
+                             ResourceBundleMessageSource messageSource,
+                             SmartLocaleResolver localeResolver) {
         this.userService = userService;
         this.restService = restService;
         this.confirmationTokenService = confirmationTokenService;
         this.emailSenderService = emailSenderService;
+        this.responseEntityFactory = responseEntityFactory;
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
     }
 
     /**
@@ -94,21 +113,25 @@ public class AccountController {
     )
     @ResponseBody
     @RequestMapping(ApiEndpoints.validateCaptcha)
-    public @NotNull ResponseEntity<?> gRecaptcha(@RequestBody String gRecaptcha) {
-        final String grecaptchaToken = new JSONObject(gRecaptcha)
+    public @NotNull ResponseEntity<?> gRecaptcha(@RequestBody String gRecaptcha,
+                                                 @RequestHeader Map<String, String> headers) {
+        final String gRecaptchaToken = new JSONObject(gRecaptcha)
             .getJSONObject("grecaptcha")
             .getString("token");
 
-        if (grecaptchaToken == null || grecaptchaToken.equals("")) {
-            return ResponseEntity.ok(RecaptchaResponse.builder()
+        if (gRecaptchaToken == null || gRecaptchaToken.isBlank()) {
+            final String errMessage = messageSource.getMessage("recaptcha.error", null, localeResolver.resolveLocale(headers));
+            final RecaptchaResponse recaptchaResponse = RecaptchaResponse.builder()
                 .success(false)
                 .challenge_ts(new Date(System.currentTimeMillis()))
-                .hostname("localhost")
-                .message("Token is empty or invalid").build());
+                .hostname(serverUrl)
+                .message(errMessage)
+                .build();
+            return responseEntityFactory.getServerErrorEntity(recaptchaResponse);
         } else {
             @NotNull final String secretKey = RecaptchaResponse.GoogleRecaptchaConstants.SECRET_KEY;
-            final String url = String.format(RecaptchaResponse.GoogleRecaptchaConstants.GRECAPTCHA_API_URL,
-                secretKey, grecaptchaToken);
+            final String url = String.format(
+                RecaptchaResponse.GoogleRecaptchaConstants.GRECAPTCHA_API_URL, secretKey, gRecaptchaToken);
             // send captcha data to Google service for validation
             String response = restService.getPlainJSON(url);
 
@@ -138,11 +161,14 @@ public class AccountController {
             required = true, dataType = "string")
     )
     @RequestMapping(value = ApiEndpoints.confirmAction, method = POST)
-    public @NotNull ResponseEntity<?> confirmUserAccount(@RequestBody String confirmRequest) {
+    public @NotNull ResponseEntity<?> confirmUserAccount(@RequestBody String confirmRequest,
+                                                         @RequestHeader Map<String, String> headers) {
 
         final String confirmationToken = new JSONObject(confirmRequest).getString("confirmationToken");
         Optional<ConfirmationRecord> optionalConfirmationToken =
             confirmationTokenService.findByConfirmationToken(confirmationToken);
+
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         // if this confirmation token exists in database
         if (optionalConfirmationToken.isPresent()) {
@@ -163,16 +189,13 @@ public class AccountController {
 
                     return ResponseEntity.ok(new ActionSuccessResponse(true));
                 } else {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Confirmation token is already used. Login or register again");
+                    return responseEntityFactory.confirmationTokenUsed(locale);
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Confirmation token is expired. Register again");
+                return responseEntityFactory.confirmationTokenExpired(locale);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Confirmation token not found. Register again");
+            return responseEntityFactory.confirmationTokenNotFound(locale);
         }
     }
 
@@ -199,11 +222,13 @@ public class AccountController {
             required = true, dataType = "ForgotPassRequest")
     )
     @RequestMapping(value = ApiEndpoints.forgotPassword, method = POST)
-    public @NotNull ResponseEntity<?> forgotUserPassword(@RequestBody @NotNull ForgotPassRequest request)
+    public @NotNull ResponseEntity<?> forgotUserPassword(@RequestBody @NotNull ForgotPassRequest request,
+                                                         @RequestHeader Map<String, String> headers)
         throws IOException, MessagingException {
 
         final String userEmail = request.getEmail();
         final UserLdap existingUser = userService.getUserByEmail(userEmail);
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         if (existingUser != null) {
             Optional<ConfirmationRecord> lastConfirmationToken =
@@ -214,10 +239,7 @@ public class AccountController {
 
                 // check if user password reset is allowed
                 if (!confirmationTokenService.assertValidForRepeat(token)) {
-                    @NotNull String periodEnding = AppDateUtils.getPeriodEnding(
-                        AccountConfirmationPeriods.REQUEST_CONFIRMATION_TOKEN_PERIOD_IN_DAYS);
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Password reset request is allowed only " + periodEnding);
+                    return responseEntityFactory.passResetNotAllowed(locale);
                 }
             }
             // Create token
@@ -230,8 +252,7 @@ public class AccountController {
 
             return ResponseEntity.ok(new ActionSuccessResponse(true));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User with this email doesn't exists on the server");
+            return responseEntityFactory.emailNotFound(locale);
         }
     }
 
@@ -254,14 +275,16 @@ public class AccountController {
     })
     @ApiImplicitParams(
         @ApiImplicitParam(name = "resetPasswordRequest",
-            value = "${AccountController.resetUserPassword.forgotPassRequest}",
+            value = "${AccountController.resetUserPassword.resetPasswordRequest}",
             required = true, dataType = "ResetPasswordRequest")
     )
     @RequestMapping(value = ApiEndpoints.resetPassword, method = POST)
-    public @NotNull ResponseEntity<?> resetUserPassword(@RequestBody @NotNull ResetPasswordRequest resetPasswordRequest) {
+    public @NotNull ResponseEntity<?> resetUserPassword(@RequestBody @NotNull ResetPasswordRequest resetPasswordRequest,
+                                                        @RequestHeader Map<String, String> headers) {
 
         final String confirmationToken = resetPasswordRequest.getResetDetails().getConfirmationToken();
         final String password = resetPasswordRequest.getResetDetails().getPassword();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         Optional<ConfirmationRecord> optionalConfirmationToken =
             confirmationTokenService.findByConfirmationToken(confirmationToken);
@@ -284,29 +307,21 @@ public class AccountController {
 
                             return ResponseEntity.ok(new ActionSuccessResponse(true));
                         } else {
-                            @NotNull final String periodEnding = AppDateUtils.getPeriodEnding(
-                                AccountConfirmationPeriods.RESET_PASSWORD_PERIOD_IN_DAYS);
-                            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body("Password change is allowed only " + periodEnding);
+                            return responseEntityFactory.passChangeNotAllowed(locale);
                         }
                     } else {
-                        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body("User with this username doesn't exists on the server");
+                        return responseEntityFactory.userNotFound(locale);
                     }
                 } else {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Confirmation token with username empty parameter");
+                    return responseEntityFactory.confirmationTokenUserEmpty(locale);
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Confirmation token is expired. Request again");
+                return responseEntityFactory.confirmationTokenExpiredRequest(locale);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Confirmation token not found. Request again");
+            return responseEntityFactory.confirmationTokenNotFoundRequest(locale);
         }
     }
-
 
     /**
      * Checks if password is allowed for changing conform password reset period in days

@@ -9,13 +9,13 @@
 
         <div *ngIf="user != null" class="profile">
             <div class="card-body avatar"
-                 ngbTooltip="Account photo" placement="top">
+                 ngbTooltip="{{this.translate.instant('user-profile.tooltips.acc-photo')}}" placement="top">
                 <img [src]="avatar || '../../../../assets/img/avatar-default.png'"
                      alt="profile_avatar"
                      class="align-items-center"/>
             </div>
             <div class="card-body details">
-                <div ngbTooltip="Username" placement="right">
+                <div ngbTooltip="{{this.translate.instant('user-profile.tooltips.uname')}}" placement="right">
                     <h2 class="username mb-4">
                         {{ this.capitalize(this.user.username) }}
                     </h2>
@@ -30,40 +30,42 @@
                     <span class="email">{{ this.user.email }}</span>
                 </div>
                 <div *ngIf="this.status" class="mx-auto text-center">
-                    <b>status: </b>
+                    <b>{{ 'user-profile.status' | translate }}: </b>
                     <span class="status">{{ this.status }}</span>
                 </div>
                 <div *ngIf="this.user.firstname" class="mx-auto text-center">
-                    <b>firstname: </b>
+                    <b>{{ 'user-profile.fn' | translate }}: </b>
                     <span class="firstname">{{ this.user.firstname }}</span>
                 </div>
                 <div *ngIf="this.user.lastname" class="mb-4 mx-auto text-center">
-                    <b>lastname: </b>
+                    <b>{{ 'user-profile.ln' | translate }}: </b>
                     <span class="lastname">{{ this.user.lastname }}</span>
                 </div>
 
                 <button
                     (click)="openSocialModal()"
                     class="btn btn-mater btn-socials text-center m-3"
-                    ngbTooltip="Connect social services login" placement="top"
+                    ngbTooltip="{{this.translate.instant('user-profile.tooltips.connect')}}" placement="top"
                 >
-                    Connect socials
+                    {{ 'user-profile.connect' | translate }}
                 </button>
 
                 <div class="mt-4 actions">
                     <span
                         (click)="this.editUserInfo()"
                         class="profile-action-btn edit-btn mx-auto m-1 col-5 btn-round"
-                        ngbTooltip="Edit user information" placement="top"
+                        ngbTooltip="{{this.translate.instant('user-profile.tooltips.edit')}}" placement="top"
                     >
-                        Edit <i class="profile-action-icons fas fa-user-edit"></i>
+                        {{ 'user-profile.edit' | translate }}&nbsp;
+                        <i class="profile-action-icons fas fa-user-edit"></i>
                     </span>
                     <span
                         (click)="this.showDeleteUserModal()"
                         class="profile-action-btn delete-btn mx-auto m-1 col-5 btn-round"
-                        ngbTooltip="Permanently delete user account" placement="top"
+                        ngbTooltip="{{this.translate.instant('user-profile.tooltips.del')}}" placement="top"
                     >
-                        Delete <i class="profile-action-icons far fa-trash-alt"></i>
+                        {{ 'user-profile.del' | translate }}&nbsp;
+                        <i class="profile-action-icons far fa-trash-alt"></i>
                     </span>
                 </div>
             </div>
@@ -76,18 +78,18 @@
 <div [hidden]="user != null">
     <div class="smthg-error mt-3 mx-auto text-center">
         <div class="unable-to-connect mx-auto text-center">
-            <h2>Something went wrong.</h2>
+            <h2>{{ 'user-profile.err.text' | translate }}</h2>
         </div>
     </div>
     <div class="message mx-auto text-center m-1 px-3">
-        Please click on Back button.
+        {{ 'user-profile.err.msg' | translate }}
     </div>
 
     <div class="container">
         <div class="row my-5">
             <div class="col text-center">
                 <button (click)="goBack()" appNoDblClick class="btn refresh">
-                    <i class="fas fa-backspace fa-sm mr-3"></i>Back
+                    <i class="fas fa-backspace fa-sm mr-3"></i>{{ 'user-profile.back' | translate }}
                 </button>
             </div>
         </div>

@@ -3,12 +3,14 @@ package com.isd.parking.web.rest.controllers.account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Splitter;
 import com.isd.parking.config.SwaggerConfig;
+import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.models.users.User;
 import com.isd.parking.models.users.UserLdap;
 import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.services.RestService;
 import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
+import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.auth.GithubOauthRequest;
 import com.isd.parking.web.rest.payload.account.auth.GithubOauthResponse;
 import com.isd.parking.web.rest.payload.account.connect.SocialConnectRequest;
@@ -20,13 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.Map;
 
 import static com.isd.parking.utilities.AppJsonUtils.getJsonStringFromObject;
@@ -51,13 +50,21 @@ public class SocialController {
 
     private final UserMapper userMapper;
 
+    private final SmartLocaleResolver localeResolver;
+
+    private final ResponseEntityFactory responseEntityFactory;
+
     @Autowired
     public SocialController(RestService restService,
                             UserServiceImpl userService,
-                            UserMapper userMapper) {
+                            UserMapper userMapper,
+                            SmartLocaleResolver localeResolver,
+                            ResponseEntityFactory responseEntityFactory) {
         this.restService = restService;
         this.userService = userService;
         this.userMapper = userMapper;
+        this.localeResolver = localeResolver;
+        this.responseEntityFactory = responseEntityFactory;
     }
 
     /**
@@ -84,13 +91,15 @@ public class SocialController {
     )
     @ResponseBody
     @RequestMapping(ApiEndpoints.gitOAuth)
-    public @NotNull ResponseEntity<?> githubOAuth(@RequestBody String githubOAuthCode)
+    public @NotNull ResponseEntity<?> githubOAuth(@RequestBody String githubOAuthCode,
+                                                  @RequestHeader Map<String, String> headers)
         throws JsonProcessingException {
 
         final String code = new JSONObject(githubOAuthCode).getString("code");
-        if (code == null || code.equals("")) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Code not provided");
+        final Locale locale = localeResolver.resolveLocale(headers);
+
+        if (code == null || code.isBlank()) {
+            return responseEntityFactory.codeNotProvided(locale);
         } else {
             @NotNull String url = GithubOauthRequest.GithubOauthConstants.TOKEN_URL;
             String requestJsonString = getJsonStringFromObject(new GithubOauthRequest(code));
@@ -123,15 +132,16 @@ public class SocialController {
             required = true, dataType = "SocialConnectRequest")
     )
     @RequestMapping(value = ApiEndpoints.socialConnect, method = POST)
-    public @NotNull ResponseEntity<?> socialConnect(@RequestBody @NotNull SocialConnectRequest socialConnectRequest) {
+    public @NotNull ResponseEntity<?> socialConnect(@RequestBody @NotNull SocialConnectRequest socialConnectRequest,
+                                                    @RequestHeader Map<String, String> headers) {
 
         final User user = socialConnectRequest.getUser();
         final String email = user.getEmail();
         final String id = socialConnectRequest.getId();
         final String provider = socialConnectRequest.getSocialProvider();
         final String username = socialConnectRequest.getUsername();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
-        log.info(socialConnectRequest.toString());
         if (email != null) {
             final UserLdap existedUser = userService.getUserByEmail(email);
             // same emails not allowed
@@ -141,13 +151,11 @@ public class SocialController {
                     userService.deleteUser(userMapper.userToUserLdap(user));
                 }
                 if (existedUser.accountConfirmationValid()) {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Social account with this email already exists and waiting for confirmation");
+                    return responseEntityFactory.socialExistsWaiting(locale);
                 }
                 // allow same email for current requested account
                 if (!existedUser.getUid().equals(username)) {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Social account with this email already exists");
+                    return responseEntityFactory.socialEmailExists(locale);
                 }
             }
         }
@@ -165,16 +173,13 @@ public class SocialController {
                     // Return the result
                     return ResponseEntity.ok(new SocialConnectResponse(true));
                 } else {
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Something went wrong during social connection. Contact support");
+                    return responseEntityFactory.socialConnectionError(locale);
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Another account is associated with this social profile");
+                return responseEntityFactory.socialConnectionConflict(locale);
             }
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User doesn't exists on the server");
+            return responseEntityFactory.userNotExists(locale);
         }
     }
 
@@ -198,10 +203,12 @@ public class SocialController {
             required = true, dataType = "SocialDisconnectRequest")
     )
     @RequestMapping(value = ApiEndpoints.socialDisconnect, method = POST)
-    public @NotNull ResponseEntity<?> socialDisconnect(@RequestBody @NotNull SocialDisconnectRequest socialDisconnectRequest) {
+    public @NotNull ResponseEntity<?> socialDisconnect(@RequestBody @NotNull SocialDisconnectRequest socialDisconnectRequest,
+                                                       @RequestHeader Map<String, String> headers) {
 
         final String provider = socialDisconnectRequest.getSocialProvider();
         final String username = socialDisconnectRequest.getUsername();
+        final Locale locale = localeResolver.resolveLocale(headers);
 
         final UserLdap userFound = userService.findById(username);
         if (userFound != null) {
@@ -209,8 +216,7 @@ public class SocialController {
             // Return the result
             return ResponseEntity.ok(new SocialDisconnectResponse(true));
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User doesn't exists on the server");
+            return responseEntityFactory.userNotExists(locale);
         }
     }
 }

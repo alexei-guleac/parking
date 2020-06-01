@@ -45,7 +45,7 @@ public final class JwtUtils {
 
     private final String secret = new AppFileUtils().getResourceAsString(secretKeyFile);
 
-    // JWT token expiration period in minutes
+    // JWT token expiration period in minutes (by default 3 days)
     private final int expirationInMinutes = 72 * 60;
 
     /**
@@ -58,9 +58,12 @@ public final class JwtUtils {
      * @return serialized signed JWT
      * @throws JOSEException
      */
-    public static String generateHMACToken(String subject, @NotNull Collection<? extends GrantedAuthority> roles,
-                                           @NotNull String secret, int expirationInMinutes) throws JOSEException {
-        return generateHMACToken(subject, AuthorityListToCommaSeparatedString(roles), secret, expirationInMinutes);
+    public static String generateHMACToken(String subject,
+                                           @NotNull Collection<? extends GrantedAuthority> roles,
+                                           @NotNull String secret,
+                                           int expirationInMinutes) throws JOSEException {
+        return generateHMACToken(subject,
+            AuthorityListToCommaSeparatedString(roles), secret, expirationInMinutes);
     }
 
     /**
@@ -73,7 +76,8 @@ public final class JwtUtils {
      * @return serialized signed JWT
      * @throws JOSEException - if provided corrupted secret sign
      */
-    public static String generateHMACToken(String subject, String roles, @NotNull String secret, int expirationInMinutes)
+    public static String generateHMACToken(String subject, String roles,
+                                           @NotNull String secret, int expirationInMinutes)
         throws JOSEException {
         @NotNull JWSSigner signer = new MACSigner(secret);
         JWTClaimsSet payload = new JWTClaimsSet.Builder()
@@ -115,7 +119,8 @@ public final class JwtUtils {
      */
     public static void assertNotExpired(@NotNull SignedJWT jwt) throws ParseException {
         if (DateUtils.isBefore(jwt.getJWTClaimsSet().getExpirationTime(), currentDate(), 60)) {
-            throw new JwtExpirationException("Token has expired");
+            throw new JwtExpirationException(
+                "Token has expired");
         }
     }
 

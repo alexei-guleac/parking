@@ -1,5 +1,6 @@
 <div class="modal-header">
-    <h4 class="modal-title" id="modal-title">Connect socials</h4>
+    <h4 class="modal-title" id="modal-title">
+        {{ 'social-connection-modal.connect' | translate }}</h4>
     <button
         (click)="activeModal.dismiss('Cross click')"
         aria-describedby="modal-title"
@@ -33,6 +34,6 @@
         class="btn btn-outline-secondary"
         type="button"
     >
-        Cancel
+        {{ 'social-connection-modal.cancel' | translate }}
     </button>
 </div>

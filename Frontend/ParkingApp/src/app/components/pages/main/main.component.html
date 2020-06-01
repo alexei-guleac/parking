@@ -4,13 +4,13 @@
         class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
     >
         <div class="parking-lot-name mb-2">
-            LOT <b>{{parkingLot.number}}</b>
+            {{ 'main.lot.title' | translate }}&nbsp;<b>{{parkingLot.number}}</b>
         </div>
         <div
-          (click)="showDetails(parkingLot.id)"
-          [ngClass]="parkingLot.status.toLowerCase()"
-          class="btn parking-lot col-12 border-radius-s"
-          data-container="body"
+            (click)="showDetails(parkingLot.id)"
+            [ngClass]="parkingLot.status.toLowerCase()"
+            class="btn parking-lot col-12 border-radius-s"
+            data-container="body"
         >
             <i
                 [ngClass]="{
@@ -24,13 +24,13 @@
             ></i>
 
             <span
-              (click)="showParkingLotOnMap(parkingLot.number)"
-              *ngIf="this.isUserLoggedIn()" class="parking-map"
-              ngbTooltip="View parking lot {{parkingLot.number}} on map"
-              placement="top"
+                (click)="showParkingLotOnMap(parkingLot.number)" *ngIf="this.isUserLoggedIn()"
+                class="parking-map"
+                ngbTooltip=
+                    "{{this.translate.instant('main.tooltips.map', {parkingLotNumber: parkingLot.number})}}"
+                placement="top"
             >
-                <i class="fas fa-map-marked-alt"></i
-                ></span>
+                <i class="fas fa-map-marked-alt"></i></span>
         </div>
     </div>
 
@@ -40,7 +40,8 @@
             *ngFor="let lot of noData; trackBy: trackByMethod"
             class="col-12 col-sm-6 col-md-4 col-lg-3 elem"
         >
-            <div class="parking-lot-name">{{ 'LOT ' + (lot < 10 ? 0 : '') + lot }}</div>
+            <div class="parking-lot-name">
+                {{ 'main.lot.title' | translate }}{{ ' ' + (lot < 10 ? 0 : '') + lot }}</div>
             <div
                 [ngClass]="{ unknown: selectedParkingLot == null }"
                 class="btn parking-lot col-12 border-radius-s no-connection-lot"

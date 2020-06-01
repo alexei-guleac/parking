@@ -1,4 +1,4 @@
-@import '../account/modals/ngbd-modal-confirm/ngbd-modal.component';
+@import '../modals/ngbd-modal-confirm/ngbd-modal.component';
 
 .logo img {
     width: 8.1875rem;
@@ -190,7 +190,16 @@ $font_3: 'sans-serif';
     }
 }
 
-/* Custom toogle */
+// Language select
+
+.lang-select {
+    padding: 0;
+    margin: 0 1rem;
+    max-width: 5.5rem;
+    width: fit-content !important;
+}
+
+/* Custom toggle */
 
 /* The switch - the box around the slider */
 .theme-switch {
@@ -211,7 +220,13 @@ $font_3: 'sans-serif';
 @media (max-width: 992px) {
     .theme-switch {
         margin-top: 1rem;
-        left: 27vw;
+        left: 29vw;
+    }
+
+    .lang-select {
+        position: relative;
+        margin-top: 0.5rem !important;
+        left: 29vw;
     }
 }
 

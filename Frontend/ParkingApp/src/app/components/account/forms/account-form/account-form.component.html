@@ -1,6 +1,6 @@
 <h1 *ngIf="register"
     class="text-center font-weight-light m-5 mx-auto">
-    Create your account
+    {{ 'account-form.reg.title' | translate }}
 </h1>
 
 <div class="container col-lg-5 mt-5">
@@ -41,8 +41,8 @@
             <h1 class="h1">ParKing</h1>
 
             <app-login-form
-                (userForgotEvent)="setForgotPassLayout()"
                 *ngIf="login"
+                (userForgotEvent)="setForgotPassLayout()"
                 [confMessage]="successMessage"
                 [errMessage]="errorMessage"
                 [isConfirmSuccess]="isConfirmSuccess"
@@ -50,8 +50,8 @@
             ></app-login-form>
 
             <app-reg-form
-                (userLoginEvent)="setLoginLayout()"
                 *ngIf="register"
+                (userLoginEvent)="setLoginLayout()"
             ></app-reg-form>
 
             <app-forgot-pass-form *ngIf="forgotPass"></app-forgot-pass-form>
@@ -66,14 +66,18 @@
 
     <div class="text-center m-4">
         <div (click)="navigateToLogin()" *ngIf="register">
-            <span class="text-light-muted">Already registered? </span>
-            <span class="pseudolink">Login </span
+            <span class="text-light-muted">
+                {{ 'account-form.login.quest' | translate }} </span>
+            <span class="pseudo-link">
+                {{ 'account-form.login.link' | translate }} </span
             ><span class="fas fa-arrow-right"></span>
         </div>
 
         <div (click)="navigateToRegistration()" *ngIf="login">
-            <span class="text-light-muted">Don't have an account yet? </span>
-            <span class="pseudolink">Register </span
+            <span class="text-light-muted">
+                {{ 'account-form.reg.quest' | translate }} </span>
+            <span class="pseudo-link">
+                {{ 'account-form.reg.link' | translate }} </span
             ><span class="fas fa-arrow-right"></span>
         </div>
     </div>

@@ -1,0 +1,350 @@
+{
+    "access-denied": {
+        "home": "Go to homepage",
+        "login": "Login",
+        "msg": "The request has not been applied because it lacks valid authentication credentials for the target resource.",
+        "msg2": "Access forbidden. You tried to access a page you did not have prior authorization for.",
+        "msg3": "Sorry, your access is refused due to security reasons of our server and also our sensitive data.",
+        "msg4": "Please login or register to continue browsing.",
+        "msg5": "Please go back to the homepage to continue browsing.",
+        "subtitle": "Access denied",
+        "title": "Unauthorized"
+    },
+    "account-edit-modal-form": {
+        "fn": {
+            "maxlen": "First Name must be maximum 15 characters long.",
+            "minlen": "First Name must be at least 3 characters long.",
+            "req": "First Name is required.",
+            "text": "First Name :"
+        },
+        "ln": {
+            "maxlen": "Last Name must be maximum 15 characters long.",
+            "minlen": "Last Name must be at least 3 characters long.",
+            "req": "Last Name is required.",
+            "text": "Last Name :"
+        },
+        "save": "Save",
+        "title": "Edit profile",
+        "uname": {
+            "maxlen": "Name must be maximum 15 characters long.",
+            "minlen": "Name must be at least 5 characters long.",
+            "req": "Name is required.",
+            "text": "User Name :"
+        }
+    },
+    "account-form": {
+        "log-again": "Log in again.",
+        "login": {
+            "link": "Login",
+            "quest": "Already registered?"
+        },
+        "reg": {
+            "link": "Register",
+            "quest": "Don't have an account yet?",
+            "title": "Create your account"
+        }
+    },
+    "common": {
+        "constraints": {
+            "email.content": "Should contain @|A-Z, a-z, 0-9 symbols and \"_\", \".\".",
+            "name.content": "Should contain only |A-Z, a-z, 0-9 and symbols \"_\", \"-\".",
+            "pw.content": "Should contain |at least one uppercase letter, |one lowercase letter, one number |and one special character from",
+            "uname.content": "Should contain only|A-Z, a-z, 0-9 symbols and \"_\" or \".\""
+        }
+    },
+    "confirm-user": {
+        "err-msg": "Confirmation failed. Submit again",
+        "msg1": "You will be redirected to the",
+        "msg1-login": "login",
+        "msg1-main": "main",
+        "msg1-reset": "password reset",
+        "msg2": "page in",
+        "msg3": "seconds",
+        "redir-msg1": "You will be redirected to the main page in",
+        "redir-msg2 seconds": "seconds",
+        "success-msg": "Confirmation Successful.",
+        "title-err": "Something went wrong!",
+        "title-success": "Awesome!"
+    },
+    "forgot-pass-form": {
+        "email": {
+            "maxlen": "Maximum 35 characters long.",
+            "minlen": "At least 8 characters long.",
+            "req": "Email is required."
+        },
+        "send": "Send email",
+        "success-msg": "Request to reset password received. Check your inbox for the reset link. You will be redirected to the main page in 5 seconds.",
+        "text": "Please enter your email address. We will send you an email to reset your password."
+    },
+    "form-fields-hint": {
+        "email": {
+            "content": "Should contain|, A-Z, a-z, 0-9 symbols and \"_\", \".\".",
+            "maxlen": "Maximum 35 characters long.",
+            "minlen": "At least 8 characters long.",
+            "text": "Email"
+        },
+        "fn": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 3 characters long.",
+            "text": "Firstname"
+        },
+        "ln": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 3 characters long.",
+            "text": "Lastname"
+        },
+        "pw": {
+            "content": "Should contain",
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "text": "Password"
+        },
+        "req": "is required.",
+        "title": "Form hint",
+        "uname": {
+            "content": "Should contain only",
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 5 characters long.",
+            "text": "Username"
+        }
+    },
+    "login-form": {
+        "fail-msg": "Authentication failed.",
+        "forgot": "Forgot Password?",
+        "log-with": "Login with",
+        "log-with-name": "username",
+        "login": "Login",
+        "pw": {
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "req": "Password is required.",
+            "text": "Password :"
+        },
+        "remember": "Remember me",
+        "success-msg": "Login Successful.",
+        "success-msg-social": "Social login successful.",
+        "uname": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 5 characters long.",
+            "req": "Username is required.",
+            "text": "User Name :"
+        }
+    },
+    "main": {
+        "lot": {
+            "title": "LOT"
+        },
+        "tooltips": {
+            "map": "View parking lot {{parkingLotNumber}} on map"
+        }
+    },
+    "menu": {
+        "layout": "Parking layout",
+        "login": "Login",
+        "logout": "Logout",
+        "stats": "Statistics",
+        "title": "Menu",
+        "tooltips": {
+            "close-menu": "Close app menu",
+            "dark-mode": "dark mode",
+            "lang": "Switch application language",
+            "light-mode": "light mode",
+            "login": "Log in account",
+            "logout": "Logout from user profile",
+            "map": "Go to parking map",
+            "menu": "Application menu",
+            "open-menu": "Open app menu",
+            "profile": "Go to user profile",
+            "stats": "Go to parking usage statistics",
+            "switch": "Switch to",
+            "theme": "theme"
+        }
+    },
+    "modals": {
+        "cancel": "Cancel",
+        "deletion": "Profile deletion",
+        "deletion-body": "<p><strong>Are you sure you want to delete\n <span class=\"text-primary\">{{username}}</span> profile?</strong></p>\n <p>All information associated to this user profile will be permanently deleted.\n <span class=\"text-danger\">This operation can not be undone.</span></p>",
+        "logout": "Logout",
+        "logout-body": "Are you sure you want to sign out?",
+        "reservation": "Parking lot reservation",
+        "reservation-body": "<p><strong>Are you sure you want to {{operation}} <span class=\"text-primary\">parking lot</span>\n number <span class=\"text-primary\">{{parkingLotNumber}}</span>?</strong>\n</p>\n<p><span class=\"text-success\">You can {{hint}} this reservation later.</span>\n</p>",
+        "reserve-action": "cancel",
+        "reserve-operation": "reserve",
+        "submit": "Ok",
+        "unreserve-action": "submit again",
+        "unreserve-operation": "unreserve"
+    },
+    "no-connection": {
+        "msg": "Your connection appears to be offline.",
+        "msg2": "Please check your internet connection and try again or contact support.",
+        "subtitle": "Unable to connect with the server.",
+        "title": "No connection",
+        "try": "Try again"
+    },
+    "page-not-found": {
+        "body": "The Page can't be found",
+        "home": "Go to homepage",
+        "msg": "The page you are looking for might have been removed, had its name changed or is temporarily unavailable.",
+        "title": "Oops!"
+    },
+    "parking-layout": {
+        "cant-connect": "Can not connect to server. Please contact support",
+        "connect-lost": "Connection lost.",
+        "door": "Back Door",
+        "first": "1st",
+        "free": "free",
+        "no-connection": "no connection",
+        "no-data": "No data found, please contact support",
+        "occupied": "occupied",
+        "reserved": "reserved",
+        "second": "2nd",
+        "wait": "Please wait..."
+    },
+    "parking-lot-detail": {
+        "back": "Back",
+        "cancel-reservation": "Cancel reservation",
+        "err": {
+            "msg": "Please click on Back button.",
+            "text": "Something went wrong."
+        },
+        "fail-msg": "failed.",
+        "name": "Name",
+        "no-results": {
+            "msg": "This parking lot has not been used yet for this week.",
+            "text": "No results found."
+        },
+        "reservation": "Reservation",
+        "reserve-make": "Make",
+        "reserve-reset": "Reset",
+        "reserve-text": "reservation",
+        "since": "Since",
+        "stats": {
+            "date": "Date",
+            "lot": "Parking Lot",
+            "time": "Time",
+            "title": "Usage statistics"
+        },
+        "status": "Status",
+        "success-msg": "success.",
+        "title": "Parking lot details"
+    },
+    "registration-form": {
+        "agree": "I agree to the",
+        "close": "Close",
+        "create": "Create account",
+        "email": {
+            "maxlen": "Maximum 35 characters long.",
+            "minlen": "At least 8 characters long.",
+            "req": "Email is required.",
+            "text": "Email :"
+        },
+        "err-msg": "Registration failed.",
+        "fn": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 3 characters long.",
+            "req": "Firstname is required.",
+            "text": "First Name :"
+        },
+        "ln": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 3 characters long.",
+            "req": "Lastname is required.",
+            "text": "Last Name :"
+        },
+        "pw": {
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "req": "Password is required.",
+            "text": "Password :"
+        },
+        "pwconf": {
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "notmatch": "Passwords didn't match.",
+            "req": "Password confirmation is required.",
+            "text": "Repeat password :"
+        },
+        "redir-msg": "After 5 seconds you will be redirected to the main page",
+        "reg": {
+            "btn": "e-mail",
+            "with": "Register with"
+        },
+        "success-msg": "Registration successful. We sent you mail to confirm your profile.",
+        "success-msg-social": "Registration successful. You can login with your social profile.",
+        "success-msg-social-mail": "Registration successful. We sent you mail to confirm your social profile.",
+        "terms": "Terms of service",
+        "uname": {
+            "maxlen": "Maximum 15 characters long.",
+            "minlen": "At least 5 characters long.",
+            "req": "Username is required.",
+            "text": "User Name :"
+        }
+    },
+    "reset-password": {
+        "err-msg": "Reset failed.",
+        "pw": {
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "req": "Password is required.",
+            "text": "Password :"
+        },
+        "pwconf": {
+            "maxlen": "Maximum 10 characters long.",
+            "minlen": "At least 6 characters long.",
+            "notmatch": "Passwords didn't match.",
+            "req": "Password confirmation is required.",
+            "text": "Repeat password :"
+        },
+        "reset": "Reset password",
+        "success-msg": "Password successfully reset. You can now log in with the new credentials."
+    },
+    "separator": "or",
+    "social-buttons": {
+        "show": "Show more"
+    },
+    "social-connection-modal": {
+        "cancel": "Cancel",
+        "connect": "Connect socials",
+        "err-msg": "Social provider connection failed."
+    },
+    "statistics": {
+        "all": "All",
+        "date": "Date",
+        "end": "End date",
+        "lot": {
+            "id": "Parking lot id",
+            "title": "Parking Lot"
+        },
+        "no-results": {
+            "msg": "It seems nothing for this calendar period what you are looking for.",
+            "text": "No results found."
+        },
+        "reset": "Reset",
+        "start": "Start date",
+        "status": "Status",
+        "time": "Time"
+    },
+    "user-profile": {
+        "back": "Back",
+        "connect": "Connect socials",
+        "del": "Delete",
+        "del-success": "Profile successfully deleted.",
+        "edit": "Edit",
+        "err": {
+            "msg": "Please click on Back button.",
+            "text": "Something went wrong."
+        },
+        "err-msg": "Something went wrong.",
+        "fn": "firstname",
+        "ln": "lastname",
+        "status": "status",
+        "success-msg": "Profile successfully updated.",
+        "tooltips": {
+            "acc-photo": "Account photo",
+            "connect": "Connect social services login",
+            "del": "Permanently delete user account",
+            "edit": "Edit user information",
+            "uname": "Username"
+        }
+    }
+}

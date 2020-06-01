@@ -13,16 +13,14 @@
 
     <div class="form-group mx-auto text-center">
         <div class="mx-auto m-3">
-            Please enter your email address. We will send you an email to reset
-            your password.
+            {{ 'forgot-pass-form.text' | translate }}
         </div>
 
         <label for="email"></label>
         <div class="input-group mx-auto text-center w-20rem">
             <div class="input-group-append">
                 <span class="input-group-text">
-                    <i class="fa fa-envelope"></i
-                    ></span>
+                    <i class="fa fa-envelope"></i></span>
             </div>
             <input
                 [(ngModel)]="this.email"
@@ -36,26 +34,25 @@
                 type="email"
             />
         </div>
-        <!--                    <autocomplete givenPlaceHolder="Your email address"-->
-        <!--                                  (selectedValue)="handleSelect($event)"></autocomplete>-->
+        <!-- <autocomplete givenPlaceHolder="Your email address"-->
+        <!--               (selectedValue)="handleSelect($event)"></autocomplete>-->
 
         <div
             *ngIf="mail.invalid && this.submitted"
             class="alert alert-danger font-error mx-auto text-center w-20rem"
         >
             <ng-container *ngIf="mail.errors.required">
-                Email is required.<br/>
+                {{ 'forgot-pass-form.email.req' | translate }}<br/>
             </ng-container>
             <ng-container *ngIf="mail.errors.minlength">
-                At least 8 characters long.<br/>
+                {{ 'forgot-pass-form.email.minlen' | translate }}<br/>
             </ng-container>
             <ng-container *ngIf="mail.errors.maxlength">
-                Maximum 35 characters long.<br/>
+                {{ 'forgot-pass-form.email.maxlen' | translate }}<br/>
             </ng-container>
-            <!--                        <div *ngIf="mail.errors.forbiddenName">-->
             <ng-container *ngIf="mail.errors.pattern">
-                Should contain @<br/>
-                A-Z, a-z, 0-9 symbols and "_", ".".
+                {{ 'common.constraints.email.content' | translate | translateCut:0 }} <br/>
+                {{ 'common.constraints.email.content' | translate | translateCut:1 }}
             </ng-container>
         </div>
     </div>
@@ -68,7 +65,7 @@
             class="btn btn-default submit-btn full-width form-group mx-auto text-center rounded-pill mt-3 mb-n2"
             type="submit"
         >
-            Send email&nbsp;&nbsp;<i class="far fa-envelope"></i>
+            {{ 'forgot-pass-form.send' | translate }} &nbsp;<i class="far fa-envelope"></i>
         </button>
     </div>
 </form>

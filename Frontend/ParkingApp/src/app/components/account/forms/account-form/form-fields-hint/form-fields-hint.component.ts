@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 
@@ -7,12 +7,9 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
     templateUrl: './form-fields-hint.component.html',
     styleUrls: ['./form-fields-hint.component.scss']
 })
-export class FormFieldsHintComponent implements OnInit {
+export class FormFieldsHintComponent {
 
     constructor(public activeModal: NgbActiveModal) {
-    }
-
-    ngOnInit() {
     }
 
 }
