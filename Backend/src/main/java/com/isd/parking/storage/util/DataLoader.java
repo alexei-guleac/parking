@@ -2,9 +2,9 @@ package com.isd.parking.storage.util;
 
 import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.models.subjects.ParkingLot;
-import com.isd.parking.services.ParkingLotService;
-import com.isd.parking.services.implementations.ParkingLotDBServiceImpl;
-import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.repository.ParkingLotLocalStorage;
+import com.isd.parking.repository.ParkingLotRepository;
+import com.isd.parking.repository.ParkingLotStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static com.isd.parking.utilities.ColorConsoleOutput.*;
@@ -33,15 +34,15 @@ public class DataLoader {
     @Value("${parking.lots.number.permasterboard}")
     private String masterParkingLotsNumber;
 
-    private final ParkingLotDBServiceImpl parkingLotDBService;
+    private final ParkingLotRepository parkingLotRepository;
 
-    private final ParkingLotLocalServiceImpl parkingLotLocalService;
+    private final ParkingLotLocalStorage parkingLotLocalStorage;
 
     @Autowired
-    public DataLoader(ParkingLotDBServiceImpl parkingLotDBService,
-                      ParkingLotLocalServiceImpl parkingLotLocalService) {
-        this.parkingLotDBService = parkingLotDBService;
-        this.parkingLotLocalService = parkingLotLocalService;
+    public DataLoader(ParkingLotRepository parkingLotDBService,
+                      ParkingLotLocalStorage parkingLotLocalStorage) {
+        this.parkingLotRepository = parkingLotDBService;
+        this.parkingLotLocalStorage = parkingLotLocalStorage;
     }
 
     /**
@@ -54,7 +55,7 @@ public class DataLoader {
     public void loadDatabase() {
         @NotNull Date date = new Date(System.currentTimeMillis());
         int totalParkingLotsNumber = Integer.parseInt(this.totalParkingLotsNumber);
-        long numberOfParkLotsInDatabase = parkingLotDBService.countAll();
+        long numberOfParkLotsInDatabase = parkingLotRepository.count();
 
         // if db empty
         if (numberOfParkLotsInDatabase == 0) {
@@ -67,46 +68,58 @@ public class DataLoader {
                     j = 0;
                 }
                 // initial saving parking lots to local Java memory
-                parkingLotLocalService.save(
+                parkingLotLocalStorage.save(
                     new ParkingLot(
                         Long.valueOf(masterBoardPrefix + "" + j), i + 1, date, ParkingLotStatus.FREE)
                 );
             }
         } else {
-            for (ParkingLot parkingLot : parkingLotDBService.findAll()) {
+            for (ParkingLot parkingLot : parkingLotRepository.findAll()) {
                 // saving parking lots state to local Java memory from Database
-                parkingLotLocalService.save(parkingLot);
+                parkingLotLocalStorage.save(parkingLot);
             }
         }
 
         // show all parking lots from database
-        fetchParkingLots(parkingLotDBService, blTxt(" from DATABASE:"));
+        fetchParkingLots(parkingLotRepository, blTxt(" from DATABASE:"));
         // show all parking lots from local Java memory
-        fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
+        fetchParkingLots(parkingLotLocalStorage, redTxt(" from LOCAL Java memory:"));
     }
 
     /**
-     * Get and show to console all parking lots from specified storage (in-memory or database)
+     * Get and show to console all parking lots from in-memory storage
      *
-     * @param parkingLotService - target parking lot service
+     * @param parkingLotStorage - target parking lot storage
      * @param from              - target source console indicator
      */
-    public void fetchParkingLots(@NotNull ParkingLotService parkingLotService, String from) {
+    public void fetchParkingLots(@NotNull ParkingLotStorage parkingLotStorage, String from) {
+        fetchData(from, parkingLotStorage.count(),
+            parkingLotStorage.findAll(), parkingLotStorage.findById(11L));
+    }
+
+    /**
+     * Get and show to console all parking lots from database
+     *
+     * @param parkingLotRepository - target parking lot storage
+     * @param from                 - target source console indicator
+     */
+    public void fetchParkingLots(@NotNull ParkingLotRepository parkingLotRepository, String from) {
+        fetchData(from, parkingLotRepository.count(),
+            parkingLotRepository.findAll(), parkingLotRepository.findById(11L));
+    }
+
+    private void fetchData(String from, long count, List<ParkingLot> all, Optional<ParkingLot> byId) {
         printSeparator();
         log.info(methodMsg("ParkingLot's found with ") + puBrTxt("findAll()") + grTxt(from));
-        long numberOfParkLotsInStorage = parkingLotService.countAll();
-        log.info(methodMsg("Total number: " + puBrTxt("" + numberOfParkLotsInStorage)));
-        for (@NotNull ParkingLot parkingLot : parkingLotService.findAll()) {
+        log.info(methodMsg("Total number: " + puBrTxt("" + count)));
+        for (@NotNull ParkingLot parkingLot : all) {
             log.info(parkingLot.toString());
         }
         log.info("");
-
         // fetch an individual parking lot by ID
-        Optional<ParkingLot> parkingLot = parkingLotService.findById(11L);
-
         log.info(grTxt("Parking Lot found with ") + puBrTxt("findById(1L):"));
         printSeparator();
-        log.info(parkingLot.toString());
+        log.info(byId.toString());
         log.info("");
     }
 

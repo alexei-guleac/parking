@@ -1,15 +1,10 @@
 package com.isd.parking.web.rest.controllers.account;
 
 import com.isd.parking.config.SwaggerConfig;
-import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.models.users.SocialUser;
-import com.isd.parking.models.users.User;
 import com.isd.parking.models.users.UserLdap;
-import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.storage.ldap.UserServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
-import com.isd.parking.web.rest.payload.ActionSuccessResponse;
-import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.UpdateUserRequest;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
 import java.util.Map;
-
-import static com.isd.parking.models.users.UserLdap.getUserLdapProperty;
-import static com.isd.parking.models.users.UserLdap.userLdapClassFieldsList;
-import static com.isd.parking.storage.ldap.LdapConstants.USER_SOCIALS_ATTRIBUTE;
-import static com.isd.parking.storage.ldap.LdapConstants.USER_UID_ATTRIBUTE;
 
 
 /**
@@ -40,21 +29,9 @@ public class UserController {
 
     private final UserServiceImpl userService;
 
-    private final UserMapper userMapper;
-
-    private final SmartLocaleResolver localeResolver;
-
-    private final ResponseEntityFactory responseEntityFactory;
-
     @Autowired
-    public UserController(UserServiceImpl userService,
-                          UserMapper userMapper,
-                          SmartLocaleResolver localeResolver,
-                          ResponseEntityFactory responseEntityFactory) {
+    public UserController(UserServiceImpl userService) {
         this.userService = userService;
-        this.userMapper = userMapper;
-        this.localeResolver = localeResolver;
-        this.responseEntityFactory = responseEntityFactory;
     }
 
     /**
@@ -79,12 +56,7 @@ public class UserController {
     @ResponseBody
     @PostMapping(ApiEndpoints.profile)
     public SocialUser getUserByUsername(@RequestBody String username) {
-        UserLdap userFound = userService.findById(username);
-        if (userFound == null) {
-            return null;
-        } else {
-            return userMapper.userLdapToSocialUser(userFound);
-        }
+        return userService.getUserByUsername(username);
     }
 
     /**
@@ -110,37 +82,7 @@ public class UserController {
     @PostMapping(ApiEndpoints.profileUpdate)
     public @NotNull ResponseEntity<?> updateUser(@RequestBody @NotNull UpdateUserRequest updateUserRequest,
                                                  @RequestHeader Map<String, String> headers) {
-
-        final User user = updateUserRequest.getUser();
-        String username = updateUserRequest.getUsername();
-        final UserLdap userFound = userService.findById(updateUserRequest.getUsername());
-        final Locale locale = localeResolver.resolveLocale(headers);
-
-        if (userFound != null) {
-            // map input user to LDAP user
-            final UserLdap userForUpdate = userMapper.userToUserLdap(user);
-
-            // update user attribute based on its availability in the user modifying request
-            for (@NotNull String field : userLdapClassFieldsList) {
-                Object propertyValue = getUserLdapProperty(userForUpdate, field);
-                // if this field is present user modifying request update it
-                if (propertyValue != null) {
-                    if (field.equals(USER_UID_ATTRIBUTE)) {
-                        userService.updateUsername(username, String.valueOf(propertyValue));
-                        username = String.valueOf(propertyValue);
-                    } else if (field.equals(USER_SOCIALS_ATTRIBUTE)) {
-                        continue;
-                    } else {
-                        log.info(field + " " + propertyValue);
-                        userService.updateUser(username, field, String.valueOf(propertyValue));
-                    }
-                }
-            }
-            return ResponseEntity.ok(new ActionSuccessResponse(true));
-
-        } else {
-            return responseEntityFactory.userNotExists(locale);
-        }
+        return userService.updateUser(updateUserRequest, headers);
     }
 
     /**
@@ -165,16 +107,7 @@ public class UserController {
     @PostMapping(ApiEndpoints.profileDelete)
     public @NotNull ResponseEntity<?> deleteUser(@RequestBody String username,
                                                  @RequestHeader Map<String, String> headers) {
-
-        final Locale locale = localeResolver.resolveLocale(headers);
-        UserLdap userFound = userService.findById(username);
-
-        if (userFound != null) {
-            userService.deleteUserById(username);
-            return ResponseEntity.ok(new ActionSuccessResponse(true));
-        } else {
-            return responseEntityFactory.userNotExists(locale);
-        }
+        return userService.deleteUser(username, headers);
     }
 
     /**

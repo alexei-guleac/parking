@@ -1,7 +1,7 @@
 /**
  * JSON Web Token for user authorization in system
  */
-export class JWTToken {
+export class JsonWebToken {
     sub: string;
 
     aud: string;

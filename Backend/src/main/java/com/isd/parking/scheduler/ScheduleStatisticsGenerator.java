@@ -2,7 +2,7 @@ package com.isd.parking.scheduler;
 
 import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.models.subjects.ParkingLot;
-import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
+import com.isd.parking.services.implementations.ParkingLotServiceImpl;
 import com.isd.parking.services.implementations.StatisticsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,27 +36,27 @@ public class ScheduleStatisticsGenerator {
     @Value("${scheduler.generate-stats.enabled}")
     private boolean generatorEnabled;
 
-    private final ParkingLotLocalServiceImpl parkingLotLocalService;
+    private final ParkingLotServiceImpl parkingLotService;
 
     private final StatisticsServiceImpl statisticsService;
 
     @Autowired
-    public ScheduleStatisticsGenerator(ParkingLotLocalServiceImpl parkingLotLocalService,
+    public ScheduleStatisticsGenerator(ParkingLotServiceImpl parkingLotService,
                                        StatisticsServiceImpl statisticsService) {
-        this.parkingLotLocalService = parkingLotLocalService;
+        this.parkingLotService = parkingLotService;
         this.statisticsService = statisticsService;
     }
 
     /**
      * Every day at 9:30 AM generate 100 new statistics records from last day 9-30 -- 18-30 period
      */
-    @Scheduled(cron = "0 30 9 * * ?")
+    @Scheduled(cron = "0 10 9 * * ?")
     public void generateStats() {
 
         if (generatorEnabled) {
             log.info(methodMsg("Generate new stats schedule job executing..."));
 
-            final List<ParkingLot> parkingLots = parkingLotLocalService.findAll();
+            final List<ParkingLot> parkingLots = parkingLotService.findAll();
             final List<Integer> parkingLotsNumbers = parkingLots.stream()
                 .map(ParkingLot::getNumber)
                 .collect(Collectors.toList());

@@ -1,17 +1,30 @@
 package com.isd.parking.storage.ldap;
 
+import com.isd.parking.config.locale.SmartLocaleResolver;
+import com.isd.parking.models.users.SocialUser;
+import com.isd.parking.models.users.User;
 import com.isd.parking.models.users.UserLdap;
+import com.isd.parking.models.users.UserMapper;
 import com.isd.parking.services.UserService;
+import com.isd.parking.web.rest.payload.ActionSuccessResponse;
+import com.isd.parking.web.rest.payload.ResponseEntityFactory;
+import com.isd.parking.web.rest.payload.account.UpdateUserRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import javax.naming.directory.DirContext;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+import static com.isd.parking.models.users.UserLdap.getUserLdapProperty;
+import static com.isd.parking.models.users.UserLdap.userLdapClassFieldsList;
+import static com.isd.parking.storage.ldap.LdapConstants.USER_SOCIALS_ATTRIBUTE;
 import static com.isd.parking.storage.ldap.LdapConstants.USER_UID_ATTRIBUTE;
 
 
@@ -22,14 +35,42 @@ import static com.isd.parking.storage.ldap.LdapConstants.USER_UID_ATTRIBUTE;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final UserMapper userMapper;
+
+    private final SmartLocaleResolver localeResolver;
+
+    private final ResponseEntityFactory responseEntityFactory;
+
     private final UserLdapClient userLdapClient;
 
     private final UserLdapFileService userLdapFileService;
 
     @Autowired
-    public UserServiceImpl(UserLdapClient userLdapClient, UserLdapFileService userLdapFileService) {
+    public UserServiceImpl(UserMapper userMapper,
+                           SmartLocaleResolver localeResolver,
+                           ResponseEntityFactory responseEntityFactory,
+                           UserLdapClient userLdapClient,
+                           UserLdapFileService userLdapFileService) {
+        this.userMapper = userMapper;
+        this.localeResolver = localeResolver;
+        this.responseEntityFactory = responseEntityFactory;
         this.userLdapClient = userLdapClient;
         this.userLdapFileService = userLdapFileService;
+    }
+
+    /**
+     * Retrieve user profile from database
+     *
+     * @param username - target username
+     * @return target user
+     */
+    public SocialUser getUserByUsername(String username) {
+        UserLdap userFound = this.findById(username);
+        if (userFound == null) {
+            return null;
+        } else {
+            return userMapper.userLdapToSocialUser(userFound);
+        }
     }
 
     /**
@@ -47,6 +88,47 @@ public class UserServiceImpl implements UserService {
         userLdapFileService.save(user);
 
         return true;
+    }
+
+    /**
+     * Modifying user profile in database
+     *
+     * @param updateUserRequest - request with user information for modifying
+     * @return HTTP response with user password reset processing error or success details
+     */
+    public @NotNull ResponseEntity<?> updateUser(@NotNull UpdateUserRequest updateUserRequest,
+                                                 Map<String, String> headers) {
+
+        final User user = updateUserRequest.getUser();
+        String username = updateUserRequest.getUsername();
+        final UserLdap userFound = this.findById(updateUserRequest.getUsername());
+        final Locale locale = localeResolver.resolveLocale(headers);
+
+        if (userFound != null) {
+            // map input user to LDAP user
+            final UserLdap userForUpdate = userMapper.userToUserLdap(user);
+
+            // update user attribute based on its availability in the user modifying request
+            for (@NotNull String field : userLdapClassFieldsList) {
+                Object propertyValue = getUserLdapProperty(userForUpdate, field);
+                // if this field is present user modifying request update it
+                if (propertyValue != null) {
+                    if (field.equals(USER_UID_ATTRIBUTE)) {
+                        this.updateUsername(username, String.valueOf(propertyValue));
+                        username = String.valueOf(propertyValue);
+                    } else if (field.equals(USER_SOCIALS_ATTRIBUTE)) {
+                        continue;
+                    } else {
+                        log.info(field + " " + propertyValue);
+                        this.updateUser(username, field, String.valueOf(propertyValue));
+                    }
+                }
+            }
+            return ResponseEntity.ok(new ActionSuccessResponse(true));
+
+        } else {
+            return responseEntityFactory.userNotExists(locale);
+        }
     }
 
     /**
@@ -113,6 +195,26 @@ public class UserServiceImpl implements UserService {
         userLdapFileService.updateUserPassword(user.getUid(), password);
 
         return true;
+    }
+
+    /**
+     * Delete user profile from database
+     *
+     * @param username - target username
+     * @return HTTP response with user deleting error or success details
+     */
+    public @NotNull ResponseEntity<?> deleteUser(String username,
+                                                 Map<String, String> headers) {
+
+        final Locale locale = localeResolver.resolveLocale(headers);
+        UserLdap userFound = this.findById(username);
+
+        if (userFound != null) {
+            this.deleteUserById(username);
+            return ResponseEntity.ok(new ActionSuccessResponse(true));
+        } else {
+            return responseEntityFactory.userNotExists(locale);
+        }
     }
 
     /**

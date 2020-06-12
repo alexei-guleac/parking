@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
-import { ResetPasswordRequest } from '@app/models/payload/ResetPasswordRequest';
+import { ResetPasswordRequest } from '@app/models/payload/reset-pass-request.payload';
 import { AuthenticationService } from '@app/services/account/auth.service';
 import {
     FormControlService,

@@ -3,11 +3,8 @@ package com.isd.parking.web.rest.controllers;
 import com.isd.parking.config.SwaggerConfig;
 import com.isd.parking.config.locale.SmartLocaleResolver;
 import com.isd.parking.exceptions.ResourceNotFoundException;
-import com.isd.parking.models.enums.ParkingLotStatus;
 import com.isd.parking.models.subjects.ParkingLot;
-import com.isd.parking.services.implementations.ParkingLotLocalServiceImpl;
-import com.isd.parking.services.implementations.StatisticsServiceImpl;
-import com.isd.parking.storage.util.DataLoader;
+import com.isd.parking.services.implementations.ParkingLotServiceImpl;
 import com.isd.parking.web.rest.ApiEndpoints;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.isd.parking.utilities.ColorConsoleOutput.*;
 
 
 /**
@@ -37,25 +30,17 @@ import static com.isd.parking.utilities.ColorConsoleOutput.*;
 @Slf4j
 public class ParkingLotController {
 
-    private final ParkingLotLocalServiceImpl parkingLotLocalService;
-
-    private final StatisticsServiceImpl statisticsService;
-
-    private final DataLoader loader;
+    private final ParkingLotServiceImpl parkingLotService;
 
     private final ResourceBundleMessageSource messageSource;
 
     private final SmartLocaleResolver localeResolver;
 
     @Autowired
-    public ParkingLotController(ParkingLotLocalServiceImpl parkingLotLocalService,
-                                StatisticsServiceImpl statisticsService,
-                                DataLoader loader,
+    public ParkingLotController(ParkingLotServiceImpl parkingLotService,
                                 ResourceBundleMessageSource messageSource,
                                 SmartLocaleResolver localeResolver) {
-        this.parkingLotLocalService = parkingLotLocalService;
-        this.statisticsService = statisticsService;
-        this.loader = loader;
+        this.parkingLotService = parkingLotService;
         this.messageSource = messageSource;
         this.localeResolver = localeResolver;
     }
@@ -74,7 +59,7 @@ public class ParkingLotController {
     })
     @GetMapping(ApiEndpoints.parking)
     public List<ParkingLot> getAllParkingLots() {
-        return parkingLotLocalService.findAll();
+        return parkingLotService.findAll();
     }
 
     /**
@@ -104,7 +89,7 @@ public class ParkingLotController {
 
         final Locale locale = localeResolver.resolveLocale(headers);
 
-        ParkingLot parkingLot = parkingLotLocalService.findById(parkingLotId)
+        ParkingLot parkingLot = parkingLotService.findById(parkingLotId)
             .orElseThrow(() -> new ResourceNotFoundException(
                 messageSource.getMessage("ParkingLotController.not-found", null, locale) + " " + parkingLotId));
 
@@ -132,26 +117,7 @@ public class ParkingLotController {
     )
     @RequestMapping(ApiEndpoints.reserve + "/{id}")
     public boolean reservation(@PathVariable("id") Long parkingLotId) {
-        log.info(methodMsg("Parking lot number in reservation request: "
-            + blTxt(String.valueOf(parkingLotId))));
-
-        Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(parkingLotId);
-        @NotNull AtomicBoolean hasErrors = new AtomicBoolean(false);
-
-        // if lot with this number exists in database
-        parkingLotOptional.ifPresent(parkingLot -> {
-            // if parking lot is already reserved
-            if (parkingLot.getStatus() == ParkingLotStatus.RESERVED) {
-                hasErrors.set(true);
-            } else {
-                switchStatus(parkingLot, ParkingLotStatus.RESERVED);
-            }
-        });
-
-        // show all parking lots from local Java memory to verify change
-        loader.fetchParkingLots(parkingLotLocalService, redTxt(" from LOCAL Java memory:"));
-
-        return !hasErrors.get();
+        return parkingLotService.reservation(parkingLotId);
     }
 
     /**
@@ -175,40 +141,6 @@ public class ParkingLotController {
     )
     @RequestMapping(ApiEndpoints.unreserve + "/{id}")
     public boolean cancelReservation(@PathVariable("id") Long parkingLotId) {
-
-        log.info(methodMsg("Parking lot number in cancel reservation request: "
-            + blTxt(String.valueOf(parkingLotId))));
-        Optional<ParkingLot> parkingLotOptional = parkingLotLocalService.findById(parkingLotId);
-        @NotNull AtomicBoolean hasErrors = new AtomicBoolean(false);
-
-        // if lot with this number exists in database
-        parkingLotOptional.ifPresent(parkingLot -> {
-            // unreserve only if lot has not already reserved
-            if (parkingLot.getStatus() != ParkingLotStatus.RESERVED) {
-                hasErrors.set(true);
-            } else {
-                // if parking lot is not reserved
-                switchStatus(parkingLot, ParkingLotStatus.FREE);
-            }
-        });
-
-        return !hasErrors.get();
-    }
-
-    /**
-     * Set status of parking lot
-     *
-     * @param parkingLot - target parking lot
-     * @param newStatus  - target status
-     */
-    private void switchStatus(@NotNull ParkingLot parkingLot, ParkingLotStatus newStatus) {
-        parkingLot.setStatus(newStatus);       //get enum value from string
-        parkingLot.setUpdatedNow();
-        log.info(methodMsg("updated parking lot: " + blTxt(String.valueOf(parkingLot))));
-
-        //saving in local Java memory
-        parkingLotLocalService.save(parkingLot);
-        //save new statistics record to database
-        statisticsService.save(parkingLot);
+        return parkingLotService.cancelReservation(parkingLotId);
     }
 }

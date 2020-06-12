@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthenticationRequest } from '@app/models/payload/AuthenticationRequest';
-import { ResetPasswordRequest } from '@app/models/payload/ResetPasswordRequest';
+import { AuthenticationRequest } from '@app/models/payload/auth-request.payload';
+import { ResetPasswordRequest } from '@app/models/payload/reset-pass-request.payload';
 import { User } from '@app/models/User';
 import {
     AccountSessionStorageService,

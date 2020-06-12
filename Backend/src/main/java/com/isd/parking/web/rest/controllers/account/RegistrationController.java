@@ -1,19 +1,8 @@
 package com.isd.parking.web.rest.controllers.account;
 
-import com.isd.parking.config.locale.SmartLocaleResolver;
-import com.isd.parking.models.AccountOperation;
-import com.isd.parking.models.ConfirmationRecord;
-import com.isd.parking.models.users.User;
-import com.isd.parking.models.users.UserLdap;
-import com.isd.parking.models.users.UserMapper;
-import com.isd.parking.services.implementations.ConfirmationServiceImpl;
-import com.isd.parking.services.implementations.EmailSenderServiceImpl;
-import com.isd.parking.storage.ldap.UserServiceImpl;
+import com.isd.parking.services.RegistrationService;
 import com.isd.parking.web.rest.ApiEndpoints;
-import com.isd.parking.web.rest.payload.DeviceInfo;
-import com.isd.parking.web.rest.payload.ResponseEntityFactory;
 import com.isd.parking.web.rest.payload.account.register.RegistrationRequest;
-import com.isd.parking.web.rest.payload.account.register.RegistrationSuccessResponse;
 import com.isd.parking.web.rest.payload.account.register.SocialRegisterRequest;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +14,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
-import java.util.Locale;
 import java.util.Map;
 
-import static com.isd.parking.utilities.AppStringUtils.generateCommonLangPassword;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 
@@ -46,31 +31,11 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
     description = "Operations pertaining to user registration in system")
 public class RegistrationController {
 
-    private final UserServiceImpl userService;
-
-    private final ConfirmationServiceImpl confirmationTokenService;
-
-    private final EmailSenderServiceImpl emailSenderService;
-
-    private final UserMapper userMapper;
-
-    private final SmartLocaleResolver localeResolver;
-
-    private final ResponseEntityFactory responseEntityFactory;
+    private final RegistrationService registrationService;
 
     @Autowired
-    public RegistrationController(UserServiceImpl userService,
-                                  ConfirmationServiceImpl confirmationTokenService,
-                                  EmailSenderServiceImpl emailSenderService,
-                                  UserMapper userMapper,
-                                  SmartLocaleResolver localeResolver,
-                                  ResponseEntityFactory responseEntityFactory) {
-        this.userService = userService;
-        this.confirmationTokenService = confirmationTokenService;
-        this.emailSenderService = emailSenderService;
-        this.userMapper = userMapper;
-        this.localeResolver = localeResolver;
-        this.responseEntityFactory = responseEntityFactory;
+    public RegistrationController(RegistrationService registrationService) {
+        this.registrationService = registrationService;
     }
 
     /**
@@ -94,41 +59,7 @@ public class RegistrationController {
     @RequestMapping(method = POST)
     public @NotNull ResponseEntity<?> registration(@RequestBody @NotNull RegistrationRequest request,
                                                    @RequestHeader Map<String, String> headers) {
-        final User user = request.getUser();
-        final String username = user.getUsername();
-        final String email = user.getEmail();
-        final Locale locale = localeResolver.resolveLocale(headers);
-
-        //verify if user exists in DB and throw error, else create
-        boolean userExists = userService.searchUser(username);
-        boolean emailExists = userService.searchUsersByEmail(email);
-
-        if (userExists) {
-            return responseEntityFactory.usernameExists(locale);
-        } else if (emailExists) {
-            final UserLdap existedUser = userService.getUserByEmail(email);
-
-            // check account confirmation state
-            // if user exists but account confirmation is expired (did not have time or forgot to confirm)
-            // temporary unconfirmed user with this email will be deleted and new one created
-            assert existedUser != null;
-            if (existedUser.accountConfirmationIsExpired()) {
-                final UserLdap newUser = userMapper.userToUserLdap(user);
-                userService.deleteUser(newUser);
-
-                return processUserCreation(newUser, request.getDeviceInfo(), locale);
-            }
-            // if user exists and account confirmation link is valid
-            if (existedUser.accountConfirmationValid()) {
-                return responseEntityFactory.emailExistsWaiting(locale);
-            }
-
-            return responseEntityFactory.emailExists(locale);
-        } else {
-            // create new user
-            final UserLdap newUser = userMapper.userToUserLdap(user);
-            return processUserCreation(newUser, request.getDeviceInfo(), locale);
-        }
+        return registrationService.registration(request, headers);
     }
 
     /**
@@ -152,86 +83,7 @@ public class RegistrationController {
     @RequestMapping(ApiEndpoints.socialLogin)
     public @NotNull ResponseEntity<?> socialRegistration(@RequestBody @NotNull SocialRegisterRequest request,
                                                          @RequestHeader Map<String, String> headers) {
-        final User user = request.getUser();
-        final String email = user.getEmail();
-        final String id = request.getId();
-        final String provider = request.getSocialProvider();
-        final Locale locale = localeResolver.resolveLocale(headers);
-
-        //verify if user exists in db and throw error, else create
-        final UserLdap userFound = userService.getUserBySocialId(id, provider);
-        if (userFound != null) {
-            return responseEntityFactory.socialIdExists(locale);
-        } else {
-            if (email != null) {
-                final UserLdap existedUser = userService.getUserByEmail(email);
-                // same emails not allowed
-                if (existedUser != null) {
-                    // case when confirmation expired and confirm impossible anymore
-                    if (existedUser.accountConfirmationIsExpired()) {
-                        final UserLdap newUser = userMapper.userToUserLdap(user);
-                        newUser.prepareSocialUser(id, provider);
-                        newUser.setUserPassword(generateCommonLangPassword());
-
-                        userService.deleteUser(newUser);
-                        return processUserCreation(newUser, request.getDeviceInfo(), locale);
-                    }
-                    if (existedUser.accountConfirmationValid()) {
-                        return responseEntityFactory.socialExistsWaiting(locale);
-                    }
-
-                    return responseEntityFactory.socialEmailExists(locale);
-                }
-            }
-            // else create new user
-            final UserLdap newUser = userMapper.userToUserLdap(user);
-            newUser.prepareSocialUser(id, provider);
-
-            return processUserCreation(newUser, request.getDeviceInfo(), locale);
-        }
-    }
-
-    /**
-     * Method creates new user in database and forms a message for account confirmation
-     * (additional common registration part)
-     *
-     * @param newUser    - user to be saved in database
-     * @param deviceInfo - user device information for region targeting
-     * @return HTTP response with registration error or success details
-     */
-    private @NotNull ResponseEntity<?> processUserCreation(@NotNull UserLdap newUser, DeviceInfo deviceInfo, Locale locale) {
-        userService.createUser(newUser);
-
-        final UserLdap createdUser = userService.findById(newUser.getUid());
-        if (createdUser == null) {
-            return responseEntityFactory.userNotCreated(locale);
-        } else {
-            if (createdUser.getEmail() != null) {
-                createConfirmation(createdUser, deviceInfo);
-            }
-            return ResponseEntity.ok(
-                new RegistrationSuccessResponse(true, createdUser.getEmail() != null));
-        }
-    }
-
-    /**
-     * Method creates user registration confirmation
-     *
-     * @param createdUser - target user
-     * @param deviceInfo  - user device information for region targeting
-     */
-    private void createConfirmation(@NotNull UserLdap createdUser, DeviceInfo deviceInfo) {
-        // Create token
-        @NotNull ConfirmationRecord confirmationRecord = new ConfirmationRecord(createdUser.getUid(),
-            AccountOperation.ACCOUNT_CONFIRMATION);
-        // Save it
-        confirmationTokenService.save(confirmationRecord);
-        // Send email
-        try {
-            emailSenderService.sendRegistrationConfirmMail(createdUser, confirmationRecord, deviceInfo);
-        } catch (@NotNull IOException | MessagingException e) {
-            e.printStackTrace();
-        }
+        return registrationService.socialRegistration(request, headers);
     }
 }
 

@@ -9,7 +9,27 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="acba043a-629c-4317-a700-d25b74f83a82" name="Default Changelist" comment="" />
+    <list default="true" id="acba043a-629c-4317-a700-d25b74f83a82" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/Arduino_code.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/exceptions/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/models/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/scheduler/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/storage/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/utilities/package-info.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/web/package-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/repository/ParkingLotLocalStorage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/repository/ParkingLotLocalStorage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/scheduler/ScheduleStatisticsGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/scheduler/ScheduleStatisticsGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/security/filter/JwtTokenAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Backend/src/main/java/com/isd/parking/security/filter/JwtTokenAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../../Backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/access-denied/access-denied.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/access-denied/access-denied.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/no-connection/no-connection.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/no-connection/no-connection.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/page-not-found/page-not-found.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/app/components/pages/errors/page-not-found/page-not-found.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/assets/i18n/ru.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/ParkingApp/src/assets/i18n/ru.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/ParkingApp/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/ParkingApp/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../WebSocketClientApp/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../WebSocketClientApp/.idea/misc.xml" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,8 +39,13 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
   <component name="ProjectId" id="1cMb0SwM9d6d2nxWeqQ9VoEZMNZ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
@@ -48,10 +73,22 @@
       <updated>1590341186548</updated>
       <workItem from="1590341193551" duration="3143000" />
       <workItem from="1591101505786" duration="407000" />
+      <workItem from="1591769957430" duration="1281000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -47,7 +47,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
     private final TemplateEngine templateEngine;
 
-    private final MessageSource messageSource;
+    private final ResourceBundleMessageSource messageSource;
 
     @Value("${spring.mail.from.email}")
     private String from;
@@ -58,7 +58,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     @Autowired
     public EmailSenderServiceImpl(@Qualifier("gmail") JavaMailSender mailSender,
                                   @Qualifier("templateEngine") TemplateEngine templateEngine,
-                                  MessageSource messageSource) {
+                                  ResourceBundleMessageSource messageSource) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
         this.messageSource = messageSource;
@@ -81,6 +81,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 
         final String userDeviceLanguage = deviceInfo.getLanguage();
         final Locale locale = getLocale(userDeviceLanguage);
+        log.info(String.valueOf(messageSource));
         final @NotNull String subject =
             messageSource.getMessage("email.registration.subject", null, locale);
         final @NotNull String templateName = "confirm_account_mail.html";

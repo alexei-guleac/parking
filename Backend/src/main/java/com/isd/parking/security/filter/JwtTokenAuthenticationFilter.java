@@ -11,7 +11,6 @@ import com.nimbusds.jwt.SignedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.springframework.context.MessageSource;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.GenericFilterBean;
-import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,18 +47,14 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
     private final String secretKey;
 
-    private final MessageSource messageSource;
-
-    private final LocaleResolver localeResolver;
+    // private final MessageSource messageSource;
+    //
+    // private final LocaleResolver localeResolver;
 
     public JwtTokenAuthenticationFilter(@NotNull String path,
-                                        String secretKey,
-                                        MessageSource messageSource,
-                                        LocaleResolver localeResolver) {
+                                        String secretKey) {
         this.requestMatcher = new AntPathRequestMatcher(path);
         this.secretKey = secretKey;
-        this.messageSource = messageSource;
-        this.localeResolver = localeResolver;
     }
 
     /**
@@ -112,10 +106,14 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
 
         } catch (JwtExpirationException ex) {
             throw new AccountExpiredException(
-                messageSource.getMessage("jwt.not-valid", null, localeResolver.resolveLocale(request)));
+                "Account authorization token is not valid anymore"
+                // messageSource.getMessage("jwt.not-valid", null, localeResolver.resolveLocale(request))
+            );
         } catch (@NotNull JwtBadSignatureException | ParseException | JOSEException ex) {
             throw new MalformedJwtException(
-                messageSource.getMessage("jwt.malformed", null, localeResolver.resolveLocale(request)));
+                "Authorization token is malformed"
+                // messageSource.getMessage("jwt.malformed", null, localeResolver.resolveLocale(request))
+            );
         }
 
         /* SecurityContext is then cleared since we are stateless.*/

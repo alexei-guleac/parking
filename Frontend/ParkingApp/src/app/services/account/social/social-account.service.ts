@@ -4,7 +4,7 @@ import {
     SocialDisconnectRequest,
     SocialSignInRequest,
     SocialSignUpRequest
-} from '@app/models/payload/SocialSignInRequest';
+} from '@app/models/payload/social-sign-in-request.payload';
 import { HttpClientService } from '@app/services/helpers/http-client.service';
 import { api } from '@app/services/navigation/app.endpoints';
 import { environment } from '@env';

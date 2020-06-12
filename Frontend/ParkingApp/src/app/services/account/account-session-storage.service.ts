@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { JWTToken } from '@app/models/payload/JWTToken';
+import { JsonWebToken } from '@app/models/payload/json-web-token';
 import { JwtHelperService } from '@auth0/angular-jwt';
 
 
@@ -156,7 +156,7 @@ export class AccountSessionStorageService {
         const token = getJwtToken();
 
         if (token) {
-            const decodedToken = this.jwtHelper.decodeToken(token) as JWTToken;
+            const decodedToken = this.jwtHelper.decodeToken(token) as JsonWebToken;
             return decodedToken.roles;
         } else {
             return '';

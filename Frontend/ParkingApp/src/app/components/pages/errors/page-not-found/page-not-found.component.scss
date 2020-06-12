@@ -12,6 +12,7 @@ $font_5: 'sans-serif';
 #notfound {
     position: relative;
     height: 70vh;
+    max-width: 100%;
 
     .notfound {
         position: absolute;
@@ -31,6 +32,7 @@ $font_5: 'sans-serif';
         position: relative;
         z-index: -1;
         height: 12.5rem;
+        max-width: 100%;
         margin: 0 auto 1.25rem;
 
         h1 {

@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 @Repository
 @Slf4j
-public class ParkingLotLocalStorage {
+public class ParkingLotLocalStorage implements ParkingLotStorage {
 
     //Local in-memory storage of parking lots
     private final HashMap<Long, ParkingLot> parkingMap = new HashMap<>();
@@ -27,6 +27,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lots list
      */
+    @Override
     public synchronized @NotNull List<ParkingLot> findAll() {
         // log.info(methodMsg("get all parking lots local list executed..."));
         return new ArrayList<>(parkingMap.values());
@@ -37,6 +38,7 @@ public class ParkingLotLocalStorage {
      *
      * @return specified parking lot
      */
+    @Override
     public synchronized Optional<ParkingLot> findById(Long parkingLotId) {
         ParkingLot parkingLot = parkingMap.get(parkingLotId);
         return Optional.ofNullable(parkingLot);
@@ -47,7 +49,8 @@ public class ParkingLotLocalStorage {
      *
      * @return specified parking lot
      */
-    public Optional<ParkingLot> findByLotNumber(Integer parkingLotNumber) {
+    @Override
+    public Optional<ParkingLot> findByNumber(Integer parkingLotNumber) {
 
         return parkingMap.values().stream()
             .filter(lot -> lot.getNumber().equals(parkingLotNumber))
@@ -60,6 +63,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was saved in database
      */
+    @Override
     public synchronized @Nullable ParkingLot save(@NotNull ParkingLot parkingLot) {
         return parkingMap.put(parkingLot.getId(), parkingLot);
     }
@@ -70,6 +74,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was updated in database
      */
+    @Override
     public synchronized @Nullable ParkingLot update(@NotNull ParkingLot parkingLot) {
         if (parkingMap.containsValue(parkingLot)) {
             return parkingMap.put(parkingLot.getId(), parkingLot);
@@ -82,6 +87,7 @@ public class ParkingLotLocalStorage {
      *
      * @return Parking lot which was saved in database
      */
+    @Override
     public synchronized @Nullable ParkingLot delete(@NotNull ParkingLot parkingLot) {
         if (parkingMap.containsValue(parkingLot)) {
             return parkingMap.remove(parkingLot.getId());
@@ -94,6 +100,7 @@ public class ParkingLotLocalStorage {
      *
      * @return parking lots count
      */
+    @Override
     public synchronized long count() {
         return parkingMap.size();
     }

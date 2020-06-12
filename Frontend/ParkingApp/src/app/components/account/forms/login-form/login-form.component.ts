@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ComponentWithErrorMsg } from '@app/components/account/forms/account-form/account-form.component';
-import { AuthenticationRequest } from '@app/models/payload/AuthenticationRequest';
+import { AuthenticationRequest } from '@app/models/payload/auth-request.payload';
 import { AuthenticationService } from '@app/services/account/auth.service';
 import { FormControlService, togglePassTextType } from '@app/services/account/form-control.service';
 import { SocialProviderService } from '@app/services/account/social/social-provider.service';

@@ -14,7 +14,7 @@ import {
     SocialDisconnectRequest,
     SocialSignInRequest,
     SocialSignUpRequest
-} from '@app/models/payload/SocialSignInRequest';
+} from '@app/models/payload/social-sign-in-request.payload';
 import { User } from '@app/models/User';
 import { AuthenticationService } from '@app/services/account/auth.service';
 import { GithubOauthService } from '@app/services/account/social/github-oauth.service';
