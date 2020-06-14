@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -39,7 +40,14 @@ public class CORSConfig implements WebMvcConfigurer {
         log.info(grTxt("Call from front application"));
         // log.info(grTxt(frontUrl));
         registry.addMapping("/**")
-            .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
+            // .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH")
+            .allowedMethods(
+                String.valueOf(RequestMethod.HEAD),
+                String.valueOf(RequestMethod.GET),
+                String.valueOf(RequestMethod.PUT),
+                String.valueOf(RequestMethod.POST),
+                String.valueOf(RequestMethod.DELETE),
+                String.valueOf(RequestMethod.PATCH))
             .allowedOrigins(frontUrl)
             .allowCredentials(true)
             .maxAge(MAX_AGE_SECS);

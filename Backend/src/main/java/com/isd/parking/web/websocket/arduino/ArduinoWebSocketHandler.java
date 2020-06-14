@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -19,6 +20,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.util.Optional;
 
 import static com.isd.parking.utilities.ColorConsoleOutput.*;
+import static com.isd.parking.web.rest.ApiEndpoints.frontWSTopic;
 
 
 /**
@@ -30,6 +32,8 @@ import static com.isd.parking.utilities.ColorConsoleOutput.*;
 @Component
 public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
+    private final SimpMessagingTemplate simpMessagingTemplate;
+
     private final ParkingLotServiceImpl parkingLotService;
 
     private final StatisticsServiceImpl statisticsService;
@@ -38,8 +42,10 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
     private final String securityToken = "4a0a8679643673d083b23f52c21f27cac2b03fa2";           //{SHA1}arduino
 
     @Autowired
-    public ArduinoWebSocketHandler(ParkingLotServiceImpl parkingLotService,
+    public ArduinoWebSocketHandler(SimpMessagingTemplate simpMessagingTemplate,
+                                   ParkingLotServiceImpl parkingLotService,
                                    StatisticsServiceImpl statisticsService) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.parkingLotService = parkingLotService;
         this.statisticsService = statisticsService;
     }
@@ -114,6 +120,9 @@ public class ArduinoWebSocketHandler extends TextWebSocketHandler {
 
                     parkingLotService.save(parkingLot);
                     statisticsService.save(parkingLot);
+
+                    // send this status to front
+                    simpMessagingTemplate.convertAndSend(frontWSTopic, parkingLot);
                 }
             });
         }

@@ -50,7 +50,7 @@ public class ScheduleStatisticsGenerator {
     /**
      * Every day at 9:30 AM generate 100 new statistics records from last day 9-30 -- 18-30 period
      */
-    @Scheduled(cron = "0 10 9 * * ?")
+    @Scheduled(cron = "0 30 9 * * ?")
     public void generateStats() {
 
         if (generatorEnabled) {

@@ -64,3 +64,8 @@ export class DataService {
             .pipe(map((data) => data.map((st) => Statistics.fromHttp(st))));
     }
 }
+
+export const parseDataFromWsMsg = (message) => {
+    // double parse to get valid ws message body object
+    return JSON.parse(JSON.parse(JSON.stringify(message)))
+}

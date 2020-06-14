@@ -4,12 +4,12 @@ import { parking } from '@app/constants/app-constants';
 import { getParkingLotByIdPredicate, getParkingLotsComparator, ParkingLot } from '@app/models/ParkingLot';
 import { parkingStatuses } from '@app/models/ParkingLotStatus';
 import { AuthenticationService } from '@app/services/account/auth.service';
-import { DataService } from '@app/services/data/data.service';
+import { DataService, parseDataFromWsMsg } from '@app/services/data/data.service';
 import { appRoutes } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { WebSocketApiService } from '@app/services/web-socket-api.service';
 import { NgbTooltip } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateService } from '@ngx-translate/core';
-import { interval, Subscription } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
 
@@ -33,11 +33,13 @@ export class MainComponent implements OnInit {
 
     private selectedParkingLot: ParkingLot;
 
-    private updateSubscription: Subscription;
-
     private action: string;
 
     private noData: Array<number>;
+
+    private webSocketAPI: WebSocketApiService;
+
+    private wsMsgBody: ParkingLot;
 
     constructor(
         private dataService: DataService,
@@ -55,19 +57,24 @@ export class MainComponent implements OnInit {
      * Called once, after the first ngOnChanges()
      */
     ngOnInit() {
+        this.connectToServerViaWS();
+
         // mock up view before server data is loaded
+        this.mockData();
+        this.loadData();
+        this.processUrlParams();
+    }
+
+    private connectToServerViaWS() {
+        this.webSocketAPI = new WebSocketApiService(this);
+        this.connect();
+    }
+
+    private mockData() {
         this.noData = new Array<number>();
         for (let i = 1; i <= parking.lotsNumber; i++) {
             this.noData.push(i);
         }
-        this.loadData();
-        this.processUrlParams();
-
-        const requestPeriod = 3500;
-
-        this.updateSubscription = interval(requestPeriod).subscribe(() => {
-            this.loadData();
-        });
     }
 
     /**
@@ -180,5 +187,34 @@ export class MainComponent implements OnInit {
      */
     private showParkingLotOnMap(id: number) {
         this.navigationService.navigateToParkingLayoutWithExtras(id);
+    }
+
+    connect() {
+        this.webSocketAPI.connect();
+    }
+
+    disconnect() {
+        this.webSocketAPI.disconnect();
+    }
+
+    sendMessage(message: string) {
+        this.webSocketAPI.send(message);
+    }
+
+    handleMessage(message: any) {
+        // double parse to get valid ws message body object
+        this.wsMsgBody = parseDataFromWsMsg(message);
+
+        if (this.wsMsgBody.number && this.wsMsgBody.status) {
+            // console.log(this.wsMsgBody.number);
+            const mapLots = (lot: ParkingLot) => {
+                if (lot.number === this.wsMsgBody.number) {
+                    lot.status = this.wsMsgBody.status;
+                }
+                return lot;
+            };
+
+            this.parkingLots.map(mapLots);
+        }
     }
 }

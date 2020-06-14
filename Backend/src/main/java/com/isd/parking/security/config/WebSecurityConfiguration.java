@@ -55,13 +55,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final String[] applicationPublicAllowedPathArray;
 
     {
-        final String allPoints = "/**";
+        final String allPaths = "/**";
         applicationPublicAllowedPathArray = new String[]{
-                auth + allPoints, login + allPoints, register + allPoints,
-                validateCaptcha, gitOAuth, confirmAction,
-                forgotPassword, resetPassword,
-                parking + allPoints, statisticsByLot + allPoints, arduinoApi, arduinoWS
-            };
+            auth + allPaths, login + allPaths, register + allPaths,
+            validateCaptcha, gitOAuth, confirmAction,
+            forgotPassword, resetPassword,
+            parking + allPaths, statisticsByLot + allPaths,
+            arduinoApi, arduinoWS, frontWS + allPaths, frontWSTopic + allPaths
+        };
     }
 
     // -- swagger ui
@@ -155,6 +156,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             .httpBasic()
             .disable()
             .headers()
+            // allow same origin to frame our site to support iframe SockJS
             .frameOptions().sameOrigin()
             .and()
             /*

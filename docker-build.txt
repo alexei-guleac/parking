@@ -1,0 +1,34 @@
+
+-- сборка локально
+
+docker login --username=yourUsername
+
+mvn install -Dcheckstyle.skip=true -DskiptTests && docker build ./ -t springbootapp && docker-compose up --build -- пересобрать весь проект и запустить
+mvn install -Dcheckstyle.skip=true -DskiptTests && docker build ./ -t springbootapp && docker-compose build -- пересобрать весь проект
+
+docker images
+
+-- push на docker hub
+
+docker tag 145ef0b0a9ff aleks7900/angular-docker-service:latest && docker tag 81617dcec031 aleks7900/springbootapp:latest && docker push aleks7900/angular-docker-service:latest && docker push aleks7900/springbootapp:latest
+
+
+-- на сервере Digital Ocean должен быть docker-compose.yml
+
+-- Connect to Digital ocean via SSH from windows git bash
+base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+  mkdir -p "$HOME/bin" &&
+  curl -L $base/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" &&
+  chmod +x "$HOME/bin/docker-machine.exe"
+
+docker-machine create --driver digitalocean --digitalocean-access-token ${your-access-token} docker-s-2vcpu-2gb-lon1-parking-app
+
+docker-machine ssh docker-s-2vcpu-2gb-lon1-parking-app
+
+# This points our local Docker client at your remote machine
+# To connect to the droplet, run the following command
+# eval $(docker-machine env docker-s-2vcpu-2gb-lon1-parking-app)
+
+docker-compose down && docker pull aleks7900/angular-docker-service:latest && docker pull aleks7900/springbootapp:latest && docker-compose up -- перезагрузить
+
+docker-compose down && docker system prune --volumes && docker rmi $(docker images -a -q) && docker pull aleks7900/angular-docker-service:latest && docker pull aleks7900/springbootapp:latest && docker-compose up -- удалить все образы, загрузить заново и запустить

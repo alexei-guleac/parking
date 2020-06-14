@@ -26,7 +26,10 @@ export const api = {
     reservation: '/reserve',
     cancelReservation: '/unreserve',
     connectSocial: '/social_connect',
-    disconnectSocial: '/social_disconnect'
+    disconnectSocial: '/social_disconnect',
+
+    wsBackConnectionEndpoint: '/front-ws',
+    wsBackTopic: '/arduino/lot-messages'
 };
 
 export const appRoutes = {

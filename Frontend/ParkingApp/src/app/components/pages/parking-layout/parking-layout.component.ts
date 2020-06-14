@@ -8,9 +8,10 @@ import {
     ParkingLot
 } from '@app/models/ParkingLot';
 import { parkingStatuses } from '@app/models/ParkingLotStatus';
-import { DataService } from '@app/services/data/data.service';
+import { DataService, parseDataFromWsMsg } from '@app/services/data/data.service';
 import { actions, appRoutes } from '@app/services/navigation/app.endpoints';
 import { NavigationService } from '@app/services/navigation/navigation.service';
+import { WebSocketApiService } from '@app/services/web-socket-api.service';
 import { TranslateService } from '@ngx-translate/core';
 import { interval, Subscription } from 'rxjs';
 
@@ -33,10 +34,6 @@ export class ParkingLayoutComponent
 
     private dataLoaded = false;
 
-    private updateSubscription: Subscription;
-
-    private connectionLostSubscription: Subscription;
-
     private loadDataSubscription: Subscription;
 
     private message = this.translate.instant('parking-layout.wait');
@@ -48,6 +45,10 @@ export class ParkingLayoutComponent
     private classApplied: Array<boolean> = new Array<boolean>();
 
     private selectedLotId: any;
+
+    private webSocketAPI: WebSocketApiService;
+
+    private wsMsgBody: ParkingLot;
 
     constructor(
         private dataService: DataService,
@@ -67,13 +68,15 @@ export class ParkingLayoutComponent
      * Called once, after the first ngOnChanges()
      */
     ngOnInit() {
+        this.connectToServerViaWS();
         this.loadData();
         this.fillClassHighlightArray();
         this.subscribeOnUrlParams();
+    }
 
-        this.updateSubscription = interval(3000).subscribe(() => {
-            this.loadData();
-        });
+    private connectToServerViaWS() {
+        this.webSocketAPI = new WebSocketApiService(this);
+        this.connect();
     }
 
     /**
@@ -82,7 +85,6 @@ export class ParkingLayoutComponent
      * Called just before Angular destroys the directive/component
      */
     ngOnDestroy() {
-        this.updateSubscription.unsubscribe();
         this.loadDataSubscription.unsubscribe();
     }
 
@@ -172,7 +174,6 @@ export class ParkingLayoutComponent
                 } else {
                     this.message =
                         this.translate.instant('parking-layout.cant-connect');
-                    this.updateSubscription.unsubscribe();
                     this.loadDataSubscription.unsubscribe();
                 }
             }, 7000);
@@ -243,6 +244,34 @@ export class ParkingLayoutComponent
     private fillClassHighlightArray() {
         for (let i = 0; i < parking.lotsNumber; i++) {
             this.classApplied.push(false);
+        }
+    }
+
+    connect() {
+        this.webSocketAPI.connect();
+    }
+
+    disconnect() {
+        this.webSocketAPI.disconnect();
+    }
+
+    sendMessage(message: string) {
+        this.webSocketAPI.send(message);
+    }
+
+    handleMessage(message: any) {
+        this.wsMsgBody = parseDataFromWsMsg(message);
+
+        if (this.wsMsgBody.number && this.wsMsgBody.status) {
+            // console.log(this.wsMsgBody.number);
+            const mapLots = (lot: ParkingLot) => {
+                if (lot.number === this.wsMsgBody.number) {
+                    lot.status = this.wsMsgBody.status;
+                }
+                return lot;
+            };
+
+            this.parkingLots.map(mapLots);
         }
     }
 }

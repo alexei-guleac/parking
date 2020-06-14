@@ -92,11 +92,14 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Override
     public @NotNull StatisticsRecord save(@NotNull ParkingLot parkingLot) {
         // log.info(methodMsg("Service save statistics event executed..."));
+        log.info(methodMsg(String.valueOf(parkingLot.getUpdatedAt())));
 
         StatisticsRecord statisticsRecord = StatisticsRecord.builder()
             .lotNumber(parkingLot.getNumber())
             .status(parkingLot.getStatus())
-            .updatedAt(new Date(System.currentTimeMillis())).build();
+            .updatedAt(
+                parkingLot.getUpdatedAt() != null ?
+                    parkingLot.getUpdatedAt() : new Date(System.currentTimeMillis())).build();
 
         return statisticsRepository.save(statisticsRecord);
     }

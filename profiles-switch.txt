@@ -1,0 +1,40 @@
+
+For profiles switching replace this lines:
+
+frontend:
+	dev (localhost): 
+		tsconfig.json -->> "src/environments/environment"
+	prod (docker-digital-ocean): 
+		tsconfig.json -->> "src/environments/environment.prod"
+
+backend:
+	dev (localhost):
+		application.properties -->>
+			spring.profiles.active=default 
+			spring.email-properties.prefix=common
+			spring.db-properties.prefix=common
+			# spring.email-properties.prefix=digital-ocean
+			# spring.db-properties.prefix=docker
+
+			front.port=4200
+			front.host.dev=localhost
+			front.url=http://${front.host.dev}:${front.port}
+			# front.host.dev=68.183.149.220
+			# front.host.dev=parking-app.tk
+			# front.host.dev=parking-app.ga
+			# front.url=http://${front.host.dev}
+	prod (docker-digital-ocean): 
+		application.properties -->>
+			spring.profiles.active=default
+			# spring.email-properties.prefix=common
+			# spring.db-properties.prefix=common
+			spring.email-properties.prefix=digital-ocean
+			spring.db-properties.prefix=docker
+			
+			front.port=4200
+			# front.host.dev=localhost
+			# front.url=http://${front.host.dev}:${front.port}
+			# front.host.dev=68.183.149.220
+			front.host.dev=parking-app.tk
+			# front.host.dev=parking-app.ga
+			front.url=http://${front.host.dev}

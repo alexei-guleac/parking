@@ -55,4 +55,8 @@ public class ApiEndpoints {
 
     public static final String unreserve = "/unreserve";
 
+    public static final String frontWS = "/front-ws";
+
+    public static final String frontWSTopic = "/arduino/lot-messages";
+
 }
