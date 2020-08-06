@@ -188,11 +188,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>6.0.0.Alpha4</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate</groupId>-->
+<!--            <artifactId>hibernate-entitymanager</artifactId>-->
+<!--            <version>6.0.0.Alpha4</version>-->
+<!--        </dependency>-->
 
         <!-- in-memory fast DB -->
         <dependency>
@@ -428,6 +428,11 @@
             <version>16.0.2</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>58.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -461,11 +466,11 @@
                             <version>${lombok.version}</version>
                         </path>
                         <!-- For JPA static metamodel generation -->
-                        <path>
-                            <groupId>org.hibernate</groupId>
-                            <artifactId>hibernate-jpamodelgen</artifactId>
-                            <version>5.4.15.Final</version>
-                        </path>
+<!--                        <path>-->
+<!--                            <groupId>org.hibernate</groupId>-->
+<!--                            <artifactId>hibernate-jpamodelgen</artifactId>-->
+<!--                            <version>5.4.15.Final</version>-->
+<!--                        </path>-->
                     </annotationProcessorPaths>
 
                 </configuration>
