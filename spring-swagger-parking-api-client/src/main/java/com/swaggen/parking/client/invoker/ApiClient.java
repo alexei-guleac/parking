@@ -63,7 +63,7 @@ public class ApiClient {
 
     private final HttpHeaders defaultHeaders = new HttpHeaders();
 
-    private String basePath = "//localhost:8080/";
+    private String serverBasePath = "//localhost:8080/";
 
     private final RestTemplate restTemplate;
 
@@ -109,18 +109,18 @@ public class ApiClient {
      *
      * @return String the base path
      */
-    public String getBasePath() {
-        return basePath;
+    public String getServerBasePath() {
+        return serverBasePath;
     }
 
     /**
      * Set the base path, which should include the host
      *
-     * @param basePath the base path
+     * @param serverBasePath the base path
      * @return ApiClient this client
      */
-    public ApiClient setBasePath(String basePath) {
-        this.basePath = basePath;
+    public ApiClient setServerBasePath(String serverBasePath) {
+        this.serverBasePath = serverBasePath;
         return this;
     }
 
@@ -515,7 +515,7 @@ public class ApiClient {
     public <T> T invokeAPI(String path, HttpMethod method, MultiValueMap<String, String> queryParams, Object body, HttpHeaders headerParams, MultiValueMap<String, Object> formParams, List<MediaType> accept, MediaType contentType, String[] authNames, ParameterizedTypeReference<T> returnType) throws RestClientException {
         updateParamsForAuth(authNames, queryParams, headerParams);
 
-        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(basePath).path(path);
+        final UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(serverBasePath).path(path);
         if (queryParams != null) {
             builder.queryParams(queryParams);
         }

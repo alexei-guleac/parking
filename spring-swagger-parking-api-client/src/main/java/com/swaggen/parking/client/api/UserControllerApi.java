@@ -1,6 +1,6 @@
 package com.swaggen.parking.client.api;
 
-import com.swaggen.parking.client.invoker.ApiClient;
+import com.swaggen.parking.client.invoker.ApiClientDecorator;
 import com.swaggen.parking.client.model.ResponseEntity;
 import com.swaggen.parking.client.model.SocialUser;
 import com.swaggen.parking.client.model.UpdateUserRequest;
@@ -21,26 +21,25 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.annotation.processing.Generated;
 import java.util.List;
 
+import static com.swaggen.parking.client.invoker.ApiEndpoints.*;
+import static javax.ws.rs.core.MediaType.WILDCARD;
+
 
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-06T11:26:27.336+03:00[EET]")
 @Component("com.swaggen.parking.client.api.UserControllerApi")
 public class UserControllerApi {
-    private ApiClient apiClient;
-
-    public UserControllerApi() {
-        this(new ApiClient());
-    }
+    private ApiClientDecorator apiClient;
 
     @Autowired
-    public UserControllerApi(ApiClient apiClient) {
+    public UserControllerApi(ApiClientDecorator apiClient) {
         this.apiClient = apiClient;
     }
 
-    public ApiClient getApiClient() {
+    public ApiClientDecorator getApiClient() {
         return apiClient;
     }
 
-    public void setApiClient(ApiClient apiClient) {
+    public void setApiClient(ApiClientDecorator apiClient) {
         this.apiClient = apiClient;
     }
 
@@ -55,33 +54,11 @@ public class UserControllerApi {
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
     public ResponseEntity deleteUserUsingPOST(Object headers) throws RestClientException {
-        Object postBody = null;
         // verify the required parameter 'headers' is set
         if (headers == null) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'headers' when calling deleteUserUsingPOST");
         }
-        String path = UriComponentsBuilder.fromPath("/profile/delete").build().toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-        if (headers != null)
-            headerParams.add("headers", apiClient.parameterToString(headers));
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {
-                "application/json"
-        };
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<ResponseEntity> returnType = new ParameterizedTypeReference<ResponseEntity>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+        return apiClient.doGenericPostJsonRequest(headers, null, profileDelete);
     }
 
     /**
@@ -92,26 +69,9 @@ public class UserControllerApi {
      * @return UserLdap
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public UserLdap getAllUsersUsingGET() throws RestClientException {
-        Object postBody = null;
-        String path = UriComponentsBuilder.fromPath("/users").build().toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {};
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<UserLdap> returnType = new ParameterizedTypeReference<UserLdap>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.GET, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    public ResponseEntity getAllUsersUsingGET() throws RestClientException {
+        return apiClient.doGetJsonRequest(
+                new HttpHeaders(), null, users, new String[]{WILDCARD}, new String[]{});
     }
 
     /**
@@ -123,28 +83,8 @@ public class UserControllerApi {
      * @return SocialUser
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
-    public SocialUser getUserByUsernameUsingPOST() throws RestClientException {
-        Object postBody = null;
-        String path = UriComponentsBuilder.fromPath("/profile").build().toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {
-                "application/json"
-        };
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<SocialUser> returnType = new ParameterizedTypeReference<SocialUser>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+    public ResponseEntity getUserByUsernameUsingPOST() throws RestClientException {
+        return apiClient.doGenericPostJsonRequest(new HttpHeaders(), null, profile);
     }
 
     /**
@@ -168,27 +108,7 @@ public class UserControllerApi {
         if (headers == null) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'headers' when calling updateUserUsingPOST");
         }
-        String path = UriComponentsBuilder.fromPath("/profile/update").build().toUriString();
 
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-        if (headers != null)
-            headerParams.add("headers", apiClient.parameterToString(headers));
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {
-                "application/json"
-        };
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<ResponseEntity> returnType = new ParameterizedTypeReference<ResponseEntity>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
+        return apiClient.doGenericPostJsonRequest(headers, postBody, profileUpdate);
     }
 }

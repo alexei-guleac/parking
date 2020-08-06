@@ -26,10 +26,6 @@ import java.util.Map;
 public class ParkingLotControllerApi {
     private ApiClient apiClient;
 
-    public ParkingLotControllerApi() {
-        this(new ApiClient());
-    }
-
     @Autowired
     public ParkingLotControllerApi(ApiClient apiClient) {
         this.apiClient = apiClient;
@@ -41,45 +37,6 @@ public class ParkingLotControllerApi {
 
     public void setApiClient(ApiClient apiClient) {
         this.apiClient = apiClient;
-    }
-
-    /**
-     * Used to unreserve parking lot
-     * Sets status of parking lot to unreserved
-     * <p><b>200</b> - Success|OK
-     * <p><b>500</b> - Server error
-     *
-     * @param id id
-     * @return Boolean
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public Boolean cancelReservationUsingDELETE(Long id) throws RestClientException {
-        Object postBody = null;
-        // verify the required parameter 'id' is set
-        if (id == null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'id' when calling cancelReservationUsingDELETE");
-        }
-        // create path and map variables
-        final Map<String, Object> uriVariables = new HashMap<String, Object>();
-        uriVariables.put("id", id);
-        String path = UriComponentsBuilder.fromPath("/unreserve/{id}").buildAndExpand(uriVariables).toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {};
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<Boolean> returnType = new ParameterizedTypeReference<Boolean>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.DELETE, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }
 
     /**
@@ -158,45 +115,6 @@ public class ParkingLotControllerApi {
         ParameterizedTypeReference<Boolean> returnType = new ParameterizedTypeReference<Boolean>() {
         };
         return apiClient.invokeAPI(path, HttpMethod.HEAD, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
-    }
-
-    /**
-     * Used to unreserve parking lot
-     * Sets status of parking lot to unreserved
-     * <p><b>200</b> - Success|OK
-     * <p><b>500</b> - Server error
-     *
-     * @param id id
-     * @return Boolean
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public Boolean cancelReservationUsingOPTIONS(Long id) throws RestClientException {
-        Object postBody = null;
-        // verify the required parameter 'id' is set
-        if (id == null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'id' when calling cancelReservationUsingOPTIONS");
-        }
-        // create path and map variables
-        final Map<String, Object> uriVariables = new HashMap<String, Object>();
-        uriVariables.put("id", id);
-        String path = UriComponentsBuilder.fromPath("/unreserve/{id}").buildAndExpand(uriVariables).toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {};
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<Boolean> returnType = new ParameterizedTypeReference<Boolean>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.OPTIONS, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }
 
     /**
@@ -391,45 +309,6 @@ public class ParkingLotControllerApi {
         ParameterizedTypeReference<ParkingLot> returnType = new ParameterizedTypeReference<ParkingLot>() {
         };
         return apiClient.invokeAPI(path, HttpMethod.GET, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
-    }
-
-    /**
-     * Used to reserve parking lot
-     * Sets status of parking lot to reserved
-     * <p><b>200</b> - Success|OK
-     * <p><b>500</b> - Server error
-     *
-     * @param id id
-     * @return Boolean
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public Boolean reservationUsingDELETE(Long id) throws RestClientException {
-        Object postBody = null;
-        // verify the required parameter 'id' is set
-        if (id == null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'id' when calling reservationUsingDELETE");
-        }
-        // create path and map variables
-        final Map<String, Object> uriVariables = new HashMap<String, Object>();
-        uriVariables.put("id", id);
-        String path = UriComponentsBuilder.fromPath("/reserve/{id}").buildAndExpand(uriVariables).toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        final String[] accepts = {
-                "*/*"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {};
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[]{"JWT"};
-
-        ParameterizedTypeReference<Boolean> returnType = new ParameterizedTypeReference<Boolean>() {
-        };
-        return apiClient.invokeAPI(path, HttpMethod.DELETE, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }
 
     /**
