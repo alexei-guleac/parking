@@ -12,173 +12,175 @@
 
 package com.swaggen.parking.client.model;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.annotation.processing.Generated;
+import java.util.Objects;
 
 
 /**
- * user device information (for region language and timezone detect). 
+ * user device information (for region language and timezone detect).
  */
 @Schema(description = "user device information (for region language and timezone detect). ")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-06T11:26:27.336+03:00[EET]")
 public class DeviceInfo {
-  @JsonProperty("browser")
-  private String browser = null;
+    @JsonProperty("browser")
+    private String browser = null;
 
-  @JsonProperty("language")
-  private String language = null;
+    @JsonProperty("language")
+    private String language = null;
 
-  @JsonProperty("os")
-  private String os = null;
+    @JsonProperty("os")
+    private String os = null;
 
-  @JsonProperty("platformType")
-  private String platformType = null;
+    @JsonProperty("platformType")
+    private String platformType = null;
 
-  @JsonProperty("timezone")
-  private String timezone = null;
+    @JsonProperty("timezone")
+    private String timezone = null;
 
-  public DeviceInfo browser(String browser) {
-    this.browser = browser;
-    return this;
-  }
-
-   /**
-   * Browser name
-   * @return browser
-  **/
-  @Schema(description = "Browser name")
-  public String getBrowser() {
-    return browser;
-  }
-
-  public void setBrowser(String browser) {
-    this.browser = browser;
-  }
-
-  public DeviceInfo language(String language) {
-    this.language = language;
-    return this;
-  }
-
-   /**
-   * Device language (ru, ro, en, etc.)
-   * @return language
-  **/
-  @Schema(description = "Device language (ru, ro, en, etc.)")
-  public String getLanguage() {
-    return language;
-  }
-
-  public void setLanguage(String language) {
-    this.language = language;
-  }
-
-  public DeviceInfo os(String os) {
-    this.os = os;
-    return this;
-  }
-
-   /**
-   * Operational system name (Windows, Linux)
-   * @return os
-  **/
-  @Schema(description = "Operational system name (Windows, Linux)")
-  public String getOs() {
-    return os;
-  }
-
-  public void setOs(String os) {
-    this.os = os;
-  }
-
-  public DeviceInfo platformType(String platformType) {
-    this.platformType = platformType;
-    return this;
-  }
-
-   /**
-   * Device type (desktop, mobile)
-   * @return platformType
-  **/
-  @Schema(description = "Device type (desktop, mobile)")
-  public String getPlatformType() {
-    return platformType;
-  }
-
-  public void setPlatformType(String platformType) {
-    this.platformType = platformType;
-  }
-
-  public DeviceInfo timezone(String timezone) {
-    this.timezone = timezone;
-    return this;
-  }
-
-   /**
-   * Device timezone (region, time)
-   * @return timezone
-  **/
-  @Schema(description = "Device timezone (region, time)")
-  public String getTimezone() {
-    return timezone;
-  }
-
-  public void setTimezone(String timezone) {
-    this.timezone = timezone;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public DeviceInfo browser(String browser) {
+        this.browser = browser;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Browser name
+     *
+     * @return browser
+     **/
+    @Schema(description = "Browser name")
+    public String getBrowser() {
+        return browser;
     }
-    DeviceInfo deviceInfo = (DeviceInfo) o;
-    return Objects.equals(this.browser, deviceInfo.browser) &&
-        Objects.equals(this.language, deviceInfo.language) &&
-        Objects.equals(this.os, deviceInfo.os) &&
-        Objects.equals(this.platformType, deviceInfo.platformType) &&
-        Objects.equals(this.timezone, deviceInfo.timezone);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(browser, language, os, platformType, timezone);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class DeviceInfo {\n");
-    
-    sb.append("    browser: ").append(toIndentedString(browser)).append("\n");
-    sb.append("    language: ").append(toIndentedString(language)).append("\n");
-    sb.append("    os: ").append(toIndentedString(os)).append("\n");
-    sb.append("    platformType: ").append(toIndentedString(platformType)).append("\n");
-    sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setBrowser(String browser) {
+        this.browser = browser;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public DeviceInfo language(String language) {
+        this.language = language;
+        return this;
+    }
+
+    /**
+     * Device language (ru, ro, en, etc.)
+     *
+     * @return language
+     **/
+    @Schema(description = "Device language (ru, ro, en, etc.)")
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public DeviceInfo os(String os) {
+        this.os = os;
+        return this;
+    }
+
+    /**
+     * Operational system name (Windows, Linux)
+     *
+     * @return os
+     **/
+    @Schema(description = "Operational system name (Windows, Linux)")
+    public String getOs() {
+        return os;
+    }
+
+    public void setOs(String os) {
+        this.os = os;
+    }
+
+    public DeviceInfo platformType(String platformType) {
+        this.platformType = platformType;
+        return this;
+    }
+
+    /**
+     * Device type (desktop, mobile)
+     *
+     * @return platformType
+     **/
+    @Schema(description = "Device type (desktop, mobile)")
+    public String getPlatformType() {
+        return platformType;
+    }
+
+    public void setPlatformType(String platformType) {
+        this.platformType = platformType;
+    }
+
+    public DeviceInfo timezone(String timezone) {
+        this.timezone = timezone;
+        return this;
+    }
+
+    /**
+     * Device timezone (region, time)
+     *
+     * @return timezone
+     **/
+    @Schema(description = "Device timezone (region, time)")
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        DeviceInfo deviceInfo = (DeviceInfo) o;
+        return Objects.equals(this.browser, deviceInfo.browser) &&
+                Objects.equals(this.language, deviceInfo.language) &&
+                Objects.equals(this.os, deviceInfo.os) &&
+                Objects.equals(this.platformType, deviceInfo.platformType) &&
+                Objects.equals(this.timezone, deviceInfo.timezone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(browser, language, os, platformType, timezone);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class DeviceInfo {\n");
+
+        sb.append("    browser: ").append(toIndentedString(browser)).append("\n");
+        sb.append("    language: ").append(toIndentedString(language)).append("\n");
+        sb.append("    os: ").append(toIndentedString(os)).append("\n");
+        sb.append("    platformType: ").append(toIndentedString(platformType)).append("\n");
+        sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }

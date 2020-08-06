@@ -12,105 +12,103 @@
 
 package com.swaggen.parking.client.model;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.swaggen.parking.client.model.User;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.annotation.processing.Generated;
+import java.util.Objects;
 
 
 /**
- * Request for user information update. 
+ * Request for user information update.
  */
 @Schema(description = "Request for user information update. ")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-06T11:26:27.336+03:00[EET]")
 public class UpdateUserRequest {
-  @JsonProperty("user")
-  private User user = null;
+    @JsonProperty("user")
+    private User user = null;
 
-  @JsonProperty("username")
-  private String username = null;
+    @JsonProperty("username")
+    private String username = null;
 
-  public UpdateUserRequest user(User user) {
-    this.user = user;
-    return this;
-  }
-
-   /**
-   * Get user
-   * @return user
-  **/
-  @Schema(required = true, description = "")
-  public User getUser() {
-    return user;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
-  }
-
-  public UpdateUserRequest username(String username) {
-    this.username = username;
-    return this;
-  }
-
-   /**
-   * User username
-   * @return username
-  **/
-  @Schema(required = true, description = "User username")
-  public String getUsername() {
-    return username;
-  }
-
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public UpdateUserRequest user(User user) {
+        this.user = user;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get user
+     *
+     * @return user
+     **/
+    @Schema(required = true, description = "")
+    public User getUser() {
+        return user;
     }
-    UpdateUserRequest updateUserRequest = (UpdateUserRequest) o;
-    return Objects.equals(this.user, updateUserRequest.user) &&
-        Objects.equals(this.username, updateUserRequest.username);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(user, username);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class UpdateUserRequest {\n");
-    
-    sb.append("    user: ").append(toIndentedString(user)).append("\n");
-    sb.append("    username: ").append(toIndentedString(username)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setUser(User user) {
+        this.user = user;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public UpdateUserRequest username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    /**
+     * User username
+     *
+     * @return username
+     **/
+    @Schema(required = true, description = "User username")
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UpdateUserRequest updateUserRequest = (UpdateUserRequest) o;
+        return Objects.equals(this.user, updateUserRequest.user) &&
+                Objects.equals(this.username, updateUserRequest.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, username);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class UpdateUserRequest {\n");
+
+        sb.append("    user: ").append(toIndentedString(user)).append("\n");
+        sb.append("    username: ").append(toIndentedString(username)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }

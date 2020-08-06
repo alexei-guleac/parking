@@ -12,15 +12,14 @@
 
 package com.swaggen.parking.client.model;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.threeten.bp.OffsetDateTime;
 
 import javax.annotation.processing.Generated;
+import java.util.Objects;
 
 
 /**
@@ -29,167 +28,173 @@ import javax.annotation.processing.Generated;
 @Schema(description = "Parking lot model")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-06T11:26:27.336+03:00[EET]")
 public class ParkingLot {
-  @JsonProperty("id")
-  private Long id = null;
+    @JsonProperty("id")
+    private Long id = null;
 
-  @JsonProperty("number")
-  private Integer number = null;
+    @JsonProperty("number")
+    private Integer number = null;
 
-  /**
-   * Parking lot status (free, occupied, unknown, reserved)
-   */
-  public enum StatusEnum {
-    FREE("FREE"),
-    OCCUPIED("OCCUPIED"),
-    RESERVED("RESERVED"),
-    UNKNOWN("UNKNOWN");
+    @JsonProperty("status")
+    private StatusEnum status = null;
 
-    private String value;
+    @JsonProperty("updatedAt")
+    private OffsetDateTime updatedAt = null;
 
-    StatusEnum(String value) {
-      this.value = value;
+    public ParkingLot id(Long id) {
+        this.id = id;
+        return this;
     }
-    @JsonValue
-    public String getValue() {
-      return value;
+
+    /**
+     * Parking lot unique id (two numbers comes from Arduino scalable infrastructure - master board id + slave board id)
+     *
+     * @return id
+     **/
+    @Schema(description = "Parking lot unique id (two numbers comes from Arduino scalable infrastructure - master board id + slave board id)")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ParkingLot number(Integer number) {
+        this.number = number;
+        return this;
+    }
+
+    /**
+     * Parking lot number
+     *
+     * @return number
+     **/
+    @Schema(description = "Parking lot number")
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public ParkingLot status(StatusEnum status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * Parking lot status (free, occupied, unknown, reserved)
+     *
+     * @return status
+     **/
+    @Schema(description = "Parking lot status (free, occupied, unknown, reserved)")
+    public StatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusEnum status) {
+        this.status = status;
+    }
+
+    public ParkingLot updatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
+    /**
+     * Parking lot updated at date
+     *
+     * @return updatedAt
+     **/
+    @Schema(description = "Parking lot updated at date")
+    public OffsetDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ParkingLot parkingLot = (ParkingLot) o;
+        return Objects.equals(this.id, parkingLot.id) &&
+                Objects.equals(this.number, parkingLot.number) &&
+                Objects.equals(this.status, parkingLot.status) &&
+                Objects.equals(this.updatedAt, parkingLot.updatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, number, status, updatedAt);
     }
 
     @Override
     public String toString() {
-      return String.valueOf(value);
+        StringBuilder sb = new StringBuilder();
+        sb.append("class ParkingLot {\n");
+
+        sb.append("    id: ").append(toIndentedString(id)).append("\n");
+        sb.append("    number: ").append(toIndentedString(number)).append("\n");
+        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    updatedAt: ").append(toIndentedString(updatedAt)).append("\n");
+        sb.append("}");
+        return sb.toString();
     }
-    @JsonCreator
-    public static StatusEnum fromValue(String text) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
         }
-      }
-      return null;
+        return o.toString().replace("\n", "\n    ");
     }
 
-  }  @JsonProperty("status")
-  private StatusEnum status = null;
+    /**
+     * Parking lot status (free, occupied, unknown, reserved)
+     */
+    public enum StatusEnum {
+        FREE("FREE"),
+        OCCUPIED("OCCUPIED"),
+        RESERVED("RESERVED"),
+        UNKNOWN("UNKNOWN");
 
-  @JsonProperty("updatedAt")
-  private OffsetDateTime updatedAt = null;
+        private String value;
 
-  public ParkingLot id(Long id) {
-    this.id = id;
-    return this;
-  }
+        StatusEnum(String value) {
+            this.value = value;
+        }
 
-   /**
-   * Parking lot unique id (two numbers comes from Arduino scalable infrastructure - master board id + slave board id)
-   * @return id
-  **/
-  @Schema(description = "Parking lot unique id (two numbers comes from Arduino scalable infrastructure - master board id + slave board id)")
-  public Long getId() {
-    return id;
-  }
+        @JsonCreator
+        public static StatusEnum fromValue(String text) {
+            for (StatusEnum b : StatusEnum.values()) {
+                if (String.valueOf(b.value).equals(text)) {
+                    return b;
+                }
+            }
+            return null;
+        }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+        @JsonValue
+        public String getValue() {
+            return value;
+        }
 
-  public ParkingLot number(Integer number) {
-    this.number = number;
-    return this;
-  }
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
 
-   /**
-   * Parking lot number
-   * @return number
-  **/
-  @Schema(description = "Parking lot number")
-  public Integer getNumber() {
-    return number;
-  }
-
-  public void setNumber(Integer number) {
-    this.number = number;
-  }
-
-  public ParkingLot status(StatusEnum status) {
-    this.status = status;
-    return this;
-  }
-
-   /**
-   * Parking lot status (free, occupied, unknown, reserved)
-   * @return status
-  **/
-  @Schema(description = "Parking lot status (free, occupied, unknown, reserved)")
-  public StatusEnum getStatus() {
-    return status;
-  }
-
-  public void setStatus(StatusEnum status) {
-    this.status = status;
-  }
-
-  public ParkingLot updatedAt(OffsetDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-    return this;
-  }
-
-   /**
-   * Parking lot updated at date
-   * @return updatedAt
-  **/
-  @Schema(description = "Parking lot updated at date")
-  public OffsetDateTime getUpdatedAt() {
-    return updatedAt;
-  }
-
-  public void setUpdatedAt(OffsetDateTime updatedAt) {
-    this.updatedAt = updatedAt;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    ParkingLot parkingLot = (ParkingLot) o;
-    return Objects.equals(this.id, parkingLot.id) &&
-        Objects.equals(this.number, parkingLot.number) &&
-        Objects.equals(this.status, parkingLot.status) &&
-        Objects.equals(this.updatedAt, parkingLot.updatedAt);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, number, status, updatedAt);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ParkingLot {\n");
-    
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    number: ").append(toIndentedString(number)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    updatedAt: ").append(toIndentedString(updatedAt)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
 
 }

@@ -12,106 +12,103 @@
 
 package com.swaggen.parking.client.model;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.swaggen.parking.client.model.DeviceInfo;
-import com.swaggen.parking.client.model.ResetDetails;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.annotation.processing.Generated;
+import java.util.Objects;
 
 
 /**
- * Request for user password reset. 
+ * Request for user password reset.
  */
 @Schema(description = "Request for user password reset. ")
 @Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2020-08-06T11:26:27.336+03:00[EET]")
 public class ResetPasswordRequest {
-  @JsonProperty("deviceInfo")
-  private DeviceInfo deviceInfo = null;
+    @JsonProperty("deviceInfo")
+    private DeviceInfo deviceInfo = null;
 
-  @JsonProperty("resetDetails")
-  private ResetDetails resetDetails = null;
+    @JsonProperty("resetDetails")
+    private ResetDetails resetDetails = null;
 
-  public ResetPasswordRequest deviceInfo(DeviceInfo deviceInfo) {
-    this.deviceInfo = deviceInfo;
-    return this;
-  }
-
-   /**
-   * Get deviceInfo
-   * @return deviceInfo
-  **/
-  @Schema(description = "")
-  public DeviceInfo getDeviceInfo() {
-    return deviceInfo;
-  }
-
-  public void setDeviceInfo(DeviceInfo deviceInfo) {
-    this.deviceInfo = deviceInfo;
-  }
-
-  public ResetPasswordRequest resetDetails(ResetDetails resetDetails) {
-    this.resetDetails = resetDetails;
-    return this;
-  }
-
-   /**
-   * Get resetDetails
-   * @return resetDetails
-  **/
-  @Schema(required = true, description = "")
-  public ResetDetails getResetDetails() {
-    return resetDetails;
-  }
-
-  public void setResetDetails(ResetDetails resetDetails) {
-    this.resetDetails = resetDetails;
-  }
-
-
-  @Override
-  public boolean equals(java.lang.Object o) {
-    if (this == o) {
-      return true;
+    public ResetPasswordRequest deviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get deviceInfo
+     *
+     * @return deviceInfo
+     **/
+    @Schema(description = "")
+    public DeviceInfo getDeviceInfo() {
+        return deviceInfo;
     }
-    ResetPasswordRequest resetPasswordRequest = (ResetPasswordRequest) o;
-    return Objects.equals(this.deviceInfo, resetPasswordRequest.deviceInfo) &&
-        Objects.equals(this.resetDetails, resetPasswordRequest.resetDetails);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(deviceInfo, resetDetails);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ResetPasswordRequest {\n");
-    
-    sb.append("    deviceInfo: ").append(toIndentedString(deviceInfo)).append("\n");
-    sb.append("    resetDetails: ").append(toIndentedString(resetDetails)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(java.lang.Object o) {
-    if (o == null) {
-      return "null";
+    public void setDeviceInfo(DeviceInfo deviceInfo) {
+        this.deviceInfo = deviceInfo;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public ResetPasswordRequest resetDetails(ResetDetails resetDetails) {
+        this.resetDetails = resetDetails;
+        return this;
+    }
+
+    /**
+     * Get resetDetails
+     *
+     * @return resetDetails
+     **/
+    @Schema(required = true, description = "")
+    public ResetDetails getResetDetails() {
+        return resetDetails;
+    }
+
+    public void setResetDetails(ResetDetails resetDetails) {
+        this.resetDetails = resetDetails;
+    }
+
+
+    @Override
+    public boolean equals(java.lang.Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ResetPasswordRequest resetPasswordRequest = (ResetPasswordRequest) o;
+        return Objects.equals(this.deviceInfo, resetPasswordRequest.deviceInfo) &&
+                Objects.equals(this.resetDetails, resetPasswordRequest.resetDetails);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(deviceInfo, resetDetails);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class ResetPasswordRequest {\n");
+
+        sb.append("    deviceInfo: ").append(toIndentedString(deviceInfo)).append("\n");
+        sb.append("    resetDetails: ").append(toIndentedString(resetDetails)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString(java.lang.Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
