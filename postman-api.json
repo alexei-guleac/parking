@@ -1,0 +1,3368 @@
+{
+    "openapi": "3.0",
+    "swagger": "2.0",
+    "info": {
+        "description": "Parking IoT application project API reference for developers",
+        "version": "0.2",
+        "title": "Parking application Backend API",
+        "termsOfService": "http://parking-project.com",
+        "contact": {
+            "name": "parking App Service",
+            "url": "http://parking-project.com",
+            "email": "parking_app_service@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "http://parking-project.com"
+        }
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "account-controller",
+            "description": "Operations pertaining to user account"
+        },
+        {
+            "name": "authentication-controller",
+            "description": "Operations pertaining to user authentication in system"
+        },
+        {
+            "name": "parking-lot-controller",
+            "description": "Operations pertaining to parking lot in database or Java memory"
+        },
+        {
+            "name": "registration-controller",
+            "description": "Operations pertaining to user registration in system"
+        },
+        {
+            "name": "social-controller",
+            "description": "Operations pertaining to social providers connection"
+        },
+        {
+            "name": "statistics-controller",
+            "description": "Operations pertaining to parking lot usage statistics in database"
+        },
+        {
+            "name": "user-controller",
+            "description": "Operations pertaining to User entity in database"
+        }
+    ],
+    "paths": {
+        "/auth": {
+            "post": {
+                "tags": [
+                    "authentication-controller"
+                ],
+                "summary": "User authentication in system",
+                "description": "Handles user authentication request from client web application",
+                "operationId": "authenticationUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "authenticationRequest",
+                        "description": "Pass user credentials.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AuthenticationRequest"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "User doesn't exists on the server"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/auth/social": {
+            "post": {
+                "tags": [
+                    "authentication-controller"
+                ],
+                "summary": "User authentication in system by social provider id",
+                "description": "Handles social user authentication request from client web application",
+                "operationId": "socialLoginUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "socialAuthRequest",
+                        "description": "Account associated with this social profile not found",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialAuthRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account associated with this social profile not found"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/confirm_account": {
+            "post": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "Confirm user account in the system.",
+                "description": "This REST web service method will set user account to ENABLED if passed valid confirmation token.",
+                "operationId": "confirmUserAccountUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "confirmRequest",
+                        "description": "Pass user account confirmation token.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Confirmation token is expired. Register again"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/forgot_password": {
+            "post": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "User forgot password handler",
+                "description": "Receives the user address and send an reset password email",
+                "operationId": "forgotUserPasswordUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user forgot password information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ForgotPassRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Password reset request is allowed only in specified period"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/github_oauth": {
+            "get": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "head": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingHEAD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingPUT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "options": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingOPTIONS",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "patch": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Method complements OAuth 2.0 flow with Github",
+                "description": "GitHub redirects back to site with a temporary code in a code parameter as well as the state you provided in the previous step in a state parameter. The temporary code will expire after 10 minutes. This code needed for exchange to access token which is needed for app access the Github API",
+                "operationId": "githubOAuthUsingPATCH",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "githubOAuthCode",
+                        "description": "Pass GitHub OAuth 2 code to receive API access token to get user information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Code not provided"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/lot_statistics/{lotNumber}": {
+            "get": {
+                "tags": [
+                    "statistics-controller"
+                ],
+                "summary": "Get all statistics records by parking lot number from database",
+                "description": "Returns all statistics records by parking lot number from storage",
+                "operationId": "getStatisticsByLotNumberUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "lotNumber",
+                        "in": "path",
+                        "description": "Pass parking lot number",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/StatisticsRecord"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/parking": {
+            "get": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Get all parking lots",
+                "description": "Returns all parking lots from parking lots storage",
+                "operationId": "getAllParkingLotsUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ParkingLot"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/parking/{id}": {
+            "get": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Get parking lot by id",
+                "description": "Returns parking lot from storage by given id",
+                "operationId": "getParkingLotByIdUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ParkingLot"
+                        }
+                    },
+                    "404": {
+                        "description": "Parking Lot not found for this id :: specified id"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/profile": {
+            "post": {
+                "tags": [
+                    "user-controller"
+                ],
+                "summary": "Get an employee by username",
+                "description": "Endpoint to retrieve user profile from database",
+                "operationId": "getUserByUsernameUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "username",
+                        "description": "Pass username to get user information",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/SocialUser"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/profile/delete": {
+            "post": {
+                "tags": [
+                    "user-controller"
+                ],
+                "summary": "Delete user",
+                "description": "Endpoint to delete user profile from database",
+                "operationId": "deleteUserUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "username",
+                        "description": "Pass username to delete user",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/String"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "User doesn't exists on the server"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/profile/update": {
+            "post": {
+                "tags": [
+                    "user-controller"
+                ],
+                "summary": "Update user",
+                "description": "Endpoint to update user profile in database",
+                "operationId": "updateUserUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "updateUserRequest",
+                        "description": "Pass user information for update",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "User doesn't exists on the server"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system",
+                "description": "Handles user registration request from client web application",
+                "operationId": "registrationUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/RegistrationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this username already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/register/social": {
+            "get": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "head": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingHEAD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingPUT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "options": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingOPTIONS",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "patch": {
+                "tags": [
+                    "registration-controller"
+                ],
+                "summary": "User registration in system by social provider information",
+                "description": "Handles social user registration request from client web application",
+                "operationId": "socialRegistrationUsingPATCH",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "request",
+                        "description": "Pass user social registration information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Account with this social id already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/reserve/{id}": {
+            "get": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "head": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingHEAD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingPUT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "options": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingOPTIONS",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "patch": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to reserve parking lot",
+                "description": "Sets status of parking lot to reserved",
+                "operationId": "reservationUsingPATCH",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/reset_password": {
+            "post": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "Endpoint to reset a user's password",
+                "description": "Reset user password based on received confirmation token",
+                "operationId": "resetUserPasswordUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "resetPasswordRequest",
+                        "description": "Pass user reset password information.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ResetPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Password change is allowed only in specified period"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/social_connect": {
+            "post": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Connect social provider to user account",
+                "description": "Handles user social connection request from client web application",
+                "operationId": "socialConnectUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "socialConnectRequest",
+                        "description": "Pass user and social provider information",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialConnectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Another account is associated with this social profile"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/social_disconnect": {
+            "post": {
+                "tags": [
+                    "social-controller"
+                ],
+                "summary": "Disconnect social provider from user account",
+                "description": "Handles user social disconnection request from client web application",
+                "operationId": "socialDisconnectUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "socialDisconnectRequest",
+                        "description": "Pass user and social provider information",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SocialDisconnectRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "User doesn't exists on the server"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/statistics": {
+            "get": {
+                "tags": [
+                    "statistics-controller"
+                ],
+                "summary": "Get all statistics records from database",
+                "description": "Returns all statistics records from storage",
+                "operationId": "getAllStatisticsUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/StatisticsRecord"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/unreserve/{id}": {
+            "get": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "head": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingHEAD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingPUT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "options": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingOPTIONS",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "patch": {
+                "tags": [
+                    "parking-lot-controller"
+                ],
+                "summary": "Used to unreserve parking lot",
+                "description": "Sets status of parking lot to unreserved",
+                "operationId": "cancelReservationUsingPATCH",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "parkingLotId",
+                        "description": "Pass parking lot id",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Long"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "user-controller"
+                ],
+                "summary": "View a list of available employees",
+                "description": "Endpoint to retrieve all users from database",
+                "operationId": "getAllUsersUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserLdap"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        },
+        "/validate_captcha": {
+            "get": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "head": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingHEAD",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "post": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "put": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingPUT",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "delete": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingDELETE",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "options": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingOPTIONS",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            },
+            "patch": {
+                "tags": [
+                    "account-controller"
+                ],
+                "summary": "${AccountController.getRecaptcha.value}",
+                "description": "${AccountController.getRecaptcha.notes}",
+                "operationId": "getRecaptchaUsingPATCH",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "gRecaptcha",
+                        "description": "gRecaptcha",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "getRecaptcha",
+                        "description": "${AccountController.getRecaptcha.getRecaptcha}",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "in": "header",
+                        "description": "headers",
+                        "required": true,
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success|OK",
+                        "schema": {
+                            "$ref": "#/definitions/ResponseEntity"
+                        }
+                    },
+                    "500": {
+                        "description": "Token is empty or invalid"
+                    }
+                },
+                "security": [
+                    {
+                        "JWT": [
+                            "global"
+                        ]
+                    }
+                ],
+                "deprecated": false
+            }
+        }
+    },
+    "securityDefinitions": {
+        "JWT": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "AuthDetails": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string",
+                    "description": "User password"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "Username"
+                }
+            },
+            "title": "AuthDetails",
+            "description": "Authentication user details. "
+        },
+        "AuthenticationRequest": {
+            "type": "object",
+            "required": [
+                "authDetails"
+            ],
+            "properties": {
+                "authDetails": {
+                    "description": "Authentication user details (username and password). ",
+                    "$ref": "#/definitions/AuthDetails"
+                },
+                "deviceInfo": {
+                    "description": "User device information (for region language targeting purpose). ",
+                    "$ref": "#/definitions/DeviceInfo"
+                }
+            },
+            "title": "AuthenticationRequest",
+            "description": "Authentication user information. "
+        },
+        "DeviceInfo": {
+            "type": "object",
+            "properties": {
+                "browser": {
+                    "type": "string",
+                    "description": "Browser name"
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Device language (ru, ro, en, etc.)"
+                },
+                "os": {
+                    "type": "string",
+                    "description": "Operational system name (Windows, Linux)"
+                },
+                "platformType": {
+                    "type": "string",
+                    "description": "Device type (desktop, mobile)"
+                },
+                "timezone": {
+                    "type": "string",
+                    "description": "Device timezone (region, time)"
+                }
+            },
+            "title": "DeviceInfo",
+            "description": "user device information (for region language and timezone detect). "
+        },
+        "ForgotPassRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "deviceInfo": {
+                    "description": "User device information (for region language targeting purpose). ",
+                    "$ref": "#/definitions/DeviceInfo"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "User email. "
+                }
+            },
+            "title": "ForgotPassRequest",
+            "description": "Forgot user password request. "
+        },
+        "IterableOfUserLdap": {
+            "type": "object",
+            "title": "IterableOfUserLdap"
+        },
+        "ParkingLot": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Parking lot unique id (two numbers comes from Arduino scalable infrastructure - master board id + slave board id)"
+                },
+                "number": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Parking lot number"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Parking lot status (free, occupied, unknown, reserved)",
+                    "enum": [
+                        "FREE",
+                        "OCCUPIED",
+                        "RESERVED",
+                        "UNKNOWN"
+                    ]
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Parking lot updated at date"
+                }
+            },
+            "title": "ParkingLot",
+            "description": "Parking lot model"
+        },
+        "RegistrationRequest": {
+            "type": "object",
+            "required": [
+                "user"
+            ],
+            "properties": {
+                "deviceInfo": {
+                    "description": "User device information (for region language targeting purpose). ",
+                    "$ref": "#/definitions/DeviceInfo"
+                },
+                "user": {
+                    "description": "User information",
+                    "$ref": "#/definitions/User"
+                }
+            },
+            "title": "RegistrationRequest",
+            "description": "Registration user information. "
+        },
+        "ResetDetails": {
+            "type": "object",
+            "required": [
+                "confirmationToken",
+                "password"
+            ],
+            "properties": {
+                "confirmationToken": {
+                    "type": "string",
+                    "description": "Confirmation token for verification. "
+                },
+                "password": {
+                    "type": "string",
+                    "description": "New password. "
+                }
+            },
+            "title": "ResetDetails",
+            "description": "User password reset details. "
+        },
+        "ResetPasswordRequest": {
+            "type": "object",
+            "required": [
+                "resetDetails"
+            ],
+            "properties": {
+                "deviceInfo": {
+                    "description": "User device information (for region language targeting purpose). ",
+                    "$ref": "#/definitions/DeviceInfo"
+                },
+                "resetDetails": {
+                    "description": "User password reset details. ",
+                    "$ref": "#/definitions/ResetDetails"
+                }
+            },
+            "title": "ResetPasswordRequest",
+            "description": "Request for user password reset. "
+        },
+        "ResponseEntity": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "object"
+                },
+                "statusCode": {
+                    "type": "string",
+                    "enum": [
+                        "100 CONTINUE",
+                        "101 SWITCHING_PROTOCOLS",
+                        "102 PROCESSING",
+                        "103 CHECKPOINT",
+                        "200 OK",
+                        "201 CREATED",
+                        "202 ACCEPTED",
+                        "203 NON_AUTHORITATIVE_INFORMATION",
+                        "204 NO_CONTENT",
+                        "205 RESET_CONTENT",
+                        "206 PARTIAL_CONTENT",
+                        "207 MULTI_STATUS",
+                        "208 ALREADY_REPORTED",
+                        "226 IM_USED",
+                        "300 MULTIPLE_CHOICES",
+                        "301 MOVED_PERMANENTLY",
+                        "302 FOUND",
+                        "302 MOVED_TEMPORARILY",
+                        "303 SEE_OTHER",
+                        "304 NOT_MODIFIED",
+                        "305 USE_PROXY",
+                        "307 TEMPORARY_REDIRECT",
+                        "308 PERMANENT_REDIRECT",
+                        "400 BAD_REQUEST",
+                        "401 UNAUTHORIZED",
+                        "402 PAYMENT_REQUIRED",
+                        "403 FORBIDDEN",
+                        "404 NOT_FOUND",
+                        "405 METHOD_NOT_ALLOWED",
+                        "406 NOT_ACCEPTABLE",
+                        "407 PROXY_AUTHENTICATION_REQUIRED",
+                        "408 REQUEST_TIMEOUT",
+                        "409 CONFLICT",
+                        "410 GONE",
+                        "411 LENGTH_REQUIRED",
+                        "412 PRECONDITION_FAILED",
+                        "413 PAYLOAD_TOO_LARGE",
+                        "413 REQUEST_ENTITY_TOO_LARGE",
+                        "414 URI_TOO_LONG",
+                        "414 REQUEST_URI_TOO_LONG",
+                        "415 UNSUPPORTED_MEDIA_TYPE",
+                        "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+                        "417 EXPECTATION_FAILED",
+                        "418 I_AM_A_TEAPOT",
+                        "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+                        "420 METHOD_FAILURE",
+                        "421 DESTINATION_LOCKED",
+                        "422 UNPROCESSABLE_ENTITY",
+                        "423 LOCKED",
+                        "424 FAILED_DEPENDENCY",
+                        "425 TOO_EARLY",
+                        "426 UPGRADE_REQUIRED",
+                        "428 PRECONDITION_REQUIRED",
+                        "429 TOO_MANY_REQUESTS",
+                        "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+                        "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+                        "500 INTERNAL_SERVER_ERROR",
+                        "501 NOT_IMPLEMENTED",
+                        "502 BAD_GATEWAY",
+                        "503 SERVICE_UNAVAILABLE",
+                        "504 GATEWAY_TIMEOUT",
+                        "505 HTTP_VERSION_NOT_SUPPORTED",
+                        "506 VARIANT_ALSO_NEGOTIATES",
+                        "507 INSUFFICIENT_STORAGE",
+                        "508 LOOP_DETECTED",
+                        "509 BANDWIDTH_LIMIT_EXCEEDED",
+                        "510 NOT_EXTENDED",
+                        "511 NETWORK_AUTHENTICATION_REQUIRED"
+                    ]
+                },
+                "statusCodeValue": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "title": "ResponseEntity"
+        },
+        "SocialAuthRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "socialProvider"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Social provider user ID"
+                },
+                "socialProvider": {
+                    "type": "string",
+                    "description": "Social provider short name"
+                }
+            },
+            "title": "SocialAuthRequest",
+            "description": "User authentication with social service provider. "
+        },
+        "SocialConnectRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "socialProvider",
+                "user",
+                "username"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "Social provider user ID"
+                },
+                "socialProvider": {
+                    "type": "string",
+                    "description": "Social provider short name"
+                },
+                "user": {
+                    "description": "User information",
+                    "$ref": "#/definitions/User"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "User username"
+                }
+            },
+            "title": "SocialConnectRequest",
+            "description": "Social provider profile connect request. "
+        },
+        "SocialDisconnectRequest": {
+            "type": "object",
+            "required": [
+                "socialProvider",
+                "username"
+            ],
+            "properties": {
+                "socialProvider": {
+                    "type": "string",
+                    "description": "Social provider short name"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "User username"
+                }
+            },
+            "title": "SocialDisconnectRequest",
+            "description": "Social provider profile disconnection request. "
+        },
+        "SocialRegisterRequest": {
+            "type": "object",
+            "required": [
+                "id",
+                "socialProvider",
+                "user"
+            ],
+            "properties": {
+                "deviceInfo": {
+                    "description": "User device information (for region language targeting purpose). ",
+                    "$ref": "#/definitions/DeviceInfo"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Social provider user ID"
+                },
+                "socialProvider": {
+                    "type": "string",
+                    "description": "Social provider short name"
+                },
+                "user": {
+                    "description": "User registration information",
+                    "$ref": "#/definitions/User"
+                }
+            },
+            "title": "SocialRegisterRequest",
+            "description": "User registration with social service provider. "
+        },
+        "SocialUser": {
+            "type": "object",
+            "required": [
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "description": "User email"
+                },
+                "firstname": {
+                    "type": "string",
+                    "description": "User firstname"
+                },
+                "lastname": {
+                    "type": "string",
+                    "description": "User lastname"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "User password"
+                },
+                "socialIds": {
+                    "type": "object",
+                    "description": "Map of user social id's by social service providers",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "username": {
+                    "type": "string",
+                    "description": "User username"
+                }
+            },
+            "title": "SocialUser",
+            "description": "Social user model. "
+        },
+        "StatisticsRecord": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Statistics record unique id"
+                },
+                "lotNumber": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Statistics record lot number"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Statistics record lot status",
+                    "enum": [
+                        "FREE",
+                        "OCCUPIED",
+                        "RESERVED",
+                        "UNKNOWN"
+                    ]
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Statistics record date"
+                }
+            },
+            "title": "StatisticsRecord",
+            "description": "Statistics entry model"
+        },
+        "UpdateUserRequest": {
+            "type": "object",
+            "required": [
+                "user",
+                "username"
+            ],
+            "properties": {
+                "user": {
+                    "description": "User information",
+                    "$ref": "#/definitions/User"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "User username"
+                }
+            },
+            "title": "UpdateUserRequest",
+            "description": "Request for user information update. "
+        },
+        "User": {
+            "type": "object",
+            "required": [
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "description": "User email"
+                },
+                "firstname": {
+                    "type": "string",
+                    "description": "User firstname"
+                },
+                "lastname": {
+                    "type": "string",
+                    "description": "User lastname"
+                },
+                "password": {
+                    "type": "string",
+                    "description": "User password"
+                },
+                "username": {
+                    "type": "string",
+                    "description": "User username"
+                }
+            },
+            "title": "User",
+            "description": "User model. "
+        },
+        "UserLdap": {
+            "type": "object",
+            "properties": {
+                "accountState": {
+                    "type": "string",
+                    "description": "User account state (enabled, disabled, waiting confirmation)",
+                    "enum": [
+                        "WAITING_CONFIRMATION",
+                        "ENABLED",
+                        "DISABLED",
+                        "SOCIAL"
+                    ]
+                },
+                "cn": {
+                    "type": "string",
+                    "description": "User full name"
+                },
+                "creationDate": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "User account creation date"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "User email"
+                },
+                "firstname": {
+                    "type": "string"
+                },
+                "passwordUpdatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "User password last updated at date"
+                },
+                "sn": {
+                    "type": "string",
+                    "description": "User lastname"
+                },
+                "socialIds": {
+                    "type": "object",
+                    "description": "Map of user social id's by social service providers",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "uid": {
+                    "type": "string",
+                    "description": "User server uid"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "User account last updated at date"
+                },
+                "userPassword": {
+                    "type": "string",
+                    "description": "User password"
+                }
+            },
+            "title": "UserLdap",
+            "description": "LDAP user entry model. "
+        }
+    }
+}
