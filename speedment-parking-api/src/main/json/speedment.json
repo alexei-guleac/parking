@@ -1,0 +1,344 @@
+{
+  "config" : {
+    "speedmentVersion" : "Speedment:3.2.10",
+    "nameProtected" : false,
+    "oasInfoContactEmail" : "",
+    "companyName" : "company",
+    "oasInfoContactName" : "",
+    "packageLocation" : "src/main/java/",
+    "dbmses" : [
+      {
+        "expanded" : true,
+        "port" : 5432,
+        "schemas" : [
+          {
+            "tables" : [
+              {
+                "implements" : "",
+                "nameProtected" : true,
+                "restEnableGet" : true,
+                "restEnableCreate" : true,
+                "isView" : false,
+                "columns" : [
+                  {
+                    "nameProtected" : true,
+                    "nullable" : false,
+                    "unindexed" : false,
+                    "lowCardinality" : false,
+                    "autoIncrement" : false,
+                    "biDirectional" : false,
+                    "ordinalPosition" : 1,
+                    "enabled" : true,
+                    "databaseType" : "java.lang.Long",
+                    "expanded" : true,
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "name" : "token_id",
+                    "nullableImplementation" : "OPTIONAL",
+                    "id" : "token_id",
+                    "hashIndex" : false
+                  },
+                  {
+                    "databaseType" : "java.lang.Boolean",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "claimed",
+                    "id" : "claimed",
+                    "ordinalPosition" : 2,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "confirmation_token",
+                    "id" : "confirmation_token",
+                    "ordinalPosition" : 3,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.sql.Timestamp",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "created_at",
+                    "id" : "created_at",
+                    "ordinalPosition" : 4,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.sql.Timestamp",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "expiration_date",
+                    "id" : "expiration_date",
+                    "ordinalPosition" : 5,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "operation_type",
+                    "id" : "operation_type",
+                    "ordinalPosition" : 6,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.String",
+                    "expanded" : true,
+                    "nullable" : false,
+                    "name" : "uid",
+                    "id" : "uid",
+                    "ordinalPosition" : 7,
+                    "enabled" : true
+                  }
+                ],
+                "restEnableUpdate" : true,
+                "enabled" : true,
+                "restEnableFilters" : true,
+                "restEnableDelete" : true,
+                "expanded" : true,
+                "restEnabled" : true,
+                "primaryKeyColumns" : [
+                  {
+                    "expanded" : true,
+                    "name" : "token_id",
+                    "id" : "token_id",
+                    "ordinalPosition" : 1,
+                    "enabled" : true
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "expanded" : false,
+                    "unique" : true,
+                    "name" : "confirmation_tokens_pkey",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "expanded" : true,
+                        "name" : "token_id",
+                        "id" : "token_id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "confirmation_tokens_pkey",
+                    "enabled" : true
+                  }
+                ],
+                "name" : "confirmation_tokens",
+                "restEnableSkipLimit" : true,
+                "restCors" : "*",
+                "id" : "confirmation_tokens",
+                "restEnableSorters" : true,
+                "restEnableTotal" : true,
+                "restEnableList" : true
+              },
+              {
+                "implements" : "",
+                "nameProtected" : true,
+                "restEnableGet" : true,
+                "restEnableCreate" : true,
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Long",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "expanded" : true,
+                    "nullable" : false,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "lot_number",
+                    "id" : "lot_number",
+                    "ordinalPosition" : 2,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "status",
+                    "id" : "status",
+                    "ordinalPosition" : 3,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.sql.Timestamp",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "updated_at",
+                    "id" : "updated_at",
+                    "ordinalPosition" : 4,
+                    "enabled" : true
+                  }
+                ],
+                "restEnableUpdate" : true,
+                "enabled" : true,
+                "restEnableFilters" : true,
+                "restEnableDelete" : true,
+                "expanded" : true,
+                "restEnabled" : true,
+                "primaryKeyColumns" : [
+                  {
+                    "expanded" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1,
+                    "enabled" : true
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "expanded" : false,
+                    "unique" : true,
+                    "name" : "parking_lots_pkey",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "expanded" : true,
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "parking_lots_pkey",
+                    "enabled" : true
+                  }
+                ],
+                "name" : "parking_lots",
+                "restEnableSkipLimit" : true,
+                "restCors" : "*",
+                "id" : "parking_lots",
+                "restEnableSorters" : true,
+                "restEnableTotal" : true,
+                "restEnableList" : true
+              },
+              {
+                "implements" : "",
+                "nameProtected" : true,
+                "restEnableGet" : true,
+                "restEnableCreate" : true,
+                "isView" : false,
+                "columns" : [
+                  {
+                    "databaseType" : "java.lang.Long",
+                    "typeMapper" : "com.speedment.runtime.typemapper.primitive.PrimitiveTypeMapper",
+                    "expanded" : true,
+                    "nullable" : false,
+                    "autoIncrement" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "lot_number",
+                    "id" : "lot_number",
+                    "ordinalPosition" : 2,
+                    "enabled" : true
+                  },
+                  {
+                    "databaseType" : "java.lang.Integer",
+                    "expanded" : true,
+                    "nullable" : true,
+                    "name" : "parking_lot_status",
+                    "id" : "parking_lot_status",
+                    "ordinalPosition" : 3,
+                    "enabled" : true
+                  },
+                  {
+                    "nameProtected" : true,
+                    "nullable" : true,
+                    "unindexed" : false,
+                    "lowCardinality" : false,
+                    "autoIncrement" : false,
+                    "biDirectional" : false,
+                    "ordinalPosition" : 4,
+                    "enabled" : true,
+                    "databaseType" : "java.sql.Timestamp",
+                    "expanded" : true,
+                    "name" : "updated_at",
+                    "nullableImplementation" : "OPTIONAL",
+                    "id" : "updated_at",
+                    "hashIndex" : false
+                  }
+                ],
+                "restEnableUpdate" : true,
+                "enabled" : true,
+                "restEnableFilters" : true,
+                "restEnableDelete" : true,
+                "expanded" : true,
+                "restEnabled" : true,
+                "primaryKeyColumns" : [
+                  {
+                    "expanded" : true,
+                    "name" : "id",
+                    "id" : "id",
+                    "ordinalPosition" : 1,
+                    "enabled" : true
+                  }
+                ],
+                "indexes" : [
+                  {
+                    "expanded" : false,
+                    "unique" : true,
+                    "name" : "statistics_pkey",
+                    "indexColumns" : [
+                      {
+                        "orderType" : "ASC",
+                        "expanded" : true,
+                        "name" : "id",
+                        "id" : "id",
+                        "ordinalPosition" : 1
+                      }
+                    ],
+                    "id" : "statistics_pkey",
+                    "enabled" : true
+                  }
+                ],
+                "name" : "statistics",
+                "restEnableSkipLimit" : true,
+                "restCors" : "*",
+                "id" : "statistics",
+                "restEnableSorters" : true,
+                "restEnableTotal" : true,
+                "restEnableList" : true
+              }
+            ],
+            "expanded" : true,
+            "name" : "public",
+            "id" : "public",
+            "enabled" : true
+          }
+        ],
+        "typeName" : "PostgreSQL",
+        "ipAddress" : "127.0.0.1",
+        "name" : "parking",
+        "id" : "parking",
+        "enabled" : true,
+        "username" : "postgres"
+      }
+    ],
+    "enabled" : true,
+    "oasInfoTitle" : "",
+    "oasInfoDescription" : "",
+    "expanded" : true,
+    "restEnabled" : true,
+    "oasInfoTos" : "",
+    "appId" : "e81ef881-79e0-4628-9260-f1159831ec3b",
+    "name" : "public",
+    "id" : "public",
+    "restDocsEnabled" : true,
+    "oasInfoVersion" : "",
+    "oasInfoContactUrl" : ""
+  }
+}
